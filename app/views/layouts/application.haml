@@ -1,0 +1,26 @@
+!!!5
+%html
+  %head
+    %title Galerie Revisited
+    %link{ :rel => 'stylesheet', :href => '/css/main.css', :type => 'text/css' }
+    - if RACK_ENV == 'production'
+      %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+    - else
+      %script{ :src => '/javascripts/vendor/jquery-1.4.4.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/davis-0.3.1.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/davis.title.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/lib/site.js', :type => 'text/javascript', :charset => 'utf-8' }
+      
+      = content :head
+  %body
+    #header
+      .container
+        %form{ :method => "get", :action => "/search",  :id => "search-form" }
+          .field
+            %input{ :type => "text", :name => "query", :id => "search-query", :class => "textfield", :value => @query }
+            %input{ :type => "submit", :value => "Search", :class => "button" }
+
+    #content
+      .container
+        = yield
+      

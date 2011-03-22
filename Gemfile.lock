@@ -1,0 +1,163 @@
+GIT
+  remote: git://github.com/monkrb/glue.git
+  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
+  specs:
+    monk-glue (0.0.1)
+
+GIT
+  remote: https://github.com/jnicklas/capybara.git
+  revision: 549e67336c712a1ef2119ce5ff64dbbc7542480f
+  specs:
+    capybara (0.4.1.1)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
+
+GIT
+  remote: https://github.com/jnunemaker/joint.git
+  revision: cbfe32e5918326fe142169157173629e5afb090d
+  specs:
+    joint (0.6.0)
+      mime-types
+      mongo_mapper (~> 0.9.0)
+      wand (~> 0.4)
+
+GIT
+  remote: https://github.com/jnunemaker/mongomapper.git
+  revision: 593fb2d421731a966b1a6e7ac72c8f3acbefc59f
+  specs:
+    mongo_mapper (0.9.0)
+      activemodel (~> 3.0.0)
+      activesupport (~> 3.0.0)
+      plucky (~> 0.3.6)
+
+GIT
+  remote: https://github.com/plataformatec/capybara-zombie.git
+  revision: a94e87adc7bfe1dc537b457a1b3bb14ab90abe91
+  specs:
+    capybara-zombie (0.0.1)
+      capybara (~> 0.4.1)
+      childprocess (~> 0.1.7)
+      multi_json (~> 0.0.5)
+
+PATH
+  remote: vendor/hunt
+  specs:
+    hunt (0.3)
+      fast-stemmer (~> 1.0)
+      mongo_mapper (~> 0.9.0)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (3.0.5)
+      activesupport (= 3.0.5)
+      builder (~> 2.1.2)
+      i18n (~> 0.4)
+    activesupport (3.0.5)
+    bson (1.1)
+    bson_ext (1.1)
+    builder (2.1.2)
+    childprocess (0.1.8)
+      ffi (~> 1.0.6)
+    daemons (1.1.0)
+    diff-lcs (1.1.2)
+    eventmachine (0.12.10)
+    faker (0.9.5)
+      i18n (~> 0.4)
+    fast-stemmer (1.0.0)
+    ffi (1.0.7)
+      rake (>= 0.8.7)
+    haml (3.0.25)
+    i18n (0.5.0)
+    json (1.5.1)
+    json_pure (1.5.1)
+    machinist (1.0.6)
+    machinist_mongo (1.2.0)
+      machinist (~> 1.0.6)
+    mime-types (1.16)
+    mini_magick (3.2)
+      subexec (~> 0.0.4)
+    mongo (1.1)
+      bson (>= 1.0.5)
+    mongo_ext (0.19.3)
+    multi_json (0.0.5)
+    mustache (0.99.3)
+    nokogiri (1.4.4)
+    plucky (0.3.7)
+      mongo (~> 1.1)
+    rack (1.2.2)
+    rack-cache (1.0)
+      rack (>= 0.4)
+    rack-flash (0.1.1)
+      rack
+    rack-test (0.5.7)
+      rack (>= 1.0)
+    rake (0.8.7)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
+    rubyzip (0.9.4)
+    safe_shell (1.0.1)
+    selenium-webdriver (0.1.4)
+      childprocess (>= 0.1.7)
+      ffi (>= 1.0.7)
+      json_pure
+      rubyzip
+    sinatra (1.2.1)
+      rack (~> 1.1)
+      tilt (>= 1.2.2, < 2.0)
+    steak (1.1.0)
+      rspec (>= 1.3)
+    subexec (0.0.4)
+    test-unit (2.2.0)
+    thin (1.2.8)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
+    thor (0.14.6)
+    tilt (1.2.2)
+    wand (0.4)
+      mime-types
+      safe_shell (~> 1.0.0)
+    xpath (0.1.3)
+      nokogiri (~> 1.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bson (= 1.1)
+  bson_ext (= 1.1)
+  capybara!
+  capybara-zombie!
+  faker
+  haml
+  hunt!
+  joint!
+  json
+  machinist_mongo
+  mini_magick
+  mongo (= 1.1)
+  mongo_ext
+  mongo_mapper!
+  monk-glue!
+  mustache
+  rack
+  rack-cache
+  rack-flash
+  rack-test
+  rspec (>= 2.5.0)
+  sinatra
+  steak (>= 1.0.0)
+  test-unit
+  thin
+  thor

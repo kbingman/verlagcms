@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      {{title}} Application
+    </title>
+    <link href="/css/main.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="/javascripts/vendor/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="/javascripts/vendor/davis-0.3.1.js" type="text/javascript"></script>
+    <script src="/javascripts/vendor/davis.title.js" type="text/javascript"></script>
+    <script src="/javascripts/lib/site.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+      <form method="get" action="/search" id="search-form">
+        <div class="field">
+          <input type="text" name="query" id="search-query" class="textfield" value="{{{query}}}" />
+          <input type="submit" value="Search" class="button" />
+        </div>
+      </form>
+      </div>
+    </div>
+    <div id="content">
+      <div class="container">
+        {{{yield}}}
+      </div>
+    </div>
+  </body>
+</html>

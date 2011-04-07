@@ -6,21 +6,24 @@ require "bundler/setup"
 Bundler.setup
 
 require 'monk/glue'
+# require 'sinatra-respond_to'
 
-# require 'haml'
-require 'sass'  
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
 require 'rack/cache'
 require 'mustache/sinatra'
+require 'rack/cache'
 
 class Main < Monk::Glue
   set :app_file, __FILE__ 
   set :haml, { :format => :html5, :ugly => true }
+  
+  # Sinatra::Application.register Sinatra::RespondTo
 
   # set :layout => root_path('app/views/layouts/application')
 
+  use Rack::Cache
   use Rack::Session::Cookie  
   register Mustache::Sinatra
 

@@ -4,6 +4,7 @@ gem 'rack'
 gem 'sinatra'   
 gem 'thin' 
 gem 'monk-glue', :git => 'git://github.com/monkrb/glue.git'
+gem 'rack-cache'
 
 # Mongomapper and plugins
 # Using vendor as it barfs on a warning sign...

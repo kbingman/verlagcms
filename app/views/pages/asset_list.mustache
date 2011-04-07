@@ -1,0 +1,12 @@
+<h1>Search: {{query}}</h1>
+
+<ul id="assets">
+  {{#assets}}
+    <li id="asset-{{id}}">
+      <a href="/assets/{{query}}/{{id}}" style="background-image: url();">
+        <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
+      </a>
+    </li>
+  {{/assets}}
+</ul>
+

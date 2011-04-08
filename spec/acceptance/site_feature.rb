@@ -7,15 +7,16 @@ feature "Home Page: " do
     before(:each) do
       # Seems zombie and davis don't get along...
       Capybara.current_driver = :zombie
+      puts 'zombie'
     end
     
     after(:each) do
-      # Capybara.use_default_driver
+      Capybara.use_default_driver
     end
   
     scenario "views the home page" do
       visit '/'
-      page.should have_css('h1')
+      page.should have_content('Start')
       
       click_link('The Other Page')
       page.should have_css('h1')
@@ -28,7 +29,7 @@ feature "Home Page: " do
       fill_in 'search-query', :with => "roversi"
       click_button 'Search'
 
-      page.should have_css('h1')
+      # page.should have_css('h1')
       page.should have_content('roversi')
       # page.should have_css('#thumbnails')
     end

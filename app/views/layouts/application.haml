@@ -7,13 +7,14 @@
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else
       %script{ :src => '/javascripts/vendor/jquery-1.4.4.min.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/davis-0.3.3.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/davis.title.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/sammy.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/js-model-0.9.4.min.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/handlebars.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/lib/view.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/asset_list_view.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/lib/site.js', :type => 'text/javascript', :charset => 'utf-8' }
     // This is where the mustache templates are rendered  
     =#  content :head
@@ -30,5 +31,5 @@
       .container
         #asset-list-container
           = yield
-        #asset-display-container
+
       

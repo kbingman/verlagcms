@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem 'rack'
-gem 'sinatra'   
+gem 'sinatra', '1.2'  
 gem 'thin' 
 gem 'monk-glue', :git => 'git://github.com/monkrb/glue.git'
 gem 'rack-cache'

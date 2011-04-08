@@ -56,12 +56,6 @@ class Main
       @content && @content[key]
     end
     
-    def get_format
-      parts = request.path.split('.')
-      @format = parts.length > 1 ? parts.last : 'html'
-      # puts @format
-    end
-    
     def respond_to(&block)
       class << (mappings = {} )
         def method_missing(name, &resp)
@@ -73,6 +67,5 @@ class Main
       handler.call if handler
     end
     
-
   end
 end

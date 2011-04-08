@@ -7,34 +7,16 @@ class Main
     content_type ext
   end
   
+  before do
+    logger.info "#{request.request_method} #{request.path}"
+  end
+  
   get '/' do
     @title = "Mustache + Sinatra = Wonder"
     haml :'pages/page' 
   end 
   
-  # This method just redirects to a prettier url, as davis has issues with queries. 
   get '/search.:format' do
-    query = params[:query].gsub(/ /, '+') if params[:query]
-    @assets = Asset.all
-    respond_to do |format|
-      format.html do
-        if query
-          redirect("/search/#{query}") 
-        else
-          haml :'pages/assets'
-        end
-      end 
-      format.json do
-        if query
-          redirect("/search/#{query}.json") 
-        else
-          @asset.to_json
-        end
-      end
-    end  
-  end
-  
-  get '/search/:query.:format' do
     @query = params[:query] ? params[:query].split('.')[0] : ''
     @assets = Asset.search(@query).all
 
@@ -42,7 +24,29 @@ class Main
       format.html { haml :'pages/assets' }
       format.json { @assets.to_json }
     end
-  end   
+  end
+  
+  get '/search/:query.:format' do
+    @query = params[:query] ? params[:query].split('.')[0] : ''
+    @assets = Asset.search(@query).all
+  
+    respond_to do |format|
+      format.html { haml :'pages/assets' }
+      format.json { @assets.to_json }
+    end
+  end  
+  
+  
+  get '/assets/:query/:id.:format' do
+    @query = params[:query] ? params[:query].split('.')[0] : ''
+    @assets = Asset.search(@query).all
+    @asset = Asset.find params['id']
+
+    respond_to do |format|
+      format.html { haml :'pages/asset' }
+      format.json { @assets.to_json }
+    end
+  end 
   
   get '/:page' do
     @title = params[:page]

@@ -50,7 +50,9 @@ View = function (name, a, instanceMethods) {
 
     render: function () {
       invokeCallback('beforeRender', this);
-      $(settings.container).html(this.html);
+      $(settings.container).html(this.html).find('img').hide().load(function(){
+        $(this).fadeIn('fast');
+      });
       invokeCallback('beforeRender', this);
     }
   };

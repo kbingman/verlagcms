@@ -156,6 +156,11 @@ class Asset
       end
       image.resize("#{width}x#{height}")
       return image
+    end     
+    
+    before_validation :set_title
+    def set_title
+      self.title ||= File.basename self.file_name, '.*'
     end
   
 end

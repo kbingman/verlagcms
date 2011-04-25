@@ -1,0 +1,15 @@
+<div class="image-info" id="image-info-{{id}}">
+{{#asset}}
+  <h1>{{title}}</h1>
+{{/asset}} 
+  {{#previous}}<a href="/search/{{id}}{{query_path}}">Previous</a>{{/previous}}
+  {{#next}}<a href="/search/{{id}}{{query_path}}">Next</a>{{/next}}
+</div>
+{{#asset}}
+<div class="image-display" id="image-display-{{id}}">
+  <a href="/search?query={{query}}" style="">
+    <img src="/images/display/{{id}}/{{file_name}}" alt="{{title}}" />
+  </a>
+</div>
+{{/asset}} 
+

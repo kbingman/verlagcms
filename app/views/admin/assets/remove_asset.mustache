@@ -1,0 +1,18 @@
+{{#asset}}
+<div class="image-display" id="image-display-{{id}}">
+  <img src="/images/display/{{id}}/{{file_name}}" alt="{{title}}" />
+</div>
+<div class="image-info" id="image-info-{{id}}">
+  <form method='post' action="/assets/{{id}}" enctype='multipart/form-data' id='delete-asset'>
+    <div class="hidden">
+      <input type='hidden' name='_method' value='delete' />  
+      <input type='hidden' name='query' value='{{query}}' />  
+    </div>  
+    <div class="buttons">
+      <input type='submit' value="Delete" class='button' />  
+      <a href="/assets{{query_path}}" class="cancel">Cancel</a>     
+    </div>
+  </form>   
+  <div class="notice"></div>
+</div>                      
+{{/asset}}   

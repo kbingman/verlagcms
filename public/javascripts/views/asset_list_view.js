@@ -4,6 +4,18 @@ AssetListView = View("asset-list", {
     var self = this;
 
     var reload = function () {
+      self.reload(Asset.sortBy('created_at').reverse().toMustache());
+    }
+  }
+  
+});
+
+AssetIndexView = View("asset-index", {
+
+  init: function () {
+    var self = this;
+
+    var reload = function () {
       self.reload(Asset.toMustache());
     }
 
@@ -21,6 +33,64 @@ AssetDisplayView = View("asset-display", {
     var reload = function(asset) {
       self.reload(asset.attr());
     }
+  },
+  
+  beforeRender: function () {
+    this.html
+      .find('img')
+        .hide();
+  },
+  
+  afterRender: function () {
+    this.html
+      .find('img')
+        .fadeIn('slow');
+  }
+  
+});
+
+EditAssetView = View("edit-asset", {
+
+  init: function () {
+    var self = this;
+
+    var reload = function(asset) {
+      self.reload(asset.attr());
+    }
+  },
+  
+  beforeRender: function () {
+    this.html
+      .find('.html-only, img')
+        .hide();
+  },
+  afterRender: function () {
+    this.html
+      .find('img')
+        .fadeIn('slow');
+  }
+  
+});  
+
+RemoveAssetView = View("remove-asset", {
+
+  init: function () {
+    var self = this;
+
+    var reload = function(asset) {
+      self.reload(asset.attr());
+    }
+  },
+  
+  beforeRender: function () {
+    this.html
+      .find('.html-only, img')
+        .hide();
+  },
+  afterRender: function () {
+    this.html
+      .find('img')
+        .fadeIn('slow');
   }
   
 });

@@ -21,9 +21,10 @@ describe "routes/css" do
     last_response.headers['Content-Type'].should == 'text/css;charset=UTF-8'
   end
   
-  # it "should correctly set the cache haeders" do
-  #   do_get
-  #   last_response.headers['Cache-Control'].should == 'max-age=600, public'
-  # end
+  it "should correctly set the cache haeders" do
+    pending 'caching is getting in the way'
+    do_get
+    last_response.headers['Cache-Control'].should == 'max-age=600, public'
+  end
   
 end

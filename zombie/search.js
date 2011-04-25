@@ -3,16 +3,16 @@ var assert = require("assert");
 
 
 // Welcome page
-zombie.visit("http://localhost:4567/", function(err, browser, status){
+zombie.visit("http://davisapp.dev/", function(err, browser, status){
   
   console.log(browser.html());
   
 });
 
 // Main Search
-zombie.visit("http://localhost:4567/", function (err, browser, status) {
+zombie.visit("http://davisapp.dev/", function (err, browser, status) {
 
-  browser.fill("query", "roversi").pressButton("Search", function(err, browser, status) {
+  browser.fill("query", "smut").pressButton("Search", function(err, browser, status) {
     setTimeout(function(){
       console.log('ASSETS: waited 13 ms');
       // var response = browser.lastResponse.body;
@@ -26,7 +26,7 @@ zombie.visit("http://localhost:4567/", function (err, browser, status) {
 
 });
 
-// zombie.visit("http://localhost:4567/", function(err, browser, status){
+// zombie.visit("http://davisapp.dev/", function(err, browser, status){
 //   
 //   browser.location = "#/admin/artists"; 
 //   browser.wait(function(err, browser) {

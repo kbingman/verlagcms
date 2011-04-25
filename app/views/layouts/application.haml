@@ -6,30 +6,27 @@
     - if RACK_ENV == 'production'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else
-      %script{ :src => '/javascripts/vendor/jquery-1.4.4.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/jquery-1.5.2.min.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/js-model-0.9.4.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/handlebars.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/lib/view.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/asset_list_view.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/lib/ajax_uploader.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/lib/site.js', :type => 'text/javascript', :charset => 'utf-8' }
     // This is where the mustache templates are rendered  
-    =#  content :head
-    = show_template('pages/asset_list', 'pages/asset_display') 
+    = content :head
+    = show_template('search/asset_list', 'search/asset_display') 
   %body
     #header
       .container
-        %form{ :method => "get", :action => "/search",  :id => "search-form" }
-          .field
-            %input{ :type => "text", :name => "query", :id => "search-query", :class => "textfield", :value => @query }
-            %input{ :type => "submit", :value => "Search", :class => "button" }
+        = partial :'layouts/_search', :locals => { :search_path => '/search' }
 
     #content
       .container
-        #asset-list-container
-          = yield
+        = yield
 
       

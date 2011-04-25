@@ -1,12 +1,6 @@
 GIT
-  remote: git://github.com/monkrb/glue.git
-  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
-  specs:
-    monk-glue (0.0.1)
-
-GIT
   remote: https://github.com/jnicklas/capybara.git
-  revision: 549e67336c712a1ef2119ce5ff64dbbc7542480f
+  revision: e73e77690ba41ab81a4254fb3239f1d3bd0c049d
   specs:
     capybara (0.4.1.1)
       mime-types (>= 1.16)
@@ -27,12 +21,18 @@ GIT
 
 GIT
   remote: https://github.com/jnunemaker/mongomapper.git
-  revision: 593fb2d421731a966b1a6e7ac72c8f3acbefc59f
+  revision: 5dc6b9a86ffab5cd1195820af86e2312170b11b5
   specs:
     mongo_mapper (0.9.0)
       activemodel (~> 3.0.0)
       activesupport (~> 3.0.0)
       plucky (~> 0.3.6)
+
+GIT
+  remote: https://github.com/monkrb/glue.git
+  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
+  specs:
+    monk-glue (0.0.1)
 
 GIT
   remote: https://github.com/plataformatec/capybara-zombie.git
@@ -42,6 +42,13 @@ GIT
       capybara (~> 0.4.1)
       childprocess (~> 0.1.7)
       multi_json (~> 0.0.5)
+
+GIT
+  remote: https://github.com/rkh/sinatra-namespace.git
+  revision: c043f986733c3f4a447bdcec065328877a4e7d2a
+  specs:
+    sinatra-namespace (0.6.1)
+      sinatra (~> 1.1)
 
 PATH
   remote: vendor/hunt
@@ -53,17 +60,17 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.0.5)
-      activesupport (= 3.0.5)
+    activemodel (3.0.6)
+      activesupport (= 3.0.6)
       builder (~> 2.1.2)
-      i18n (~> 0.4)
-    activesupport (3.0.5)
+      i18n (~> 0.5.0)
+    activesupport (3.0.6)
     bson (1.1)
     bson_ext (1.1)
     builder (2.1.2)
     childprocess (0.1.8)
       ffi (~> 1.0.6)
-    daemons (1.1.0)
+    daemons (1.1.2)
     diff-lcs (1.1.2)
     eventmachine (0.12.10)
     faker (0.9.5)
@@ -119,7 +126,7 @@ GEM
       rspec (>= 1.3)
     subexec (0.0.4)
     test-unit (2.2.0)
-    thin (1.2.8)
+    thin (1.2.11)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
@@ -157,6 +164,7 @@ DEPENDENCIES
   rack-test
   rspec (>= 2.5.0)
   sinatra (= 1.2)
+  sinatra-namespace!
   steak (>= 1.0.0)
   test-unit
   thin

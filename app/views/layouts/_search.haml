@@ -1,0 +1,4 @@
+%form{ :method => "get", :action => search_path,  :id => "search-form" }
+  .field
+    %input{ :type => "text", :name => "query", :id => "search-query", :class => "textfield", :value => @query }
+    %input{ :type => "submit", :value => "Search", :class => "button" }

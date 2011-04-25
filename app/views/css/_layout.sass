@@ -21,24 +21,25 @@ body
     :min-height 420px
     :background white
     
-    
 #assets
+  :margin 0 -10px 0 0
+  +clearfix
   li
     :position relative
+    :float left
+    :margin 0 10px 10px 0
     :height 140px
     :width 140px
     :text-align center
     :background
-      :color #eee
-    // a 
-    //   :display block
-    //   :position relative
-    //   :height 140px
-    //   :width 140px
-    //   :text-indent -10000px
-    //   :background
-    //     :repeat no-repeat
-    //     :position center center
-    //     :color #eee
+      :color #eee  
+    :-webkit-transition background-color .3s linear
+    :transition color .3s linear
+    &:hover
+      :background-color #ccc
+      :-webkit-transition background-color .3s linear
+      :transition color .3s linear
+    
     // 
-  
+.js-only
+  :display none

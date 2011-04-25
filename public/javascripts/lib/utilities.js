@@ -17,7 +17,7 @@ var Galerie = {
     modalWrapper.hide().fadeIn('fast').css({
       'top': topMargin
     });
-    callback.call(this);
+    if(callback){ callback.call(this); }
   },
 
   close: function(){
@@ -29,18 +29,6 @@ var Galerie = {
       $('#overlay').fadeOut('fast', function(){
         $(this).remove();
       });
-    });
-  }
-}
-
-var TableHighlighter = {
-  initialize: function(element){
-    var table = $(element);
-    if(!table.length){ return }
-    table.find('tr').hover(function() {
-      $(this).addClass('active');
-    }, function(){
-      $(this).removeClass('active');
     });
   }
 }

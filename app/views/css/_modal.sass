@@ -13,13 +13,39 @@
   :width 100%
   :z-index 101
   #modal
-    :width 900px
-    :margin 0 auto
-    :padding 10px
-    :height 480px
-    :background white
+
     
 #modal_wrapper a.close  
   :position absolute
   :bottom 10px
-  :right 12px
+  :right 12px 
+  
+#modal 
+  #edit-asset-container, #asset-display-container, #remove-asset-container  
+    :position relative
+    :width 900px     
+    :height 480px   
+    :margin 0 auto
+    :padding 10px
+    :background white 
+    // :-moz-box-shadow 0 4px 10px #888
+    // :-webkit-box-shadow 0 4px 10px #888
+    // :box-shadow 0 4px 10px #888
+    +clearfix
+    .image-display
+      :float left
+      :width 500px
+      :height 480px
+      :background #eee
+    .image-info
+      :float right
+      :width 300px 
+    .cancel         
+      :position absolute
+      :top -4px
+      :left -4px  
+      :display block  
+      :height 24px
+      :width 24px
+      :background red  
+      :text-indent -10000px

@@ -19,28 +19,32 @@ describe Asset do
     
     it "should require a title" do
       Asset.new(:title => '', :artist_id => @artist.id).should_not be_valid
+    end
+    
+    it "should set the title automatically" do
+      asset = Asset.new(:artist_id => @artist.id, :file => @file)
+      asset.valid?
+      asset.title.should == '830px-Tieboardingcraft'
     end  
     
     it "should require an artist id" do
       Asset.new(:title => '', :artist_id => nil).should_not be_valid
-    end
+    end   
+    
   end
   
   describe 'valid Asset' do
       
     it 'should return api attributes' do
-      @asset.api_attributes.should == { :title => "Fred's Asset",
-                                        :tags => ['tag1', 'tag2'],
-                                        :tag_list =>'tag1, tag2',
-                                        :id => @asset.id.to_s, 
-                                        :class => 'asset',
-                                        :image_path => @asset.image_path, 
-                                        :thumb_path => @asset.thumb_path, 
-                                        :file_size => @asset.file_size, 
-                                        :artist_id => @asset.artist_id.to_s,
-                                        :artist_name => @asset.artist.name, 
-                                        :created_at => @asset.created_at.strftime('%S%M%H%d%m%Y')
-                                      }
+      pending
+      @asset.to_json.should == { :title => "Fred's Asset",
+                                 :file_name => @asset.file_name,
+                                 :tags => ['tag1', 'tag2'],
+                                 :tag_list =>'tag1, tag2',
+                                 :id => @asset.id.to_s, 
+                                 :artist_id => @asset.artist_id.to_s,
+                                 :created_at => @asset.created_at
+                               }.to_json
     end
     
     it 'should return a tag list' do
@@ -48,8 +52,8 @@ describe Asset do
     end
     
     it 'should set the tags' do
-      @asset.set_tags('tag3, tag4')
-      @asset.tag_list.should == 'tag3, tag4'
+      @asset.tag_list = 'tag3, tag4'
+      @asset.tags.should == ['tag3', 'tag4']
     end
   
   end
@@ -93,15 +97,15 @@ describe Asset do
     end
     
     it 'should have an image path' do
-      @asset.image_path.should == "/images/display/#{@asset.file.id}/#{@asset.file_name}"
+      @asset.image_path.should == "/images/display/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should have a thumbnail path' do
-      @asset.thumb_path.should == "/images/thumbnails/#{@asset.file.id}/#{@asset.file_name}"
+      @asset.thumb_path.should == "/images/thumbnails/#{@asset.id}/#{@asset.file_name}"
     end
     
-    it 'should have a thumbnail path' do
-      @asset.icon_path.should == "/images/icons/#{@asset.file.id}/#{@asset.file_name}"
+    it 'should have a icon path' do
+      @asset.icon_path.should == "/images/icons/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should respond_to render_image' do

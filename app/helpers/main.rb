@@ -1,13 +1,15 @@
 class Main
+  class UnhandledFormat < Sinatra::NotFound; end
+  
   helpers do
 
     #   def format_date(date, format = "%d/%m/%Y")
     #     date.strftime(format)
     #   end
 
-    # Set default mustache template
+    # Set default mustache partials
     def mustache(template, options = {}, locals = {})
-      options[:layout] = :'layouts/application' unless options.include?(:layout)    
+      options[:layout] = false unless options.include?(:layout)    
       super(template, options, locals)
     end
     
@@ -17,16 +19,17 @@ class Main
       super(template, options, locals)
     end
     
-    # Mustache partials
-    def partial(template, options = {}, locals = {})
-      options[:layout] = false  
-      mustache(template, options, locals)
+    # Set admin haml template
+    def admin_haml(template, options = {}, locals = {})
+      options[:layout] = :'layouts/admin' unless options.include?(:layout)    
+      haml(template, options, locals)
     end
     
-    # def haml_partial(template, options = {}, locals = {})
-    #   options[:layout] = false
-    #   haml(template, options, locals)
-    # end
+    # Haml partials
+    def partial(template, options = {}, locals = {})
+      options[:layout] = false  
+      haml(template, options, locals)
+    end
 
     def cache_request(timeout=600)
       # unless RACK_ENV == 'development'
@@ -35,7 +38,6 @@ class Main
     end
     
     # Embeds the mustache templates in a script tag, with the correct id
-    # The actual rendering is done using a partial
     def show_template(*sources)
       sources.map do |source|
         template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
@@ -56,15 +58,19 @@ class Main
       @content && @content[key]
     end
     
+    # Provides rails style respond_to blocks for js and json, etc
+    attr_accessor :format
+    
     def respond_to(&block)
-      class << (mappings = {} )
-        def method_missing(name, &resp)
-          self[name.to_s] = Proc.new(&resp)
-        end
+      wants = {}
+      def wants.method_missing(type, *args, &handler)
+        self[type] = handler
       end
-      yield mappings
-      handler = mappings[params['format']] if params['format']
-      handler.call if handler
+      block.call(wants)
+      raise UnhandledFormat if wants[format].nil?
+
+      handler = wants[format]
+      handler.call
     end
     
   end

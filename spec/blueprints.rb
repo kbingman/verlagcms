@@ -5,6 +5,7 @@ end
 
 Asset.blueprint do
   title "Fred's Asset"
-  tags ['tag1','tag2']
+  tags ['tag1','tag2']  
+  file File.open root_path('/spec/data/830px-Tieboardingcraft.jpg')
 end
 

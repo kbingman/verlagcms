@@ -2,8 +2,9 @@ source "http://rubygems.org"
 
 gem 'rack'
 gem 'sinatra', '1.2'  
+gem 'sinatra-namespace', :git => 'https://github.com/rkh/sinatra-namespace.git'
 gem 'thin' 
-gem 'monk-glue', :git => 'git://github.com/monkrb/glue.git'
+gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git'
 gem 'rack-cache'
 
 # Mongomapper and plugins

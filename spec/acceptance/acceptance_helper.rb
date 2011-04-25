@@ -8,8 +8,8 @@ require 'capybara/dsl'
 require 'capybara/zombie'
 require 'faker'
 
-# require 'machinist/mongo_mapper'
-# require File.join(File.dirname(__FILE__), '../blueprints.rb')
+require 'machinist/mongo_mapper'
+require File.join(File.dirname(__FILE__), '../blueprints.rb')
 
 RSpec.configuration.include Capybara, :type => :acceptance
 

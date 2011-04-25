@@ -6,7 +6,8 @@ require "bundler/setup"
 Bundler.setup
 
 require 'monk/glue'
-# require 'sinatra-respond_to'
+require 'sinatra/base'
+require 'sinatra/namespace'
 
 require 'mongo_mapper'
 require 'joint'
@@ -15,19 +16,23 @@ require 'rack/cache'
 require 'mustache/sinatra'
 require 'rack/cache'
 
+require 'lib/rack/raw_upload'
+
 class Main < Monk::Glue
-  set :app_file, __FILE__ 
-  set :haml, { :format => :html5, :ugly => true }
+  register Sinatra::Namespace
   
-  # Sinatra::Application.register Sinatra::RespondTo
+  set :app_file, __FILE__ 
+  set :haml, { :format => :html5, :ugly => RACK_ENV == 'development' ? false : true }
+  
+  set :default_content_type, :html
+  set :assume_xhr_is_js, false
 
-  # set :layout => root_path('app/views/layouts/application')
-
-  use Rack::Cache
+  use Rack::Cache,
+    :verbose => true
   use Rack::Session::Cookie  
+  use Rack::RawUpload
   register Mustache::Sinatra
-
-  require root_path('app/views/layouts/application')
+  
   set :mustache, {
     :views     => root_path('app/views'),
     :templates => root_path('app/views'),
@@ -38,25 +43,13 @@ end
 # Connect to mongodb
 if ENV['MONGOHQ_URL']
   puts "Running on MongoHQ" 
-  MongoMapper.config = {RACK_ENV => {'uri' => ENV['MONGOHQ_URL']}}
+  MongoMapper.config = { RACK_ENV => {'uri' => ENV['MONGOHQ_URL']} }
   MongoMapper.connect(RACK_ENV)
 else
   puts "Using local database" 
   MongoMapper.database = monk_settings(:mongo)[:database]
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil, :logger => logger)
 end
-
-# Sinatra no longer allows .haml static files, so we have to trick it
-# module Sinatra
-#   module Helpers
-#     def content_type(type, params={})
-#       mime_type = (type == '.mustache' || type =='.otf' || type =='.template') ? 'text/plain' : mime_type(type)
-#       fail "Unknown media type: %p" % type if mime_type.nil?
-#       params[:charset] ||= params.delete('charset') || settings.default_encoding
-#       response['Content-Type'] = "#{mime_type};#{params.map { |kv| kv.join('=') }.join(', ')}"
-#     end
-#   end
-# end
 
 # This needs to be required first or Artist blows up...
 require root_path('app/models/asset.rb')

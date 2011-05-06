@@ -23,20 +23,21 @@ describe "routes/site" do
       get '/fibble/bits'
       last_response.status.should == 404
     end
-  end
+  end   
   
+  # TODO move this to its own spec
   context 'formats' do
     it 'should respond to html' do
       get '/search'
       last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
     end
-    
+  
     it 'should respond to json' do
       get '/search/naked.json'
       last_response.headers['Content-Type'].should == 'application/json'
     end
-  end
-  
+  end  
+    
   context 'mustache templates' do
     it 'should show the asset template' do
       get '/search' 

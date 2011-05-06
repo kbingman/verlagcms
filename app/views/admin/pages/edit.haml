@@ -1,0 +1,21 @@
+- content_for :head do
+  = show_template('admin/page_parts/new_part', 'admin/page_parts/edit_parts')
+
+
+%h1 Edit Page  
+
+%a{ :href => "#/pages/#{@page.id}/parts/new" } Add Part
+
+%form{ :action => "/pages/#{@page.id}", :method => 'post' }  
+  .hidden
+    %input{ :type => 'hidden', :name => '_method', :value => 'put' }
+  .field
+    %label{ :for => 'page_title' } Title
+    %input{ :type => 'text', :id => 'page_title', :name => 'page[title]', :class => 'textfield', :value => @page.title } 
+  #edit-parts-container
+    = mustache :'admin/page_parts/edit_parts' 
+  .buttons
+    %input{ :type => 'submit', :id => 'page_save', :class => 'button', :value => 'Save' }   
+    
+#new-part-container
+

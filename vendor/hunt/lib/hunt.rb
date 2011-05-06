@@ -22,9 +22,9 @@ module Hunt
       where('searches.default' => Util.to_stemmed_words(term))
     end     
     
-    def search_all(term)
-      where('searches.default' => {'$all' => Util.to_stemmed_words(term) })
-    end
+    # def search_all(term)
+    #   where('searches.default' => {'$all' => Util.to_stemmed_words(term) })
+    # end
   end
 
   module InstanceMethods

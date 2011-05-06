@@ -23,23 +23,31 @@
 #modal 
   #edit-asset-container, #asset-display-container, #remove-asset-container  
     :position relative
-    :width 900px     
-    :height 480px   
+    :width 640px      
+    :height 640px   
     :margin 0 auto
     :padding 10px
     :background white 
+    :text-align center   
+    :overflow hidden
     // :-moz-box-shadow 0 4px 10px #888
     // :-webkit-box-shadow 0 4px 10px #888
     // :box-shadow 0 4px 10px #888
     +clearfix
-    .image-display
-      :float left
-      :width 500px
-      :height 480px
-      :background #eee
-    .image-info
-      :float right
-      :width 300px 
+    //.image-display
+    //   :float left
+    //   :width 500px
+    //   :height 480px
+    //   :background #eee
+    .image-info  
+      :position absolute 
+      :bottom 0
+      :left 0  
+      :width 616px 
+      :padding 12px
+      :background rgba(0,0,0,0.5)
+      //  :float right
+      //  :width 300px 
     .cancel         
       :position absolute
       :top -4px

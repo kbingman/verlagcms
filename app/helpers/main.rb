@@ -1,11 +1,10 @@
 class Main
-  class UnhandledFormat < Sinatra::NotFound; end
   
   helpers do
 
-    #   def format_date(date, format = "%d/%m/%Y")
-    #     date.strftime(format)
-    #   end
+    def format_date(date, format = "%d/%m/%Y")
+      date.strftime(format)
+    end
 
     # Set default mustache partials
     def mustache(template, options = {}, locals = {})
@@ -30,7 +29,8 @@ class Main
       options[:layout] = false  
       haml(template, options, locals)
     end
-
+            
+    # Page Caching using Rack Cache or Varnish
     def cache_request(timeout=600)
       # unless RACK_ENV == 'development'
         response['Cache-Control'] = "max-age=#{timeout}, public" 
@@ -56,22 +56,7 @@ class Main
     
     def content(key)
       @content && @content[key]
-    end
-    
-    # Provides rails style respond_to blocks for js and json, etc
-    attr_accessor :format
-    
-    def respond_to(&block)
-      wants = {}
-      def wants.method_missing(type, *args, &handler)
-        self[type] = handler
-      end
-      block.call(wants)
-      raise UnhandledFormat if wants[format].nil?
-
-      handler = wants[format]
-      handler.call
-    end
+    end       
     
   end
 end

@@ -3,14 +3,40 @@ $(document).ready(function () {
   App.run();
   // AjaxUploader.initialize('#ajax_uploader');
   $('#ajax_uploader').attr('multiple','multiple');
-  $('.js-only').show();
+  $('.js-only').show();  
+  
+  // TODO move this to the utilities file
+  jQuery('body').keydown(function(e){    
+    switch (e.keyCode) {
+      case 37:
+        $('a.previous').click();
+        break;
+      case 39:
+        $('a.next').click();
+        break; 
+      case 87:
+        $('a.cancel').click();
+        break; 
+    }
+  });
+                    
+  // Adds the '#' tag to all links if the history object is not available
+  if (!Modernizr.history) { 
+    jQuery('a').live('click', function(e){
+      e.preventDefault();
+      document.location.hash = $(this).attr('href');
+    });  
+    // Temp. The zombie tests are failing with the history object...  
+    var search_form = jQuery('form#search-form');   
+    search_form.attr('action', '#' + search_form.attr('action'));   
+  }            
+
 });
 
 App = Sammy(function (app) {
 
-  this.use(Sammy.title);
-  this.use(Sammy.NestedParams);
-  
+  this.use(Sammy.Title);
+  // 
   // Helper Methods
   this.helpers({
   

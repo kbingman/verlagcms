@@ -104,7 +104,7 @@ class Asset
   private
     def resize(image, width, height)
       # Doesn't resize images if they are smaller than the given sizes
-      image.resize("#{width}x#{height}") if ((image[:width] >= width) || (image[:height] >= height))
+      image.resize("#{width}x#{height}") # if ((image[:width] >= width) || (image[:height] >= height))
       return image
     end
     

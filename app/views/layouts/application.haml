@@ -6,7 +6,8 @@
     - if RACK_ENV == 'production'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else
-      %script{ :src => '/javascripts/vendor/jquery-1.5.2.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/jquery-1.5.2.min.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/modernizr-1.7.min.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -26,7 +27,8 @@
         = partial :'layouts/_search', :locals => { :search_path => '/search' }
 
     #content
-      .container
+      .container 
+
         = yield
 
       

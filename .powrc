@@ -1,1 +1,2 @@
 export RACK_ENV="development"
+export DOMAINS="dev,test"

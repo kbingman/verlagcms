@@ -1,7 +1,8 @@
 class Main  
   module Search
 
-    get '' do
+    get '' do    
+      cache_request(600) # Ten minute cache 
       @query = params[:query] ? params[:query].split('.')[0] : ''
       @assets = Asset.search_all(@query).all :order => 'created_at DESC'
       respond_to do |format|
@@ -10,7 +11,8 @@ class Main
       end
     end
      
-    get '/:id' do
+    get '/:id' do 
+      cache_request(600) # Ten minute cache 
       @query = params[:query] ? params[:query].split('.')[0] : ''
       @asset = Asset.find params['id']
     

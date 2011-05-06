@@ -3,7 +3,7 @@ class Main
     
     # Asset Index
     # -------------------------------------------
-    get '' do
+    get '/?' do
       @query = params[:query] ? params[:query].split('.')[0] : ''
       @assets = params[:query] ? Asset.search_all(@query).all(:order => 'created_at DESC') : Asset.all(:order => 'created_at DESC') 
       
@@ -16,10 +16,9 @@ class Main
     # Create Asset
     # -------------------------------------------
     post '' do
-      asset = Asset.new(:file => params['file'][:tempfile], :file_name => params['file'][:filename])
-      asset.file_name = params[:file][:filename]
+      asset = Asset.new(:file => params[:file][:tempfile])
+      asset.file_name = params[:file][:filename]  
       asset.save
-      logger.info "Asset: #{asset.to_json.inspect}"
       respond_to do |format|
         format.html { redirect('/assets') }
         format.json { asset.to_json }
@@ -28,7 +27,7 @@ class Main
     
     # Show Asset
     # -------------------------------------------
-    get '/:id' do
+    get '/:id/?' do
       @asset = Asset.find params['id']
       respond_to do |format|
         format.html { redirect('/assets') }
@@ -38,7 +37,7 @@ class Main
     
     # Edit Asset
     # -------------------------------------------
-    get '/:id/edit' do
+    get '/:id/edit/?' do
       @asset = Asset.find params['id']
       @query = params[:query] ? params[:query].split('.')[0] : ''
       admin_haml :'/admin/assets/edit'

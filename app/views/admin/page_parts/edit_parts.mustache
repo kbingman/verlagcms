@@ -1,0 +1,9 @@
+{{#parts}}   
+  <label for='part-{{id}}-content'>{{name}}</label>
+  <div class="hidden">                  
+    <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
+  </div>
+  <div class="field">                     
+    <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
+  </div>
+{{/parts}}

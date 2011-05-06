@@ -2,12 +2,13 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Home Page: " do
 
-  context 'An anonymous user, JS' do
+  context 'An anonymous user, with JS,' do
     
     before(:all) do
       @artist = Artist.make(:name => 'Egon')
       @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-      @asset = Asset.make(:artist => @artist, :file => @file, :tag_list => 'TIE')
+      @asset = Asset.make(:artist => @artist, :file => @file, :tags => ['TIE']) 
+      @asset.save
     end
     
     before(:each) do
@@ -20,22 +21,54 @@ feature "Home Page: " do
     end
   
     scenario "views the home page" do
-      visit '/'
-      # page.should have_content('Start')
+      visit '/#/'
+      page.should have_content('Page')
       page.should have_css('h1')
       page.should have_css('#asset-list-container')
+    end  
+    
+    scenario "enters a search term" do
+      visit '/'    
+      fill_in 'search-query', :with => "TIE"
+      click_button 'Search'      
+      
+      page.should have_css('h1')
+      page.should have_content('TIE')  
+      
+      page.should have_css('#assets') 
+      page.should have_css("li#asset-#{@asset.id}")
+    end  
+    
+    scenario "views an image" do  
+      visit '/'
+      fill_in 'search-query', :with => "TIE"
+      click_button 'Search'      
+
+      click_link @asset.title  
+      page.should have_css('#modal') 
+      page.should have_css("#image-display-#{@asset.id}")
+      page.should have_css("#image-info-#{@asset.id}")
+    end 
+    
+    scenario "closes an image" do  
+      visit '/'
+      fill_in 'search-query', :with => "TIE"
+      click_button 'Search'      
+
+      click_link @asset.title  
+      page.should have_css('#modal') 
+      page.should have_css("#close-image-#{@asset.id}")
+      
+      # click_link "close image"
+      # page.should_not have_css('#modal')  
     end
     
-    scenario "views the home page" do
-      visit '/'
-      page.should have_css('#content')
-      fill_in 'search-query', :with => "TIE"
-      click_button 'Search'
+    scenario "returns to a saved search" do  
+      visit '/' 
+      visit '/#/search?query=TIE'
       
-
-      # page.should have_css('#assets')
+      page.should have_css('#assets')
       page.should have_content('TIE')
-      # page.should have_css('#assets')
     end
     
   end

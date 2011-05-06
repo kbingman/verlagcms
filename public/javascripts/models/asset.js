@@ -55,12 +55,12 @@ var Asset = Model('asset', function() {
       var prevAsset = assets[assetIndex - 1] ? Asset.all()[assetIndex - 1].toMustache(query) : null; 
       
       // Image Preloaders
-      jQuery('<img />')[0].src = '/images/display/' + assetAttr.id + '/' + assetAttr.file_name;
+      jQuery('<img />')[0].src = '/images/large/' + assetAttr.id + '/' + assetAttr.file_name;
       if(nextAsset){
-        jQuery('<img />')[0].src =  '/images/display/' + nextAsset.id + '/' + nextAsset.file_name;
+        jQuery('<img />')[0].src =  '/images/large/' + nextAsset.id + '/' + nextAsset.file_name;
       }
       if(prevAsset){
-        jQuery('<img />')[0].src =  '/images/display/' + prevAsset.id + '/' + prevAsset.file_name;
+        jQuery('<img />')[0].src =  '/images/large/' + prevAsset.id + '/' + prevAsset.file_name;
       }
       
       return {

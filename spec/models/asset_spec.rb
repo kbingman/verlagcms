@@ -33,18 +33,22 @@ describe Asset do
     
   end
   
-  describe 'valid Asset' do
+  describe 'valid Asset' do   
+    
+    before(:all) do
+      @json = JSON.parse({ 
+        :title => "Fred's Asset",
+        :tags => ['tag1', 'tag2'],
+        :tag_list =>'tag1, tag2', 
+        :file_name => @asset.file_name,
+        :id => @asset.id.to_s, 
+        :artist_id => @asset.artist_id.to_s,
+        :created_at => @asset.created_at
+      }.to_json)
+    end
       
     it 'should return api attributes' do
-      pending
-      @asset.to_json.should == { :title => "Fred's Asset",
-                                 :file_name => @asset.file_name,
-                                 :tags => ['tag1', 'tag2'],
-                                 :tag_list =>'tag1, tag2',
-                                 :id => @asset.id.to_s, 
-                                 :artist_id => @asset.artist_id.to_s,
-                                 :created_at => @asset.created_at
-                               }.to_json
+      JSON.parse(@asset.to_json).should == @json
     end
     
     it 'should return a tag list' do

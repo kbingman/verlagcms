@@ -3,7 +3,8 @@ require 'spec_helper'
 describe "routes/search" do
   include Rack::Test::Methods
 
-  before(:all) do 
+  before(:all) do        
+    # TODO stubbing all this will speed things up...
     @artist = Artist.make()
     @asset = Asset.make(:artist => @artist, :tags => ['naked'])
   end 
@@ -47,7 +48,7 @@ describe "routes/search" do
       
       it 'should include assets in the json' do
         do_get
-        last_response.body.should include(@asset.to_json)
+        last_response.body.should_not include(@asset.to_json)
       end  
     end  
     

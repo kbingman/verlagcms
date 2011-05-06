@@ -94,3 +94,25 @@ RemoveAssetView = View("remove-asset", {
   }
   
 });
+
+NewPartView = View("new-part", {
+
+  init: function () {
+    var self = this;
+
+    var reload = function(page) {
+      self.reload(page.attr());
+    }
+  }
+  
+});
+
+EditPartsView = View("edit-parts",{
+  init: function () {
+    var self = this;
+
+    var reload = function(page) {
+      self.reload(page.attr());
+    }
+  }
+})

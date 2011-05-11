@@ -5,11 +5,11 @@ class Main
     # -------------------------------------------
     get '/?' do
       # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
-      @page = Page.all_roots.first  
+      @root = Page.all_roots.first 
       
       respond_to do |format|
         format.html { admin_haml :'admin/pages/index' }
-        format.json { @pages.to_json }
+        format.json { @root.to_json }
       end
     end
     

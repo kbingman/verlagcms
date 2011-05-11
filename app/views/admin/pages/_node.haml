@@ -1,10 +1,9 @@
-- level = level || 1
-%tr{ :class => "node level_#{level}", :id => "page_#{page[:id]}" }
-  %td.title{ :style => "padding-left: #{0 + ((level - 1) * 24)}px;"}
-    %a{ :href => "/pages/#{page.id}/edit" }= page[:title]
+%tr{ :class => "node level_#{page.level}", :id => "page_#{page.id}" }
+  %td.title{ :style => "padding-left: #{page.padding}px;"}
+    %a{ :href => "/pages/#{page.id}/edit" }= page.title
   %td.modify
     links go here
     
 - if page_open?(page)
   - page.children.each do |child|
-    = partial :'admin/pages/_node', :locals => { :page => child, :level => level + 1 }
+    = partial :'admin/pages/_node', :locals => { :page => child }

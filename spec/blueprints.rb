@@ -10,7 +10,7 @@ Asset.blueprint do
 end   
 
 Page.blueprint do
-  title "Fred's Asset"
+  title "Fred's Page"
 end   
 
 PagePart.blueprint do

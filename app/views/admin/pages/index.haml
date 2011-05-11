@@ -1,5 +1,5 @@
 - content_for :head do
-  =# show_template('')
+  = show_template('admin/pages/node') 
   
 %table
   %thead
@@ -7,6 +7,4 @@
       %th.title Page
       %th.modify Modify
   %tbody
-    //- @pages.each do |page|
-    //  = partial :'admin/pages/_node', :locals => { :page => page }
-    = mustache :'admin/pages/node'   
+    = mustache :'admin/pages/nodes'   

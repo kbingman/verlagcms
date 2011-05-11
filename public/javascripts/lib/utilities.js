@@ -31,4 +31,40 @@ var Galerie = {
       });
     });
   }
+} 
+
+var Utilities = {        
+  
+  keyboard_nav: function(){
+    jQuery('body').keydown(function(e){    
+      switch (e.keyCode) {
+        // Left Arrow
+        case 37:
+          $('a.previous').click();
+          break;
+        // Right Arrow
+        case 39:
+          $('a.next').click();
+          break; 
+        // 'W' key
+        case 87:
+          $('a.cancel').click();
+          break; 
+      }
+    });
+  }, 
+  
+  // Adds the '#' tag to all links if the history object is not available   
+  // Temp. The zombie tests are failing with the history object...
+  check_browser_version: function(){
+    if (!Modernizr.history) {     
+      jQuery('a').live('click', function(e){
+        e.preventDefault();
+        document.location.hash = $(this).attr('href');
+      });
+      var search_form = jQuery('form#search-form');
+      search_form.attr('action', '#' + search_form.attr('action'));
+    }
+  }   
+  
 }

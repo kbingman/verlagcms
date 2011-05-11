@@ -150,7 +150,18 @@ App = Sammy(function (app) {
   // Page routes
   // ---------------------------------------------  
   
+  this.get('/pages', function(request){   
+    jQuery.ajax({
+      url: '/pages.json',
+      type: 'get',
+      success: function(results){
+        alert(JSON.stringify(results));
+      }
+    });
+  });
+  
   this.get('/pages/:page_id/edit', function(request){ 
+    Galerie.close();
     var page_id = request.params['page_id'];  
     jQuery('#new-part-container').html('');
     PagePart.load(page_id, function(){   
@@ -161,7 +172,11 @@ App = Sammy(function (app) {
   
   this.get('/pages/:page_id/parts/new', function(request){   
     // TODO use a model for this
-    var page_id = request.params['page_id'];  
+    var page_id = request.params['page_id']; 
+    var displayContents = $('<div />').attr('id', 'new-part-container');
+    if($('#modal').length == 0){
+      Galerie.open(displayContents);
+    } 
     
     var newPart = new NewPartView({page: { 'id': page_id } });
     newPart.render();  

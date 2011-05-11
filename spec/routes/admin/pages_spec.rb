@@ -46,9 +46,8 @@ describe "routes/assets" do
       end
     
       it 'should include pages in the json' do  
-        pending
         do_get
-        last_response.body.should include(@page.to_json)
+        last_response.body.should include(@page.title)
       end  
     end
     

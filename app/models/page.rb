@@ -4,6 +4,7 @@ class Page
   
   key :title, String 
   key :description, String 
+  key :level, Integer
   
   many :page_parts, :class_name => 'PagePart', :dependent => :destroy
   
@@ -34,6 +35,21 @@ class Page
   #   end
   #   
   #   hash
-  # end
+  # end  
+  
+  def padding
+    self.level * 24
+  end
+  
+  def as_json(options)
+    super(:methods => [:padding, :children])
+  end
+  
+  protected
+    
+    before_save :set_level
+    def set_level
+      self.level = self.root? ? 0 : self.parent.level + 1
+    end
   
 end

@@ -5,11 +5,16 @@ class Main
     # -------------------------------------------
     get '/?' do
       # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
-      @root = Page.all_roots.first 
-      
+
       respond_to do |format|
-        format.html { admin_haml :'admin/pages/index' }
-        format.json { @root.to_json }
+        format.html do  
+          @root = Page.all_roots.first 
+          admin_haml :'admin/pages/index'
+        end 
+        format.json do 
+          pages = Page.all
+          pages.to_json  
+        end
       end
     end
     
@@ -46,16 +51,20 @@ class Main
     put '/:id' do
       page = Page.find params['id']  
       parts = params['page']['parts']
-        
-      parts.each do |attr|
-        part = page.page_parts.find attr['id'] 
-        part.update_attributes(attr)
-      end          
+              
       if page.update_attributes(params['page'])
+        if parts  
+          parts.each do |attr|
+            part = page.page_parts.find attr['id'] 
+            part.update_attributes(attr)
+          end 
+        end
         respond_to do |format|
           format.html { redirect('/pages') }
           format.json { page.to_json }
-        end
+        end 
+      else
+        # error handling
       end
     end     
     

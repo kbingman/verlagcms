@@ -65,15 +65,6 @@ App = Sammy(function (app) {
 
   });
   
-  // this.get('/:page', function (req) {
-  //   var page = req.params['page'];
-  //   $('h1').text('Page ' + page);
-  //   $('#search-query').attr('value', '');
-  //   // req.setTitle('Page: ' + page);
-  //   $('#asset-list-container').html('');
-  //   $('#asset-display-container').html();
-  // });
-  
   app.get('/', function (req) {
     // $('h1').text('Start Page');
   });

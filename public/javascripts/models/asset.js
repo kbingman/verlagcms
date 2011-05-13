@@ -23,7 +23,8 @@ var Asset = Model('asset', function() {
           if(callback['success']){ callback['success'].call(this); }
         }
       });
-    }, 
+    },  
+    
     deleteRemote: function(callback){
       var url = '/assets/' + this.id() + '.json';
       var self = this;
@@ -37,14 +38,16 @@ var Asset = Model('asset', function() {
           if(callback['success']){ callback['success'].call(this); }    
         }
       });
-    },
+    },  
+    
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
       var asset = this; 
       var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';
       asset.merge({query_path: query_path, query: query}); 
       return asset.attr();
-    },      
+    },  
+        
     // Returns the current asset as json, plus both neighbors, then preloads the images
     // Not sure if they should be preloaded here, rather after
     toMustacheWithNeighbors: function(query){
@@ -69,7 +72,8 @@ var Asset = Model('asset', function() {
         'previous': prevAsset
       }
     }
-  }),
+  }), 
+  
   this.extend({
     // returns a json array of all assets, including the query and query_path
     toMustache: function(query) {

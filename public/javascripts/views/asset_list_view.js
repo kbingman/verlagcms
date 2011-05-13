@@ -1,4 +1,4 @@
-AssetListView = View("asset-list", {
+AssetListView = View('asset-list', {
 
   init: function () {
     var self = this;
@@ -10,7 +10,7 @@ AssetListView = View("asset-list", {
   
 });
 
-AssetIndexView = View("asset-index", {
+AssetIndexView = View('asset-index', {
 
   init: function () {
     var self = this;
@@ -25,7 +25,7 @@ AssetIndexView = View("asset-index", {
   
 });
 
-AssetDisplayView = View("asset-display", {
+AssetDisplayView = View('asset-display', {
 
   init: function () {
     var self = this;
@@ -49,7 +49,7 @@ AssetDisplayView = View("asset-display", {
   
 });
 
-EditAssetView = View("edit-asset", {
+EditAssetView = View('edit-asset', {
 
   init: function () {
     var self = this;
@@ -72,7 +72,7 @@ EditAssetView = View("edit-asset", {
   
 });  
 
-RemoveAssetView = View("remove-asset", {
+RemoveAssetView = View('remove-asset', {
 
   init: function () {
     var self = this;
@@ -95,7 +95,7 @@ RemoveAssetView = View("remove-asset", {
   
 });
 
-NewPartView = View("new-part", {
+NewPartView = View('new-part', {
 
   init: function () {
     var self = this;
@@ -107,7 +107,7 @@ NewPartView = View("new-part", {
   
 });
 
-EditPartsView = View("edit-parts",{
+EditPartsView = View('edit-parts',{
   init: function () {
     var self = this;
 
@@ -115,4 +115,24 @@ EditPartsView = View("edit-parts",{
       self.reload(page.attr());
     }
   }
-})
+});
+
+NodeView = View('node',{
+  init: function () {
+    var self = this;
+
+    var reload = function(page) {
+      self.reload(page.attr());
+    }
+  }
+});
+
+TableView = View('table',{
+  init: function () {
+    var self = this;
+
+    var reload = function(page) {
+      self.reload(page.attr());
+    }
+  }
+});

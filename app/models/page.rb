@@ -22,28 +22,24 @@ class Page
   
   def root?
     self.parent_id.nil? ? true : false
-  end
-  
-  # def api_attributes
-  #   hash = {}
-  #   hash[:id] = self.id.to_s
-  #   hash[:class] = self.class.to_s.downcase
-  #   hash[:children] = self.children.collect{ |c| c.api_attributes }
-  #   hash[:created_at] = self.created_at.strftime('%Y%m%d%H%M%S')
-  #   [:title].each do |attr|
-  #     hash[attr.to_sym] = self.send(attr)
-  #   end
-  #   
-  #   hash
-  # end  
+  end 
   
   def padding
     self.level * 24
+  end  
+  
+  def descendants #(*ids)   
+    results = []
+    children = self.children #.all(:id => ids)
+    children.each do |c|
+      results << c.as_json({})
+    end
+    results
   end
   
   def as_json(options)
-    super(:methods => [:padding, :children])
-  end
+    super(:methods => [:padding])
+  end  
   
   protected
     

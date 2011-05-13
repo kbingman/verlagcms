@@ -1,10 +1,6 @@
 - content_for :head do
-  = show_template('admin/pages/node') 
+  = show_template('admin/pages/node', 'admin/pages/table') 
   
-%table
-  %thead
-    %tr
-      %th.title Page
-      %th.modify Modify
-  %tbody
-    = mustache :'admin/pages/nodes'   
+
+#pages 
+  = mustache :'admin/pages/table'   

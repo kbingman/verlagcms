@@ -56,7 +56,9 @@ class Main
     
     def content(key)
       @content && @content[key]
-    end       
+    end  
+    
+    
     
   end
 end

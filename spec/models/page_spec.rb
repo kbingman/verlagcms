@@ -14,12 +14,20 @@ describe Page do
   
   context 'valid page' do
     before(:all) do
-      @root = Page.make 
-      @child = Page.make(:parent_id => @root.id)
+      @root = Page.make(:title => 'root') 
+      @child = Page.make(:title => 'child', :parent_id => @root.id)
     end
     
     after(:all) do
       teardown
+    end   
+    
+    it 'should set the slug for the root page' do
+       @root.slug.should == 'root'
+    end    
+    
+    it 'should have a url' do
+      @child.path.should == '/root/child'  
     end
     
     it 'should set the level for the root page' do

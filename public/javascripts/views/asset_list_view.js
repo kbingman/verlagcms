@@ -107,15 +107,13 @@ NewPartView = View('new-part', {
   
 });
 
-EditPartsView = View('edit-parts',{
-  init: function () {
-    var self = this;
+RemovePartView = View('remove-part',{}); 
 
-    var reload = function(page) {
-      self.reload(page.attr());
-    }
-  }
-});
+RemovePageView = View('remove-page',{});  
+
+NewPageView = View('new-page',{}); 
+
+SearchFormView = View('search-form',{});
 
 NodeView = View('node',{
   init: function () {
@@ -135,4 +133,8 @@ TableView = View('table',{
       self.reload(page.attr());
     }
   }
+});  
+
+FormView = View('form',{
+  
 });

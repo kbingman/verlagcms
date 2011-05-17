@@ -20,7 +20,10 @@ class Asset
   # belongs_to :story, :foreign_key => :story_id
   
   key :artist_id, ObjectId
-  belongs_to :artist, :foreign_key => :artist_id
+  belongs_to :artist, :foreign_key => :artist_id  
+  
+  key :page_id, ObjectId
+  belongs_to :page, :foreign_key => :artist_id
   
   timestamps!
   

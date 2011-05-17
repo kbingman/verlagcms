@@ -14,7 +14,7 @@ require 'machinist/mongo_mapper'
 require File.join(File.dirname(__FILE__), 'blueprints.rb')
 
 
-Rspec.configure do |conf|
+RSpec.configure do |conf|
   
   include Rack::Test::Methods
   include RSpec::Expectations 

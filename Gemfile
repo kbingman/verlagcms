@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem 'rack'
-gem 'sinatra', '1.2.3'  
+gem 'sinatra', '1.2.6'  
 gem 'sinatra-namespace', :git => 'https://github.com/rkh/sinatra-namespace.git'
 gem 'thin' 
 gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git'
@@ -36,7 +36,7 @@ group :test do
   gem 'rspec', '>= 2.5.0'
   gem 'steak', '>= 1.0.0'  
   gem 'capybara' #, :git => 'https://github.com/jnicklas/capybara.git'
-  gem 'capybara-zombie', :git => 'https://github.com/plataformatec/capybara-zombie.git'
+  gem 'capybara-zombie', :path => 'vendor/capybara-zombie' #:git => 'https://github.com/plataformatec/capybara-zombie.git'
   gem 'machinist_mongo', :require => 'machinist/mongo_mapper'
   gem 'faker'
   # gem 'jasmine'

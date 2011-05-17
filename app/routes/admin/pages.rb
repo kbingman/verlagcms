@@ -20,12 +20,14 @@ class Main
     
     # Create page
     # -------------------------------------------
-    post '' do
-      page = Page.new(:file => params[:page])
-      page.save
-      respond_to do |format|
-        format.html { redirect('/pages') }
-        format.json { page.to_json }
+    post '' do    
+      page = Page.new(params[:page]) 
+ 
+      if page.save
+        respond_to do |format|
+          format.html { redirect('/pages') }
+          format.json { page.to_json }
+        end 
       end
     end
     
@@ -53,12 +55,6 @@ class Main
       parts = params['page']['parts']
               
       if page.update_attributes(params['page'])
-        if parts  
-          parts.each do |attr|
-            part = page.page_parts.find attr['id'] 
-            part.update_attributes(attr)
-          end 
-        end
         respond_to do |format|
           format.html { redirect('/pages') }
           format.json { page.to_json }

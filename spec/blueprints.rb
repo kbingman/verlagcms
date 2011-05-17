@@ -13,7 +13,7 @@ Page.blueprint do
   title "Fred's Page"
 end   
 
-PagePart.blueprint do
+Part.blueprint do
   name "body"
 end
 

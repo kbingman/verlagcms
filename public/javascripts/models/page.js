@@ -7,7 +7,37 @@ var Page = Model('page', function() {
     children: function(){ 
       var children = [];
       return Page.find_all_by_parent_id(this.id())
-    }   
+    },  
+    
+    parts: function(){ 
+      var self = this;
+      var parts = self.attr('parts'); 
+      var length = parts.length;                                 
+      
+      for (var i=0, l=length; i<l; ++i ){
+        var part_data = parts[i];
+        var part = new Part({ id: part_data.id });  
+        part.merge(part_data);
+        Part.add(part);
+      } 
+      return Part;
+    },
+    
+    deleteRemote: function(callback){
+      var self = this;
+      var url = '/pages/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'DELETE',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          Page.remove(self);    
+          callback.call(this);    
+        }
+      });
+    }  
     
   }), 
   
@@ -41,7 +71,6 @@ var Page = Model('page', function() {
     },
     
     create: function(attributes, callback){
-      alert(JSON.stringify(attributes));
       var url = '/pages.json';
       jQuery.ajax({
         type: 'post',

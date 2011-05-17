@@ -14,7 +14,7 @@
     %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }
     %script{ :src => '/javascripts/vendor/handlebars.js', :type => 'text/javascript', :charset => 'utf-8' }
     %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' } 
-    %script{ :src => '/javascripts/models/page_part.js', :type => 'text/javascript', :charset => 'utf-8' } 
+    %script{ :src => '/javascripts/models/part.js', :type => 'text/javascript', :charset => 'utf-8' } 
     %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' } 
     %script{ :src => '/javascripts/lib/view.js', :type => 'text/javascript', :charset => 'utf-8' }
     %script{ :src => '/javascripts/views/asset_list_view.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -29,7 +29,7 @@
   %body
     #header
       .container
-        = partial :'layouts/_search', :locals => { :search_path => '/assets' }
+        =# partial :'layouts/_search', :locals => { :search_path => '/assets' }
 
     #content
       .container

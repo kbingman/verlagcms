@@ -51,6 +51,60 @@ describe "routes/assets" do
       end  
     end
     
+  end 
+  
+  context 'POST create' do
+        
+    context 'json' do   
+      def do_post
+        post '/pages.json', :page => { :title => 'The Page' }
+      end
+    
+      it 'should be successful' do
+        do_post
+        last_response.should be_ok
+      end
+      
+      it 'should set the content header to json' do
+        do_post
+        last_response.headers['Content-Type'].should == 'application/json'
+      end
+    
+      it 'should include pages in the json' do  
+        do_post
+        last_response.body.should include('The Page')
+      end  
+    end
+    
+  end   
+  
+  context 'DELETE destroy' do
+        
+    context 'json' do  
+      before(:each) do 
+        @page = Page.make
+      end
+       
+      def do_delete
+        delete "/pages/#{@page.id}.json"
+      end
+    
+      it 'should be successful' do
+        do_delete
+        last_response.should be_ok
+      end
+      
+      it 'should set the content header to json' do
+        do_delete
+        last_response.headers['Content-Type'].should == 'application/json'
+      end
+    
+      it 'should include pages in the json' do  
+        do_delete
+        last_response.body.should_not include(@page.title)
+      end  
+    end
+    
   end
   
 end

@@ -70,7 +70,7 @@ end
 # This needs to be required first or Artist blows up...
 require root_path('app/models/asset.rb')
 # This needs to be required first or Üage blows up...
-require root_path('app/models/page_part.rb')  
+require root_path('app/models/part.rb')  
 
 # Load all application files.
 Dir[root_path('app/**/*.rb')].each do |file|

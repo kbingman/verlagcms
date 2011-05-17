@@ -10,7 +10,8 @@ module Sinatra
 
         options = {}
         h, w, options = case params[:size]
-          # More named sizes can be added here  
+          # More named sizes can be added here 
+          # add to config 
           when 'large' then [640, 640, {}] 
           when 'display' then [640, 480, {}]
           when 'thumbnails' then [120, 120, {}]

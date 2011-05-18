@@ -3,19 +3,21 @@
 
 <p><a href="#/pages/{{id}}/parts/new">Add Part</a></p>
 
-<form action="/pages/{{id}}" method= "post">  
+<form action="/pages/{{id}}" method= "post" id="edit-page">  
   <div class="hidden">
     <input type="hidden" name="_method" value="put" /> 
-  </div>
+  </div> 
+  
   <div class="field">   
     <label for="page_title">Title</label>
     <input type="text" id="page_title" name="page[title]" value="{{title}}" class="textfield" />  
-  </div>
+  </div>  
+  
   <div id="page-parts">
     {{#parts}}  
       <div class="part tab">
         <label for='part-{{id}}-content'>{{name}}</label> 
-        <a href="/pages/{{page_id}}/parts/{{id}}/remove">Remove</a>
+        <a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a>
         <div class="hidden">                  
           <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
           <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
@@ -27,17 +29,19 @@
     {{/parts}}  
     <div id="page-assets">
       <h2>Assets</h2>  
-      <p><a href="/pages/{{id}}/assets/test">add asset</a></p> 
+      <p><a href="#/pages/{{id}}/search">add asset</a></p> 
       {{#assets}} 
-        <div class="tab asset">
+        <div class="asset">
           <a href="/assets/{{id}}/edit{{query_path}}">
             <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
-          </a>
+          </a> 
+          <br />
+          <a href="/pages/{{page_id}}/assets/{{id}}/test">Remove</a>  
         </div>
       {{/assets}}
     </div>
-
-  </div>
+  </div>      
+  
   <div class="buttons">
     <input type="submit" id="page_save" value="Save" class="button" />  
   </div>

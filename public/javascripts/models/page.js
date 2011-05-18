@@ -21,6 +21,22 @@ var Page = Model('page', function() {
         Part.add(part);
       } 
       return Part;
+    },  
+    
+    load: function(callback){
+      var self = this;
+      var url = '/pages/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          self.merge(results);;    
+          callback.call(this);    
+        }
+      });
     },
     
     deleteRemote: function(callback){

@@ -39,6 +39,51 @@ var Asset = Model('asset', function() {
         }
       });
     },  
+     
+    // TODO this could all be handled with a general update?
+    // Add to page
+    addToPage: function(page_id, callback){
+      var url = '/assets/' + this.id() + '.json';
+      var self = this;   
+      var page = Page.find(page_id)
+      jQuery.ajax({
+        type: 'PUT',
+        url: url,
+        // contentType: "application/json", 
+        data: { 'asset': { 'page_id': page_id } }, 
+        dataType: "json",                   
+        success: function(results) {
+          self.merge(results);  
+          // There might be a better way to do this without
+          // hitting the server... 
+          page.load(function(){
+            if(callback){ callback.call(this); }   
+          });            
+        }
+      });
+    }, 
+    
+    // Remove from page
+    removeFromPage: function(page_id, callback){
+      var url = '/assets/' + this.id() + '.json';
+      var self = this;   
+      var page = Page.find(page_id)
+      jQuery.ajax({
+        type: 'PUT',
+        url: url,
+        // contentType: "application/json", 
+        data: { 'asset': { 'page_id': null } }, 
+        dataType: "json",                   
+        success: function(results) {
+          self.merge(results);  
+          // There might be a better way to do this without
+          // hitting the server... 
+          page.load(function(){
+            if(callback){ callback.call(this); }   
+          });            
+        }
+      });
+    },
     
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
@@ -85,6 +130,28 @@ var Asset = Model('asset', function() {
         }), 
         query: query
       }
+    },  
+    
+    // This is hack 
+    // I do it like this, as I don't have any assets loaded...
+    removeFromPage: function(id, page_id, callback){
+      var url = '/assets/' + id + '.json';
+      var self = this;   
+      var page = Page.find(page_id)
+      jQuery.ajax({
+        type: 'PUT',
+        url: url,
+        // contentType: "application/json", 
+        data: { 'asset': { 'page_id': null } }, 
+        dataType: "json",                   
+        success: function(results) { 
+          // There might be a better way to do this without
+          // hitting the server... 
+          page.load(function(){
+            if(callback){ callback.call(this); }   
+          });            
+        }
+      });
     },
 
     searchRemote: function(query, callback) {

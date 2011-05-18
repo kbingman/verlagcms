@@ -8,6 +8,7 @@ class Part
   belongs_to :page, :foreign_key => :page_id
   
   validates_presence_of :name
+  validates_uniqueness_of :name
   
   # def page_id
   #   self.page.id

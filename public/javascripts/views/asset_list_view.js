@@ -19,7 +19,7 @@ AssetIndexView = View('asset-index', {
       self.reload(Asset.toMustache());
     }
 
-    Asset.bind('add', reload);
+    // Asset.bind('add', reload);
     Asset.bind('remove', reload);
   }
   
@@ -113,7 +113,18 @@ RemovePageView = View('remove-page',{});
 
 NewPageView = View('new-page',{}); 
 
-SearchFormView = View('search-form',{});
+SearchFormView = View('search-form',{}); 
+
+SearchResultsView = View('search-results',{
+  init: function () {
+    var self = this;
+
+    var reload = function(page) {
+      self.reload(page.attr());
+    } 
+  } 
+
+});
 
 NodeView = View('node',{
   init: function () {

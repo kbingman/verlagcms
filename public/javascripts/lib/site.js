@@ -40,7 +40,7 @@ App = Sammy(function (app) {
   
   this.get('/search/:id', function(req){         
     var query = req.params['query'] ? req.params['query'] : null;  
-    var displayContents = $('<div />').attr('id', 'asset-display-container');
+    var displayContents = $('<div />').attr({'id': 'asset-display-container', 'class': 'wide-modal'});
     if($('#modal').length == 0){
       Galerie.open(displayContents);
     }

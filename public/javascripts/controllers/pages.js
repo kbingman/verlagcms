@@ -60,8 +60,7 @@ Pages = Sammy(function (app) {
        Page.load(function(){});
        page = Page.find(page_id);  
     } else {                  
-      
-       page = Page.find(page_id);  
+       page = Page.find(page_id);         
        var editPage = new FormView({ page: page.attributes });   
        jQuery('#pages').html(editPage.html);   
     } 
@@ -101,23 +100,61 @@ Pages = Sammy(function (app) {
   
   // Page assets browser    
   // --------------------------------------------- 
-  this.get('/pages/:id/assets/test', function(request){   
+  this.get('#/pages/:id/search', function(request){   
     var page_id = request.params['id'];  
-    var page = Page.find(page_id); 
+    var page = Page.find(page_id);   
     
-    var displayContents = $('<div />').attr({'id': 'assets-index-container', 'class': 'small-modal'}); 
+    var searchForm = new SearchFormView({ page: page.attributes });    
     
     if($('#modal').length == 0){
-      Galerie.open(displayContents);
+      Galerie.open(searchForm.html);
+      jQuery('#modal #search-results').html('');
     } 
+  });  
+  
+  this.get('/pages/:id/results', function(request){
+    var page_id = request.params['id'];  
+    var page = Page.find(page_id);  
+    var query = request.params['query'];  
     
-    var searchForm = new SearchFormView();
-    jQuery('#modal').prepend(searchForm.html); 
+    Asset.searchAdmin(query, function(){  
+      Asset.each(function(asset){
+        asset.attr('current_page_id', page.id());
+        asset.save();
+      });  
+      var searchResults = new SearchResultsView(Asset.toMustache()); 
+      searchResults.render();
+      // jQuery('#modal #search-results').html(searchResults.html);
+    });
+  });   
+  
+  this.get('/pages/:page_id/assets/:id/add', function(request){   
+    var page_id = request.params['page_id'];  
+    var page = Page.find(page_id);  
+    var asset = Asset.find(request.params['id']);
+    asset.addToPage(page_id,function(){
+      var editPage = new FormView({ page: page.attributes });   
+      jQuery('#pages').html(editPage.html); 
+      // request.redirect('/pages/' + page_id + '/edit');  
+    });  
+  }); 
+      
+  this.get('/pages/:page_id/assets/:id/test', function(request){
+    var page_id = request.params['page_id'];  
+    var page = Page.find(page_id);  
+    var asset_id = request.params['id'];
+    var asset = Asset.find(asset_id);
+    Asset.removeFromPage(asset_id, page_id,function(){
+      var editPage = new FormView({ page: page.attributes });   
+      jQuery('#pages').html(editPage.html); 
+      request.redirect('/pages/' + page_id + '/edit');  
+    });  
   });
+
   
   // Page parts 
   // --------------------------------------------- 
-  this.get('/pages/:page_id/parts/new', function(request){   
+  this.get('#/pages/:page_id/parts/new', function(request){   
     // TODO use a model for this
     var page_id = request.params['page_id']; 
     var displayContents = $('<div />').attr({'id': 'new-part-container', 'class': 'small-modal'});
@@ -144,7 +181,7 @@ Pages = Sammy(function (app) {
     var page_id = request.params['page_id'];  
     var page = Page.find(page_id); 
     var part = page.parts().find(request.params['id']); 
-    var displayContents = $('<div />').attr('id', 'remove-part-container');
+    var displayContents = $('<div />').attr({'id': 'remove-part-container', 'class': 'small-modal'});
     if($('#modal').length == 0){
       Galerie.open(displayContents);
     } 

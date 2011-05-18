@@ -64,10 +64,14 @@ AjaxUploader = {
       // TODO This needs to move to the model
       var asset = new Asset({ id: results.id });
       asset.merge(results);
-      Asset.add(asset);     
-               
-      // var assetIndex = new AssetIndexView(Asset.toMustache());
-      // assetIndex.render();
+      Asset.add(asset);   
+      
+      // TODO this is clunky. fix it         
+      var assetIndex = new AssetIndexView(Asset.toMustache());
+      assetIndex.render(); 
+      
+      var searchResults = new SearchResultsView(Asset.toMustache());   
+      searchResults.render();
         
       AjaxUploader.processedFiles = AjaxUploader.processedFiles + 1;
       var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;

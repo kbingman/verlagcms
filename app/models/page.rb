@@ -57,7 +57,12 @@ class Page
     before_validation :set_slug
     def set_slug
       self.slug = sanitize(self.title) if self.slug.nil?
-    end     
+    end  
+    
+    before_save :set_part_page_id 
+    def set_part_page_id
+      self.parts.each{ |p| p.page_id = self.id }
+    end  
     
     def sanitize(text)
       text.gsub(/[^a-z0-9-]+/i, '-').downcase

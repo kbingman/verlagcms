@@ -92,7 +92,7 @@ class Asset
   end
   
   def as_json(options)
-    super(:only => [:id, :file_name, :created_at, :title, :artist_id, :tags], :methods => [:tag_list])
+    super(:only => [:id, :file_name, :created_at, :title, :artist_id, :page_id, :tags], :methods => [:tag_list])
   end
   
   def tag_list

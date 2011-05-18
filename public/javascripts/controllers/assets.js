@@ -11,7 +11,8 @@ Assets = Sammy(function (app) {
   this.use(Sammy.Title);
   this.use(Sammy.NestedParams);
   
-  // Helper Methods
+  // Helper Methods 
+  // ---------------------------------------------  
   this.helpers({
     formObserver: function(element){  
       jQuery(element).keyup(function() {
@@ -40,6 +41,8 @@ Assets = Sammy(function (app) {
     app.modal = false;
   });
   
+  // Create Asset
+  // ---------------------------------------------  
   this.post('/assets', function(req){
     var uploadForm = jQuery('form#new_asset');
       fileInput = uploadForm.find('input[type=file]'),
@@ -56,7 +59,8 @@ Assets = Sammy(function (app) {
     }
   });
   
-  // Edit Asset
+  // Edit Asset 
+  // ---------------------------------------------  
   this.get('/assets/:id/edit', function(req){
     var application = this;
     var query = req.params['query'] ? req.params['query'] : null;  
@@ -67,7 +71,7 @@ Assets = Sammy(function (app) {
     // sets a flag so the the search results are not reloaded
     app.modal = true;
     if(jQuery('#modal').length == 0){
-      Galerie.open(jQuery('<div />').attr('id', 'edit-asset-container'));
+      Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
     }
     
     var asset = Asset.find(req.params['id']); 
@@ -115,7 +119,7 @@ Assets = Sammy(function (app) {
     // sets a flag so the the search results are not reloaded
     app.modal = true; 
     Galerie.close();
-    Galerie.open(jQuery('<div />').attr('id', 'remove-asset-container'));  
+    Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'}));  
     var asset = Asset.find(req.params['id']);   
     if(asset){
       var removeAsset = new RemoveAssetView({ asset: asset.toMustache(query) }); 

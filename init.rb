@@ -13,8 +13,8 @@ require 'sinatra/namespace'
 require 'vendor/sinatra-basicauth/lib/sinatra/basic_auth'
 require 'lib/sinatra/respond_to'  
 require 'lib/sinatra/logger' 
-require 'lib/sinatra/images'  
-  
+require 'lib/sinatra/images' 
+require 'lib/sinatra/get_subdomain' 
 
 require 'mongo_mapper'
 require 'joint'
@@ -22,9 +22,13 @@ require 'hunt'
 require 'rack/cache'
 require 'mustache/sinatra'
 require 'rack/cache' 
+require 'rack/request' 
 require 'haml'
 
 require 'lib/rack/raw_upload'
+require 'lib/rack/subdomains'
+require 'lib/hunt/search_all'   
+require 'jim'
 
 class Main < Monk::Glue
 
@@ -35,11 +39,13 @@ class Main < Monk::Glue
   
   # Rack Middleware 
   use Rack::Cache,
-    :verbose => true,
+    :verbose => false,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie  
-  use Rack::RawUpload 
+  use Rack::RawUpload  
+  
+  # use Jim::Rack, :bundle_uri => '/js/'
   
   register Mustache::Sinatra  
   set :mustache, {
@@ -52,7 +58,8 @@ class Main < Monk::Glue
   register Sinatra::BasicAuth 
   register Sinatra::Logger 
   register Sinatra::RespondTo  
-  register Sinatra::Images
+  register Sinatra::Images 
+  register Sinatra::GetSubdomain
 
 end
 
@@ -69,23 +76,13 @@ end
 
 # This needs to be required first or Artist blows up...
 require root_path('app/models/asset.rb')
-# This needs to be required first or Üage blows up...
+# This needs to be required first or Page blows up...
 require root_path('app/models/part.rb')  
 
 # Load all application files.
 Dir[root_path('app/**/*.rb')].each do |file|
   require file
-end   
-
-# Adds a search_all method to Hunt, which finds only items with all terms 
-# TODO move to lib
-module Hunt
-  module ClassMethods   
-    def search_all(term)
-      where('searches.default' => {'$all' => Util.to_stemmed_words(term) })
-    end
-  end
-end
+end    
 
 if defined? Encoding
   Encoding.default_external = Encoding::UTF_8

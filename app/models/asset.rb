@@ -8,7 +8,8 @@ class Asset
   attachment :file # declare an attachment named file
   
   plugin Hunt
-  searches :title, :tags
+  searches :title, :tags  
+  before_save :index_search_terms 
   
   # before_save :set_title
   

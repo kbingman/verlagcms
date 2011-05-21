@@ -1,6 +1,7 @@
 <div class="wide-modal"> 
 {{#page}} 
-  <a href="/pages/{{id}}/edit">Close</a> 
+  <a href="/pages/{{id}}/edit">Close</a>   
+  
   <form action='/pages/{{id}}/results' id='search-form' method='get'>
     <div class='field'>
       <input class='textfield' id='search-query' name='query' type='text'>
@@ -8,7 +9,7 @@
     </div>
   </form> 
      
-  <form action='/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+  <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
     <div class='field'>
       <label for='ajax_uploader'></label>
       <input id='ajax_uploader' name='file' type='file'>
@@ -17,18 +18,8 @@
       <input type='submit'>
     </div>
   </form>   
-  
-  <div id='upload_progress'>
-    <div class='bar'></div>
-  </div>
-  <div id='total_progress'>
-    <div class='bar'></div>
-  </div>
-          
-  <div id="search-results-container">
-    
-  <div>  
-  
-          
+         
+  <div id="search-results-container"><div>  
+      
 {{/page}} 
 </div> 

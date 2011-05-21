@@ -3,9 +3,10 @@ require 'spec_helper'
 describe Asset do
   
   before(:all) do
-    @artist = Artist.make(:name => 'Egon')
+    @artist = Factory(:artist, :name => 'Egon')
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Asset.make(:artist => @artist, :file => @file)
+    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image') 
+    @asset.save  
   end
   
   after(:all) do
@@ -33,16 +34,17 @@ describe Asset do
     
   end
   
-  describe 'valid Asset' do   
+  describe 'valid Asset' do    
     
     before(:all) do
       @json = JSON.parse({ 
-        :title => "Fred's Asset",
+        :title => "Image",
         :tags => ['tag1', 'tag2'],
         :tag_list =>'tag1, tag2', 
         :file_name => @asset.file_name,
         :id => @asset.id.to_s, 
-        :artist_id => @asset.artist_id.to_s,
+        :artist_id => @asset.artist_id.to_s,  
+        :page_id => nil,
         :created_at => @asset.created_at
       }.to_json)
     end
@@ -56,37 +58,42 @@ describe Asset do
     end
     
     it 'should set the tags' do
-      @asset.tag_list = 'tag3, tag4'
-      @asset.tags.should == ['tag3', 'tag4']
+      @asset.tag_list = 'tag1, tag3, tag4'
+      @asset.tags.should == ['tag1', 'tag3', 'tag4']
     end
   
   end
   
-  describe 'Asset search' do
+  describe 'search' do 
+    
+    it 'should find assets by tag' do    
+      # pending "Factory Girl doesn't like to Hunt" 
+      Asset.search_all('tag1').all.should == [@asset]
+    end
     
     it 'should find assets by tag' do
-      Asset.search_with_artist('tag1').all.should == [@asset]
+      Asset.search_all('tag1').all.should == [@asset]
     end
     
     it 'should find assets by multiple tags' do
-      Asset.search_with_artist('tag1 tag2').all.should == [@asset]
+      Asset.search_all('tag1 tag2').all.should == [@asset]
     end
     
     it 'should find assets by title' do
-      Asset.search_with_artist('Fred').all.should == [@asset]
+      Asset.search_all('Image').all.should == [@asset]
     end
     
-    it 'should find assets by artist' do
-      Asset.search_with_artist('Egon').all.should == [@asset]
-    end
+    # it 'should find assets by artist' do
+    #   Asset.search_with_artist('Egon').all.should == [@asset]
+    # end
     
-    it 'should find assets by artist with tags' do
-      Asset.search_with_artist('Egon tag1').all.should == [@asset]
-    end
+    # it 'should find assets by artist with tags' do
+    #   Asset.search_with_artist('Egon tag1').all.should == [@asset]
+    # end
     
-    it 'should exclude assets by this artist without tags' do
-      Asset.search_with_artist('Egon tag5').all.should == []
-    end
+    # it 'should exclude assets by this artist without tags' do
+    #   Asset.search_with_artist('Egon tag5').all.should == []
+    # end
     
   end
   

@@ -5,8 +5,8 @@ describe "routes/search" do
 
   before(:all) do        
     # TODO stubbing all this will speed things up...
-    @artist = Artist.make()
-    @asset = Asset.make(:artist => @artist, :tags => ['naked'])
+    @artist = Factory(:artist)  
+    @asset = Factory(:asset, :artist => @artist, :tag_list => 'naked')
   end 
   
   after(:all) do
@@ -62,7 +62,7 @@ describe "routes/search" do
         last_response.should be_ok
       end 
       
-      it 'should include assets in the json' do
+      it 'should include assets in the json' do 
         do_get
         last_response.body.should include(@asset.to_json)
       end   

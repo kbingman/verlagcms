@@ -5,7 +5,7 @@ describe "routes/assets" do
   
   before(:all) do 
     # Stub this
-    @page = Page.make :parent_id => nil
+    @page = Factory(:page, :title => 'root', :parent_id => nil)  
   end 
   
   after(:all) do
@@ -16,7 +16,7 @@ describe "routes/assets" do
     
     context 'html' do 
       def do_get
-        get '/pages'
+        get '/admin/pages'
       end
       
       it 'should be successful' do
@@ -32,7 +32,7 @@ describe "routes/assets" do
     
     context 'json' do   
       def do_get
-        get '/pages.json'
+        get '/admin/pages.json'
       end
     
       it 'should be successful' do
@@ -57,7 +57,7 @@ describe "routes/assets" do
         
     context 'json' do   
       def do_post
-        post '/pages.json', :page => { :title => 'The Page' }
+        post '/admin/pages.json', :page => { :title => 'The Page' }
       end
     
       it 'should be successful' do
@@ -82,11 +82,11 @@ describe "routes/assets" do
         
     context 'json' do  
       before(:each) do 
-        @page = Page.make
+        @page = Factory(:page)  
       end
        
       def do_delete
-        delete "/pages/#{@page.id}.json"
+        delete "/admin/pages/#{@page.id}.json"
       end
     
       it 'should be successful' do
@@ -102,7 +102,7 @@ describe "routes/assets" do
       it 'should include pages in the json' do  
         do_delete
         last_response.body.should_not include(@page.title)
-      end  
+      end 
     end
     
   end

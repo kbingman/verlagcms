@@ -9,7 +9,7 @@ var Asset = Model('asset', function() {
   
   this.include({
     saveRemote: function(callback){
-      var url = '/assets/' + this.id() + '.json';
+      var url = '/admin/assets/' + this.id() + '.json';
       var self = this;
       self.save();
       jQuery.ajax({
@@ -26,7 +26,7 @@ var Asset = Model('asset', function() {
     },  
     
     deleteRemote: function(callback){
-      var url = '/assets/' + this.id() + '.json';
+      var url = '/admin/assets/' + this.id() + '.json';
       var self = this;
       jQuery.ajax({
         type: 'DELETE',
@@ -43,7 +43,7 @@ var Asset = Model('asset', function() {
     // TODO this could all be handled with a general update?
     // Add to page
     addToPage: function(page_id, callback){
-      var url = '/assets/' + this.id() + '.json';
+      var url = '/admin/assets/' + this.id() + '.json';
       var self = this;   
       var page = Page.find(page_id)
       jQuery.ajax({
@@ -65,7 +65,7 @@ var Asset = Model('asset', function() {
     
     // Remove from page
     removeFromPage: function(page_id, callback){
-      var url = '/assets/' + this.id() + '.json';
+      var url = '/admin/assets/' + this.id() + '.json';
       var self = this;   
       var page = Page.find(page_id)
       jQuery.ajax({
@@ -135,7 +135,7 @@ var Asset = Model('asset', function() {
     // This is hack 
     // I do it like this, as I don't have any assets loaded...
     removeFromPage: function(id, page_id, callback){
-      var url = '/assets/' + id + '.json';
+      var url = '/admin/assets/' + id + '.json';
       var self = this;   
       var page = Page.find(page_id)
       jQuery.ajax({
@@ -160,7 +160,7 @@ var Asset = Model('asset', function() {
       var url = '/search.json';
       jQuery.ajax({
         type: 'get',
-        url: '/search.json',
+        url: url,
         contentType: "application/json",
         dataType: "json",
         data: queryData,
@@ -178,7 +178,7 @@ var Asset = Model('asset', function() {
     searchAdmin: function(query, callback) {
       var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
       Asset.each(function(){ Asset.remove(this); });
-      var url = '/assets';
+      var url = '/admin/assets';
       jQuery.ajax({
         type: 'get',
         url: url,

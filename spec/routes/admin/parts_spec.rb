@@ -6,12 +6,12 @@ describe "routes/admin/parts" do
     # Stub this
     # @page = mock Page, :title => "The Page", :page_parts => [], :save => true, :id => '2176637660'
     # Page.stub!(:find => @page)  
-    @page = Page.make  
+    @page = Factory(:page, :title => 'root', :parent_id => nil) 
   end
   
   context 'POST create page part' do
     def do_post
-      post "/pages/#{@page.id}/parts.json", :part => { :name => 'body', :page_id => @page.id }
+      post "/admin/pages/#{@page.id}/parts.json", :part => { :name => 'body', :page_id => @page.id }
     end
     
     it "should be ok" do
@@ -47,14 +47,14 @@ describe "routes/admin/parts" do
         
     context 'json' do  
       before(:each) do   
-        @page = Page.make() 
+        @page = Factory(:page, :title => 'root', :parent_id => nil)  
         @page.parts << Part.new(:name => 'body', :page_id => @page.id)                              
         @page.save     
         @part = @page.parts.first                                   
       end
        
       def do_delete
-        delete "/pages/#{@page.id.to_s}/parts/#{@part.id.to_s}.json"
+        delete "/admin/pages/#{@page.id.to_s}/parts/#{@part.id.to_s}.json"
       end
     
       it 'should be successful' do 

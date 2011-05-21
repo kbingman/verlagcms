@@ -1,6 +1,9 @@
 - content_for :head do
   = show_template('admin/assets/asset_index', 'admin/assets/edit_asset') 
   
+- content_for :header do
+  = partial :'layouts/_search', :locals => { :search_path => '#/assets' }
+  
 .js-only
   = partial :'admin/assets/_new_form'
 

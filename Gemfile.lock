@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/jnunemaker/mongomapper.git
-  revision: 92346c9b52cb9b2f1af51ba7e8e2f183cfbe6d40
+  revision: 19d1e42ad20127f589610160a70cff20f43b0b6a
   specs:
     mongo_mapper (0.9.0)
       activemodel (~> 3.0)
@@ -23,17 +23,58 @@ GIT
     monk-glue (0.0.1)
 
 GIT
+  remote: https://github.com/quirkey/jim.git
+  revision: 9c1e7583155b7e6794ad558bbcac6187d7788c76
+  specs:
+    jim (0.3.1)
+      downlow (~> 0.1.4)
+      downlow (~> 0.1.3)
+      fakeweb (>= 1.2.8)
+      fssm
+      fssm (~> 0.2.0)
+      jeweler
+      leftright
+      mocha
+      rack-test
+      rake
+      shoulda
+      test-unit
+      thor
+      thor (~> 0.14.4)
+      version_sorter (~> 1.1.0)
+      version_sorter (~> 1.1.0)
+      yajl-ruby
+      yajl-ruby
+
+GIT
   remote: https://github.com/rkh/sinatra-namespace.git
   revision: c043f986733c3f4a447bdcec065328877a4e7d2a
   specs:
     sinatra-namespace (0.6.1)
       sinatra (~> 1.1)
 
+GIT
+  remote: https://github.com/thoughtbot/factory_girl.git
+  revision: 4f5f5df39a1b565160ad7138a1f7d7a7c836664d
+  specs:
+    factory_girl (2.0.0.beta2)
+
+PATH
+  remote: vendor/capybara
+  specs:
+    capybara (1.0.0.beta1)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (~> 0.2.0)
+      xpath (~> 0.1.4)
+
 PATH
   remote: vendor/capybara-zombie
   specs:
     capybara-zombie (0.0.1)
-      capybara (~> 0.4.1)
+      capybara (~> 1.0.0beta)
       childprocess (~> 0.1.7)
       multi_json (~> 0.0.5)
 
@@ -52,40 +93,38 @@ GEM
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
     activesupport (3.0.7)
+    archive-tar-minitar (0.5.2)
     bson (1.3.0)
     bson_ext (1.3.0)
     builder (2.1.2)
-    capybara (0.4.1.2)
-      celerity (>= 0.7.9)
-      culerity (>= 0.2.4)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      selenium-webdriver (>= 0.0.27)
-      xpath (~> 0.1.3)
-    celerity (0.8.9)
     childprocess (0.1.9)
       ffi (~> 1.0.6)
-    culerity (0.2.15)
     daemons (1.1.3)
     diff-lcs (1.1.2)
+    downlow (0.1.4)
+      archive-tar-minitar (>= 0.5.2)
+      rubyzip (>= 0.9.4)
     eventmachine (0.12.10)
     faker (0.9.5)
       i18n (~> 0.4)
+    fakeweb (1.3.0)
     fast-stemmer (1.0.0)
-    ffi (1.0.7)
-      rake (>= 0.8.7)
+    ffi (1.0.8)
+    fssm (0.2.7)
+    git (1.2.5)
     haml (3.1.1)
     i18n (0.5.0)
+    jeweler (1.6.0)
+      bundler (~> 1.0.0)
+      git (>= 1.2.5)
+      rake
     json (1.5.1)
     json_pure (1.5.1)
-    machinist (1.0.6)
-    machinist_mongo (1.2.0)
-      machinist (~> 1.0.6)
+    leftright (0.9.1)
     mime-types (1.16)
     mini_magick (3.2.1)
       subexec (~> 0.0.4)
+    mocha (0.9.12)
     mongo (1.3.0)
       bson (>= 1.3.0)
     mongo_ext (0.19.3)
@@ -95,7 +134,7 @@ GEM
     plucky (0.3.8)
       mongo (~> 1.3)
     rack (1.2.2)
-    rack-cache (1.0.1)
+    rack-cache (1.0.2)
       rack (>= 0.4)
     rack-flash (0.1.1)
       rack
@@ -106,7 +145,7 @@ GEM
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
       rspec-mocks (~> 2.6.0)
-    rspec-core (2.6.0)
+    rspec-core (2.6.1)
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
@@ -118,6 +157,7 @@ GEM
       ffi (>= 1.0.7)
       json_pure
       rubyzip
+    shoulda (2.11.3)
     sinatra (1.2.6)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -132,11 +172,13 @@ GEM
       rack (>= 1.0.0)
     thor (0.14.6)
     tilt (1.3)
+    version_sorter (1.1.0)
     wand (0.4)
       mime-types
       safe_shell (~> 1.0.0)
     xpath (0.1.4)
       nokogiri (~> 1.3)
+    yajl-ruby (0.8.2)
 
 PLATFORMS
   ruby
@@ -144,14 +186,15 @@ PLATFORMS
 DEPENDENCIES
   bson (= 1.3)
   bson_ext (= 1.3)
-  capybara
+  capybara!
   capybara-zombie!
+  factory_girl!
   faker
   haml
   hunt!
+  jim!
   joint!
   json
-  machinist_mongo
   mini_magick
   mongo (= 1.3)
   mongo_ext
@@ -171,3 +214,4 @@ DEPENDENCIES
   test-unit
   thin
   thor
+  tilt (= 1.3)

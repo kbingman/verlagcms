@@ -4,7 +4,8 @@ AjaxUploader = {
     if(!fileInput.length){ return }
     
     fileInput.attr('multiple','multiple').change(function() {
-      var files = this.files;
+      var files = this.files;  
+      // This needs to have a class or something
       var url = fileInput.parents('form:first').attr('action') + '.json';
       
       AjaxUploader.totalFiles = files.length;

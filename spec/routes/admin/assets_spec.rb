@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe "routes/assets" do
+describe "routes/admin/assets" do
   include Rack::Test::Methods
   
   before(:all) do 
-    @artist = Artist.make()
-    @asset = Asset.make(:artist => @artist, :tags => ['naked'])
+    @artist = Factory(:artist, :name => 'Egon')                       
+    @asset = Factory(:asset, :artist => @artist) 
     @assets = [@asset]
   end 
   
@@ -17,7 +17,7 @@ describe "routes/assets" do
     
     context 'html' do 
       def do_get
-        get '/assets'
+        get '/admin/assets'
       end
       
       it 'should be successful' do
@@ -33,7 +33,7 @@ describe "routes/assets" do
     
     context 'json' do   
       def do_get
-        get '/assets.json'
+        get '/admin/assets.json'
       end
     
       it 'should be successful' do
@@ -58,7 +58,7 @@ describe "routes/assets" do
     
     context 'html' do 
       def do_post
-        post "/assets", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
+        post "/admin/assets", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
       end
       
       it 'should be a redirect' do
@@ -69,7 +69,7 @@ describe "routes/assets" do
     
     context 'json' do 
       def do_post
-        post "/assets.json", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
+        post "/admin/assets.json", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
       end
       
       it 'should be successful' do
@@ -94,7 +94,7 @@ describe "routes/assets" do
     
     context 'html' do 
       def do_get
-        get "/assets/#{@asset.id}/edit"
+        get "/admin/assets/#{@asset.id}/edit"
       end
       
       it 'should be successful' do

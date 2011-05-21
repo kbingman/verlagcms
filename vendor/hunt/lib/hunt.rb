@@ -2,7 +2,9 @@ require 'fast_stemmer'
 require 'mongo_mapper'
 require 'hunt/util'
 
-module Hunt
+module Hunt 
+  extend ActiveSupport::Concern
+  
   def self.configure(model)
     model.before_save(:index_search_terms)
   end

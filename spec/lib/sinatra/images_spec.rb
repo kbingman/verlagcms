@@ -1,12 +1,13 @@
 require 'spec_helper'
 
-describe "routes/images" do
+describe "lib/images" do
   
   before(:all) do 
     # TODO stubbing all this will speed things up...
-    @artist = Artist.make(:name => 'Egon')                                
+    @artist = Factory(:artist, :name => 'Egon')
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Asset.make(:artist => @artist, :file => @file)
+    @asset = Factory.build(:asset, :artist => @artist, :file => @file) 
+    @asset.save
   end
   
   after(:all) do

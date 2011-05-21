@@ -1,18 +1,22 @@
 class Page
   include MongoMapper::Document
-  # plugin MongoMapper::Plugins::IdentityMap
+  # plugin MongoMapper::Plugins::IdentityMap 
   
-  key :title, String  
+  plugin Hunt
+  searches :title, :tags  
+  before_save :index_search_terms
+  
+  key :title, String, :required => true
   key :slug, String
   key :description, String 
-  key :level, Integer
+  key :level, Integer 
+  key :tags, Array, :index => true  
   
   many :parts, :class_name => 'Part', :dependent => :destroy 
   many :assets, :class_name => 'Asset'
   
   key :parent_id, ObjectId
   belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id
-  
 
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
@@ -29,22 +33,54 @@ class Page
   def padding
     self.level * 24
   end  
-  
-  def descendants #(*ids)   
-    results = []
-    children = self.children #.all(:id => ids)
-    children.each do |c|
-      results << c.as_json({})
-    end
-    results
-  end
-  
+    
   def as_json(options)
     super(:methods => [:padding, :assets])
-  end  
+  end     
   
   def path
-    self.parent? ? self.parent.path + '/' + self.slug : '/' + self.slug
+    self.parent.nil? ? slug : parent.child_path(self)
+  end
+  
+  def edit_path
+    "/edit#{self.path}"
+  end
+  
+  def child_path(child)
+    clean_path(path + '/' + child.slug)
+  end
+  
+  def find_by_path(path)
+    my_path = self.path
+    if (my_path == path)
+      self
+    elsif (path =~ /^#{Regexp.quote(my_path)}([^\/]*)/)
+      slug_child = children.first :conditions => { :slug => ($1) }
+      if slug_child
+        found = slug_child.find_by_path(clean_path(path))
+        return found if found
+      end
+      children.each do |child|
+        found = child.find_by_path(clean_path(path))
+        return found if found
+      end
+      return nil
+    end
+  end
+  
+  def self.find_by_path(path)
+    root = self.first :conditions => { :parent_id => nil }
+    root.find_by_path(path)
+  end 
+  
+  # TODO move to lib
+  def tag_list
+    self.tags.join(', ')
+  end
+  
+  def tag_list=(list)
+    new_tags = list.split(',').map{ |t| t.strip.downcase }
+    self.tags = new_tags.uniq
   end
   
   protected
@@ -55,8 +91,12 @@ class Page
     end
     
     before_validation :set_slug
-    def set_slug
-      self.slug = sanitize(self.title) if self.slug.nil?
+    def set_slug  
+      self.slug = if root?
+        '/'
+      else
+        self.slug.nil? ? sanitize(self.title) : sanitize(self.slug)
+      end 
     end  
     
     before_save :set_part_page_id 
@@ -70,6 +110,6 @@ class Page
     
     def clean_path(path)
       "/#{ path.strip }/".gsub(%r{//+}, '/')
-    end
+    end    
 
 end

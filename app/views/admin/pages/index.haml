@@ -1,6 +1,8 @@
 - content_for :head do
   = show_template('admin/pages/new_page', 'admin/pages/node', 'admin/pages/table', 
-  'admin/pages/form', 'admin/parts/new_part', 'admin/parts/remove_part', 'admin/pages/remove_page',  'admin/pages/search_form', 'admin/assets/asset_index') 
-  
+  'admin/pages/form', 'admin/parts/new_part', 'admin/parts/remove_part', 'admin/pages/remove_page',  'admin/pages/search_form', 'admin/pages/search_results')
+  = show_template('admin/assets/asset_index', 'admin/assets/edit_asset', 'admin/assets/remove_asset')   
+    
 #pages 
-  = mustache :'admin/pages/table'
+  =# mustache :'admin/pages/table'     
+  

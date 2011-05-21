@@ -4,7 +4,7 @@ var Part = Model('part', function() {
   this.include({
     deleteRemote: function(page, callback){
       var self = this;
-      var url = '/pages/' + page.id() + '/parts/' + self.id() + '.json';   
+      var url = '/admin/pages/' + page.id() + '/parts/' + self.id() + '.json';   
       
       jQuery.ajax({
         type: 'DELETE',
@@ -17,20 +17,20 @@ var Part = Model('part', function() {
         }
       });
     }
-  }),   
+  }),  
   
   this.extend({
     // returns a json array of all parts
     toMustache: function(query) {
       return {
         parts: this.map(function(part){                           
-          return part.attr(); 
+          return part.attr();
         })
       }
     },  
     
     create: function(attributes, callback){
-      var url = '/pages/' + attributes.page_id + '/parts.json';   
+      var url = '/admin/pages/' + attributes.page_id + '/parts.json';   
       var page = Page.find(attributes.page_id);
       jQuery.ajax({
         type: 'post',
@@ -43,7 +43,7 @@ var Part = Model('part', function() {
           callback.call(this);
         }
       });
-    },
+    }
     
     // load: function(page_id, callback) {
     //   Part.each(function(){ Part.remove(this); });

@@ -25,7 +25,7 @@ var Page = Model('page', function() {
     
     load: function(callback){
       var self = this;
-      var url = '/pages/' + self.id()  + '.json';   
+      var url = '/admin/pages/' + self.id()  + '.json';   
       
       jQuery.ajax({
         type: 'GET',
@@ -33,7 +33,7 @@ var Page = Model('page', function() {
         // contentType: "application/json",
         dataType: "json",                   
         success: function(results) {    
-          self.merge(results);;    
+          self.merge(results);    
           callback.call(this);    
         }
       });
@@ -41,7 +41,7 @@ var Page = Model('page', function() {
     
     deleteRemote: function(callback){
       var self = this;
-      var url = '/pages/' + self.id()  + '.json';   
+      var url = '/admin/pages/' + self.id()  + '.json';   
       
       jQuery.ajax({
         type: 'DELETE',
@@ -87,7 +87,7 @@ var Page = Model('page', function() {
     },
     
     create: function(attributes, callback){
-      var url = '/pages.json';
+      var url = '/admin/pages.json';
       jQuery.ajax({
         type: 'post',
         url: url,
@@ -105,7 +105,7 @@ var Page = Model('page', function() {
     
     load: function(callback) {
       Page.each(function(){ Page.remove(this); });
-      var url = '/pages.json';
+      var url = '/admin/pages.json';
       jQuery.ajax({
         type: 'get',
         url: url,
@@ -117,10 +117,10 @@ var Page = Model('page', function() {
             page.merge(results);
             Page.add(page);
           });
-          callback.call(this);
+          if(callback){ callback.call(this); }
         }
       });
-    },
+    }
 
   });
 

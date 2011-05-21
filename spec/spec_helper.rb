@@ -10,9 +10,8 @@ Bundler.setup :test
 require 'rack/test'  
 require 'rspec' 
 
-require 'machinist/mongo_mapper'
-require File.join(File.dirname(__FILE__), 'blueprints.rb')
-
+require 'factory_girl' 
+require File.join(File.dirname(__FILE__), 'factories.rb') 
 
 RSpec.configure do |conf|
   

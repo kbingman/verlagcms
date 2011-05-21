@@ -2,10 +2,10 @@
 <ul id="assets">
   {{#assets}}
     <li id="asset-{{id}}">
-      <a href="/assets/{{id}}/edit{{query_path}}">
+      <a href="#/admin/assets/{{id}}/edit{{query_path}}">
         <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
       </a>  
-      <a href="/assets/{{id}}/remove{{query_path}}">Remove</a>
+      <a href="#/admin/assets/{{id}}/remove{{query_path}}">Remove</a>
     </li>
   {{/assets}}
 </ul>

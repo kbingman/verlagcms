@@ -8,10 +8,10 @@ require 'capybara/dsl'
 require 'capybara/zombie'
 require 'faker'
 
-require 'machinist/mongo_mapper'
-require File.join(File.dirname(__FILE__), '../blueprints.rb')
+require 'factory_girl'
+require File.join(File.dirname(__FILE__), '../factories.rb')
 
-RSpec.configuration.include Capybara, :type => :acceptance
+RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
 # Capybara.default_driver = :zombie
 Capybara.app = Main

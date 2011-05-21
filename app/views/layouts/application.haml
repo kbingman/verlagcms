@@ -1,23 +1,25 @@
 !!!5
 %html
   %head
-    %title Galerie Revisited
+    %title= @title || 'Verlag' 
     %link{ :rel => 'stylesheet', :href => '/css/main.css', :type => 'text/css' }
     - if RACK_ENV == 'production'
-      %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
-    - else
-      %script{ :src => '/javascripts/vendor/jquery-1.5.2.min.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/modernizr-1.7.min.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/sammy.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/handlebars.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/view.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/asset_list_view.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/ajax_uploader.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/site.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/site.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+    - else   
+      %script{ :src => '/javascripts/site.js', :type => 'text/javascript', :charset => 'utf-8' }  
+    //   %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/vendor/jquery-1.5.2.min.js', :type => 'text/javascript', :charset => 'utf-8' } 
+    //   %script{ :src => '/javascripts/vendor/modernizr-1.7.min.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/vendor/sammy.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/vendor/handlebars.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/lib/view.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/views/asset_list_view.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/lib/ajax_uploader.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
+    //   %script{ :src => '/javascripts/lib/site.js', :type => 'text/javascript', :charset => 'utf-8' }
     // This is where the mustache templates are rendered  
     = content :head
     = show_template('search/asset_list', 'search/asset_display') 

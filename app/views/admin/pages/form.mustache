@@ -32,11 +32,11 @@
       <p><a href="#/pages/{{id}}/search">add asset</a></p> 
       {{#assets}} 
         <div class="asset">
-          <a href="/assets/{{id}}/edit{{query_path}}">
+          <a href="#/assets/{{id}}/edit{{query_path}}">
             <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
           </a> 
           <br />
-          <a href="/pages/{{page_id}}/assets/{{id}}/test">Remove</a>  
+          <a href="#/pages/{{page_id}}/assets/{{id}}/test">Remove</a>  
         </div>
       {{/assets}}
     </div>
@@ -45,5 +45,6 @@
   <div class="buttons">
     <input type="submit" id="page_save" value="Save" class="button" />  
   </div>
-</form> 
+</form>    
+
 {{/page}}  

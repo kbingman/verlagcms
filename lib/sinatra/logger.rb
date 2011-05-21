@@ -10,7 +10,8 @@ module Sinatra
         @start = Time.now
         logger.info "Starting: #{request.request_method} #{request.path} #{response.status}"
         logger.info "Parameters: #{params.inspect}" 
-        logger.info "Content Type:  #{request.content_type}"
+        logger.info "Content Type:  #{request.content_type}"   
+        logger.info "Subdomain:  #{subdomain}"
         logger.info "Format: #{format}" if format 
       end
 

@@ -14,7 +14,7 @@ describe Artist do
   
   context 'valid artist' do
     before(:all) do
-      @artist = Artist.make
+      @artist = Factory(:artist, :name => 'Fred')
     end
     
     after(:all) do

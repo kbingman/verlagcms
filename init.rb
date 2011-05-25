@@ -60,6 +60,11 @@ class Main < Monk::Glue
   register Sinatra::RespondTo  
   register Sinatra::Images 
   register Sinatra::GetSubdomain
+  
+  configure do
+    mime_type :mustache, 'text/mustache' 
+    mime_type :'octet-stream', 'application/octet-stream' 
+  end
 
 end
 

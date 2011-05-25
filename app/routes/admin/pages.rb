@@ -1,7 +1,15 @@
 class Main    
   
   module Admin 
-    module Pages
+    module Pages 
+      
+      # Redirects if no site is found
+      # ------------------------------------------- 
+      before do
+        unless current_site   
+          redirect '/admin/sites' 
+        end
+      end
       
       # page Index
       # -------------------------------------------
@@ -10,11 +18,11 @@ class Main
   
         respond_to do |format|
           format.html do  
-            @root = Page.all_roots.first 
+            @root = Page.by_site(current_site.id).all_roots.first 
             admin_haml :'admin/pages/index'
           end 
           format.json do 
-            pages = Page.all
+            pages = Page.by_site(current_site.id).all
             pages.to_json  
           end
         end
@@ -24,7 +32,8 @@ class Main
       # -------------------------------------------
       post '' do    
         page = Page.new(params[:page]) 
-   
+        page.site = current_site
+        
         if page.save
           respond_to do |format|
             format.html { redirect('/pages') }
@@ -36,7 +45,7 @@ class Main
       # Show page
       # -------------------------------------------
       get '/:id/?' do
-        @page = Page.find params['id']
+        @page = Page.by_site(current_site.id).find(params['id'])
         respond_to do |format|
           format.html { redirect('/pages') }
           format.json { @page.to_json }
@@ -46,14 +55,14 @@ class Main
       # Edit page
       # -------------------------------------------
       get '/:id/edit/?' do
-        @page = Page.find params['id']                             
+        @page = Page.by_site(current_site.id).find(params['id'])                             
         admin_haml :'/admin/pages/edit'
       end
       
       # Update page
       # -------------------------------------------
       put '/:id' do
-        page = Page.find params['id']  
+        page = Page.by_site(current_site.id).find(params['id'])  
         parts = params['page']['parts']
                 
         if page.update_attributes(params['page'])
@@ -69,7 +78,7 @@ class Main
       # Delete page
       # -------------------------------------------
       delete '/:id' do
-        page = Page.find params['id']             
+        page = Page.by_site(current_site.id).find(params['id'])             
         if page.destroy
           respond_to do |format|
             format.html { redirect('/pages') }

@@ -3,10 +3,9 @@ require 'spec_helper'
 describe "routes/search" do
   include Rack::Test::Methods
 
-  before(:all) do        
-    # TODO stubbing all this will speed things up...
-    @artist = Factory(:artist)  
-    @asset = Factory(:asset, :artist => @artist, :tag_list => 'naked')
+  before(:all) do     
+    setup_site
+    @asset = Factory(:asset, :site => @site, :tag_list => 'naked')
   end 
   
   after(:all) do

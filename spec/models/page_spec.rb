@@ -1,21 +1,28 @@
 require 'spec_helper'
  
-describe Page do
+describe Page do  
+  before(:all) do  
+    @site = Factory(:site)
+  end
   
   describe "validations" do
     it "should create a valid page" do
-      Page.new(:title => 'Home').should be_valid
+      Page.new(:title => 'Home', :site => @site).should be_valid
+    end
+   
+    it "should require a site" do
+      Page.new(:title => 'Home', :site => nil).should_not be_valid
     end
     
     it "should require a title" do
-      Page.new(:title => '').should_not be_valid
+      Page.new(:title => '', :site => @site).should_not be_valid
     end  
   end
   
   context 'valid page' do
-    before(:all) do
-      @root = Factory(:page, :title => 'root') 
-      @child = Factory(:page, :title => 'child', :parent_id => @root.id, :tag_list => 'tag1, tag2')
+    before(:all) do  
+      @root = Factory(:page, :title => 'root', :site => @site) 
+      @child = Factory(:page, :title => 'child', :parent_id => @root.id, :tag_list => 'tag1, tag2', :site => @site)
     end
     
     after(:all) do

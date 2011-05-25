@@ -6,7 +6,7 @@ AjaxUploader = {
     fileInput.attr('multiple','multiple').change(function() {
       var files = this.files;  
       // This needs to have a class or something
-      var url = fileInput.parents('form:first').attr('action') + '.json';
+      var url = fileInput.parents('form:first').attr('action') + '.json'; 
       
       AjaxUploader.totalFiles = files.length;
       AjaxUploader.processedFiles = 0;
@@ -62,7 +62,6 @@ AjaxUploader = {
       var response = JSON.parse(evt.target.responseText),
         results = response;
         
-      // TODO This needs to move to the model
       var asset = new Asset({ id: results.id });
       asset.merge(results);
       Asset.add(asset);   

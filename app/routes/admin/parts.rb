@@ -3,6 +3,14 @@ class Main
   module Admin 
     module Pages 
       
+      # Redirects if no site is found
+      # ------------------------------------------- 
+      before do
+        unless current_site   
+          redirect '/admin/sites'
+        end
+      end
+      
       # Page Parts Index (by Page)
       # -------------------------------------------
       # get '/:page_id/parts' do

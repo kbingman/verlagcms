@@ -4,11 +4,17 @@ feature "Admin Assest" do
 
   context 'A logged in user, with JS,' do
     
-    before(:all) do
+    before(:all) do 
+      setup_site  
       @artist = Factory(:artist, :name => 'Egon')
       @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-      @asset = Factory.build(:asset, :artist => @artist, :file => @file, :tags => ['Tie']) 
+      @asset = Factory.build(:asset, :artist => @artist, :file => @file, :tags => ['Tie'], :site => @site) 
       @asset.save
+    end   
+    
+    after(:all) do
+      Capybara.use_default_driver 
+      teardown
     end
     
     before(:each) do
@@ -20,13 +26,44 @@ feature "Admin Assest" do
       Capybara.use_default_driver
     end
   
-    scenario "views the admin page" do 
-      visit '/admin/assets/#/assets'  
-      # For some reason the history pushState feature is not working with zombie
+    scenario "views the admin page" do   
+      visit '/admin/'
+      visit '/admin/#/assets'                                            
       page.should have_content('Assets')
       page.should have_css('h1')
-      page.should have_css('#asset-index-container')
-    end  
+      page.should have_css('#pages')
+    end 
+    
+    scenario "views an image" do 
+      visit '/admin/'
+      visit '/admin/#/assets'                                          
+      page.should have_content('Assets')
+      page.should have_css("li#asset-#{@asset.id}")
+      
+      click_link "Edit Asset #{@asset.id}"  
+   
+      page.should have_css('#modal')
+      page.should have_css("#image-display-#{@asset.id}")
+      page.should have_css("#image-info-#{@asset.id}")     
+    end 
+    
+    scenario "removes an image" do 
+      visit '/admin/'
+      visit '/admin/#/assets'                                          
+      page.should have_content('Assets')
+      page.should have_css("li#asset-#{@asset.id}")
+      
+      click_link "Remove"  
+   
+      page.should have_css('#modal')
+      page.should have_css("#image-display-#{@asset.id}")
+      page.should have_css("#image-info-#{@asset.id}") 
+       
+      # TODO zombie hangs here 
+      # click_button('Delete')
+      # page.should_not have_css('#modal') 
+      # page.should_not have_css("li#asset-#{@asset.id}")   
+    end
     
     scenario "enters a search term" do 
       pending   

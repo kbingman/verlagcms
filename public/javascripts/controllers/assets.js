@@ -1,5 +1,7 @@
 Assets = Sammy(function (app) {
   
+  var application = this; 
+  
   var delay = (function(){
     var timer = 0;
     return function(callback, ms){
@@ -8,12 +10,31 @@ Assets = Sammy(function (app) {
     };
   })();
   
-  this.use(Sammy.Title);
-  this.use(Sammy.NestedParams);
+  this.use(Sammy.Title);  
+  this.use(Sammy.JSON); 
+  this.use(Sammy.Mustache); 
+  this.use(Sammy.NestedParams);  
+  
+  this.swap = function(content) {
+    jQuery('#pages').html(content); 
+  }
   
   // Helper Methods 
   // ---------------------------------------------  
-  this.helpers({
+  this.helpers({  
+
+    // Checks for loaded assets, then executes the callback   
+    loadAssets: function(query, callback){  
+      
+      if(Asset.all().length == 0 ){
+        Asset.searchAdmin(query, function(){      
+          if(callback){ callback.call(this); } 
+        });
+      } else {        
+        if(callback){ callback.call(this); } 
+      }
+    },
+     
     formObserver: function(element){  
       jQuery(element).keyup(function() {
         delay(function(){
@@ -25,134 +46,128 @@ Assets = Sammy(function (app) {
   });
 
   this.bind('run', function () {
-    app.modal = false;
+    application.modal = false; 
+    application.first_run = true;  
   });
   
-  this.get('#/assets', function(req){ 
-    var query = req.params['query'] ? req.params['query'] : null;  
-    var application = this;
+  this.get('#/assets', function(request){ 
+    var query = request.params['query'] ? request.params['query'] : null;  
     Galerie.close();
-    if(!app.modal){
+    if(!application.modal){
       Asset.searchAdmin(query, function(){  
-        var assetIndex = new AssetIndexView(Asset.toMustache(query)); 
-        jQuery('#pages').html(assetIndex.html);  
-        // assetIndex.render(); 
+        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        assetIndex.replace('#pages').then(function(){
+          jQuery('#ajax_uploader').attr('multiple','multiple'); 
+        });
       });
     }
-    app.modal = false;
+    application.modal = false; 
+    application.first_run = false;
   });
   
   // Create Asset
   // ---------------------------------------------  
-  // this.post('/assets', function(req){
-  //   var uploadForm = jQuery('form#new_asset');
-  //     fileInput = uploadForm.find('input[type=file]'),
-  //     url = uploadForm.attr('action') + '.json',
-  //     files = fileInput.attr('files');
-  //     
-  //   AjaxUploader.totalFiles = files.length;
-  //   AjaxUploader.processedFiles = 0;
-  //   
-  //   for(var i = 0; i < AjaxUploader.totalFiles; i++) {
-  //     var file = files[i];
-  //     // TODO this could be moved to the model as a create action  
-  //     AjaxUploader.sendRequest(url, file);     
-  //   }
-  // });
+  this.post('#/assets', function(req){    
+    console.log(JSON.stringify(req.params));
+    var uploadForm = jQuery('form#new_asset');
+      fileInput = uploadForm.find('input[type=file]'),
+      url = '/admin/assets.json', // uploadForm.attr('action') + '.json',
+      files = fileInput.attr('files');
+    alert(files.length)  
+    AjaxUploader.totalFiles = files.length;
+    AjaxUploader.processedFiles = 0;
+    
+    for(var i = 0; i < AjaxUploader.totalFiles; i++) {
+      var file = files[i];
+      // TODO this could be moved to the model as a create action  
+      AjaxUploader.sendRequest(url, file);     
+    }
+  });
   // 
   // // Edit Asset 
   // // ---------------------------------------------  
-  // this.get('/assets/:id/edit', function(req){
-  //   var application = this;
-  //   var query = req.params['query'] ? req.params['query'] : null;  
-  //   
-  //   // Clears out fallback content
-  //   // jQuery('#asset-index-container').html(''); 
-  //   
-  //   // sets a flag so the the search results are not reloaded
-  //   app.modal = true;
-  //   if(jQuery('#modal').length == 0){
-  //     Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
-  //   }
-  //   
-  //   var asset = Asset.find(req.params['id']); 
-  //   if(asset){
-  //     var editAsset = new EditAssetView(asset.toMustacheWithNeighbors(query));
-  //     editAsset.render(); 
-  //     // maybe this can go in an after filter
-  //     application.formObserver('.image-info input[type=text], .image-info textarea');
-  //   }else{
-  //     Asset.searchAdmin(query, function(){      
-  //       var asset = Asset.find(req.params['id']);              
-  //       var editAsset = new EditAssetView(asset.toMustacheWithNeighbors(query));
-  //       editAsset.render();          
-  //       // maybe this can go in an after filter       
-  //       application.formObserver('.image-info input[type=text], .image-info textarea');
-  //       var assetIndex = new AssetIndexView(Asset.toMustache(query));
-  //       assetIndex.render();
-  //     });
-  //   }
-  // });
-  // 
-  // // Update Asset
-  // this.put('/assets/:id', function(req){
-  //   var application = this;
-  //   var asset = Asset.find(req.params['id']);     
-  // 
-  //   asset.attr(req.params['asset']);
-  //   asset.saveRemote({
-  //     success: function(){
-  //       var notice = jQuery('.image-info .notice') ;
-  //       notice.html('<div class="message">Successfully updated!</div>');
-  //       delay(function(){
-  //         jQuery('.message', notice).fadeOut('slow', function(){
-  //           jQuery(this).remove();
-  //         });
-  //       }, 2000);
-  //     }
-  //   });
-  // });    
-  // 
-  // // Remove Asset
-  // this.get('/assets/:id/remove', function(req){
-  //   var application = this;    
-  //   var query = req.params['query'] ? req.params['query'] : null;                            
-  //   // sets a flag so the the search results are not reloaded
-  //   app.modal = true; 
-  //   Galerie.close();
-  //   Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'}));  
-  //   var asset = Asset.find(req.params['id']);   
-  //   if(asset){
-  //     var removeAsset = new RemoveAssetView({ asset: asset.toMustache(query) }); 
-  //     removeAsset.render();
-  //   }else{
-  //     Asset.searchAdmin(query, function(){      
-  //       var asset = Asset.find(req.params['id']);              
-  //       var removeAsset = new RemoveAssetView({ asset: asset.toMustache(query) }); 
-  //       removeAsset.render();
-  //       var assetIndex = new AssetIndexView(Asset.toMustache(query));
-  //       assetIndex.render();
-  //     });
-  //   }
-  // });
-  // 
-  // // Delete Asset
-  // this.del('/assets/:id', function(req){
-  //   var application = this;    
-  //   var query = req.params['query'] ? req.params['query'] : null; 
-  //   var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-  //   var asset = Asset.find(req.params['id']);     
-  //   
-  //   asset.deleteRemote({  
-  //     success: function(){
-  //       Galerie.close();  
-  //       req.redirect('/assets' + query_path);
-  //     }
-  //   });
-  // });    
-  //       
-  // app.get('/', function (req) {
-  //   // jQuery('h1').text('Start Page');
-  // });
+  this.get('#/assets/:id/edit', function(request){
+    var query = request.params['query'] ? request.params['query'] : null;  
+
+    if(jQuery('#modal').length == 0){
+      Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
+    } 
+    
+    this.loadAssets(query, function(){
+      var asset = Asset.find(request.params['id']); 
+      var editAsset = request.render('/templates/admin/assets/edit_asset.mustache', asset.toMustacheWithNeighbors(query));
+      editAsset.replace('#edit-asset-container').then(function(results){  
+        setTimeout(function(){
+          $('img.fade-in').fadeIn('slow'); 
+        }, 100);
+        request.formObserver('.image-info input[type=text], .image-info textarea'); 
+      });  
+
+      if(application.first_run){
+        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        assetIndex.replace('#pages');
+      }                                                                              
+    }); 
+    // sets a flag so the the search results are not reloaded   
+    application.modal = true;  
+  });
+  
+  // Update Asset
+  this.put('#/assets/:id', function(req){
+    var application = this;
+    var asset = Asset.find(req.params['id']);     
+  
+    asset.attr(req.params['asset']);
+    asset.saveRemote({
+      success: function(){
+        var notice = jQuery('.image-info .notice') ;
+        notice.html('<div class="message">Successfully updated!</div>');
+        delay(function(){
+          jQuery('.message', notice).fadeOut('slow', function(){
+            jQuery(this).remove();
+          });
+        }, 2000);
+      }
+    });
+  });    
+  
+  // Remove Asset
+  this.get('#/assets/:id/remove', function(request){   
+    var query = request.params['query'] ? request.params['query'] : null;                            
+
+    Galerie.close();
+    Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'})); 
+    
+    this.loadAssets(query, function(){ 
+      var asset = Asset.find(request.params['id']);  
+      
+      var removeAsset = request.render('/templates/admin/assets/remove_asset.mustache', { asset: asset.toMustache(query) }); 
+      removeAsset.replace('#remove-asset-container'); 
+ 
+      if(application.first_run){
+        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        assetIndex.replace('#pages'); 
+      }
+    }); 
+  });
+  
+  // Delete Asset
+  this.del('#/assets/:id', function(req){
+    var application = this;    
+    var query = req.params['query'] ? req.params['query'] : null; 
+    var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
+    var asset = Asset.find(req.params['id']);     
+    
+    asset.deleteRemote({  
+      success: function(){
+        Galerie.close();  
+        req.redirect('#/assets' + query_path);
+      }
+    });
+  });    
+        
+  app.get('/', function (req) {
+    // jQuery('h1').text('Start Page');
+  });
 
 });

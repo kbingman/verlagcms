@@ -3,9 +3,10 @@ require 'spec_helper'
 describe "routes/admin/assets" do
   include Rack::Test::Methods
   
-  before(:all) do 
+  before(:all) do    
+    setup_site
     @artist = Factory(:artist, :name => 'Egon')                       
-    @asset = Factory(:asset, :artist => @artist) 
+    @asset = Factory(:asset, :artist => @artist, :site => @site) 
     @assets = [@asset]
   end 
   
@@ -49,7 +50,14 @@ describe "routes/admin/assets" do
       it 'should include assets in the json' do
         do_get
         last_response.body.should include(@asset.to_json)
-      end  
+      end 
+      
+      it 'should not include assets from other sites' do   
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
+        @alien_asset = Factory(:asset, :site => @alien_site) 
+        do_get 
+        last_response.body.should_not include(@alien_asset.to_json)  
+      end 
     end
     
   end  

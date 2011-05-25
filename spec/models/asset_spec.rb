@@ -2,10 +2,11 @@ require 'spec_helper'
  
 describe Asset do
   
-  before(:all) do
+  before(:all) do        
+    @site = Factory(:site)
     @artist = Factory(:artist, :name => 'Egon')
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image') 
+    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site => @site) 
     @asset.save  
   end
   
@@ -15,22 +16,23 @@ describe Asset do
   
   describe "asset validations" do
     it "should create a valid artist" do
-      Asset.new(:title => "Fred's Asset", :artist_id => @artist.id).should be_valid
+      Asset.new(:title => "Fred's Asset", :site => @site).should be_valid
+    end  
+    
+    it "should require a site" do
+      Asset.new(:title => 'Asset', :site => nil).should_not be_valid
     end
     
     it "should require a title" do
-      Asset.new(:title => '', :artist_id => @artist.id).should_not be_valid
+      Asset.new(:title => '', :site => @site).should_not be_valid
     end
     
     it "should set the title automatically" do
-      asset = Asset.new(:artist_id => @artist.id, :file => @file)
+      asset = Asset.new(:site => @site, :file => @file)
       asset.valid?
       asset.title.should == '830px-Tieboardingcraft'
     end  
-    
-    it "should require an artist id" do
-      Asset.new(:title => '', :artist_id => nil).should_not be_valid
-    end   
+  
     
   end
   

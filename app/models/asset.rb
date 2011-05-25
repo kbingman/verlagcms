@@ -15,7 +15,11 @@ class Asset
   
   key :title, String 
   key :description, String 
-  key :tags, Array, :index => true
+  key :tags, Array, :index => true      
+  
+  key :site_id, ObjectId, :required => true
+  belongs_to :site, :foreign_key => :site_id 
+  scope :by_site,  lambda { |id| where(:site_id => id) }
 
   # key :story_id, ObjectId
   # belongs_to :story, :foreign_key => :story_id

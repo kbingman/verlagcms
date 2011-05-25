@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe "routes/admin/parts" do 
   
-  before(:each) do  
-    # Stub this
-    # @page = mock Page, :title => "The Page", :page_parts => [], :save => true, :id => '2176637660'
-    # Page.stub!(:find => @page)  
-    @page = Factory(:page, :title => 'root', :parent_id => nil) 
+  before(:all) do  
+    setup_site
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site) 
+  end 
+  
+  after(:all) do
+    teardown
   end
   
   context 'POST create page part' do
@@ -47,7 +49,7 @@ describe "routes/admin/parts" do
         
     context 'json' do  
       before(:each) do   
-        @page = Factory(:page, :title => 'root', :parent_id => nil)  
+        @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site)  
         @page.parts << Part.new(:name => 'body', :page_id => @page.id)                              
         @page.save     
         @part = @page.parts.first                                   

@@ -1,9 +1,9 @@
 {{#asset}}
 <div class="image-display" id="image-display-{{id}}">
-  <img src="/images/large/{{id}}/{{file_name}}" alt="{{title}}" />
+  <img src="/images/large/{{id}}/{{file_name}}" alt="{{title}}"  class="fade-in" />
 </div>
 <div class="image-info" id="image-info-{{id}}">
-  <form method='post' action="#/admin/assets/{{id}}" enctype='multipart/form-data' id='edit-asset'>
+  <form method='post' action="#/assets/{{id}}" enctype='multipart/form-data' id='edit-asset'>
     <div class="hidden">
       <input type='hidden' name='_method' value='put' />
     </div>
@@ -29,6 +29,3 @@
   {{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
   {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}
 </div>
-
-
-

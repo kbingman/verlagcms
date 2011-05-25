@@ -21,7 +21,11 @@ RSpec.configure do |conf|
   
   def app
     Main.new
-  end    
+  end 
+  
+  # conf.before(:all) do        
+  #   setup_site 
+  # end   
 
   def t(text)
     I18n.translate(text)
@@ -32,6 +36,19 @@ RSpec.configure do |conf|
     MongoMapper.database.collections.each do |coll|
       coll.remove
     end
+  end  
+  
+  def setup_site     
+    @site = Factory(:site) 
+    Main.class_eval do
+      helpers do
+        
+        def current_site
+          Site.first
+        end 
+        
+      end
+    end 
   end
 
 end

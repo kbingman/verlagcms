@@ -16,7 +16,11 @@ class Page
   many :assets, :class_name => 'Asset'
   
   key :parent_id, ObjectId
-  belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id
+  belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id  
+  
+  key :site_id, ObjectId, :required => true 
+  belongs_to :site, :foreign_key => :site_id 
+  scope :by_site,  lambda { |id| where(:site_id => id) }
 
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
@@ -24,7 +28,8 @@ class Page
   
   validates_presence_of :title
   
-  scope :all_roots, lambda { where(:parent_id => nil) }
+  scope :all_roots, lambda { where(:parent_id => nil) } 
+  
   
   def root?
     self.parent_id.nil? ? true : false

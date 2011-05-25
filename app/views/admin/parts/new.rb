@@ -2,7 +2,7 @@ class Main
   module Views
     module Admin
       module Parts
-        class NewPart < Mustache 
+        class New < Mustache 
        
         end
       end

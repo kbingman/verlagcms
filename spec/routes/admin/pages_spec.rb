@@ -4,8 +4,8 @@ describe "routes/assets" do
   include Rack::Test::Methods
   
   before(:all) do 
-    # Stub this
-    @page = Factory(:page, :title => 'root', :parent_id => nil)  
+    setup_site
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site)  
   end 
   
   after(:all) do
@@ -27,7 +27,7 @@ describe "routes/assets" do
       it 'should set the content header to html' do
         do_get
         last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
-      end
+      end 
     end
     
     context 'json' do   
@@ -48,7 +48,14 @@ describe "routes/assets" do
       it 'should include pages in the json' do  
         do_get
         last_response.body.should include(@page.title)
-      end  
+      end   
+      
+      it 'should not include pages from other sites' do   
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
+        @alien_page = Factory(:page, :site => @alien_site) 
+        do_get 
+        last_response.body.should_not include(@alien_page.title)  
+      end
     end
     
   end 
@@ -82,7 +89,7 @@ describe "routes/assets" do
         
     context 'json' do  
       before(:each) do 
-        @page = Factory(:page)  
+        @page = Factory(:page, :site => @site)  
       end
        
       def do_delete

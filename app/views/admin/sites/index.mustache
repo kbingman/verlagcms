@@ -1,0 +1,19 @@
+<div id="pages">
+  <h1>Sites</h1> 
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead> 
+    {{#sites}}
+    <tbody>
+      <tr id="site-{{id}}">
+        <td>
+          <a href= "http://{{subdomain}}.davisapp.dev/admin/#/pages">{{name}}</a>   
+        </td>
+      </tr>
+    </tbody> 
+    {{/sites}}
+  </table>
+</div>

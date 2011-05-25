@@ -1,18 +1,27 @@
 class Main  
   
   get '/' do  
-    cache_request     
+    # cache_request     
     if current_site 
       @title = current_site.name
       logger.info current_site.name 
       haml :'pages/page' 
     else
-      raise Sinatra::NotFound    
+      # raise Sinatra::NotFound 
+      haml :'pages/welcome'   
     end
   end    
   
   get '/admin/?' do
     admin_haml :'admin/pages/index'  
+  end  
+  
+  get '/templates/*' do  
+    cache_request  
+    name =  params[:splat] 
+    logger.info name
+    # content_type 'text'
+    partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
   end
  
   # get '/:page' do

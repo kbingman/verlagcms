@@ -2,7 +2,7 @@ class Main
   module Views
     module Admin
       module Parts
-        class RemovePart < Mustache 
+        class Remove < Mustache 
        
         end
       end

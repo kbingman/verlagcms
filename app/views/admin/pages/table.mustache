@@ -6,8 +6,16 @@
     </tr>
   </thead>
   <tbody>
-    {{#root}} 
-      {{>admin/pages/node}}  
-    {{/root}}
+    {{#pages}} 
+      <tr class="node level-{{level}}" id="page-{{id}}">
+        <td class="title" style="padding-left: {{padding}}px;"> 
+           <a id id="edit-{{id}}" href="#/pages/{{id}}/edit">{{title}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a id="add-child-{{id}}"href="#/pages/{{id}}/new">Add Child</a> 
+          <a id="remove-{{id}}" href="#/pages/{{id}}/remove">Remove</a> 
+        </td>
+      </tr> 
+    {{/pages}}     
   </tbody>
 </table>  

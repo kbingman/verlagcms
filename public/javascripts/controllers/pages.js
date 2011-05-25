@@ -1,6 +1,10 @@
-Pages = Sammy(function (app) {
+Pages = Sammy(function (app) {   
+  
+  var application = this;  
    
-  this.use(Sammy.Title);
+  this.use(Sammy.Title);  
+  this.use(Sammy.JSON); 
+  this.use(Sammy.Mustache);
   this.use(Sammy.NestedParams);
   
   // Helper Methods 
@@ -23,41 +27,36 @@ Pages = Sammy(function (app) {
     // Renders the Page tree
     renderTree: function(page){ 
       var application = this;
-
-      var table = new TableView(); 
-      jQuery('#pages').html(table.html);  
-      
-      var target = $('#pages tbody'); 
-      application.renderNode(target, page);
-    },
+       
+      var pageIndex = application.render('/templates/admin/pages/table.mustache', Page.toMustache());
+      pageIndex.replace('#pages');
+    },  
     
-    // Renders each node in the page tree
-    renderNode: function(target, page){ 
-      var application = this;
-      var node = new NodeView (page.asJSON()); 
-        
-      target.append(node.html); 
-      page.children().each(function(child){ 
-        application.renderNode(target, child);
-      });
-    } 
+    renderPage: function(page){ 
+      var application = this;  
+      var editPage = application.render('/templates/admin/pages/form.mustache', { page: page.asJSON() });    
+      editPage.replace('#pages');
+    }
     
   });
 
-  this.bind('run', function () {
-    app.modal = false;  
+  this.bind('run', function () { 
+    application.first_run = true;
+    application.modal = false;  
   });
 
   // Page routes
   // ---------------------------------------------  
   this.get('#/pages', function(request){ 
-    Galerie.close();  
+    Galerie.close();
+    application.first_run = false;  
     request.loadPages(function(){
       request.renderTree(Page.root());  
     });            
   });
   
-  this.get('#/pages/:id/new', function(request){   
+  this.get('#/pages/:id/new', function(request){    
+    
     this.loadPages(function(){    
       var page_id = request.params['id'];    
       var page = Page.find(page_id);
@@ -65,19 +64,22 @@ Pages = Sammy(function (app) {
 
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      request.renderTree(Page.root());
-      var newPage = new NewPageView({ parent: page.asJSON() });
-      newPage.render();
+      if(application.first_run){
+        request.renderTree(Page.root()); 
+      }
+
+      var newPage = request.render('/templates/admin/pages/new_page.mustache', { parent: page.asJSON() }); 
+      newPage.replace('#new-page-container');
     }); 
   });
   
-  this.get('#/pages/:id/edit', function(request){  
+  this.get('#/pages/:id/edit', function(request){ 
     Galerie.close();   
     this.loadPages(function(){  
       var page_id = request.params['id'];
-      var page = Page.find(page_id);         
-      var editPage = new FormView({ page: page.attributes });   
-      jQuery('#pages').html(editPage.html);
+      var page = Page.find(page_id);   
+      
+      request.renderPage(page);
     });
   });   
   
@@ -99,9 +101,12 @@ Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      request.renderTree(Page.root());   
-      var removePage = new RemovePageView({ page: page.asJSON() });
-      removePage.render();
+      if(application.first_run){
+        request.renderTree(Page.root()); 
+      }
+      
+      var removePage = request.render('/templates/admin/pages/remove_page.mustache', { page: page.asJSON() });    
+      removePage.replace('#remove-page-container');
     });  
   }); 
   
@@ -118,15 +123,13 @@ Pages = Sammy(function (app) {
   // --------------------------------------------- 
   this.get('#/pages/:id/search', function(request){
     this.loadPages(function(){     
-      var page_id = request.params['id'];  
-      var page = Page.find(page_id);   
+      var page = Page.find(request.params['id']); 
       
-      var searchForm = new SearchFormView({ page: page.attributes });    
-      
-      if($('#modal').length == 0){
-        Galerie.open(searchForm.html);
-        jQuery('#modal #search-results').html('');
-      }
+      if($('#modal').length == 0){ Galerie.open(function(){
+        var searchForm = request.render('/templates/admin/pages/search_form.mustache', { page: page.asJSON() });    
+        searchForm.replace('#modal');
+      }); }  
+  
     });
   });  
 
@@ -141,9 +144,9 @@ Pages = Sammy(function (app) {
           asset.attr('current_page_id', page.id());
           asset.save();
         });  
-        var searchResults = new SearchResultsView(Asset.toMustache()); 
-        searchResults.render();
-        // jQuery('#modal #search-results').html(searchResults.html);
+         
+        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+        searchResults.replace('#search-results-container');
       });
     });
   });   
@@ -154,8 +157,7 @@ Pages = Sammy(function (app) {
       var page = Page.find(page_id);  
       var asset = Asset.find(request.params['id']);
       asset.addToPage(page_id,function(){
-        var editPage = new FormView({ page: page.attributes });   
-        jQuery('#pages').html(editPage.html); 
+        request.renderPage(page); 
         request.redirect('#/pages/' + page_id + '/edit');  
       });
     });  
@@ -169,64 +171,63 @@ Pages = Sammy(function (app) {
       var asset = Asset.find(asset_id); 
       
       Asset.removeFromPage(asset_id, page_id,function(){
-        var editPage = new FormView({ page: page.attributes });   
-        jQuery('#pages').html(editPage.html); 
+        request.renderPage(page);
         request.redirect('#/pages/' + page_id + '/edit');  
       }); 
     }); 
   });
-  // 
-  // 
-  // // Page parts 
-  // // --------------------------------------------- 
-  // this.get('#/pages/:page_id/parts/new', function(request){   
-  //   // TODO use a model for this
-  //   var page_id = request.params['page_id']; 
-  //   var displayContents = $('<div />').attr({'id': 'new-part-container', 'class': 'small-modal'});
-  //   if($('#modal').length == 0){
-  //     Galerie.open(displayContents);
-  //   } 
-  // 
-  //   var newPart = new NewPartView({page: { 'id': page_id } });
-  //   newPart.render();  
-  // });  
-  // 
-  // this.post('/pages/:page_id/parts', function(request){
-  //   var page_id = request.params['page_id'];    
-  //   var attributes = request.params['part'];  
-  //   Part.create(attributes, function(){
-  //     // var editParts = new EditPartsView(Part.toMustache());
-  //     // editParts.render(); 
-  //     request.redirect('#/pages/' + page_id + '/edit');
-  //   }); 
-  // });  
-  // 
-  // this.get('/pages/:page_id/parts/:id/remove', function(request){   
-  //   // TODO use a model for this
-  //   var page_id = request.params['page_id'];  
-  //   var page = Page.find(page_id); 
-  //   var part = page.parts().find(request.params['id']); 
-  //   var displayContents = $('<div />').attr({'id': 'remove-part-container', 'class': 'small-modal'});
-  //   if($('#modal').length == 0){
-  //     Galerie.open(displayContents);
-  //   } 
-  // 
-  //   var removePart = new RemovePartView({ part: part.asJSON() });
-  //   removePart.render();  
-  // });
-  // 
-  // this.del('/pages/:page_id/parts/:id', function(request){
-  //   var page_id = request.params['page_id'];    
-  //   var page = Page.find(page_id);
-  //   var part = page.parts().find(request.params['id']);  
-  //     
-  //   part.deleteRemote(page, function(){
-  //     request.redirect('#/pages/' + page_id + '/edit');
-  //   }); 
-  // });    
-  //     
-  // app.get('/', function (req) {
-  //   // jQuery('h1').text('Start Page');
-  // });
+
+  // Page parts 
+  // --------------------------------------------- 
+  this.get('#/pages/:page_id/parts/new', function(request){   
+    this.loadPages(function(){ 
+      var page = Page.find(request.params['page_id']); 
+
+      if($('#modal').length == 0){ Galerie.open(); }  
+
+      var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
+      newPart.replace('#modal');   
+      
+      if(application.first_run){ request.renderPage(page); }  
+    });  
+  });  
+  
+  this.post('/pages/:page_id/parts', function(request){
+    this.loadPages(function(){ 
+      var page_id = request.params['page_id'];    
+      var attributes = request.params['part'];  
+      Part.create(attributes, function(){
+        request.redirect('#/pages/' + page_id + '/edit');
+      });
+    });
+  });  
+  
+  this.get('/pages/:page_id/parts/:id/remove', function(request){   
+    this.loadPages(function(){
+      var page_id = request.params['page_id'];  
+      var page = Page.find(page_id); 
+      var part = page.parts().find(request.params['id']);     
+ 
+      if($('#modal').length == 0){ Galerie.open(); } 
+
+      var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
+      removePart.replace('#modal');  
+      if(application.first_run){ request.renderPage(page); }
+    });  
+  });
+  
+  this.del('/pages/:page_id/parts/:id', function(request){
+    var page_id = request.params['page_id'];    
+    var page = Page.find(page_id);
+    var part = page.parts().find(request.params['id']);  
+      
+    part.deleteRemote(page, function(){
+      request.redirect('#/pages/' + page_id + '/edit');
+    }); 
+  });    
+      
+  app.get('/', function (req) {
+    // jQuery('h1').text('Start Page');
+  });
 
 });

@@ -46,6 +46,14 @@ class Main
           { :layout => false }, 
           { :template => template.read.html_safe, :dom_id => dom_id }
       end
+    end 
+    
+    def js_template(*sources)
+      sources.map do |source|
+        template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
+        dom_id = source.split('/').last.camelize
+        template.read.html_safe
+      end
     end
     
     # Provides content_for and matching content tags for sinatra views

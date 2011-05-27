@@ -58,30 +58,44 @@ feature "Admin Assest" do
       click_button 'Save'  
       
       page.should have_content('New Page')
+    end   
+    
+    scenario "edits a page" do
+      visit '/admin/' 
+      visit '/admin/#/pages'  
+
+      click_link "#{@child.title}" 
+      page.should have_content('Edit Page') 
+      
+      fill_in 'Title', :with => 'New Title'
+      click_button 'Save'
+      
+      page.should have_content('New Title')
     end
     
     scenario "removes a page" do 
       visit '/admin/' 
       visit '/admin/#/pages'  
-        
-      pending 'Zombie or Capybara is not finding a link with an id'
+
       click_link "remove-#{@child.id}"   
+       
+      page.should have_css('#modal')  
       page.should have_content('Remove Page')     
-      page.should have_css('#modal') 
         
       # TODO zombie hangs here
       # click_button 'Delete' 
       # page.should_not have_content(@child.title)
     end 
     
-    scenario "views the admin pages index" do 
-      pending
+    scenario "adds an image" do 
       visit '/admin/' 
-      visit "/admin/#/pages/#{@root.id}"    
-
+      visit "/admin/#/pages/#{@root.id}/edit" 
+      
+      page.should have_content('Edit Page')      
+       
       click_link('add asset')   
-      page.should have_css('#modal')  
-      page.should have_css('#search-form') 
+      page.should have_css('#modal')   
+      # page.should have_css('#search-form') 
     end
 
   end

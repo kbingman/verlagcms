@@ -22,11 +22,13 @@ describe "routes/admin/assets" do
       end
       
       it 'should be successful' do
+        pending 'deprecated' 
         do_get
         last_response.should be_ok
       end
       
-      it 'should set the content header to html' do
+      it 'should set the content header to html' do  
+        pending 'deprecated' 
         do_get
         last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
       end
@@ -54,9 +56,9 @@ describe "routes/admin/assets" do
       
       it 'should not include assets from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
-        @alien_asset = Factory(:asset, :site => @alien_site) 
+        @alien_asset = Factory(:asset, :site => @alien_site, :title => 'Alien') 
         do_get 
-        last_response.body.should_not include(@alien_asset.to_json)  
+        last_response.body.should_not include(@alien_asset.to_json) 
       end 
     end
     
@@ -105,12 +107,14 @@ describe "routes/admin/assets" do
         get "/admin/assets/#{@asset.id}/edit"
       end
       
-      it 'should be successful' do
+      it 'should be successful' do 
+        pending 'deprecated' 
         do_get
         last_response.should be_ok
       end
       
-      it 'should set the content header to html' do
+      it 'should set the content header to html' do 
+        pending 'deprecated'
         do_get
         last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
       end

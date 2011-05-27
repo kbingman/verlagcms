@@ -4,12 +4,8 @@ class Site
   key :name, String, :required => true, :unique => true 
   key :subdomain, String, :required => true, :unique => true 
 
-  many :pages, :class_name => 'Page', :dependant => :destroy 
-  many :assets, :class_name => 'Asset', :dependant => :destroy  
-    
-  # def page_id
-  #   self.page.id
-  # end        
+  many :pages
+  many :assets        
   
   protected
     

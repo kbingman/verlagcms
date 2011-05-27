@@ -13,7 +13,7 @@ class Asset
   
   # before_save :set_title
   
-  key :title, String 
+  key :title, String, :required => { :message => :required }, :unique => true 
   key :description, String 
   key :tags, Array, :index => true      
   
@@ -31,8 +31,7 @@ class Asset
   belongs_to :page, :foreign_key => :artist_id
   
   timestamps!
-  
-  validates_presence_of :title, :message => :required
+
   # validates_presence_of :artist_id # :story_id
   
   scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }

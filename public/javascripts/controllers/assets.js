@@ -48,14 +48,16 @@ Assets = Sammy(function (app) {
   this.bind('run', function () {
     application.modal = false; 
     application.first_run = true;  
-  });
+  }); 
   
+  // Asset Index
+  // ---------------------------------------------
   this.get('#/assets', function(request){ 
     var query = request.params['query'] ? request.params['query'] : null;  
     Galerie.close();
     if(!application.modal){
       Asset.searchAdmin(query, function(){  
-        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#pages').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
         });
@@ -63,27 +65,37 @@ Assets = Sammy(function (app) {
     }
     application.modal = false; 
     application.first_run = false;
+  }); 
+  
+  // New Assets
+  // ---------------------------------------------
+  this.get('#/assets/new', function(request){ 
+    var newAsset = request.render('/templates/admin/assets/new.mustache');
+    newAsset.replace('#pages').then(function(){
+      jQuery('#ajax_uploader').attr('multiple','multiple'); 
+    });
+    application.first_run = false;
   });
   
   // Create Asset
   // ---------------------------------------------  
-  this.post('#/assets', function(req){    
-    console.log(JSON.stringify(req.params));
+  this.post('/admin/assets', function(request){     
+    var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
       fileInput = uploadForm.find('input[type=file]'),
-      url = '/admin/assets.json', // uploadForm.attr('action') + '.json',
       files = fileInput.attr('files');
-    alert(files.length)  
-    AjaxUploader.totalFiles = files.length;
-    AjaxUploader.processedFiles = 0;
-    
-    for(var i = 0; i < AjaxUploader.totalFiles; i++) {
-      var file = files[i];
-      // TODO this could be moved to the model as a create action  
-      AjaxUploader.sendRequest(url, file);     
+
+    for(var i = 0; i < files.length; i++) {   
+      
+      Asset.create(files[i], function(){  
+        var assetIndex = request.render('/templates/admin/assets/new.mustache', Asset.toMustache(query));
+        assetIndex.replace('#pages').then(function(){
+          jQuery('#ajax_uploader').attr('multiple','multiple'); 
+        });
+      });     
     }
   });
-  // 
+
   // // Edit Asset 
   // // ---------------------------------------------  
   this.get('#/assets/:id/edit', function(request){
@@ -95,7 +107,7 @@ Assets = Sammy(function (app) {
     
     this.loadAssets(query, function(){
       var asset = Asset.find(request.params['id']); 
-      var editAsset = request.render('/templates/admin/assets/edit_asset.mustache', asset.toMustacheWithNeighbors(query));
+      var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
       editAsset.replace('#edit-asset-container').then(function(results){  
         setTimeout(function(){
           $('img.fade-in').fadeIn('slow'); 
@@ -104,7 +116,7 @@ Assets = Sammy(function (app) {
       });  
 
       if(application.first_run){
-        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#pages');
       }                                                                              
     }); 
@@ -145,7 +157,7 @@ Assets = Sammy(function (app) {
       removeAsset.replace('#remove-asset-container'); 
  
       if(application.first_run){
-        var assetIndex = request.render('/templates/admin/assets/asset_index.mustache', Asset.toMustache(query));
+        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#pages'); 
       }
     }); 

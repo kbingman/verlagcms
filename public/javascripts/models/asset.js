@@ -178,7 +178,7 @@ var Asset = Model('asset', function() {
     searchAdmin: function(query, callback) {
       var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
       Asset.each(function(){ Asset.remove(this); });
-      var url = '/admin/assets';
+      var url = '/admin/assets.json';
       jQuery.ajax({
         type: 'get',
         url: url,
@@ -194,6 +194,57 @@ var Asset = Model('asset', function() {
           callback.call(this);
         }
       });
+    },
+    
+    create: function (file, callback) { 
+      var url = '/admin/assets.json';
+      Asset.callback = callback;
+      
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      xhr.upload.addEventListener('progress', Asset.onprogressHandler, false);
+      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);   
+      
+      // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.send(file); 
+    },  
+    
+    onloadstartHandler:function (evt) {
+      // console.log('started')
+      // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
+    },
+
+    onloadHandler: function (evt) { 
+      // console.log('success');   
+      // $('#ajax_uploader').attr('value', '');
+    },
+
+    onprogressHandler: function (evt) {
+      var percent = evt.loaded / evt.total * 100; 
+      // console.log(percent); 
+      // $('#upload_progress .bar').width(percent + '%');
+    },
+    
+    onreadystatechangeHandler: function(evt){
+      var status = null;
+      
+      try { status = evt.target.status; }
+      catch(e) { return; }
+      
+      // readyState 4 means that the request is finished
+      if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+        var response = JSON.parse(evt.target.responseText);
+        var asset = new Asset({ id: response.id });  
+        
+        asset.merge(response);
+        Asset.add(asset); 
+
+        if(Asset.callback){ Asset.callback.call(this); }   
+      }
     }
   });
 

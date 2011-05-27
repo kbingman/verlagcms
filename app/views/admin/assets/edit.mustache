@@ -1,0 +1,31 @@
+{{#asset}}
+<div class="image-display" id="image-display-{{id}}">
+  <img src="/images/large/{{id}}/{{file_name}}" alt="{{title}}"  class="fade-in" />
+</div>
+<div class="image-info" id="image-info-{{id}}">
+  <form method='post' action="#/assets/{{id}}" enctype='multipart/form-data' id='edit-asset'>
+    <div class="hidden">
+      <input type='hidden' name='_method' value='put' />
+    </div>
+    <div class="field">
+      <h2>{{created_at_ms}}</h2>
+    </div>
+    <div class="field">
+      <label for='asset_title'>Title</label>
+      <input type='text' name='asset[title]' id='asset_title' value="{{title}}" class='textfield' />
+    </div>
+    <div class="field">
+      <label for='asset_tags'>Tags</label> 
+      <!--input type='text' name='asset[tag_list]' id='asset_tag_list' value="{{tag_list}}" class='textfield' /--> 
+      <textarea name='asset[tag_list]' id='asset_tags' class='textfield'-->{{tag_list}}</textarea>
+    </div>
+    <div class="buttons">
+      <input type='submit' value="Save" class='button html-only' />
+      <a href="#/assets{{query_path}}" class="cancel">Cancel</a>
+    </div>
+  </form>   
+  <div class="notice"></div>
+{{/asset}}
+  {{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
+  {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}
+</div>

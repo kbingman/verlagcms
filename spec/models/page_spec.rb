@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Page do  
   before(:all) do  
     @site = Factory(:site)
+  end  
+  
+  after(:all) do
+    teardown
   end
   
   describe "validations" do
@@ -24,10 +28,6 @@ describe Page do
       @root = Factory(:page, :title => 'root', :site => @site) 
       @child = Factory(:page, :title => 'child', :parent_id => @root.id, :tag_list => 'tag1, tag2', :site => @site)
     end
-    
-    after(:all) do
-      teardown
-    end  
      
     describe 'attributes' do 
       it 'should set the slug for the root page' do
@@ -74,15 +74,15 @@ describe Page do
     
     describe 'finders' do
       it 'should find the root page' do
-        Page.find_by_path('/').should == @root    
+        Page.find_by_path('/', @site).should == @root    
       end
       
       it 'should find a page by path' do
-        Page.find_by_path('/child/').should == @child
+        Page.find_by_path('/child/', @site).should == @child
       end 
       
       it 'should find a page by path without the trailing slash' do
-        Page.find_by_path('/child').should == @child
+        Page.find_by_path('/child', @site).should == @child
       end  
       
       it 'should find pages by tag' do

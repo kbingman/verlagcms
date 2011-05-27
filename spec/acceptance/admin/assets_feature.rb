@@ -5,6 +5,7 @@ feature "Admin Assest" do
   context 'A logged in user, with JS,' do
     
     before(:all) do 
+      Capybara.current_driver = :zombie
       setup_site  
       @artist = Factory(:artist, :name => 'Egon')
       @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
@@ -17,14 +18,14 @@ feature "Admin Assest" do
       teardown
     end
     
-    before(:each) do
-      # Seems zombie and davis don't get along...
-      Capybara.current_driver = :zombie
-    end
-    
-    after(:each) do
-      Capybara.use_default_driver
-    end
+    # before(:each) do
+    #   # Seems zombie and davis don't get along...
+    #   
+    # end
+    # 
+    # after(:each) do
+    #   Capybara.use_default_driver
+    # end
   
     scenario "views the admin page" do   
       visit '/admin/'
@@ -40,12 +41,25 @@ feature "Admin Assest" do
       page.should have_content('Assets')
       page.should have_css("li#asset-#{@asset.id}")
       
-      click_link "Edit Asset #{@asset.id}"  
+      click_link "edit-asset-#{@asset.id}"  
    
       page.should have_css('#modal')
       page.should have_css("#image-display-#{@asset.id}")
       page.should have_css("#image-info-#{@asset.id}")     
     end 
+    
+    scenario "closes an image" do    
+      visit '/admin/'
+      visit '/admin/#/assets'
+      click_link "edit-asset-#{@asset.id}"  
+       
+      pending
+      page.should have_css('#modal')
+      page.should have_css("#close-image-#{@asset.id}")
+      
+      click_link "cancel"
+      page.should_not have_css('#modal')  
+    end
     
     scenario "removes an image" do 
       visit '/admin/'
@@ -53,7 +67,7 @@ feature "Admin Assest" do
       page.should have_content('Assets')
       page.should have_css("li#asset-#{@asset.id}")
       
-      click_link "Remove"  
+      click_link "remove-asset-#{@asset.id}" 
    
       page.should have_css('#modal')
       page.should have_css("#image-display-#{@asset.id}")
@@ -89,20 +103,6 @@ feature "Admin Assest" do
       page.should have_css("#image-display-#{@asset.id}")
       page.should have_css("#image-info-#{@asset.id}")
     end 
-    
-    scenario "closes an image" do    
-      pending
-      visit '/admin/assets'
-      fill_in 'search-query', :with => "TIE"
-      click_button 'Search'      
-    
-      click_link @asset.title  
-      page.should have_css('#modal') 
-      page.should have_css("#close-image-#{@asset.id}")
-      
-      # click_link "close image"
-      # page.should_not have_css('#modal')  
-    end
     
     scenario "returns to a saved search" do  
       pending

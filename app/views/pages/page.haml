@@ -1,15 +1,16 @@
-#asset-list-container
+#pages
   %h1 
     Page: 
     = @title
   
-  %p= @content
+  %p= params[:splat]
   
-  %ul
-    %li
-      %a{ :href => "/other" } The Other Page
-    %li
-      %a{ :href => "/nolayout" } A Page Without a Layout
+  %h2
+    = @page.title
+    
+  - @page.assets.each do |a|
+    %img{ :src => "/images/thumbnails/#{a.id}/#{a.file_name}"}
+
 
 
     

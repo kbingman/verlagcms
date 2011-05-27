@@ -1,5 +1,5 @@
 Factory.define :artist do |f|
-  f.name 'Egon'
+  f.name { Faker::Name.first_name }
   f.bio 'Bio' 
 end 
 
@@ -7,7 +7,12 @@ Factory.define :asset do |f|
   f.title 'Image'
   f.tag_list  'tag1, tag2'
   f.file File.open root_path('/spec/data/830px-Tieboardingcraft.jpg')  
-end   
+end 
+
+Factory.define :layout do |f|
+  f.name 'Layout'
+  f.content  '<p></p>'
+end  
 
 Factory.define :page do |f|
   f.title  'Home'

@@ -8,19 +8,19 @@ module Sinatra
       # Logging info
       app.before do
         @start = Time.now
-        logger.info "Starting: #{request.request_method} #{request.path} #{response.status}"
-        logger.info "Parameters: #{params.inspect}" 
-        logger.info "Content Type:  #{request.content_type}"   
-        logger.info "Subdomain:  #{subdomain}"
-        logger.info "Format: #{format}" if format 
+        logger.debug "Starting: #{request.request_method} #{request.path} #{response.status}"
+        logger.debug "Parameters: #{params.inspect}" 
+        logger.debug "Content Type:  #{request.content_type}"   
+        logger.debug "Subdomain:  #{subdomain}"
+        logger.debug "Format: #{format}" if format 
       end
 
       app.after do    
         unless @start.nil?      
-          logger.info "Completed in: #{Time.now - @start}s" 
-          logger.info "#{1 / (Time.now - @start)} Requests per second" 
+          logger.debug "Completed in: #{Time.now - @start}s" 
+          logger.debug "#{1 / (Time.now - @start)} Requests per second" 
         end 
-        logger.info ""
+        logger.debug ""
       end
     
     end

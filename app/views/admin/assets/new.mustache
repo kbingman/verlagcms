@@ -1,0 +1,22 @@
+<h1>Upload Assets</h1>
+   
+<form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+  <div class='field'>
+    <label for='ajax_uploader'></label>
+    <input id='ajax_uploader' name='file' type='file'>
+  </div>
+  <div class='buttons'>
+    <input type='submit'>
+  </div>
+</form>  
+
+<ul id="assets">
+  {{#assets}}
+    <li id="asset-{{id}}">
+      <a href="#/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
+        <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
+      </a>  
+      <a href="#/assets/{{id}}/remove{{query_path}}" id="remove-asset-{{id}}">Remove</a>
+    </li>
+  {{/assets}}
+</ul>

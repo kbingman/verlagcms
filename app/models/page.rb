@@ -4,7 +4,9 @@ class Page
   
   plugin Hunt
   searches :title, :tags  
-  before_save :index_search_terms
+  before_save :index_search_terms   
+  
+  liquid_methods :title, :parts, :path
   
   key :title, String, :required => true
   key :slug, String
@@ -20,7 +22,10 @@ class Page
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) }
+  scope :by_site,  lambda { |id| where(:site_id => id) } 
+  
+  key :layout_id, ObjectId #, :required => true 
+  belongs_to :layout, :foreign_key => :layout_id
 
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
@@ -30,6 +35,10 @@ class Page
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
+  def render(request=nil)
+    template = Liquid::Template.parse(self.layout.content)
+    template.render 'page' => self
+  end
   
   def root?
     self.parent_id.nil? ? true : false
@@ -73,8 +82,8 @@ class Page
     end
   end
   
-  def self.find_by_path(path)
-    root = self.first :conditions => { :parent_id => nil }
+  def self.find_by_path(path, site)
+    root = self.first :conditions => { :parent_id => nil, :site_id => site.id }
     root.find_by_path(path)
   end 
   

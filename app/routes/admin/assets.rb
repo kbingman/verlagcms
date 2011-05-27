@@ -13,7 +13,7 @@ class Main
       
       # Asset Index
       # -------------------------------------------
-      get '/?' do
+      get '/?' do  
         @query = params[:query] ? params[:query].split('.')[0] : ''
         @assets = params[:query] ? Asset.by_site(current_site.id).search_all(@query).all(:order => 'created_at DESC') : Asset.by_site(current_site.id).all(:order => 'created_at DESC') 
         

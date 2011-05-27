@@ -39,6 +39,8 @@ class Main
             format.html { redirect('/pages') }
             format.json { page.to_json }
           end 
+        else
+          logger.info(page.errors.inspect)
         end
       end
       

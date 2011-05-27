@@ -49,6 +49,16 @@ RSpec.configure do |conf|
         
       end
     end 
-  end
+  end  
+  
+  # before(:each) do
+  #   Main.class_eval do
+  #     helpers do
+  #       def authenticated?
+  #         false
+  #       end
+  #     end
+  #   end
+  # end
 
 end

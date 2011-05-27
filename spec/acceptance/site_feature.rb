@@ -22,7 +22,8 @@ feature "Home Page: " do
       teardown
     end
   
-    scenario "views the home page" do
+    scenario "views the home page" do  
+      pending
       visit '/#/'
       page.should have_content('Page')
       page.should have_css('h1')
@@ -68,7 +69,8 @@ feature "Home Page: " do
       # page.should_not have_css('#modal')  
     end
     
-    scenario "returns to a saved search" do  
+    scenario "returns to a saved search" do 
+      pending 
       visit '/' 
       visit '/#/search?query=TIE'
       

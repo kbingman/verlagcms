@@ -28,13 +28,13 @@ Pages = Sammy(function (app) {
     renderTree: function(page){ 
       var application = this;
        
-      var pageIndex = application.render('/templates/admin/pages/table.mustache', Page.toMustache());
+      var pageIndex = application.render('/templates/admin/pages/index.mustache', Page.toMustache());
       pageIndex.replace('#pages');
     },  
     
     renderPage: function(page){ 
       var application = this;  
-      var editPage = application.render('/templates/admin/pages/form.mustache', { page: page.asJSON() });    
+      var editPage = application.render('/templates/admin/pages/edit.mustache', { page: page.asJSON() });    
       editPage.replace('#pages');
     }
     
@@ -68,8 +68,18 @@ Pages = Sammy(function (app) {
         request.renderTree(Page.root()); 
       }
 
-      var newPage = request.render('/templates/admin/pages/new_page.mustache', { parent: page.asJSON() }); 
+      var newPage = request.render('/templates/admin/pages/new.mustache', { parent: page.asJSON() }); 
       newPage.replace('#new-page-container');
+    }); 
+  }); 
+  
+  this.post('#/pages/:page_id', function(request){
+    var page_id = request.params['page_id'],
+      parent = Page.find(page_id),   
+      attributes = request.params['page'];  
+      
+    Page.create(attributes, function(){
+      request.redirect('#/pages');
     }); 
   });
   
@@ -83,15 +93,19 @@ Pages = Sammy(function (app) {
     });
   });   
   
-  this.post('#/pages/:page_id', function(request){
+   this.put('#/pages/:page_id', function(request){  
+    console.log('here')
     var page_id = request.params['page_id'],
-      parent = Page.find(page_id),   
+      page = Page.find(page_id),   
       attributes = request.params['page'];  
       
-    Page.create(attributes, function(){
-      request.redirect('#/pages');
-    }); 
-  });  
+    page.attr(request.params['page']);   
+    page.saveRemote({
+      success: function(){
+        request.redirect('#/pages');
+      }
+    });  
+  });
   
   this.get('#/pages/:id/remove', function(request){   
     this.loadPages(function(){   
@@ -105,7 +119,7 @@ Pages = Sammy(function (app) {
         request.renderTree(Page.root()); 
       }
       
-      var removePage = request.render('/templates/admin/pages/remove_page.mustache', { page: page.asJSON() });    
+      var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
       removePage.replace('#remove-page-container');
     });  
   }); 

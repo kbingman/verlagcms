@@ -1,14 +1,12 @@
 class Part
   include MongoMapper::EmbeddedDocument
   
-  key :name, String 
+  key :name, String, :required => true, :unique => true 
   key :content, String
   
-  key :page_id, ObjectId
-  belongs_to :page, :foreign_key => :page_id
+  many :pages
   
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  liquid_methods :name, :content
   
   # def page_id
   #   self.page.id

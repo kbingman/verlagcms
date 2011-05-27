@@ -37,6 +37,24 @@ var Page = Model('page', function() {
           callback.call(this);    
         }
       });
+    }, 
+    
+    // exatract this for general use...
+    saveRemote: function(callback){
+      var url = '/admin/pages/' + this.id() + '.json';
+      var self = this;
+      self.save();
+      jQuery.ajax({
+        type: 'PUT',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",
+        data: { 'page': self.attributes },
+        success: function(results) {
+          self.merge(results);
+          if(callback['success']){ callback['success'].call(this); }
+        }
+      });
     },
     
     deleteRemote: function(callback){

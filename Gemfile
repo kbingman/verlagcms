@@ -24,7 +24,8 @@ gem 'mini_magick'
 
 gem 'haml'  
 gem 'sass'
-gem 'mustache'
+gem 'mustache'  
+gem 'liquid'
 
 gem 'json'
 gem 'rack-flash'

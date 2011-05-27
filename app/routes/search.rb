@@ -2,7 +2,7 @@ class Main
   module Search
 
     get '' do    
-      cache_request(600) # Ten minute cache 
+      # cache_request(600) # Ten minute cache 
       @query = params[:query] ? params[:query].split('.')[0] : ''
       @assets = Asset.search_all(@query).all :order => 'created_at DESC'
       respond_to do |format|

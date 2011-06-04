@@ -1,15 +1,18 @@
-class Main    
+class Main  
+  module Admin   
+    
+    # Redirects if no site is found
+    # ------------------------------------------- 
+    # before do
+    #   unless current_site   
+    #     redirect '/admin/sites' 
+    #   end
+    # end  
+    
+    get '/?' do
+      admin_haml :'admin/index'  
+    end    
   
-  get '/admin/?' do
-    admin_haml :'admin/pages/index'  
-  end  
+  end   
   
-  get '/templates/*' do  
-    cache_request  
-    name =  params[:splat] 
-    logger.info name
-    # content_type 'text'
-    partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
-  end
-
 end

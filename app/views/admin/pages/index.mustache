@@ -1,23 +1,21 @@
-<div id="sidebar">
-  <table>
-    <thead>
-      <tr>
-        <th class="title">Page</th>
-        <th class="modify">Modify</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#pages}} 
-        <tr class="node level-{{level}}" id="page-{{id}}">
-          <td class="title" style="padding-left: {{padding}}px;"> 
-             <a id id="edit-{{id}}" href="#/pages/{{id}}/edit">{{title}}</a>       
-          </td> 
-          <td class="modify">                 
-            <a class="add-child" id="add-child-{{id}}"href="#/pages/{{id}}/new">+</a> 
-            <a class="remove-page" id="remove-{{id}}" href="#/pages/{{id}}/remove">x</a> 
-          </td>
-        </tr> 
-      {{/pages}}     
-    </tbody>
-  </table> 
-</div> 
+<table>
+  <thead>
+    <tr>
+      <th class="title">Page</th>
+      <th class="modify">Modify</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#pages}} 
+      <tr class="node level-{{level}}" id="page-{{id}}">
+        <td class="title" style="padding-left: {{padding}}px;"> 
+           <a id id="edit-{{id}}" href="#/pages/{{id}}/edit">{{title}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a title="Add Child" class="add-child" id="add-child-{{id}}"href="#/pages/{{id}}/new">+</a> 
+          <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="#/pages/{{id}}/remove">x</a> 
+        </td>
+      </tr> 
+    {{/pages}}     
+  </tbody>
+</table> 

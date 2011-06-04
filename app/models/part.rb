@@ -1,15 +1,23 @@
 class Part
   include MongoMapper::EmbeddedDocument
   
+  # TODO add custom validation
   key :name, String, :required => true, :unique => true 
   key :content, String
   
-  many :pages
+  liquid_methods :name, :content, :render   
   
-  liquid_methods :name, :content
+  def render
+    RedCloth.new(self.content).to_html
+  end
   
-  # def page_id
-  #   self.page.id
+  # validate :unique_name
+  # 
+  # def unique_name 
+  #   exisiting_names = self.parts.collect{ |p| p.name }
+  #   if exisiting_names.include(self.name)
+  #     errors.add( :name, "Name must be unique")
+  #   end
   # end
   
 end

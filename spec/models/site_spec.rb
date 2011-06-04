@@ -42,14 +42,22 @@ describe Site do
     end
   end
   
-  # context 'valid site' do
-  #   before(:all) do
-  #     @scan = Factory.build(:site, :name => 'Daily Scans', :subdomain => '')  
-  #   end
-  #   
-  #   after(:all) do
-  #     teardown
-  #   end  
-  # end
+  context 'valid site' do  
+    
+    before(:all) do
+      @site = Factory(:site, :name => 'Daily Scans', :subdomain => '') 
+      @layout = Factory(:layout, :site_id => @site.id)
+      @page = Factory(:page, :site_id => @site.id, :layout_id => @layout.id) 
+    end
+    
+    after(:all) do
+      teardown
+    end 
+    
+    it 'should find the root page' do
+      @site.root.should == @page
+    end  
+    
+  end
   
 end

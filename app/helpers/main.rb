@@ -35,6 +35,10 @@ class Main
       # unless RACK_ENV == 'development'
         response['Cache-Control'] = "max-age=#{timeout}, public" 
       # end
+    end 
+    
+    def no_request_cache
+      response.headers['Cache-Control'] = 'public, no-store, no-cache, must-revalidate, max-age=0' 
     end
     
     # Embeds the mustache templates in a script tag, with the correct id

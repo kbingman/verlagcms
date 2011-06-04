@@ -2,21 +2,13 @@ Assets = Sammy(function (app) {
   
   var application = this; 
   
-  var delay = (function(){
-    var timer = 0;
-    return function(callback, ms){
-      clearTimeout (timer);
-      timer = setTimeout(callback, ms);
-    };
-  })();
-  
-  this.use(Sammy.Title);  
+  // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache); 
   this.use(Sammy.NestedParams);  
   
   this.swap = function(content) {
-    jQuery('#pages').html(content); 
+    jQuery('#editor').html(content); 
   }
   
   // Helper Methods 
@@ -33,15 +25,6 @@ Assets = Sammy(function (app) {
       } else {        
         if(callback){ callback.call(this); } 
       }
-    },
-     
-    formObserver: function(element){  
-      jQuery(element).keyup(function() {
-        delay(function(){
-          var form = jQuery(element).parents('form:first');
-          form.submit();
-        }, 800);
-      });
     }
   });
 
@@ -58,7 +41,7 @@ Assets = Sammy(function (app) {
     if(!application.modal){
       Asset.searchAdmin(query, function(){  
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        assetIndex.replace('#pages').then(function(){
+        assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
         });
       });
@@ -71,7 +54,7 @@ Assets = Sammy(function (app) {
   // ---------------------------------------------
   this.get('#/assets/new', function(request){ 
     var newAsset = request.render('/templates/admin/assets/new.mustache');
-    newAsset.replace('#pages').then(function(){
+    newAsset.replace('#editor').then(function(){
       jQuery('#ajax_uploader').attr('multiple','multiple'); 
     });
     application.first_run = false;
@@ -89,7 +72,7 @@ Assets = Sammy(function (app) {
       
       Asset.create(files[i], function(){  
         var assetIndex = request.render('/templates/admin/assets/new.mustache', Asset.toMustache(query));
-        assetIndex.replace('#pages').then(function(){
+        assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
         });
       });     
@@ -112,12 +95,12 @@ Assets = Sammy(function (app) {
         setTimeout(function(){
           $('img.fade-in').fadeIn('slow'); 
         }, 100);
-        request.formObserver('.image-info input[type=text], .image-info textarea'); 
+        Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
       });  
 
       if(application.first_run){
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        assetIndex.replace('#pages');
+        assetIndex.replace('#editor');
       }                                                                              
     }); 
     // sets a flag so the the search results are not reloaded   
@@ -153,12 +136,12 @@ Assets = Sammy(function (app) {
     this.loadAssets(query, function(){ 
       var asset = Asset.find(request.params['id']);  
       
-      var removeAsset = request.render('/templates/admin/assets/remove_asset.mustache', { asset: asset.toMustache(query) }); 
+      var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
       removeAsset.replace('#remove-asset-container'); 
  
       if(application.first_run){
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        assetIndex.replace('#pages'); 
+        assetIndex.replace('#editor'); 
       }
     }); 
   });

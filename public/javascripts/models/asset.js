@@ -11,13 +11,13 @@ var Asset = Model('asset', function() {
     saveRemote: function(callback){
       var url = '/admin/assets/' + this.id() + '.json';
       var self = this;
-      self.save();
+      // self.save();
       jQuery.ajax({
         type: 'PUT',
         url: url,
         // contentType: "application/json",
         dataType: "json",
-        data: { 'asset': self.attributes },
+        data: { 'asset': self.changes },
         success: function(results) {
           self.merge(results);
           if(callback['success']){ callback['success'].call(this); }
@@ -130,7 +130,11 @@ var Asset = Model('asset', function() {
         }), 
         query: query
       }
-    },  
+    }, 
+    
+    asJSON: function(){
+      return Asset.map(function(item){ return item.attr() });
+    }, 
     
     // This is hack 
     // I do it like this, as I don't have any assets loaded...

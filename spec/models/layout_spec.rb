@@ -1,6 +1,6 @@
 require 'spec_helper'
  
-describe Page do  
+describe Layout do  
   before(:all) do  
     @site = Factory(:site)
   end  
@@ -11,15 +11,19 @@ describe Page do
   
   describe "validations" do
     it "should create a valid layout" do
-      Layout.new(:name => 'Layout', :site => @site).should be_valid
+      l = Factory.build(:layout, :name => 'Layout')
+      l.site = @site  
+      l.should be_valid
     end
    
     it "should require a site" do
-      Layout.new(:name => 'Layout', :site => nil).should_not be_valid
+      Factory.build(:layout, :name => 'Layout', :site => nil).should_not be_valid
     end
     
     it "should require a title" do
-      Layout.new(:name => '', :site => @site).should_not be_valid
+      l = Factory.build(:layout, :name => '')
+      l.site = @site
+      l.should_not be_valid
     end  
   end  
   

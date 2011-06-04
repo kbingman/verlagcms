@@ -6,7 +6,7 @@ describe Asset do
     @site = Factory(:site)
     @artist = Factory(:artist, :name => 'Egon')
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site => @site) 
+    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id) 
     @asset.save  
   end
   

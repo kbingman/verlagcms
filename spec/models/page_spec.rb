@@ -2,7 +2,8 @@ require 'spec_helper'
  
 describe Page do  
   before(:all) do  
-    @site = Factory(:site)
+    @site = Factory(:site)  
+    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>') 
   end  
   
   after(:all) do
@@ -10,28 +11,28 @@ describe Page do
   end
   
   describe 'validations' do
-    it 'should create a valid page' do
-      Page.new(:title => 'Home', :site => @site).should be_valid
+    it 'should create a valid page' do  
+      Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id).should be_valid
     end
    
     it 'should require a site' do
-      Page.new(:title => 'Home', :site => nil).should_not be_valid
+      Factory.build(:page, :site => nil, :layout_id => @layout.id).should_not be_valid
     end 
     
-    it 'should require a layout' do 
-      pending 'need to update the data'
-      Page.new(:title => '', :site => @site, :layout => nil).should_not be_valid
+    it 'should require a layout' do  
+      pending
+      Factory.build(:page, :site => @site, :layout_id => nil).should_not be_valid
     end
     
     it 'should require a title' do
-      Page.new(:title => '', :site => @site).should_not be_valid
+      Factory.build(:page, :title => '', :site => @site, :layout_id => @layout.id).should_not be_valid
     end  
   end
   
   context 'valid page' do
     before(:all) do  
-      @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')
-      @root = Factory(:page, :title => 'root', :site => @site) 
+      
+      @root = Factory(:page, :title => 'root', :site => @site, :layout => @layout) 
       @child = Factory(:page, 
         :title => 'Child', 
         :parent_id => @root.id, 
@@ -70,13 +71,13 @@ describe Page do
       end 
       
       it 'should set the padding for a child page' do
-        @child.padding.should == 24
+        @child.padding.should == 12
       end  
-
+  
       it 'should return a tag list' do
         @child.tag_list.should == 'tag1, tag2'
       end
-
+  
       it 'should set the tags' do
         @child.tag_list = 'tag1, tag3, tag4'
         @child.tags.should == ['tag1', 'tag3', 'tag4']
@@ -119,7 +120,7 @@ describe Page do
       end   
       
       it 'should render the page' do
-        @child.render.should == '<h1>Child</h1>'
+        @child.render(:html).should == '<h1>Child</h1>'
       end
     end
        

@@ -3,8 +3,9 @@ require 'spec_helper'
 describe "routes/admin/parts" do 
   
   before(:all) do  
-    setup_site
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site) 
+    setup_site 
+    @layout = Factory(:layout, :site_id => @site.id)
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout) 
   end 
   
   after(:all) do
@@ -49,10 +50,14 @@ describe "routes/admin/parts" do
         
     context 'json' do  
       before(:each) do   
-        @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site)  
+        # @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site)  
         @page.parts << Part.new(:name => 'body', :page_id => @page.id)                              
         @page.save     
         @part = @page.parts.first                                   
+      end  
+      
+      after(:all) do
+        teardown
       end
        
       def do_delete
@@ -71,7 +76,7 @@ describe "routes/admin/parts" do
     
       it 'should include pages in the json' do  
         do_delete
-        JSON.parse(last_response.body)['parts'].should be_empty
+        JSON.parse(last_response.body)['parts'].should_not include(@part.to_json)
       end  
     end
     

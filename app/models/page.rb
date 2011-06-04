@@ -4,9 +4,7 @@ class Page
   
   plugin Hunt
   searches :title, :tags  
-  before_save :index_search_terms   
-  
-  liquid_methods :title, :parts, :path
+  before_save :index_search_terms  
   
   key :title, String, :required => true
   key :slug, String
@@ -24,28 +22,44 @@ class Page
   belongs_to :site, :foreign_key => :site_id 
   scope :by_site,  lambda { |id| where(:site_id => id) } 
   
-  key :layout_id, ObjectId #, :required => true 
+  key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
 
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
   timestamps!
   
-  validates_presence_of :title
+  validates_presence_of :title 
+  
+  # attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
-  def render(request=nil)
-    template = Liquid::Template.parse(self.layout.content)
-    template.render 'page' => self
+  # liquid_methods :title, :path, :assets, :children, :data, :parts 
+  def to_liquid
+    PageDrop.new(self)
+  end  
+  
+  def data 
+    DataProxy.new(self)
+  end
+  
+  def render(format='html', request=nil) 
+    if format.to_s == 'json'  
+      self.to_json
+    else 
+      template = Liquid::Template.parse(self.layout.content)
+      template.render 'page' => self, 'site' => self.site # 
+    end
   end
   
   def root?
-    self.parent_id.nil? ? true : false
+    self.parent.nil? ? true : false
   end 
   
-  def padding
-    self.level * 24
+  def padding  
+    # this needs to be moved out of the model...
+    self.level * 12
   end  
     
   def as_json(options)
@@ -83,7 +97,7 @@ class Page
   end
   
   def self.find_by_path(path, site)
-    root = self.first :conditions => { :parent_id => nil, :site_id => site.id }
+    root = site.root
     root.find_by_path(path)
   end 
   
@@ -95,13 +109,28 @@ class Page
   def tag_list=(list)
     new_tags = list.split(',').map{ |t| t.strip.downcase }
     self.tags = new_tags.uniq
+  end  
+  
+  def part_names
+    self.parts.collect{ |p| p.name } 
   end
   
   protected
     
     before_validation :set_level
-    def set_level
-      self.level = self.root? ? 0 : self.parent.level + 1
+    def set_level    
+      self.level = self.parent.nil? ? 0 : self.parent.level + 1
+    end   
+    
+    # TODO probably everything needs this check...
+    before_validation :set_parent_id
+    def set_parent_id 
+      self.parent_id = self.parent_id == 'null' ? nil : self.parent_id
+    end  
+    
+    before_validation :set_layout_id
+    def set_layout_id 
+      self.layout = self.parent.layout if self.layout.nil?
     end
     
     before_validation :set_slug
@@ -109,13 +138,19 @@ class Page
       self.slug = if root?
         '/'
       else
-        self.slug.nil? ? sanitize(self.title) : sanitize(self.slug)
+        self.slug = sanitize(self.title) # : sanitize(self.slug)
       end 
     end  
     
-    before_save :set_part_page_id 
-    def set_part_page_id
-      self.parts.each{ |p| p.page_id = self.id }
+    before_save :create_parts 
+    def create_parts  
+      if self.parts.empty?
+        types = self.layout.part_types 
+        types.each do |type|
+          part = Part.new :name => type.name
+          self.parts << part
+        end
+      end
     end  
     
     def sanitize(text)

@@ -3,19 +3,36 @@ class Main
   # get '/:page' do
   #   @title = params[:page]
   #   haml :'pages/page' 
-  # end   
+  # end 
+  
+  get '/templates/*' do  
+    # cache_request  
+    name =  params[:splat] 
+    logger.info name
+    # content_type 'text'
+    partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
+  end 
+  
+  get '/css/:name' do 
+    name = "#{params[:name]}.#{format.to_s}"
+    css = Stylesheet.by_site(current_site.id).find_by_name(name)  
+    css.render
+  end 
+  
+  get '/js/:name' do
+    name = "#{params[:name]}.#{format.to_s}"
+    js = Javascript.by_site(current_site.id).find_by_name(name) 
+    js.render
+  end
   
   get '*' do  
     # cache_request     
     if current_site      
-      logger.info(params[:splat].inspect) 
-      @path = params[:splat].first
-      @title = current_site.name 
-      @page = Page.find_by_path(@path, current_site) 
-      logger.info request.params.inspect
+      path = params[:splat].first
+      @page = Page.find_by_path(path, current_site) 
 
       unless @page.nil? 
-        haml :'pages/page' 
+        @page.render(format, request)
       else   
         raise Sinatra::NotFound   
       end

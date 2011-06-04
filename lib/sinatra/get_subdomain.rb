@@ -9,8 +9,8 @@ module Sinatra
         request.subdomains.join('.')    
       end   
       
-      def current_site 
-        Site.find_by_subdomain(subdomain) 
+      def current_site  
+       @current_site || Site.find_by_subdomain(subdomain)
       end
       
     end 

@@ -1,0 +1,74 @@
+<table>
+  <thead>
+    <tr>
+      <th class="title">Layouts</th>
+      <th class="modify"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#layouts}} 
+      <tr class="layout" id="layout-{{id}}">
+        <td class="Name"> 
+           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+        </td>
+      </tr> 
+    {{/layouts}}     
+  </tbody> 
+  <thead>
+    <tr>
+      <th class="title">Stylesheets</th>
+      <th class="modify"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#stylesheets}} 
+      <tr class="layout" id="layout-{{id}}">
+        <td class="Name"> 
+           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+        </td>
+      </tr> 
+    {{/stylesheets}}     
+  </tbody> 
+  <thead>
+    <tr>
+      <th class="title">Javascripts</th>
+      <th class="modify"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#javascripts}} 
+      <tr class="layout" id="layout-{{id}}">
+        <td class="Name"> 
+           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+        </td>
+      </tr> 
+    {{/javascripts}}     
+  </tbody>  
+  <thead>
+    <tr>
+      <th class="title">Partials</th>
+      <th class="modify"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#partials}} 
+      <tr class="layout" id="layout-{{id}}">
+        <td class="Name"> 
+           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+        </td> 
+        <td class="modify">                 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+        </td>
+      </tr> 
+    {{/partials}}     
+  </tbody>
+</table> 

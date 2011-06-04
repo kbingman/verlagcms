@@ -2,7 +2,7 @@ require 'sinatra/base'
 
 module Sinatra                                   
   module RespondTo  
-    # class UnhandledFormat < Sinatra::NotFound; end   
+    class UnhandledFormat < Sinatra::NotFound; end   
     
     module Helpers  
       

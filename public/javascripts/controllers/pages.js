@@ -2,7 +2,7 @@ Pages = Sammy(function (app) {
   
   var application = this;  
    
-  this.use(Sammy.Title);  
+  // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache);
   this.use(Sammy.NestedParams);
@@ -16,8 +16,10 @@ Pages = Sammy(function (app) {
       var application = this; 
       
       if(Page.all().length == 0 ){
-        Page.load(function(){      
-          if(callback){ callback.call(this); } 
+        Page.load(function(){  
+          Layout.load(function(){
+            if(callback){ callback.call(this); }  
+          });    
         });
       } else {        
         if(callback){ callback.call(this); } 
@@ -27,15 +29,17 @@ Pages = Sammy(function (app) {
     // Renders the Page tree
     renderTree: function(page){ 
       var application = this;
-       
       var pageIndex = application.render('/templates/admin/pages/index.mustache', Page.toMustache());
-      pageIndex.replace('#pages');
+      pageIndex.replace('#sidebar');
     },  
     
     renderPage: function(page){ 
-      var application = this;  
-      var editPage = application.render('/templates/admin/pages/edit.mustache', { page: page.asJSON() });    
-      editPage.replace('#pages');
+      var application = this;
+      var editPage = application.render('/templates/admin/pages/edit.mustache', { 
+        page: page.asJSON(), 
+        layouts: Layout.asJSON(page.attr('layout_id')) 
+      });    
+      editPage.replace('#editor');
     }
     
   });
@@ -58,8 +62,7 @@ Pages = Sammy(function (app) {
   this.get('#/pages/:id/new', function(request){    
     
     this.loadPages(function(){    
-      var page_id = request.params['id'];    
-      var page = Page.find(page_id);
+      var page = Page.find(request.params['id']);
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
 
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
@@ -87,22 +90,27 @@ Pages = Sammy(function (app) {
     Galerie.close();   
     this.loadPages(function(){  
       var page_id = request.params['id'];
-      var page = Page.find(page_id);   
-      
-      request.renderPage(page);
+      var page = Page.find(page_id); 
+      request.renderPage(page);  
+        
+      if(application.first_run){
+        request.renderTree(Page.root()); 
+      }
     });
   });   
   
    this.put('#/pages/:page_id', function(request){  
-    console.log('here')
     var page_id = request.params['page_id'],
       page = Page.find(page_id),   
-      attributes = request.params['page'];  
-      
+      attributes = { 
+        page: request.params['page']
+      }
+ 
     page.attr(request.params['page']);   
-    page.saveRemote({
-      success: function(){
-        request.redirect('#/pages');
+    page.saveRemote(attributes, {
+      success: function(){ 
+        request.renderTree(Page.root()); 
+        // request.redirect('#/pages');
       }
     });  
   });

@@ -23,6 +23,15 @@ GIT
     monk-glue (0.0.1)
 
 GIT
+  remote: https://github.com/plataformatec/capybara-zombie.git
+  revision: b794e45a96c9f1192429e01722d222d402231b9e
+  specs:
+    capybara-zombie (0.0.1)
+      capybara (~> 0.4.1)
+      childprocess (~> 0.1.7)
+      multi_json (~> 0.0.5)
+
+GIT
   remote: https://github.com/quirkey/jim.git
   revision: 9c1e7583155b7e6794ad558bbcac6187d7788c76
   specs:
@@ -60,25 +69,6 @@ GIT
     factory_girl (2.0.0.beta2)
 
 PATH
-  remote: vendor/capybara
-  specs:
-    capybara (1.0.0.beta1)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      selenium-webdriver (~> 0.2.0)
-      xpath (~> 0.1.4)
-
-PATH
-  remote: vendor/capybara-zombie
-  specs:
-    capybara-zombie (0.0.1)
-      capybara (~> 1.0.0beta)
-      childprocess (~> 0.1.7)
-      multi_json (~> 0.0.5)
-
-PATH
   remote: vendor/hunt
   specs:
     hunt (0.3)
@@ -88,6 +78,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    RedCloth (4.2.7)
     activemodel (3.0.7)
       activesupport (= 3.0.7)
       builder (~> 2.1.2)
@@ -97,8 +88,19 @@ GEM
     bson (1.3.0)
     bson_ext (1.3.0)
     builder (2.1.2)
+    capybara (0.4.1.2)
+      celerity (>= 0.7.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
+    celerity (0.8.9)
     childprocess (0.1.9)
       ffi (~> 1.0.6)
+    culerity (0.2.15)
     daemons (1.1.3)
     diff-lcs (1.1.2)
     downlow (0.1.4)
@@ -109,7 +111,7 @@ GEM
       i18n (~> 0.4)
     fakeweb (1.3.0)
     fast-stemmer (1.0.0)
-    ffi (1.0.8)
+    ffi (1.0.9)
     fssm (0.2.7)
     git (1.2.5)
     haml (3.1.1)
@@ -185,9 +187,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   bson (= 1.3)
   bson_ext (= 1.3)
-  capybara!
+  capybara
   capybara-zombie!
   factory_girl!
   faker

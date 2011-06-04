@@ -32,7 +32,7 @@ feature "Admin Assest" do
       visit '/admin/#/assets'                                            
       page.should have_content('Assets')
       page.should have_css('h1')
-      page.should have_css('#pages')
+      page.should have_css('#editor')
     end 
     
     scenario "views an image" do 

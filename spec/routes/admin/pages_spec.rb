@@ -4,8 +4,9 @@ describe "routes/assets" do
   include Rack::Test::Methods
   
   before(:all) do 
-    setup_site
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site)  
+    setup_site  
+    @layout = Factory(:layout, :site_id => @site.id) 
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)  
   end 
   
   after(:all) do
@@ -19,12 +20,14 @@ describe "routes/assets" do
         get '/admin/pages'
       end
       
-      it 'should be successful' do
+      it 'should be successful' do 
+        pending 'deprecated'
         do_get
         last_response.should be_ok
       end
       
       it 'should set the content header to html' do
+        pending 'deprecated'
         do_get
         last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
       end 
@@ -51,8 +54,9 @@ describe "routes/assets" do
       end   
       
       it 'should not include pages from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
-        @alien_page = Factory(:page, :site => @alien_site) 
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')  
+        @alien_layout = Factory(:layout, :site_id => @alien_site.id, :name => 'alien')
+        @alien_page = Factory(:page, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
         do_get 
         last_response.body.should_not include(@alien_page.title)  
       end
@@ -64,7 +68,7 @@ describe "routes/assets" do
         
     context 'json' do   
       def do_post
-        post '/admin/pages.json', :page => { :title => 'The Page' }
+        post '/admin/pages.json', :page => { :title => 'The Page', :layout_id => @layout.id }
       end
     
       it 'should be successful' do
@@ -89,7 +93,11 @@ describe "routes/assets" do
         
     context 'json' do  
       before(:each) do 
-        @page = Factory(:page, :site => @site)  
+        @page = Factory(:page, :title => 'killme', :parent_id => nil, :site_id => @site.id, :layout_id => @layout.id) 
+      end    
+      
+      after(:all) do
+        teardown
       end
        
       def do_delete

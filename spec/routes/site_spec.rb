@@ -4,8 +4,9 @@ describe "routes/site" do
   include Rack::Test::Methods   
   
   before(:all) do
-    setup_site 
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site) 
+    setup_site   
+    @layout = Factory(:layout, :site => @site)
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site, :layout => @layout) 
   end
   
   after(:all) do

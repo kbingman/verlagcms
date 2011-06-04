@@ -24,23 +24,34 @@ require 'mustache/sinatra'
 require 'rack/cache' 
 require 'rack/request' 
 require 'haml' 
-require 'liquid'
+require 'liquid' 
+require 'RedCloth'
 
 require 'lib/rack/raw_upload'
 require 'lib/rack/subdomains'
-require 'lib/hunt/search_all'   
+require 'lib/hunt/search_all'  
+
+require 'lib/liquid/page_drop'
+require 'lib/liquid/data_drop'
+require 'lib/liquid/data_proxy' 
+ 
 require 'jim'
 
 class Main < Monk::Glue
 
   set :app_file, __FILE__   
-  
-  set :haml, { :format => :html5, :ugly => RACK_ENV == 'development' ? false : true } 
+  set :sass, { 
+    :cache => RACK_ENV == 'development' ? false : true, 
+    :cache_location => './tmp/sass-cache',
+    :style => :compact }
+  set :haml, { 
+    :format => :html5, 
+    :ugly => RACK_ENV == 'development' ? false : true } 
   set :default_content_type, :html
   
   # Rack Middleware 
   use Rack::Cache,
-    :verbose => false,
+    :verbose => true,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie  
@@ -80,6 +91,7 @@ else
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil, :logger => logger)
 end
 
+require root_path('app/models/template.rb') 
 # This needs to be required first or Artist blows up...
 require root_path('app/models/asset.rb')
 # This needs to be required first or Page blows up...

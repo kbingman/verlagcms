@@ -5,7 +5,18 @@ class Site
   key :subdomain, String, :required => true, :unique => true 
 
   many :pages
-  many :assets        
+  many :assets
+  many :templates   
+  
+  def root
+    self.pages.first :conditions => { :parent_id => nil }
+  end  
+  
+  def children
+    self.root.children
+  end  
+  
+  liquid_methods :name, :root, :children 
   
   protected
     

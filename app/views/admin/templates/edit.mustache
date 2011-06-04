@@ -1,0 +1,30 @@
+{{#layout}} 
+<div id="code-editor">
+  <form action="#/templates/{{id}}" method= "post" id="edit-layout">  
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" /> 
+    </div>
+      
+    <div class="tabs">
+      <label for="layout_content">{{name}}</label>
+    </div> 
+    
+    <div class="code">   
+      <textarea id="layout_content" name="layout[content]" class="{{mode}}"></textarea>
+    </div>     
+    
+    <div id="title-wrapper"> 
+      <div class="field"> 
+        <select id="layout-filter" class="select" name="layout[filter]"> 
+          {{#filters}}
+          <option value="{{value}}" {{selected}}>{{name}}</option>
+          {{/filters}}
+        </select>  
+        <!--label for="layout-name">Name</label-->
+        <input type="text" id="layout_name" name="layout[name]" value="{{name}}" class="textfield" />
+        <input type="submit" id="layout_save" value="Save" class="button" />    
+      </div>
+    </div>
+  </form> 
+</div>
+{{/layout}}

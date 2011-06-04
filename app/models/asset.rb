@@ -30,7 +30,9 @@ class Asset
   key :page_id, ObjectId
   belongs_to :page, :foreign_key => :artist_id
   
-  timestamps!
+  timestamps!   
+  
+  liquid_methods :title, :image_path, :thumb_path
 
   # validates_presence_of :artist_id # :story_id
   

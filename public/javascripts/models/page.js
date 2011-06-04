@@ -9,19 +9,19 @@ var Page = Model('page', function() {
       return Page.find_all_by_parent_id(this.id())
     },  
     
-    parts: function(){ 
-      var self = this;
-      var parts = self.attr('parts'); 
-      var length = parts.length;                                 
-      
-      for (var i=0, l=length; i<l; ++i ){
-        var part_data = parts[i];
-        var part = new Part({ id: part_data.id });  
-        part.merge(part_data);
-        Part.add(part);
-      } 
-      return Part;
-    },  
+    // parts: function(){ 
+    //   var self = this;
+    //   var parts = self.attr('parts'); 
+    //   var length = parts.length;                                 
+    //   
+    //   for (var i=0, l=length; i<l; ++i ){
+    //     var part_data = parts[i];
+    //     var part = new Part({ id: part_data.id });  
+    //     part.merge(part_data);
+    //     Part.add(part);
+    //   } 
+    //   return Part;
+    // },  
     
     load: function(callback){
       var self = this;
@@ -40,18 +40,20 @@ var Page = Model('page', function() {
     }, 
     
     // exatract this for general use...
-    saveRemote: function(callback){
-      var url = '/admin/pages/' + this.id() + '.json';
-      var self = this;
-      self.save();
+    saveRemote: function(params, callback){ 
+      var self = this;  
+      var url = '/admin/pages/' + this.id() + '.json';   
+  
+      // self.save();
       jQuery.ajax({
         type: 'PUT',
         url: url,
-        // contentType: "application/json",
-        dataType: "json",
-        data: { 'page': self.attributes },
-        success: function(results) {
-          self.merge(results);
+        data: params ,
+        accepts: 'json', 
+        dataType: "json", 
+        success: function(results) { 
+          alert(JSON.stringify(results));
+          self.merge(results); 
           if(callback['success']){ callback['success'].call(this); }
         }
       });
@@ -84,6 +86,10 @@ var Page = Model('page', function() {
           return page.attr() 
         })
       }
+    },
+    
+    asJSON: function(){
+      return Page.map(function(item){ return item.attr() });
     },  
     
     root: function(){

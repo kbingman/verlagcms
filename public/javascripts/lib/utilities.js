@@ -65,6 +65,23 @@ var Utilities = {
       var search_form = jQuery('form#search-form');
       search_form.attr('action', '#' + search_form.attr('action'));
     }
-  }   
+  },
   
-}
+  formObserver: function(element){      
+    jQuery(element).keyup(function() {
+      delay(function(){
+        var form = jQuery(element).parents('form:first');
+        form.submit();
+      }, 800);
+    });
+  }  
+  
+}  
+
+var delay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();

@@ -18,11 +18,11 @@ class Main
   
         respond_to do |format|
           format.html do  
-            @root = Page.by_site(current_site.id).all_roots.first 
+            @root = current_site.root
             admin_haml :'admin/pages/index'
           end 
           format.json do 
-            pages = Page.by_site(current_site.id).all
+            pages = current_site.pages
             pages.to_json  
           end
         end
@@ -65,11 +65,10 @@ class Main
       # -------------------------------------------
       put '/:id' do
         page = Page.by_site(current_site.id).find(params['id'])  
-        parts = params['page']['parts']
                 
         if page.update_attributes(params['page'])
           respond_to do |format|
-            format.html { redirect('/pages') }
+            format.html { redirect("/admin/#/pages/#{page.id}/edit") }
             format.json { page.to_json }
           end 
         else

@@ -1,5 +1,4 @@
 # Adds a search_all method to Hunt, which finds only items with all terms 
-# TODO move to lib
 module Hunt
   module ClassMethods   
     def search_all(term)

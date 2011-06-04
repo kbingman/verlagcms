@@ -43,16 +43,14 @@ var Page = Model('page', function() {
     saveRemote: function(params, callback){ 
       var self = this;  
       var url = '/admin/pages/' + this.id() + '.json';   
-  
+
       // self.save();
       jQuery.ajax({
         type: 'PUT',
         url: url,
         data: params ,
-        accepts: 'json', 
         dataType: "json", 
         success: function(results) { 
-          alert(JSON.stringify(results));
           self.merge(results); 
           if(callback['success']){ callback['success'].call(this); }
         }

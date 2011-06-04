@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/assets" do
+describe "routes/templates" do
   include Rack::Test::Methods
   
   before(:all) do 
@@ -16,7 +16,7 @@ describe "routes/assets" do
     
     context 'json' do   
       def do_get
-        get '/admin/layouts.json'
+        get '/admin/templates.json'
       end
     
       it 'should be successful' do

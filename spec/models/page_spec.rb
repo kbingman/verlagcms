@@ -122,6 +122,43 @@ describe Page do
       it 'should render the page' do
         @child.render(:html).should == '<h1>Child</h1>'
       end
+    end   
+    
+    describe '#assets' do  
+      
+      before(:each) do 
+        @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')) 
+        @asset = Factory(:asset, :file => @file, :title => 'Image', :site_id => @site.id) 
+        @page = Factory(:page, 
+          :title => 'Child', 
+          :parent_id => @root.id, 
+          :assets => [@asset],
+          :layout => @layout, 
+          :site_id => @site.id)
+      end  
+      
+      after(:each) do
+        teardown
+      end
+      
+      it 'should have assets'  do
+        @page.assets.should == [@asset]
+      end 
+      
+      it 'should delete the page'  do
+        id = @page.id
+        @page.destroy
+        Page.find(id).should be_nil
+      end  
+      
+      it 'should not delete the asset'  do
+        id = @asset.id 
+        page_id = @page.id
+        @page.destroy
+        Page.find(page_id).should be_nil 
+        Asset.find(id).should_not be_nil    
+      end
+      
     end
        
   end

@@ -101,13 +101,12 @@ Pages = Sammy(function (app) {
   
    this.put('#/pages/:page_id', function(request){  
     var page_id = request.params['page_id'],
-      page = Page.find(page_id),   
-      attributes = { 
-        page: request.params['page']
-      }
- 
+      page = Page.find(page_id)
+    // This is a hack, but otherwise the params get screwed up
+    var form = $('#edit-page')
+
     page.attr(request.params['page']);   
-    page.saveRemote(attributes, {
+    page.saveRemote(form.serialize(), {
       success: function(){ 
         request.renderTree(Page.root()); 
         // request.redirect('#/pages');

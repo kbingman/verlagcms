@@ -31,7 +31,7 @@ class Page
   
   validates_presence_of :title 
   
-  # attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts
+  attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
@@ -138,7 +138,7 @@ class Page
       self.slug = if root?
         '/'
       else
-        self.slug = sanitize(self.title) # : sanitize(self.slug)
+        self.slug = self.slug.blank? ? sanitize(self.title) : sanitize(self.slug) 
       end 
     end  
     

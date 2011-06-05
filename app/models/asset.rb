@@ -32,7 +32,11 @@ class Asset
   
   timestamps!   
   
-  liquid_methods :title, :image_path, :thumb_path
+  liquid_methods :title, :image_path, :thumb_path, :find
+  
+  def find
+    'find'
+  end 
 
   # validates_presence_of :artist_id # :story_id
   

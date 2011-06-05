@@ -16,6 +16,10 @@ class Site
     self.root.children
   end  
   
+  def domain
+    "#{self.subdomain}.#{monk_settings(:domain)}"
+  end
+  
   liquid_methods :name, :root, :children 
   
   protected

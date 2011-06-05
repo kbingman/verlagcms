@@ -7,7 +7,21 @@ var Page = Model('page', function() {
     children: function(){ 
       var children = [];
       return Page.find_all_by_parent_id(this.id())
-    },  
+    }, 
+    
+    assets: function(){ 
+      var self = this;
+      var assets = self.attr('assets'); 
+      var length = assets.length;                                 
+      
+      for (var i=0, l=length; i<l; ++i ){
+        var asset_data = assets[i];
+        var asset = new Asset({ id: asset_data.id });  
+        asset.merge(asset_data);
+        Asset.add(asset);
+      } 
+      return Asset;
+    },
     
     // parts: function(){ 
     //   var self = this;
@@ -50,9 +64,14 @@ var Page = Model('page', function() {
         url: url,
         data: params ,
         dataType: "json", 
-        success: function(results) { 
-          self.merge(results); 
-          if(callback['success']){ callback['success'].call(this); }
+        success: function(results) {
+          if(results.errors){
+            alert(JSON.stringify(results.errors));
+             if(callback['error']){ callback['error'].call(this); }  
+          } else {
+            self.merge(results); 
+            if(callback['success']){ callback['success'].call(this); }
+          }
         }
       });
     },

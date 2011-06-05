@@ -17,7 +17,7 @@ class Template
   end
   
   def as_json(options)
-    super(:methods => [:klass, :mode])
+    super(:methods => [:klass, :mode, :part_types])
   end 
   
   def mode

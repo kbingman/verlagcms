@@ -62,11 +62,13 @@ Assets = Sammy(function (app) {
   
   // Create Asset
   // ---------------------------------------------  
-  this.post('/admin/assets', function(request){     
+  this.post('/admin/assets', function(request){   
+    var fileInput = document.getElementById('ajax_uploader');
+    var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
-      fileInput = uploadForm.find('input[type=file]'),
-      files = fileInput.attr('files');
+    //  fileInput = uploadForm.find('input[type=file]'),
+    //  files = fileInput.attr('files');
 
     for(var i = 0; i < files.length; i++) {   
       
@@ -77,6 +79,7 @@ Assets = Sammy(function (app) {
         });
       });     
     }
+    return false; 
   });
 
   // // Edit Asset 

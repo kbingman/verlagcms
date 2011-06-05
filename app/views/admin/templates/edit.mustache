@@ -26,5 +26,21 @@
       </div>
     </div>
   </form> 
+</div> 
+<div id="parts">
+  PARTS
+  <ul>
+    <li>
+      <h2>page.data.title</h2>    
+    </li>
+    <li>
+      <h2>page.data.slug</h2>    
+    </li>  
+    {{#part_types}}  
+    <li>
+      <h2>page.data.{{name}}</h2>    
+    </li> 
+    {{/part_types}}  
+  </ul>
 </div>
 {{/layout}}

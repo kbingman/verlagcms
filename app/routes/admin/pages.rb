@@ -22,7 +22,7 @@ class Main
             admin_haml :'admin/pages/index'
           end 
           format.json do 
-            pages = current_site.pages
+            pages = current_site.pages.sort_by{ |p| p.level }
             pages.to_json  
           end
         end
@@ -72,7 +72,13 @@ class Main
             format.json { page.to_json }
           end 
         else
-          # error handling
+          logger.debug "Page errors: #{page.errors}"
+          respond_to do |format|
+            # format.html { redirect("/admin/#/pages/#{page.id}/edit") }
+            format.json do
+              { :errors => page.errors }.to_json  
+            end
+          end
         end
       end     
       

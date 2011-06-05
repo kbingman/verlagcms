@@ -17,8 +17,12 @@ describe "lib/data_proxy" do
   context 'images' do   
     
     it "should return the title" do
-      @page.title.to_liquid.should == 'root'
-    end  
+      @page.data.title.to_liquid.should == 'root'
+    end 
+    
+    it "should return the title" do
+      @page.data.slug.to_liquid.should == '/'
+    end 
     
     it "should return the body content as a liquid attribute" do
       @page.data.body.to_liquid.should == '<p>fibble</p>'

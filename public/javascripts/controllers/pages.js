@@ -28,7 +28,8 @@ Pages = Sammy(function (app) {
     
     // Renders the Page tree
     renderTree: function(page){ 
-      var application = this;
+      var application = this;     
+      alert(JSON.stringify(Page.root().children().all().length));
       var pageIndex = application.render('/templates/admin/pages/index.mustache', Page.toMustache());
       pageIndex.replace('#sidebar');
     },  
@@ -108,8 +109,8 @@ Pages = Sammy(function (app) {
     page.attr(request.params['page']);   
     page.saveRemote(form.serialize(), {
       success: function(){ 
-        request.renderTree(Page.root()); 
-        // request.redirect('#/pages');
+        // request.renderTree(Page.root()); 
+        request.redirect('#/pages/' + page_id + '/edit');
       }
     });  
   });
@@ -176,11 +177,19 @@ Pages = Sammy(function (app) {
     this.loadPages(function(){   
       var page_id = request.params['page_id'];  
       var page = Page.find(page_id);  
-      var asset = Asset.find(request.params['id']);
-      asset.addToPage(page_id,function(){
-        request.renderPage(page); 
-        request.redirect('#/pages/' + page_id + '/edit');  
-      });
+      var asset = Asset.find(request.params['id']);  
+      var page_asset_input = $('#page-asset-ids');
+      var asset_ids_list = page_asset_input.attr('value'); 
+      alert(asset_ids_list)
+      page_asset_input.attr('value', asset_ids_list + ', ' + asset.id());
+      Galerie.close(); 
+      // Consider an elegant way to do this with the model...
+      var edit_form = jQuery('#edit-page').submit();
+      // alert(asset.id());
+      // asset.addToPage(page_id,function(){
+      //   request.renderPage(page); 
+      //   request.redirect('#/pages/' + page_id + '/edit');  
+      // });
     });  
   }); 
       

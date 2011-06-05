@@ -16,13 +16,13 @@ class Main
   get '/css/:name' do 
     name = "#{params[:name]}.#{format.to_s}"
     css = Stylesheet.by_site(current_site.id).find_by_name(name)  
-    css.render
+    css.render if css
   end 
   
   get '/js/:name' do
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site.id).find_by_name(name) 
-    js.render
+    js.render if js
   end
   
   get '*' do  

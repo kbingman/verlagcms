@@ -7,8 +7,12 @@ class Part
   
   liquid_methods :name, :content, :render   
   
-  def render
-    RedCloth.new(self.content).to_html
+  def render 
+    if self.content
+      RedCloth.new(self.content).to_html
+    else
+      ''
+    end
   end
   
   # validate :unique_name

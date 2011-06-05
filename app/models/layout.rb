@@ -1,5 +1,5 @@
 class Layout < Template
   
-  many :part_types
+  many :part_types 
   
 end

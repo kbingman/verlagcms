@@ -1,11 +1,19 @@
 class DataDrop < Liquid::Drop
   
   def initialize page
-    @parts = page.parts 
+    @page = page 
+  end   
+  
+  def title
+    @page.title
   end  
+  
+  def slug
+    @page.slug
+  end
    
   def before_method(meth) 
-    part = @parts.detect { |p| p.name == meth.to_s } 
+    part = @page.parts.detect { |p| p.name == meth.to_s } 
     part ? part.render : '' 
   end
 

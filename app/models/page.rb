@@ -13,7 +13,9 @@ class Page
   key :tags, Array, :index => true  
   
   many :parts, :class_name => 'Part', :dependent => :destroy 
-  many :assets, :class_name => 'Asset'
+   
+  key :asset_ids, Array
+  many :assets, :in => :asset_ids
   
   key :parent_id, ObjectId
   belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id  
@@ -31,7 +33,7 @@ class Page
   
   validates_presence_of :title 
   
-  attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts
+  attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts, :assets_list
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
@@ -49,7 +51,12 @@ class Page
       self.to_json
     else 
       template = Liquid::Template.parse(self.layout.content)
-      template.render 'page' => self, 'site' => self.site # 
+      template.render({
+        'page' => self, 
+        'site' => self.site, 
+        'request' => RequestDrop.new(request),
+        'search' => SearchDrop.new(self.site, request) 
+      })
     end
   end
   
@@ -63,7 +70,7 @@ class Page
   end  
     
   def as_json(options)
-    super(:methods => [:padding, :assets])
+    super(:methods => [:padding, :assets, :assets_list])
   end     
   
   def path
@@ -109,6 +116,15 @@ class Page
   def tag_list=(list)
     new_tags = list.split(',').map{ |t| t.strip.downcase }
     self.tags = new_tags.uniq
+  end
+  
+  def assets_list
+    self.assets.collect{ |a| a.id }.join(', ')
+  end
+  
+  def assets_list=(list)
+    new_ids = list.split(',').map{ |t| t.strip }
+    self.asset_ids = new_ids.uniq
   end  
   
   def part_names

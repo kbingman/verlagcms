@@ -25,17 +25,13 @@ require 'rack/cache'
 require 'rack/request' 
 require 'haml' 
 require 'liquid' 
-require 'RedCloth'
+require 'RedCloth' 
+require 'jim'
 
 require 'lib/rack/raw_upload'
 require 'lib/rack/subdomains'
 require 'lib/hunt/search_all'  
 
-require 'lib/liquid/page_drop'
-require 'lib/liquid/data_drop'
-require 'lib/liquid/data_proxy' 
- 
-require 'jim'
 
 class Main < Monk::Glue
 
@@ -100,7 +96,12 @@ require root_path('app/models/part.rb')
 # Load all application files.
 Dir[root_path('app/**/*.rb')].each do |file|
   require file
-end    
+end  
+
+# Load all lib liquid files.
+Dir[root_path('lib/liquid/*.rb')].each do |file|
+  require file
+end  
 
 if defined? Encoding
   Encoding.default_external = Encoding::UTF_8

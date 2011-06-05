@@ -16,6 +16,10 @@ class PageDrop < Liquid::Drop
     @page.children
   end
   
+  def child_count
+    @page.children.count
+  end
+  
   def assets
     @page.assets
   end
@@ -26,7 +30,7 @@ class PageDrop < Liquid::Drop
   
   def data
     @page.data
-  end
+  end 
   
   def before_method(meth) 
     part = @page.parts.detect { |p| p.name == meth.to_s } 
@@ -48,8 +52,6 @@ class RenderPart < Liquid::Tag
 end
 
 Liquid::Template.register_tag('render_part', RenderPart) 
-
-
  
 # 
 # class PageDrop < Liquid::Block                                             

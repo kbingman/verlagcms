@@ -32,9 +32,13 @@
     {{/parts}}  
     <div id="page-assets">
       <h2>Assets</h2>  
-      <p><a href="#/pages/{{id}}/search">add asset</a></p> 
+      <p><a href="#/pages/{{id}}/search">add asset</a></p>
+      <div class="hidden">                  
+        <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+      </div> 
       {{#assets}} 
         <div class="asset">
+          
           <a href="#/assets/{{id}}/edit{{query_path}}">
             <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
           </a> 
@@ -56,4 +60,5 @@
     <input type="submit" id="page_save" value="Save" class="button" />  
   </div>
 </form>    
-  {{/page}}  
+
+{{/page}}  

@@ -136,6 +136,14 @@ var Asset = Model('asset', function() {
       return Asset.map(function(item){ return item.attr() });
     }, 
     
+    tags: function(){
+      tags = []
+      Asset.map(function() {
+        tags = tags.concat(this.attr("tags"));
+      });                                     
+      return tags;
+    },
+    
     // This is hack 
     // I do it like this, as I don't have any assets loaded...
     removeFromPage: function(id, page_id, callback){

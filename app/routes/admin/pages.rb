@@ -15,14 +15,16 @@ class Main
       # -------------------------------------------
       get '/?' do
         # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
-  
+        
         respond_to do |format|
           format.html do  
             @root = current_site.root
             admin_haml :'admin/pages/index'
           end 
-          format.json do 
-            pages = current_site.pages.sort_by{ |p| p.level }
+          format.json do  
+            active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+            logger.debug("active_page_ids: #{active_page_ids}") 
+            pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
             pages.to_json  
           end
         end
@@ -51,6 +53,16 @@ class Main
         respond_to do |format|
           format.html { redirect('/pages') }
           format.json { @page.to_json }
+        end
+      end 
+      
+      # Show page children
+      # -------------------------------------------
+      get '/:id/children' do
+        @page = Page.by_site(current_site.id).find(params['id'])
+        respond_to do |format|
+          format.html { redirect('/pages') }
+          format.json { @page.children.to_json }
         end
       end
       

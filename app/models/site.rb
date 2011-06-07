@@ -14,7 +14,14 @@ class Site
   
   def children
     self.root.children
-  end  
+  end   
+  
+  def active_pages(parent_ids=nil)
+    parent_ids = parent_ids ? (parent_ids << self.root.id) : [self.root.id]
+    pages = Page.all(:conditions => { :site_id => self.id, :parent_id => parent_ids})  
+    pages << self.root
+    pages
+  end
   
   def domain
     "#{self.subdomain}.#{monk_settings(:domain)}"

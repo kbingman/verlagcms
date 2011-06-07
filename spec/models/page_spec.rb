@@ -20,7 +20,6 @@ describe Page do
     end 
     
     it 'should require a layout' do  
-      pending
       Factory.build(:page, :site => @site, :layout_id => nil).should_not be_valid
     end
     

@@ -40,8 +40,8 @@ group :test do
   gem 'test-unit'
   gem 'rspec', '>= 2.5.0'
   gem 'steak', '>= 1.0.0'  
-  gem 'capybara' #, :path => 'vendor/capybara' # :git => 'https://github.com/jnicklas/capybara.git'
-  gem 'capybara-zombie', :git => 'https://github.com/plataformatec/capybara-zombie.git' # :path => 'vendor/capybara-zombie' # 
+  gem 'capybara' :git => 'https://github.com/jnicklas/capybara.git'
+  gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
   # gem 'capybara-webkit' # , :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl', :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'

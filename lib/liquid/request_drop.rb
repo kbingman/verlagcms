@@ -14,10 +14,14 @@ class RequestDrop < Liquid::Drop
   
   def uri
     @request.path
+  end
+  
+  def query
+    @request.query_string
   end 
   
   def params
-    @request.params.inspect
+    @request.params
   end
   
 end

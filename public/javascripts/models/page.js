@@ -7,6 +7,13 @@ var Page = Model('page', function() {
     children: function(){ 
       var children = [];
       return Page.find_all_by_parent_id(this.id())
+    },
+    
+    has_children: function(){  
+      var self = this;
+      if(self.children().all().length > 0){
+        return true
+      }
     }, 
     
     assets: function(){ 

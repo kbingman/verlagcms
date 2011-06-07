@@ -37,16 +37,17 @@ class Page
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
+  # Liquid Stuff
   # liquid_methods :title, :path, :assets, :children, :data, :parts 
   def to_liquid
-    PageDrop.new(self)
+    PageDrop.new self
   end  
   
   def data 
-    DataProxy.new(self)
+    DataProxy.new self
   end
   
-  def render(format='html', request=nil) 
+  def render format='html', request=nil 
     if format.to_s == 'json'  
       self.to_json
     else 
@@ -54,7 +55,8 @@ class Page
       template.render({
         'page' => self, 
         'site' => self.site, 
-        'request' => RequestDrop.new(request),
+        'request' => RequestDrop.new(request),  
+        # TOTO move this into a page subclass?
         'search' => SearchDrop.new(self.site, request) 
       })
     end
@@ -67,10 +69,10 @@ class Page
   def padding  
     # this needs to be moved out of the model...
     self.level * 12
-  end  
+  end   
     
   def as_json(options)
-    super(:methods => [:padding, :assets, :assets_list])
+    super(:methods => [:padding, :assets, :assets_list, :root?])
   end     
   
   def path
@@ -146,7 +148,7 @@ class Page
     
     before_validation :set_layout_id
     def set_layout_id 
-      self.layout = self.parent.layout if self.layout.nil?
+      self.layout = self.parent.layout if self.layout_id.blank? && self.parent_id
     end
     
     before_validation :set_slug

@@ -1,74 +1,55 @@
-<table>
-  <thead>
-    <tr>
-      <th class="title">Layouts</th>
-      <th class="modify"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#layouts}} 
-      <tr class="layout" id="layout-{{id}}">
-        <td class="Name"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
-        </td> 
-        <td class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
-        </td>
-      </tr> 
-    {{/layouts}}     
-  </tbody> 
-  <thead>
-    <tr>
-      <th class="title">Stylesheets</th>
-      <th class="modify"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#stylesheets}} 
-      <tr class="layout" id="layout-{{id}}">
-        <td class="Name"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
-        </td> 
-        <td class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
-        </td>
-      </tr> 
-    {{/stylesheets}}     
-  </tbody> 
-  <thead>
-    <tr>
-      <th class="title">Javascripts</th>
-      <th class="modify"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#javascripts}} 
-      <tr class="layout" id="layout-{{id}}">
-        <td class="Name"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
-        </td> 
-        <td class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
-        </td>
-      </tr> 
-    {{/javascripts}}     
-  </tbody>  
-  <thead>
-    <tr>
-      <th class="title">Partials</th>
-      <th class="modify"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#partials}} 
-      <tr class="layout" id="layout-{{id}}">
-        <td class="Name"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
-        </td> 
-        <td class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
-        </td>
-      </tr> 
-    {{/partials}}     
-  </tbody>
-</table> 
+<h2>Layouts</h2> 
+<ul>
+  {{#layouts}} 
+    <li class="layout" id="layout-{{id}}">
+      <span class="Name"> 
+         <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+      </span> 
+      <span class="modify">                 
+        <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+      </span>
+    </li>  
+  {{/layouts}}  
+</ul>   
+
+<h2>Stylesheets</h2>  
+<ul>     
+{{#stylesheets}} 
+  <li class="layout" id="layout-{{id}}">
+    <span class="Name"> 
+       <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+    </span> 
+    <span class="modify">                 
+      <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+    </span>
+  </li>
+{{/stylesheets}} 
+</ul>
+    
+<h2>Javascripts</h2>
+<ul>
+{{#javascripts}} 
+  <li class="layout" id="layout-{{id}}">
+    <span class="Name"> 
+       <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+    </span> 
+    <span class="modify">                 
+      <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+    </span>
+  </li>
+{{/javascripts}}     
+</ul>
+
+<h2>Partials</h2>
+<ul>
+{{#partials}} 
+  <li class="layout" id="layout-{{id}}">
+    <span class="Name"> 
+       <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+    </span> 
+    <span class="modify">                 
+      <a class="remove-layout" id="remove-layout-{{id}}" href="#/layouts/{{id}}/remove">x</a> 
+    </span>
+  </li>
+{{/partials}}     
+</ul>

@@ -35,9 +35,14 @@ var Layout = Model('layout', function() {
       }
     },
     
-    asJSON: function(layout_id){
-      return Layout.map(function(item){  
-        if(layout_id == item.id()){ item.attr('selected', 'selected') } 
+    asLayoutJSON: function(layout_id){
+      return Layout.find_all_by_class('Layout').map(function(item){    
+        console.log(layout_id + ' : ' + item.id())
+        if(layout_id == item.id()){ 
+          item.attr('selected', 'selected="selected"') 
+        }else{
+          item.attr('selected', '')  
+        } 
         return item.attr(); 
       });
     }, 

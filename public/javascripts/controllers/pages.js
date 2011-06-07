@@ -1,6 +1,6 @@
 Pages = Sammy(function (app) {   
   
-  var application = this;  
+  var context = this;  
    
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -28,33 +28,94 @@ Pages = Sammy(function (app) {
     
     // Renders the Page tree
     renderTree: function(page){ 
-      var application = this;     
-      alert(JSON.stringify(Page.root().children().all().length));
-      var pageIndex = application.render('/templates/admin/pages/index.mustache', Page.toMustache());
-      pageIndex.replace('#sidebar');
+      var application = this;
+      var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
+      
+      pageIndex.replace('#sidebar').then(function(){    
+        application.renderNode(page); 
+      });
+    },
+    
+    renderNode: function(page){ 
+      var application = this;
+      // This is a little slow, as it renders the children for each page. 
+      pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
+      pageNode.appendTo('#page-' + page.id()).then(function(){
+        page.children().each(function(child){   
+          if(child.has_children() == true){ 
+            jQuery('#page-' + child.id()).addClass('open')
+            application.renderNode(child);  
+          }
+        })
+      });       
     },  
     
     renderPage: function(page){ 
       var application = this;
       var editPage = application.render('/templates/admin/pages/edit.mustache', { 
         page: page.asJSON(), 
-        layouts: Layout.asJSON(page.attr('layout_id')) 
-      });    
+        layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
+      });  
       editPage.replace('#editor');
     }
     
   });
 
   this.bind('run', function () { 
-    application.first_run = true;
-    application.modal = false;  
+    context.application = this;
+    console.log(context.application)   
+    context.refresh_tree = true;
+    context.modal = false;   
+    
+    jQuery('#sidebar .opener').live('click', function(e){   
+      var toggle = $(this);  
+      var parent = toggle.parents('li:first');   
+      var page_id = this.id.split('-')[2]; 
+      var page = Page.find(page_id) 
+      var active_page_cookie = jQuery.cookie('active_page_ids');
+      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []
+
+      if(!parent.hasClass('open')){
+        active_page_ids.push(page_id);  
+        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
+        var url = '/admin/pages/' + page_id + '/children.json'; 
+        jQuery.ajax({
+          type: 'GET',
+          url: url,
+          dataType: "json",                   
+          success: function(results) {    
+            jQuery.each(results, function(i, results) { 
+              var page = Page.find(results.id);
+              if(!page){
+                var page = new Page({ id: results.id });
+              }
+              page.merge(results);
+              Page.add(page);
+            });
+            context.application.renderTree(Page.root());    
+          }
+        }); 
+      } else {
+        var arr = new Array();
+        active_page_ids = jQuery.grep(active_page_ids, function(value) {
+          return value != page_id;
+        }); 
+        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
+        // page.children().each(function(child){
+        //   Page.remove(child);
+        // }); 
+        jQuery('#page-' + page_id + ' ul').remove();
+      }
+      parent.toggleClass('open');   
+      e.preventDefault();
+    });
   });
 
   // Page routes
   // ---------------------------------------------  
   this.get('#/pages', function(request){ 
     Galerie.close();
-    application.first_run = false;  
+    context.refresh_tree = false;  
     request.loadPages(function(){
       request.renderTree(Page.root());  
     });            
@@ -68,7 +129,7 @@ Pages = Sammy(function (app) {
 
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(application.first_run){
+      if(context.refresh_tree){
         request.renderTree(Page.root()); 
       }
 
@@ -88,16 +149,19 @@ Pages = Sammy(function (app) {
   });
   
   this.get('#/pages/:id/edit', function(request){ 
-    Galerie.close();   
+    Galerie.close();  
+    
     this.loadPages(function(){  
       var page_id = request.params['id'];
-      var page = Page.find(page_id); 
+      var page = Page.find(page_id);  
+      
       request.renderPage(page);  
-        
-      if(application.first_run){
-        request.renderTree(Page.root()); 
+
+      if(context.refresh_tree){
+        request.renderTree(Page.root());
+        context.refresh_tree = false;  
       }
-    });
+    });        
   });   
   
    this.put('#/pages/:page_id', function(request){  
@@ -123,7 +187,7 @@ Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(application.first_run){
+      if(context.refresh_tree){
         request.renderTree(Page.root()); 
       }
       
@@ -180,7 +244,7 @@ Pages = Sammy(function (app) {
       var asset = Asset.find(request.params['id']);  
       var page_asset_input = $('#page-asset-ids');
       var asset_ids_list = page_asset_input.attr('value'); 
-      alert(asset_ids_list)
+     
       page_asset_input.attr('value', asset_ids_list + ', ' + asset.id());
       Galerie.close(); 
       // Consider an elegant way to do this with the model...
@@ -218,7 +282,7 @@ Pages = Sammy(function (app) {
       var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
       newPart.replace('#modal');   
       
-      if(application.first_run){ request.renderPage(page); }  
+      if(context.refresh_tree){ request.renderPage(page); }  
     });  
   });  
   
@@ -242,7 +306,7 @@ Pages = Sammy(function (app) {
 
       var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
       removePart.replace('#modal');  
-      if(application.first_run){ request.renderPage(page); }
+      if(context.refresh_tree){ request.renderPage(page); }
     });  
   });
   

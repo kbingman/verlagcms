@@ -3,10 +3,13 @@ require 'spec_helper'
 describe "routes/assets" do
   include Rack::Test::Methods
   
-  before(:all) do 
+  before(:all) do
+    teardown   
     setup_site  
     @layout = Factory(:layout, :site_id => @site.id) 
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)  
+    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)   
+    @child_a = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child A', :layout => @layout) 
+    @child_b = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child B', :layout => @layout) 
   end 
   
   after(:all) do
@@ -87,7 +90,37 @@ describe "routes/assets" do
       end  
     end
     
-  end   
+  end  
+  
+  context 'GET children' do 
+        
+    context 'json' do   
+      def do_get
+        get "/admin/pages/#{@page.id}/children.json"
+      end
+    
+      it 'should be successful' do
+        do_get
+        last_response.should be_ok
+      end
+      
+      it 'should set the content header to json' do
+        do_get
+        last_response.headers['Content-Type'].should == 'application/json'
+      end
+    
+      it 'should include pages in the json' do  
+        do_get
+        last_response.body.should include(@child_a.title)
+      end 
+      
+      it 'should include pages in the json' do  
+        do_get
+        last_response.body.should include(@child_b.title)
+      end  
+   
+    end  
+  end 
   
   context 'DELETE destroy' do
         

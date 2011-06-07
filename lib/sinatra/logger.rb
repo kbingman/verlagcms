@@ -18,7 +18,7 @@ module Sinatra
       app.after do    
         unless @start.nil?      
           logger.info "Completed in: #{Time.now - @start}s" 
-          logger.debug "#{1 / (Time.now - @start)} Requests per second" 
+          logger.info "#{1 / (Time.now - @start)} Requests per second" 
         end 
         logger.debug ""
       end

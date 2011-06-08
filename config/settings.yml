@@ -1,0 +1,19 @@
+defaults: &defaults
+  :log_level: info
+  :mongo:
+    :database: davis
+    :host: localhost
+  :domain: verlag.dev
+
+:development:
+  <<: *defaults
+  :log_level: debug
+
+:test:
+  <<: *defaults
+  :mongo:
+    :database: davis_test
+    :host: localhost
+
+:production:
+  <<: *defaults

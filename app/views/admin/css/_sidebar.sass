@@ -7,9 +7,17 @@
   :width 260px     
   :background white
   
-  .item 
+  .item   
+    :position relative
     :border
       :top 1px solid #ccc
+    .opener
+      :position absolute
+      :height 16px
+      :width 16px
+      :top 2px
+      :left 0
+      :cursor pointer
     .title
       a
         :display inline-block

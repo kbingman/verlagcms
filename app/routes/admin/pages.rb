@@ -23,7 +23,6 @@ class Main
           end 
           format.json do  
             active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
-            logger.debug("active_page_ids: #{active_page_ids}") 
             pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
             pages.to_json  
           end

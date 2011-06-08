@@ -1,13 +1,16 @@
-<ul class="page-children">
+<ul class="page-children level-{{level}}">
   {{#pages}}
-  <li class="node level-{{level}}" id="page-{{id}}"> 
+  <li class="node" id="page-{{id}}"> 
     <div class="item">
-      <span class="opener">
-         <a title="open" href="#/pages" class="opener" id="open-children-{{id}}">+</a>
+      {{#children?}}{{#child?}} 
+      <span class="opener" id="open-children-{{id}}">
+         <!--a title="open" href="#/pages" class="opener" id="open-children-{{id}}">+</a-->
+         +
       </span>
+      {{/child?}}{{/children?}}
       <span class="title" style="padding-left: {{padding}}px;"> 
          <a id="edit-{{id}}" href="#/pages/{{id}}/edit">{{title}}</a>       
-      </span> 
+      </span>
       <span class="modify">                 
         <a title="Add Child" class="add-child" id="add-child-{{id}}"href="#/pages/{{id}}/new">+</a> 
         <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="#/pages/{{id}}/remove">x</a> 

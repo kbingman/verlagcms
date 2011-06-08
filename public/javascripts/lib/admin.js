@@ -1,6 +1,6 @@
 jQuery(document).ready(function () {
 
-  Assets.run();   
+  Assets.run('#/pages');   
   Pages.run();
   Layouts.run();
   // AjaxUploader.initialize('#ajax_uploader');

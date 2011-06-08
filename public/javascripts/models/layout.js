@@ -37,7 +37,6 @@ var Layout = Model('layout', function() {
     
     asLayoutJSON: function(layout_id){
       return Layout.find_all_by_class('Layout').map(function(item){    
-        console.log(layout_id + ' : ' + item.id())
         if(layout_id == item.id()){ 
           item.attr('selected', 'selected="selected"') 
         }else{

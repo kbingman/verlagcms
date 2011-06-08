@@ -64,61 +64,85 @@ Pages = Sammy(function (app) {
   this.bind('run', function () { 
     context.application = this;
     console.log(context.application)   
-    context.refresh_tree = true;
+    context.refresh_pages = true;
     context.modal = false;   
     
-    jQuery('#sidebar .opener').live('click', function(e){   
+    // This needs to be moved
+    jQuery('#sidebar .opener').live('click', function(e){    
+
+      var Now = new Date()
+      var start = Now.getTime();  
       var toggle = $(this);  
-      var parent = toggle.parents('li:first');   
-      var page_id = this.id.split('-')[2]; 
-      var page = Page.find(page_id) 
+      var parent = toggle.parents('li:first'); 
+      
+      var page_id = this.id.split('-')[2];  
+      var page = Page.find(page_id)  
+
       var active_page_cookie = jQuery.cookie('active_page_ids');
       var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []
 
       if(!parent.hasClass('open')){
-        active_page_ids.push(page_id);  
+        active_page_ids.push(page_id);
+        parent.toggleClass('open');  
+        var now = new Date();
+        var start = now.getTime();  
         jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        var url = '/admin/pages/' + page_id + '/children.json'; 
-        jQuery.ajax({
-          type: 'GET',
-          url: url,
-          dataType: "json",                   
-          success: function(results) {    
-            jQuery.each(results, function(i, results) { 
-              var page = Page.find(results.id);
-              if(!page){
-                var page = new Page({ id: results.id });
-              }
-              page.merge(results);
-              Page.add(page);
-            });
-            context.application.renderTree(Page.root());    
-          }
-        }); 
-      } else {
+        // var url = '/admin/pages/' + page_id + '/children.json';    
+        // move to model
+        // jQuery.ajax({
+        //   type: 'GET',
+        //   url: url,
+        //   dataType: "json",                   
+        //   success: function(results) {    
+        //     jQuery.each(results, function(i, results) { 
+        //       var page = Page.find(results.id);
+        //       if(!page){
+        //         var page = new Page({ id: results.id });
+        //       }
+        //       page.merge(results);
+        //       Page.add(page);
+        //     });
+        //     context.application.renderNode(page);
+        //     // Hide spinner  
+        //   }
+        // });   
+        // Loads all open pages...
+        Page.load(function(){  
+          context.application.renderNode(page);
+          var now = new Date();
+          var end = now.getTime() - start; 
+          console.log(end)
+          // Hide spinner    
+        });
+      } else {    
+        parent.toggleClass('open'); 
         var arr = new Array();
         active_page_ids = jQuery.grep(active_page_ids, function(value) {
           return value != page_id;
         }); 
         jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        // page.children().each(function(child){
-        //   Page.remove(child);
-        // }); 
+        page.children().each(function(child){
+          Page.remove(child);
+        }); 
         jQuery('#page-' + page_id + ' ul').remove();
-      }
-      parent.toggleClass('open');   
-      e.preventDefault();
+      } 
+      context.refresh_pages = false;
+      return false; 
     });
   });
 
   // Page routes
   // ---------------------------------------------  
   this.get('#/pages', function(request){ 
-    Galerie.close();
-    context.refresh_tree = false;  
-    request.loadPages(function(){
-      request.renderTree(Page.root());  
-    });            
+    Galerie.close();    
+    // context.refresh_pages = true; 
+    console.log(context.refresh_pages)
+    if(context.refresh_pages){
+      request.loadPages(function(){
+        request.renderTree(Page.root());  
+      }); 
+    }
+    context.refresh_pages = false;              
   });
   
   this.get('#/pages/:id/new', function(request){    
@@ -129,8 +153,9 @@ Pages = Sammy(function (app) {
 
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_tree){
+      if(context.refresh_pages){
         request.renderTree(Page.root()); 
+        context.refresh_pages = true;
       }
 
       var newPage = request.render('/templates/admin/pages/new.mustache', { parent: page.asJSON() }); 
@@ -143,23 +168,34 @@ Pages = Sammy(function (app) {
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
       
-    Page.create(attributes, function(){
-      request.redirect('#/pages');
+    Page.create(attributes, function(results){ 
+      alert(results)
+      context.refresh_pages = true; 
+      request.redirect('#/pages/' + results.id + '/edit');
     }); 
   });
   
   this.get('#/pages/:id/edit', function(request){ 
-    Galerie.close();  
+    Galerie.close(); 
+    console.log(context.refresh_pages) 
     
     this.loadPages(function(){  
       var page_id = request.params['id'];
-      var page = Page.find(page_id);  
+      var page = Page.find(page_id); 
       
-      request.renderPage(page);  
-
-      if(context.refresh_tree){
+      if(page) {
+        request.renderPage(page); 
+      } else {  
+        // Loads page if the current collection does not contain it
+        page = new Page({ id: page_id });
+        page.load(function(){
+          request.renderPage(page); 
+        });
+      } 
+      
+      if(context.refresh_pages){
         request.renderTree(Page.root());
-        context.refresh_tree = false;  
+        context.refresh_pages = false;  
       }
     });        
   });   
@@ -187,7 +223,7 @@ Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_tree){
+      if(context.refresh_pages){
         request.renderTree(Page.root()); 
       }
       
@@ -200,7 +236,9 @@ Pages = Sammy(function (app) {
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
       
-    page.deleteRemote(function(){
+    page.deleteRemote(function(){ 
+      jQuery('#page-' + page_id).remove();
+      context.refresh_pages = false;
       request.redirect('#/pages');
     }); 
   });  
@@ -282,7 +320,7 @@ Pages = Sammy(function (app) {
       var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
       newPart.replace('#modal');   
       
-      if(context.refresh_tree){ request.renderPage(page); }  
+      if(context.refresh_pages){ request.renderPage(page); }  
     });  
   });  
   
@@ -306,7 +344,7 @@ Pages = Sammy(function (app) {
 
       var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
       removePart.replace('#modal');  
-      if(context.refresh_tree){ request.renderPage(page); }
+      if(context.refresh_pages){ request.renderPage(page); }
     });  
   });
   

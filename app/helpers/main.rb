@@ -34,6 +34,7 @@ class Main
     def cache_request(timeout=600)
       unless RACK_ENV == 'development'
         response['Cache-Control'] = "max-age=#{timeout}, public" 
+        # etag "foo"
       end
     end 
     

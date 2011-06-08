@@ -118,10 +118,18 @@ describe Page do
         @child.should respond_to(:render)
       end   
       
-      it 'should render the page' do
+      it 'should render the page (html)' do
         @child.render(:html).should == '<h1>Child</h1>'
+      end   
+      
+      it 'should render the page (json)' do
+        @child.render(:json).should == @child.to_json
       end
-    end   
+    end  
+    
+    describe 'api' do
+      #TODO
+    end 
     
     describe '#assets' do  
       

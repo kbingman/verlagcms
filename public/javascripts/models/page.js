@@ -142,11 +142,12 @@ var Page = Model('page', function() {
         // contentType: "application/json",
         dataType: "json",
         data: { page: attributes },
-        success: function(results) {       
+        success: function(results) {
+           
           var page = new Page({ id: results.id });
           page.merge(results);
           Page.add(page);
-          callback.call(this);
+          callback.call('test');
         }
       });
     },

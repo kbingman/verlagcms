@@ -1,15 +1,15 @@
 Layouts = Sammy(function (app) {   
   
-  var application = this;  
+  var context = this;  
    
-  application.use(Sammy.Title);  
-  application.use(Sammy.JSON); 
-  application.use(Sammy.Mustache);
-  application.use(Sammy.NestedParams);
+  this.use(Sammy.Title);  
+  this.use(Sammy.JSON); 
+  this.use(Sammy.Mustache);
+  this.use(Sammy.NestedParams);
   
   // Helper Methods 
   // ---------------------------------------------
-  app.helpers({  
+  this.helpers({  
     
     // Checks for loaded Layouts, renders the table, then executes the callback   
     loadLayouts: function(callback){  
@@ -66,15 +66,18 @@ Layouts = Sammy(function (app) {
   });
 
   this.bind('run', function () { 
-    application.first_run = true;
-    application.modal = false;  
+    context.refresh_templates = true; 
+    context.refresh_pages = true;
+    context.modal = false;  
   });
 
   // Layout Index
   // ---------------------------------------------  
   this.get('#/templates', function(request){  
     Galerie.close();
-    application.first_run = false; 
+    context.refresh_templates = false; 
+    context.refresh_pages = true;     
+    
     jQuery('#editor').html(''); 
     request.loadLayouts(function(){
       request.renderIndex(Layout.all());  
@@ -104,7 +107,8 @@ Layouts = Sammy(function (app) {
   // Edit Layout
   // ---------------------------------------------
   this.get('#/templates/:id/edit', function(request){ 
-    Galerie.close();   
+    Galerie.close(); 
+    context.refresh_pages = true;       
     this.loadLayouts(function(){  
       var layout = Layout.find(request.params['id']);   
       request.renderLayout(layout);   
@@ -134,7 +138,7 @@ Layouts = Sammy(function (app) {
   //     
   //     if($('#modal').length == 0){ Galerie.open(displayContents); } 
   //     
-  //     if(application.first_run){
+  //     if(context.refresh_templates){
   //       request.renderTree(Page.root()); 
   //     }
   //     
@@ -165,7 +169,7 @@ Layouts = Sammy(function (app) {
   //     var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
   //     newPart.replace('#modal');   
   //     
-  //     if(application.first_run){ request.renderPage(page); }  
+  //     if(context.refresh_templates){ request.renderPage(page); }  
   //   });  
   // });  
   // 
@@ -189,7 +193,7 @@ Layouts = Sammy(function (app) {
   // 
   //     var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
   //     removePart.replace('#modal');  
-  //     if(application.first_run){ request.renderPage(page); }
+  //     if(context.refresh_templates){ request.renderPage(page); }
   //   });  
   // });
   // 

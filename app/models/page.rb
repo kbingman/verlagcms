@@ -66,13 +66,21 @@ class Page
     self.parent.nil? ? true : false
   end 
   
+  def child?
+    self.parent.nil? ? false : true
+  end 
+  
+  def children?
+    self.children.empty? ? false : true
+  end
+  
   def padding  
     # this needs to be moved out of the model...
     self.level * 12
   end   
     
   def as_json(options)
-    super(:methods => [:padding, :assets, :assets_list, :root?])
+    super(:methods => [:padding, :assets, :assets_list, :root?, :children?, :child?])
   end     
   
   def path

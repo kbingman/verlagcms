@@ -9,7 +9,6 @@ gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git'
 gem 'rack-cache'
 
 # Mongomapper and plugins
-# Using vendor as it barfs on a warning sign...
 gem 'mongo_mapper', :git => 'https://github.com/jnunemaker/mongomapper.git'
 # gem 'mongo_mapper', :path => 'vendor/mongomapper'
 gem 'mongo_ext', :require => 'mongo'

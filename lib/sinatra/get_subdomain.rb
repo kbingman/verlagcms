@@ -10,6 +10,7 @@ module Sinatra
       end   
       
       def current_site 
+        puts "Subdomain: subdomain"
         if subdomain.blank? 
           @current_site || Site.first
         else

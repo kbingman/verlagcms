@@ -95,10 +95,35 @@ require root_path('app/models/asset.rb')
 # This needs to be required first or Page blows up...
 require root_path('app/models/part.rb')  
 
-# Load all application files.
-Dir[root_path('app/**/*.rb')].each do |file|
+# Load all models.
+Dir[root_path('app/models/*.rb')].each do |file|
+  require file
+end   
+
+# Load all helpers.
+Dir[root_path('app/helpers/*.rb')].each do |file|
+  require file
+end
+
+# Load all admin routes.
+Dir[root_path('app/routes/admin/*.rb')].each do |file|
+  require file
+end
+
+# Load site route.
+Dir[root_path('app/routes/site.rb')].each do |file|
   require file
 end  
+
+# Load all views.
+Dir[root_path('app/views/**/*.rb')].each do |file|
+  require file
+end
+
+# # Load all application files.
+# Dir[root_path('app/**/*.rb')].each do |file|
+#   require file
+# end  
 
 # Load all lib liquid files.
 Dir[root_path('lib/liquid/*.rb')].each do |file|

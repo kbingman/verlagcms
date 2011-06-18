@@ -48,7 +48,7 @@ class Main < Monk::Glue
   
   # Rack Middleware 
   use Rack::Cache,
-    :verbose => true,
+    :verbose => false,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie  

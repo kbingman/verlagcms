@@ -136,7 +136,7 @@ Pages = Sammy(function (app) {
   this.get('#/pages', function(request){ 
     Galerie.close();    
     // context.refresh_pages = true; 
-    console.log(context.refresh_pages)
+
     if(context.refresh_pages){
       request.loadPages(function(){
         request.renderTree(Page.root());  
@@ -171,8 +171,6 @@ Pages = Sammy(function (app) {
       attributes = request.params['page'];  
       
     Page.create(attributes, function(results, results2){ 
-      console.log(results);  
-      console.log(results2); 
       context.refresh_pages = true; 
       request.redirect('#/pages/' + results.id + '/edit');
     }); 
@@ -180,7 +178,7 @@ Pages = Sammy(function (app) {
   
   this.get('#/pages/:id/edit', function(request){ 
     Galerie.close(); 
-    console.log(context.refresh_pages) 
+    console.log('Edit Page') 
     
     this.loadPages(function(){  
       var page_id = request.params['id'];

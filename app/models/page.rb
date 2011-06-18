@@ -7,7 +7,7 @@ class Page
   before_save :index_search_terms  
   
   key :title, String, :required => true
-  key :slug, String, :required => true, :unique => { :scope => :parent_id }
+  key :slug, String, :required => true #, :unique => { :scope => :parent_id }
   key :description, String 
   key :level, Integer 
   key :tags, Array, :index => true  

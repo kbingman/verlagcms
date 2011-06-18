@@ -30,8 +30,8 @@ var Part = Model('part', function() {
     },  
     
     create: function(attributes, callback){
-      var url = '/admin/pages/' + attributes.page_id + '/parts.json';   
-      var page = Page.find(attributes.page_id);
+      var url = '/admin/templates/' + attributes.template_id + '/parts.json';   
+      var template = Layout.find(attributes.template_id);
       jQuery.ajax({
         type: 'post',
         url: url,
@@ -39,7 +39,7 @@ var Part = Model('part', function() {
         dataType: "json",
         data: { part: attributes },
         success: function(results) {  
-          page.merge(results);
+          template.merge(results);
           callback.call(this);
         }
       });

@@ -5,7 +5,7 @@ feature "Admin Assest" do
   context 'A logged in user, with JS,' do
     
     before(:all) do 
-      Capybara.current_driver = :zombie
+      Capybara.current_driver = :webkit
       setup_site  
       @artist = Factory(:artist, :name => 'Egon')
       @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))

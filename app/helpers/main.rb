@@ -1,7 +1,8 @@
 class Main
   
   helpers do
-
+     
+    # Basic Date formatting
     def format_date(date, format = "%d/%m/%Y")
       date.strftime(format)
     end
@@ -37,7 +38,8 @@ class Main
         # etag "foo"
       end
     end 
-    
+     
+    # Delivers a page without any page cache. Forces the browser to reload.
     def no_request_cache
       response.headers['Cache-Control'] = 'public, no-store, no-cache, must-revalidate, max-age=0' 
     end
@@ -70,8 +72,6 @@ class Main
     def content(key)
       @content && @content[key]
     end  
-    
-    
-    
+ 
   end
 end

@@ -41,13 +41,17 @@
     %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }    
 
     // This is where the mustache templates are rendered  
-    =# content :head
+    = content :head
 
   %body
     .wrapper
       #header  
-        %%h1 Verlag CMS
+        %%h1 Verlag CMS    
         
+        #tabs
+          %a{ :href => '#/pages' } Pages 
+          %a{ :href => '#/templates' } Templates
+          %a{ :href => '#/assets' } Assets 
         = content :header
       #preview
         // %iframe#website{ :src => "/" }

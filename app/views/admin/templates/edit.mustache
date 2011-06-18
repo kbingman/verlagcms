@@ -43,7 +43,10 @@
     {{/part_types}}  
   </ul>
   <div id="add-layout-part">
-    <form id="new-layout-part" action="#/layouts/{{id}}/parts" method="post">
+    <form id="new-layout-part" action="#/layouts/{{id}}/parts" method="post">   
+      <div class="hidden">
+        <input type="hidden" name="part[template_id]" value="{{id}}" />
+      </div>
       <div class="field">
         <input type="text" name="part[name]" />
       </div>  

@@ -8,6 +8,7 @@ feature "Admin Assest" do
       Capybara.current_driver = :zombie  
       setup_site
       @layout = Factory(:layout, :site => @site) 
+      puts @layout.name
     end
     
     after(:all) do
@@ -17,9 +18,8 @@ feature "Admin Assest" do
     
     scenario "views the admin pages index" do 
       visit '/admin/' 
-      visit '/admin/#/layouts'
-      page.should have_css('#sidebar')
-      page.should have_css('table') 
+      visit '/admin/#/templates'
+      page.should have_css('#sidebar ul')
    
       page.should have_content(@layout.name) 
       page.should have_content('x') 
@@ -29,10 +29,10 @@ feature "Admin Assest" do
     
     scenario "edits a page" do 
       visit '/admin/' 
-      visit '/admin/#/layouts'   
+      visit '/admin/#/templates'   
       
-      click_link @layout.name
-      page.should have_content('Title')  
+      click_link 'Layout'
+      # page.should have_content('Title')  
       # fill_in 'layout_name', :with => 'Fucked up layout'
       # click_button 'Save'
       

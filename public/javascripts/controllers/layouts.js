@@ -175,12 +175,12 @@ Layouts = Sammy(function (app) {
   // 
   this.post('/layouts/:id/parts', function(request){
     this.loadLayouts(function(){ 
-      var layout_id = request.params['id'];    
+      var template_id = request.params['id'];    
       var attributes = request.params['part']; 
       alert(JSON.stringify(request.params['part'])) 
-      // Part.create(attributes, function(){
-      //   request.redirect('#/pages/' + page_id + '/edit');
-      // });
+      Part.create(attributes, function(){
+        request.redirect('#/templates/' + template_id + '/edit');
+      });
     });
   });  
   // 

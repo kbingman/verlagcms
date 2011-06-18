@@ -34,15 +34,11 @@ class Asset
   
   liquid_methods :title, :image_path, :thumb_path, :find
   
-  def find
-    'find'
-  end 
-
   # validates_presence_of :artist_id # :story_id
   
   scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
-  # scope :by_title, lambda { |title| where(:title => /#{title}/i) }
+  scope :by_title, lambda { |title| where(:title => /#{title}/i) }
   # scope :by_all_tags,  lambda { |tags| where({:tags => {'$all' => tags}}) }
   # scope :by_title_desc_tag,  lambda { |query| where({ '$or' => [{:title=>/#{query}/i}, 
   #                                                               {:description=>/#{query}/i}, 

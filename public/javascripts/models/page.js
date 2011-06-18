@@ -146,8 +146,9 @@ var Page = Model('page', function() {
            
           var page = new Page({ id: results.id });
           page.merge(results);
-          Page.add(page);
-          callback.call('test');
+          Page.add(page); 
+          console.log(results) 
+          callback.call(this, results)
         }
       });
     },

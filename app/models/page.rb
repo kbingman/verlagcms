@@ -7,7 +7,7 @@ class Page
   before_save :index_search_terms  
   
   key :title, String, :required => true
-  key :slug, String
+  key :slug, String, :required => true, :unique => { :scope => :parent_id }
   key :description, String 
   key :level, Integer 
   key :tags, Array, :index => true  
@@ -149,6 +149,7 @@ class Page
     end   
     
     # TODO probably everything needs this check...
+    # JSON sometimes sends weird info...
     before_validation :set_parent_id
     def set_parent_id 
       self.parent_id = self.parent_id == 'null' ? nil : self.parent_id
@@ -156,7 +157,12 @@ class Page
     
     before_validation :set_layout_id
     def set_layout_id 
-      self.layout = self.parent.layout if self.layout_id.blank? && self.parent_id
+      self.layout_id = self.parent.layout_id if self.layout_id.blank? && self.parent_id
+    end   
+    
+    before_validation :set_site_id
+    def set_site_id 
+      self.site_id = self.parent.site_id if self.site_id.blank? && self.parent_id
     end
     
     before_validation :set_slug

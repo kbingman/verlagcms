@@ -23,7 +23,7 @@ Factory.define :layout do |f|
 end  
 
 Factory.define :page do |f|
-  f.title  'Home'  
+  f.title  { Faker::Name.first_name }  
   f.association :layout
   # f.association :site
 end  

@@ -28,13 +28,13 @@
   </form> 
 </div> 
 <div id="parts">
-  PARTS
+  <h1>Parts</h2>
   <ul>
     <li>
-      <h2>page.data.title</h2>    
+      <h2>page.title</h2>    
     </li>
     <li>
-      <h2>page.data.slug</h2>    
+      <h2>page.slug</h2>    
     </li>  
     {{#part_types}}  
     <li>
@@ -42,5 +42,15 @@
     </li> 
     {{/part_types}}  
   </ul>
+  <div id="add-layout-part">
+    <form id="new-layout-part" action="#/layouts/{{id}}/parts" method="post">
+      <div class="field">
+        <input type="text" name="part[name]" />
+      </div>  
+      <div class="field">
+        <input type="submit" value="Create" />
+      </div>
+    </form>
+  </div>
 </div>
 {{/layout}}

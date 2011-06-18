@@ -10,6 +10,7 @@ Bundler.setup :test
 require 'rack/test'  
 require 'rspec' 
 
+require 'faker'
 require 'factory_girl' 
 require File.join(File.dirname(__FILE__), 'factories.rb') 
 

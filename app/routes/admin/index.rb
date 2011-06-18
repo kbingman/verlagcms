@@ -1,4 +1,7 @@
-class Main  
+class Main 
+    
+
+  
   module Admin   
     
     # Redirects if no site is found
@@ -9,9 +12,7 @@ class Main
     #   end
     # end  
     
-    get '/?' do
-      admin_haml :'admin/index'  
-    end    
+
   
   end   
   

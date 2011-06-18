@@ -3,7 +3,11 @@ defaults: &defaults
   :mongo:
     :database: davis
     :host: localhost
-  :domain: verlag.dev
+  :domain: verlag.dev 
+  :images:
+    :thumbnail: [640, 640, {}]
+    :icon: [640, 640, {}]
+    
 
 :development:
   <<: *defaults

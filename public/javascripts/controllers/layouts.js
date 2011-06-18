@@ -173,15 +173,16 @@ Layouts = Sammy(function (app) {
   //   });  
   // });  
   // 
-  // this.post('/pages/:page_id/parts', function(request){
-  //   this.loadPages(function(){ 
-  //     var page_id = request.params['page_id'];    
-  //     var attributes = request.params['part'];  
-  //     Part.create(attributes, function(){
-  //       request.redirect('#/pages/' + page_id + '/edit');
-  //     });
-  //   });
-  // });  
+  this.post('/layouts/:id/parts', function(request){
+    this.loadLayouts(function(){ 
+      var layout_id = request.params['id'];    
+      var attributes = request.params['part']; 
+      alert(JSON.stringify(request.params['part'])) 
+      // Part.create(attributes, function(){
+      //   request.redirect('#/pages/' + page_id + '/edit');
+      // });
+    });
+  });  
   // 
   // this.get('/pages/:page_id/parts/:id/remove', function(request){   
   //   this.loadPages(function(){

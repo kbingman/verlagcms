@@ -6,8 +6,9 @@ class SearchDrop < Liquid::Drop
   end   
   
   def results 
-    query = @request.params['query'] 
-    assets = Asset.by_site(@site.id).search(query).all
+    query = @request.params['query']
+    assets = Asset.by_site(@site.id).by_title(query).all  
+    # assets = Asset.by_site(@site.id).by_title(query).search(query).all
     assets
   end
 

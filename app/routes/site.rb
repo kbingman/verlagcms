@@ -1,11 +1,6 @@
 class Main    
-   
-  # get '/:page' do
-  #   @title = params[:page]
-  #   haml :'pages/page' 
-  # end 
-  
-  get '/templates/*' do  
+     
+  template_route = get '/templates/*' do  
     # cache_request  
     name =  params[:splat] 
     logger.info name
@@ -13,19 +8,23 @@ class Main
     partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
   end 
   
-  get '/css/:name' do 
+  css_route = get '/css/:name' do 
     name = "#{params[:name]}.#{format.to_s}"
     css = Stylesheet.by_site(current_site.id).find_by_name(name)  
     css.render if css
   end 
   
-  get '/js/:name' do
+  js_route = get '/js/:name' do
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site.id).find_by_name(name) 
     js.render if js
+  end 
+  
+  admin_route = get '/admin/?' do
+    admin_haml :'admin/index'  
   end
   
-  get '*' do  
+  page_route = get '*' do   
     # cache_request     
     if current_site      
       path = params[:splat].first
@@ -39,7 +38,9 @@ class Main
     else
       haml :'pages/welcome'   
     end
-  end
+  end   
+
+  admin_route.promote 
   
   error 404 do   
     haml :'errors/not_found'     

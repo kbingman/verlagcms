@@ -6,7 +6,8 @@ require "bundler/setup"
 Bundler.setup
 
 require 'monk/glue'
-require 'sinatra/base'
+require 'sinatra/base' 
+require 'sinatra/advanced_routes'  
 require 'sinatra/namespace'    
 
 # Improve this...
@@ -67,7 +68,8 @@ class Main < Monk::Glue
   register Sinatra::Logger 
   register Sinatra::RespondTo  
   register Sinatra::Images 
-  register Sinatra::GetSubdomain
+  register Sinatra::GetSubdomain 
+  register Sinatra::AdvancedRoutes 
   
   configure do
     mime_type :mustache, 'text/mustache' 

@@ -140,8 +140,10 @@ Pages = Sammy(function (app) {
     if(context.refresh_pages){
       request.loadPages(function(){
         request.renderTree(Page.root());  
-      }); 
-    }
+      });   
+      
+    } 
+    jQuery('#editor').html(''); 
     context.refresh_pages = false;              
   });
   
@@ -168,8 +170,9 @@ Pages = Sammy(function (app) {
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
       
-    Page.create(attributes, function(results){ 
-      alert(results)
+    Page.create(attributes, function(results, results2){ 
+      console.log(results);  
+      console.log(results2); 
       context.refresh_pages = true; 
       request.redirect('#/pages/' + results.id + '/edit');
     }); 
@@ -311,55 +314,55 @@ Pages = Sammy(function (app) {
 
   // Page parts 
   // --------------------------------------------- 
-  this.get('#/pages/:page_id/parts/new', function(request){   
-    this.loadPages(function(){ 
-      var page = Page.find(request.params['page_id']); 
-
-      if($('#modal').length == 0){ Galerie.open(); }  
-
-      var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
-      newPart.replace('#modal');   
-      
-      if(context.refresh_pages){ request.renderPage(page); }  
-    });  
-  });  
-  
-  this.post('/pages/:page_id/parts', function(request){
-    this.loadPages(function(){ 
-      var page_id = request.params['page_id'];    
-      var attributes = request.params['part'];  
-      Part.create(attributes, function(){
-        request.redirect('#/pages/' + page_id + '/edit');
-      });
-    });
-  });  
-  
-  this.get('/pages/:page_id/parts/:id/remove', function(request){   
-    this.loadPages(function(){
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id); 
-      var part = page.parts().find(request.params['id']);     
- 
-      if($('#modal').length == 0){ Galerie.open(); } 
-
-      var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
-      removePart.replace('#modal');  
-      if(context.refresh_pages){ request.renderPage(page); }
-    });  
-  });
-  
-  this.del('/pages/:page_id/parts/:id', function(request){
-    var page_id = request.params['page_id'];    
-    var page = Page.find(page_id);
-    var part = page.parts().find(request.params['id']);  
-      
-    part.deleteRemote(page, function(){
-      request.redirect('#/pages/' + page_id + '/edit');
-    }); 
-  });    
-      
-  app.get('/', function (req) {
-    // jQuery('h1').text('Start Page');
-  });
+  // this.get('#/pages/:page_id/parts/new', function(request){   
+  //   this.loadPages(function(){ 
+  //     var page = Page.find(request.params['page_id']); 
+  // 
+  //     if($('#modal').length == 0){ Galerie.open(); }  
+  // 
+  //     var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
+  //     newPart.replace('#modal');   
+  //     
+  //     if(context.refresh_pages){ request.renderPage(page); }  
+  //   });  
+  // });  
+  // 
+  // this.post('/pages/:page_id/parts', function(request){
+  //   this.loadPages(function(){ 
+  //     var page_id = request.params['page_id'];    
+  //     var attributes = request.params['part'];  
+  //     Part.create(attributes, function(){
+  //       request.redirect('#/pages/' + page_id + '/edit');
+  //     });
+  //   });
+  // });  
+  // 
+  // this.get('/pages/:page_id/parts/:id/remove', function(request){   
+  //   this.loadPages(function(){
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id); 
+  //     var part = page.parts().find(request.params['id']);     
+  // 
+  //     if($('#modal').length == 0){ Galerie.open(); } 
+  // 
+  //     var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
+  //     removePart.replace('#modal');  
+  //     if(context.refresh_pages){ request.renderPage(page); }
+  //   });  
+  // });
+  // 
+  // this.del('/pages/:page_id/parts/:id', function(request){
+  //   var page_id = request.params['page_id'];    
+  //   var page = Page.find(page_id);
+  //   var part = page.parts().find(request.params['id']);  
+  //     
+  //   part.deleteRemote(page, function(){
+  //     request.redirect('#/pages/' + page_id + '/edit');
+  //   }); 
+  // });    
+  //     
+  // app.get('/', function (req) {
+  //   // jQuery('h1').text('Start Page');
+  // });
 
 });

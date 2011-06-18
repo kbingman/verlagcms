@@ -2,8 +2,16 @@ require 'spec_helper'
  
 describe Page do  
   before(:all) do  
-    @site = Factory(:site)  
-    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>') 
+    @site = Factory(:site) 
+    @second_site = Factory(:site, :name => 'second', :subdomain => 'second') 
+    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')
+    @root = Factory(:page, :title => 'root', :site => @site, :layout => @layout) 
+    @child = Factory(:page, 
+      :title => 'Child', 
+      :parent_id => @root.id, 
+      :tag_list => 'tag1, tag2',
+      :layout => @layout, 
+      :site => @site) 
   end  
   
   after(:all) do
@@ -12,7 +20,15 @@ describe Page do
   
   describe 'validations' do
     it 'should create a valid page' do  
-      Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id).should be_valid
+      page = Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id, :title => 'page', :parent_id => @root.id) 
+      page.valid?  
+      puts page.slug 
+      puts page.errors
+      page.should be_valid
+    end
+    
+    it 'should allow a root page with another site_id' do 
+      second_root = Factory(:page, :title => 'root', :site_id => @second_site.id, :layout => @layout)
     end
    
     it 'should require a site' do
@@ -25,19 +41,16 @@ describe Page do
     
     it 'should require a title' do
       Factory.build(:page, :title => '', :site => @site, :layout_id => @layout.id).should_not be_valid
-    end  
+    end 
+    
+    it 'should have a unique slug, within its parent' do
+      # @parent = 
+    end 
   end
   
   context 'valid page' do
     before(:all) do  
       
-      @root = Factory(:page, :title => 'root', :site => @site, :layout => @layout) 
-      @child = Factory(:page, 
-        :title => 'Child', 
-        :parent_id => @root.id, 
-        :tag_list => 'tag1, tag2',
-        :layout => @layout, 
-        :site => @site)
     end
      
     describe 'attributes' do 

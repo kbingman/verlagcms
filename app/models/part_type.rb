@@ -1,7 +1,7 @@
 class PartType
   include MongoMapper::Document
   
-  key :name, String, :required => true, :unique => true 
+  key :name, String, :required => true #, :unique => true 
   
   key :layout_id, ObjectId #, :required => true 
   belongs_to :layout, :foreign_key => :layout_id                         

@@ -16,8 +16,12 @@ class Template
     self.class.name
   end
   
+  def layout?
+    self.class.name == 'Layout'
+  end
+  
   def as_json(options)
-    super(:methods => [:klass, :mode, :part_types])
+    super(:methods => [:klass, :mode, :part_types, :layout?])
   end 
   
   def mode

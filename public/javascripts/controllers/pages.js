@@ -30,7 +30,7 @@ Pages = Sammy(function (app) {
     renderTree: function(page){ 
       var application = this;
       var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
-      
+      // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
         application.renderNode(page); 
       });
@@ -46,7 +46,7 @@ Pages = Sammy(function (app) {
             jQuery('#page-' + child.id()).addClass('open')
             application.renderNode(child);  
           }
-        })
+        });
       });       
     },  
     
@@ -65,7 +65,11 @@ Pages = Sammy(function (app) {
     context.application = this;
     console.log(context.application)   
     context.refresh_pages = true;
-    context.modal = false;   
+    context.modal = false;      
+    
+    jQuery('#sidebar .node').live('click', function(){
+      alert('hey')
+    });
     
     // This needs to be moved
     jQuery('#sidebar .opener').live('click', function(e){    

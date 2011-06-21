@@ -1,31 +1,43 @@
 #editor    
-  :padding 0
-  :position absolute
-  :top 0
-  :right 0
-  :bottom 0 
+  +positionable
   :left 300px
   :overflow auto
   // :background rgba(255,255,255,0.9)
   label
-    :display block
-  #title-wrapper
-    :width 100%
-    :border-bottom 2px solid #444
-     
-    .field
-      :padding 10px 20px  
-  #page-parts
-    :padding 10px 20px     
-    .textarea
-      :height 200px 
-      
+    :display block  
+  #page-editor   
+    +positionable
+    :right 245px 
+    :overflow auto
+    #title-wrapper
+      :width 100%
+      :border-bottom 2px solid #444
+      .field
+        :padding 10px 20px 
+        input
+          :width 100% 
+      #extra-info 
+        :display block 
+    #page-parts          
+      :padding 10px 20px     
+      .textarea
+        :height 200px 
+        :width 100%
+    .buttons
+      :padding 10px 18px 
+    .select-boxes   
+      :padding 0 18px
+       
+  #page-meta   
+    +positionable  
+    :left auto
+    :width 229px   
+    :padding 10px 5px 10px 10px
+    :border solid #ccc
+    :border-width 0 0 0 1px
+    
   #code-editor 
-    :position absolute
-    :top 0
-    :bottom 0
-    :left 0
-    :right 200px 
+    +positionable    
     
     .CodeMirror
       :height 100%
@@ -51,7 +63,13 @@
   :bottom 0
   :top 0
   :right 0                  
-  :width 200px 
-  :background red
+  :width 200px   
+  :border-left 1px solid #ccc     
+  :background #ddd
+  
+  #add-layout-part
+    :position absolute
+    :bottom 0
+
  
   

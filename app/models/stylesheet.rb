@@ -2,6 +2,7 @@ class Stylesheet < Template
   
   key :filter, String 
   
+  # Syntax editor theme name
   def mode
     'css'
   end  

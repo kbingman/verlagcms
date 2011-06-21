@@ -33,7 +33,7 @@ class Page
   
   validates_presence_of :title 
   
-  attr_accessible :title, :content, :slug, :tag_list, :parent_id, :layout_id, :parts, :assets_list
+  attr_accessible :title, :content, :slug, :parent_id, :layout_id, :parts, :assets_list, :tag_list
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
   
@@ -80,7 +80,7 @@ class Page
   end   
     
   def as_json(options)
-    super(:methods => [:padding, :assets, :assets_list, :root?, :children?, :child?])
+    super(:methods => [:padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
   end     
   
   def path

@@ -1,64 +1,72 @@
 {{#page}} 
-
-<form action="#/pages/{{id}}" method= "post" id="edit-page">  
-  <div class="hidden">
-    <input type="hidden" name="_method" value="put" /> 
-  </div> 
-  <div id="title-wrapper">
-    <div class="field">   
-      <label for="page-title">Title</label>
-      <input type="text" id="page-title" name="page[title]" value="{{title}}" class="textfield" />  
+<div id="page-editor">
+  <form action="#/pages/{{id}}" method= "post" id="edit-page">  
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" /> 
     </div> 
-    <div class="field">   
-      <label for="page-slug">Slug</label>
-      <input type="text" id="page-slug" name="page[slug]" value="{{slug}}" class="textfield" />  
-    </div> 
-  </div>
-
-  <div id="page-parts"> 
-    <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p--> 
-    {{#parts}}  
-      <div class="part tab">
-        <label for='part-{{id}}-content'>{{name}}</label> 
-        <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a-->
-        <div class="hidden">                  
-          <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
-          <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
-        </div>
-        <div class="field">                     
-          <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
-        </div>
+    <div id="title-wrapper">
+      <div class="field">   
+        <label for="page-title">Title</label>
+        <input type="text" id="page-title" name="page[title]" value="{{title}}" class="textfield" />  
       </div> 
-    {{/parts}}  
-    <div id="page-assets">
-      <h2>Assets</h2>  
-      <p><a href="#/pages/{{id}}/search">add asset</a></p>
-      <div class="hidden">                  
-        <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
-      </div> 
-      {{#assets}} 
-        <div class="asset">
-          
-          <a href="#/assets/{{id}}/edit{{query_path}}">
-            <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
-          </a> 
-          <br />
-          <a href="#/pages/{{page_id}}/assets/{{id}}/test">Remove</a>  
+      <div id="extra-info">
+        <div class="field"> 
+          <p>{{slug}} </p> 
+          <label for="page-slug">Slug</label>
+          <input type="text" id="page-slug" name="page[slug]" value="{{slug}}" class="textfield" />  
+        </div>   
+        <div class="field">
+          <label for='asset_tags'>Tags</label> 
+          <input type='text' name='page[tag_list]' id='page-tag-list' value="{{tag_list}}" class='textfield' /> 
         </div>
-      {{/assets}}
+      </div>
     </div>
-  </div> 
- 
-  <div class="select-boxes">
-    <select id="page-layout" class="select" name="page[layout_id]"> 
-      {{#layouts}}
-      <option value="{{id}}" {{selected}}>{{name}}</option>
-      {{/layouts}}
-    </select>  
-  </div
-  <div class="buttons">
-    <input type="submit" id="page_save" value="Save" class="button" />  
+  
+    <div id="page-parts"> 
+      <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p--> 
+      {{#parts}}  
+        <div class="part tab">
+          <label for='part-{{id}}-content'>{{name}}</label> 
+          <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a-->
+          <div class="hidden">                  
+            <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
+            <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
+          </div>
+          <div class="field">                     
+            <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
+          </div>
+        </div> 
+      {{/parts}}  
+    </div> 
+   
+    <div class="select-boxes">
+      <select id="page-layout" class="select" name="page[layout_id]"> 
+        {{#layouts}}
+        <option value="{{id}}" {{selected}}>{{name}}</option>
+        {{/layouts}}
+      </select>  
+    </div
+    <div class="buttons">
+      <input type="submit" id="page_save" value="Save" class="button" />  
+    </div>
+  </form>    
+</div>  
+<div id="page-meta">
+  <div id="page-assets">
+    <h2>Assets</h2>  
+    <p><a href="#/pages/{{id}}/search">add asset</a></p>
+    <div class="hidden">                  
+      <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+    </div> 
+    {{#assets}} 
+      <div class="asset">
+        <a href="#/assets/{{id}}/edit{{query_path}}">
+          <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+        </a> 
+        <br />
+        <a href="#/pages/{{page_id}}/assets/{{id}}/test">Remove</a>  
+      </div>
+    {{/assets}}
   </div>
-</form>    
-
+</div>   
 {{/page}}  

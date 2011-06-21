@@ -4,10 +4,11 @@ defaults: &defaults
     :database: davis
     :host: localhost
   :domain: verlag.dev 
-  :images:
-    :thumbnail: [640, 640, {}]
-    :icon: [640, 640, {}]
-    
+  :images:                    
+    :large: [640, 640, false] 
+    :display: [640, 480, false]
+    :thumbnails: [120, 120, false]
+    :icons: [72, 72, true]
 
 :development:
   <<: *defaults

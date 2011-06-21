@@ -6,23 +6,18 @@ module Sinatra
     def self.registered(app)   
       
       app.get '/images/:size/:id/:filename' do
-        cache_request(3600 * 24) # 24 Hour cache
-
-        options = {}
-        h, w, options = case params[:size]
-          # More named sizes can be added here 
-          # add to config 
-          when 'large' then [640, 640, {}] 
-          when 'display' then [640, 480, {}]
-          when 'thumbnails' then [120, 120, {}]
-          when 'icons' then [72, 72, {:crop => true}]
-        else
-          [nil, nil, {}]
-        end  
+        cache_request(3600 * 24) # 24 Hour cache  
+        
+        h, w, crop = [nil, nil, {}]
+        monk_settings(:images).each do |key, value|  
+          if key.to_s == params[:size] 
+            h, w, crop = value 
+          end
+        end    
 
         begin
           asset = Asset.find params[:id]
-          image = asset.render_image(h, w, options)
+          image = asset.render_image(h.to_i, w.to_i, {:crop => crop})
 
           status 200 
           content_type(asset.file_type)

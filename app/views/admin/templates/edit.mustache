@@ -25,35 +25,37 @@
         <input type="submit" id="layout_save" value="Save" class="button" />    
       </div>
     </div>
-  </form> 
-</div> 
-<div id="parts">
-  <h1>Parts</h2>
-  <ul>
-    <li>
-      <h2>page.title</h2>    
-    </li>
-    <li>
-      <h2>page.slug</h2>    
-    </li>  
-    {{#part_types}}  
-    <li>
-      <h2>page.data.{{name}}</h2>    
-    </li> 
-    {{/part_types}}  
-  </ul>
-  <div id="add-layout-part">
-    <form id="new-layout-part" action="#/layouts/{{id}}/parts" method="post">   
-      <div class="hidden">
-        <input type="hidden" name="part[template_id]" value="{{id}}" />
-      </div>
-      <div class="field">
-        <input type="text" name="part[name]" />
-      </div>  
-      <div class="field">
-        <input type="submit" value="Create" />
-      </div>
-    </form>
-  </div>
-</div>
+  </form>  
+  {{#layout?}}
+  <div id="parts">
+    <h1>Parts</h2>
+    <ul>
+      <li>
+        <h2>page.title</h2>    
+      </li>
+      <li>
+        <h2>page.slug</h2>    
+      </li>  
+      {{#part_types}}  
+      <li>
+        <h2>page.data.{{name}}</h2>    
+      </li> 
+      {{/part_types}}  
+    </ul>
+    <div id="add-layout-part">
+      <form id="new-layout-part" action="#/layouts/{{id}}/parts" method="post">   
+        <div class="hidden">
+          <input type="hidden" name="part[template_id]" value="{{id}}" />
+        </div>
+        <div class="field">
+          <input type="text" name="part[name]" />
+        </div>  
+        <div class="field">
+          <input type="submit" value="Create" />
+        </div>
+      </form>
+    </div>
+  </div>  
+  {{/layout?}}
+</div>  
 {{/layout}}

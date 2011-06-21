@@ -4,25 +4,41 @@
   :overflow auto
   // :background rgba(255,255,255,0.9)
   label
-    :display block  
+    :display block 
+    
+  #assets-editor
+    #title-wrapper
+      :width 100%
+      :border-bottom 2px solid #444  
+      :background white
+   
   #page-editor   
     +positionable
     :right 245px 
     :overflow auto
     #title-wrapper
       :width 100%
-      :border-bottom 2px solid #444
-      .field
-        :padding 10px 20px 
-        input
+      :border-bottom 2px solid #444  
+      :background white
+      #page-title-field
+        :padding 0 18px 5px
+        input      
+          +border-radius(0)
           :width 100% 
-      #extra-info 
-        :display block 
+          :border 0   
+          :font-size 2em
+      #extra-info  
+        :display none     
+        .field
+          :padding 0 20px
+          :font-size 1em  
+        
     #page-parts          
       :padding 10px 20px     
       .textarea
         :height 200px 
-        :width 100%
+        :width 100% 
+        :font-size 1em   
     .buttons
       :padding 10px 18px 
     .select-boxes   

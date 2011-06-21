@@ -13,7 +13,7 @@ require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-# Capybara.default_driver = :zombie
+Capybara.default_driver = :zombie
 Capybara.app = Main
 
 # Put your acceptance spec helpers inside /spec/acceptance/support

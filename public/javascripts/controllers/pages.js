@@ -63,7 +63,6 @@ Pages = Sammy(function (app) {
 
   this.bind('run', function () { 
     context.application = this;
-    console.log(context.application)   
     context.refresh_pages = true;
     context.modal = false;      
     
@@ -288,7 +287,7 @@ Pages = Sammy(function (app) {
       var page_asset_input = $('#page-asset-ids');
       var asset_ids_list = page_asset_input.attr('value'); 
      
-      page_asset_input.attr('value', asset_ids_list + ', ' + asset.id());
+      page_asset_input.attr('value', asset_ids_list + ', ' + asset.id());  
       Galerie.close(); 
       // Consider an elegant way to do this with the model...
       var edit_form = jQuery('#edit-page').submit();
@@ -300,71 +299,23 @@ Pages = Sammy(function (app) {
     });  
   }); 
       
-  this.get('#/pages/:page_id/assets/:id/test', function(request){ 
-    this.loadPages(function(){ 
+  this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
+    this.loadPages(function(){     
+      var id = request.params['id']; 
       var page_id = request.params['page_id'];  
       var page = Page.find(page_id);  
-      var asset_id = request.params['id'];
-      var asset = Asset.find(asset_id); 
+      var page_asset_input = $('#page-asset-ids');
+      var asset_ids_list = page_asset_input.attr('value');  
       
-      Asset.removeFromPage(asset_id, page_id,function(){
-        request.renderPage(page);
-        request.redirect('#/pages/' + page_id + '/edit');  
-      }); 
+      // asset_ids_list.delete(id);
+      alert(asset_ids_list);
+      var edit_form = jQuery('#edit-page').submit();   
+      
+      // Asset.removeFromPage(asset_id, page_id,function(){
+      //   request.renderPage(page);
+      //   request.redirect('#/pages/' + page_id + '/edit');  
+      // }); 
     }); 
   });
-
-  // Page parts 
-  // --------------------------------------------- 
-  // this.get('#/pages/:page_id/parts/new', function(request){   
-  //   this.loadPages(function(){ 
-  //     var page = Page.find(request.params['page_id']); 
-  // 
-  //     if($('#modal').length == 0){ Galerie.open(); }  
-  // 
-  //     var newPart = request.render('/templates/admin/parts/new.mustache', { page: page.asJSON() });    
-  //     newPart.replace('#modal');   
-  //     
-  //     if(context.refresh_pages){ request.renderPage(page); }  
-  //   });  
-  // });  
-  // 
-  // this.post('/pages/:page_id/parts', function(request){
-  //   this.loadPages(function(){ 
-  //     var page_id = request.params['page_id'];    
-  //     var attributes = request.params['part'];  
-  //     Part.create(attributes, function(){
-  //       request.redirect('#/pages/' + page_id + '/edit');
-  //     });
-  //   });
-  // });  
-  // 
-  // this.get('/pages/:page_id/parts/:id/remove', function(request){   
-  //   this.loadPages(function(){
-  //     var page_id = request.params['page_id'];  
-  //     var page = Page.find(page_id); 
-  //     var part = page.parts().find(request.params['id']);     
-  // 
-  //     if($('#modal').length == 0){ Galerie.open(); } 
-  // 
-  //     var removePart = request.render('/templates/admin/parts/remove.mustache', { part: part.asJSON() });    
-  //     removePart.replace('#modal');  
-  //     if(context.refresh_pages){ request.renderPage(page); }
-  //   });  
-  // });
-  // 
-  // this.del('/pages/:page_id/parts/:id', function(request){
-  //   var page_id = request.params['page_id'];    
-  //   var page = Page.find(page_id);
-  //   var part = page.parts().find(request.params['id']);  
-  //     
-  //   part.deleteRemote(page, function(){
-  //     request.redirect('#/pages/' + page_id + '/edit');
-  //   }); 
-  // });    
-  //     
-  // app.get('/', function (req) {
-  //   // jQuery('h1').text('Start Page');
-  // });
 
 });

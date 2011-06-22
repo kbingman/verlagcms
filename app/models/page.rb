@@ -39,9 +39,9 @@ class Page
   
   # Liquid Stuff
   # liquid_methods :title, :path, :assets, :children, :data, :parts 
-  # def to_liquid request = nil   
-  #   PageDrop.new self, request
-  # end  
+  def to_liquid request = nil   
+    PageDrop.new self, request
+  end  
   
   def data request = nil 
     DataProxy.new self, request

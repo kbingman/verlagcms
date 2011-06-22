@@ -1,11 +1,12 @@
 class DataProxy
   
-  def initialize page
+  def initialize page, request=nil
     @page = page 
+    @request = request
   end  
   
   def to_liquid
-    DataDrop.new(@page)
+    DataDrop.new(@page, @request)
   end  
   
   def title

@@ -1,7 +1,8 @@
 class PageDrop < Liquid::Drop 
     
-  def initialize(page)
-    @page ||= page
+  def initialize page, request=nil
+    @page ||= page   
+    @request = request
   end   
   
   def title
@@ -29,7 +30,7 @@ class PageDrop < Liquid::Drop
   end  
   
   def data
-    @page.data
+    @page.data(@request)
   end 
   
   def before_method(meth) 

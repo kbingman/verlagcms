@@ -22,8 +22,6 @@ describe Page do
     it 'should create a valid page' do  
       page = Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id, :title => 'page', :parent_id => @root.id) 
       page.valid?  
-      puts page.slug 
-      puts page.errors
       page.should be_valid
     end
     

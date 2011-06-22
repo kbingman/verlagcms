@@ -48,7 +48,15 @@ Pages = Sammy(function (app) {
           }
         });
       });       
-    },  
+    }, 
+    
+    renderPagePreview: function(page){
+      var application = this;
+      var showPage = application.render('/templates/admin/pages/show.mustache', { 
+        page: page.asJSON()
+      });  
+      showPage.replace('#editor');
+    }, 
     
     renderPage: function(page){ 
       var application = this;
@@ -109,7 +117,8 @@ Pages = Sammy(function (app) {
         //     // Hide spinner  
         //   }
         // });   
-        // Loads all open pages...
+        // Loads all open pages...  
+        // Should really only load the relavent ones...
         Page.load(function(){  
           context.application.renderNode(page);
           var now = new Date();
@@ -177,6 +186,30 @@ Pages = Sammy(function (app) {
       context.refresh_pages = true; 
       request.redirect('#/pages/' + results.id + '/edit');
     }); 
+  }); 
+  
+  this.get('#/pages/:id', function(request){ 
+    Galerie.close(); 
+    
+    this.loadPages(function(){  
+      var page_id = request.params['id'];
+      var page = Page.find(page_id); 
+      
+      if(page) {
+        request.renderPagePreview(page); 
+      } else {  
+        // Loads page if the current collection does not contain it
+        page = new Page({ id: page_id });
+        page.load(function(){
+          request.renderPagePreview(page); 
+        });
+      } 
+      
+      if(context.refresh_pages){
+        request.renderTree(Page.root());
+        context.refresh_pages = false;  
+      }
+    });        
   });
   
   this.get('#/pages/:id/edit', function(request){ 

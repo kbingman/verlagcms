@@ -1,0 +1,21 @@
+{{#page}}   
+<div id="preview" >
+  <iframe src="{{path}}?edit=true"></iframe>
+</div>    
+
+<div id="page-files">
+  <div id="page-assets">
+    <h2>Assets</h2>  
+    <p><a href="#/pages/{{id}}/search">add asset</a></p>
+    {{#assets}} 
+      <div class="asset">
+        <a href="#/assets/{{id}}/edit{{query_path}}">
+          <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+        </a> 
+        <br />
+        <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
+      </div>
+    {{/assets}}
+  </div>
+</div>
+{{/page}}

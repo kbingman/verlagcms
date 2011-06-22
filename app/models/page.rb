@@ -39,12 +39,12 @@ class Page
   
   # Liquid Stuff
   # liquid_methods :title, :path, :assets, :children, :data, :parts 
-  def to_liquid
-    PageDrop.new self
-  end  
+  # def to_liquid request = nil   
+  #   PageDrop.new self, request
+  # end  
   
-  def data 
-    DataProxy.new self
+  def data request = nil 
+    DataProxy.new self, request
   end
   
   def render format='html', request=nil 
@@ -53,7 +53,7 @@ class Page
     else 
       template = Liquid::Template.parse(self.layout.content)
       template.render({
-        'page' => self, 
+        'page' => PageDrop.new(self, request), 
         'site' => self.site, 
         'request' => RequestDrop.new(request),  
         # TOTO move this into a page subclass?
@@ -80,7 +80,7 @@ class Page
   end   
     
   def as_json(options)
-    super(:methods => [:padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+    super(:methods => [:path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
   end     
   
   def path

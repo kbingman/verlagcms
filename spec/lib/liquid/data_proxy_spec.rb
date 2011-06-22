@@ -7,7 +7,8 @@ describe "lib/data_proxy" do
     @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>') 
     @part = Factory.build(:part, :content => 'fibble', :name => 'body')
     @part2 = Factory.build(:part, :content => 'sidebar', :name => 'sidebar')
-    @page = Factory(:page, :title => 'root', :site => @site, :layout => @layout, :parts => [@part, @part2])
+    @page = Factory(:page, :title => 'root', :site => @site, :layout => @layout, :parts => [@part, @part2])  
+    #  @request = stub!(:params => { :edit => 'true' })
   end
   
   after(:all) do
@@ -22,7 +23,12 @@ describe "lib/data_proxy" do
     
     it "should return the sidebar content" do
       @page.data.sidebar.should == '<p>sidebar</p>'
-    end 
+    end   
+    
+    it "should return the sidebar content with an edit flag" do   
+      pending
+      @page.data.sidebar.should == '<p>sidebar</p>'
+    end
         
   end
   

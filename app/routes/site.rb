@@ -41,7 +41,7 @@ class Main
   
   # Site Pages
   page_route = get '*' do   
-    cache_request     
+    # cache_request     
     # if current_site      
     path = params[:splat].first
     page = Page.find_by_path(path, current_site) 

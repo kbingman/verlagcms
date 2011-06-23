@@ -1,21 +1,13 @@
-#editor    
-  +positionable
-  :left 300px
-  :overflow auto
-  // :background rgba(255,255,255,0.9)
-  label
-    :display block 
-    
-  #assets-editor
-    #title-wrapper
-      :width 100%
-      :border-bottom 2px solid #444  
-      :background white
-   
+#modal
   #page-editor   
-    +positionable   
-    :right 245px 
-    :overflow auto
+    //+positionable   
+    //:right 245px  
+    :max-width 960px  
+    :width 85%
+    :margin -300px auto 0 auto
+    :height 400px
+    :overflow auto  
+    :background white
     #title-wrapper
       :width 100%
       :border-bottom 2px solid #444  
@@ -32,7 +24,8 @@
         .field
           :padding 0 20px
           :font-size 1em  
-        
+    #page-files 
+      :display none    
     #page-parts          
       :padding 10px 20px     
       .textarea
@@ -43,7 +36,20 @@
       :padding 10px 18px 
     .select-boxes   
       :padding 0 18px
-       
+#editor    
+  +positionable
+  :left 300px
+  :overflow auto
+  // :background rgba(255,255,255,0.9)
+  label
+    :display block 
+    
+  #assets-editor
+    #title-wrapper
+      :width 100%
+      :border-bottom 2px solid #444  
+      :background white
+          
   #page-files 
     +positionable  
     :left auto

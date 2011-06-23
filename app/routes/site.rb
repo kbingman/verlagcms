@@ -39,11 +39,8 @@ class Main
     end
   end  
   
-  # Site Pages
-  page_route = get '*' do   
-    # cache_request     
-    # if current_site      
-    path = params[:splat].first
+  preview_route = get '/preview*' do
+    path = params[:splat].first   
     page = Page.find_by_path(path, current_site) 
     
     unless page.nil? 
@@ -51,6 +48,21 @@ class Main
     else   
       raise Sinatra::NotFound   
     end
+  end
+  
+  # Site Pages
+  pages_route = get '*' do   
+    cache_request     
+         
+    path = params[:splat].first
+    page = Page.find_by_path(path, current_site) 
+    
+    if page 
+      page.render(format, request)
+    else   
+      raise Sinatra::NotFound   
+    end
+    # if current_site 
     # else
     #   haml :'pages/welcome'   
     # end

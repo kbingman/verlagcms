@@ -19,7 +19,7 @@ class DataDrop < Liquid::Drop
     if part
       if edit == 'true' 
         # This is used for the inline editor, setting a small flag with the edit page / part path
-        "<div class='edit'><a href='#/pages/#{@page.id}/edit'>Edit</a></div>#{part.render}" 
+        "<a class='verlag-editor' href='#/pages/#{@page.id}/edit'><span>Edit #{part.name}</span></a>#{part.render}" 
       else
         part.render 
       end

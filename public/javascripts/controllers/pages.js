@@ -55,7 +55,9 @@ Pages = Sammy(function (app) {
       var showPage = application.render('/templates/admin/pages/show.mustache', { 
         page: page.asJSON()
       });  
-      showPage.replace('#editor');
+      showPage.replace('#editor').then(function(){  
+        iFramer.initialize('#preview iframe'); 
+      });
     }, 
     
     renderPage: function(page){ 
@@ -64,7 +66,7 @@ Pages = Sammy(function (app) {
         page: page.asJSON(), 
         layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
       });  
-      editPage.replace('#editor');
+      editPage.replace('#modal');
     }
     
   });
@@ -90,7 +92,7 @@ Pages = Sammy(function (app) {
       var page = Page.find(page_id)  
 
       var active_page_cookie = jQuery.cookie('active_page_ids');
-      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []
+      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []  
 
       if(!parent.hasClass('open')){
         active_page_ids.push(page_id);
@@ -212,9 +214,12 @@ Pages = Sammy(function (app) {
     });        
   });
   
-  this.get('#/pages/:id/edit', function(request){ 
-    Galerie.close(); 
-    console.log('Edit Page') 
+  this.get('#/pages/:id/edit', function(request){  
+    // alert('Soon you will be able to edit a page here!');
+    // request.redirect('#/pages/' + request.params['id'])
+    Galerie.open();  
+    
+    // window.top.trigger.css({'border':'1px solid red'});
     
     this.loadPages(function(){  
       var page_id = request.params['id'];
@@ -247,7 +252,7 @@ Pages = Sammy(function (app) {
     page.saveRemote(form.serialize(), {
       success: function(){ 
         // request.renderTree(Page.root()); 
-        request.redirect('#/pages/' + page_id + '/edit');
+        request.redirect('#/pages/' + page_id);
       }
     });  
   });

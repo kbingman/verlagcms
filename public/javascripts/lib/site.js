@@ -62,7 +62,6 @@ App = Sammy(function (app) {
     }
     // sets a flag so the the search results are not reloaded
     app.modal = true;
-
   });
   
   app.get('/', function (req) {

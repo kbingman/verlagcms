@@ -76,7 +76,44 @@ var Utilities = {
     });
   }  
   
-}  
+} 
+
+var iFramer = {       
+  initialize: function(element){   
+    var trigger = jQuery(element);  
+    var self = this;
+    if(!trigger) return;
+    trigger.load(function(){   
+      var iFrameContent = $(this).contents();  
+      var flags = iFrameContent.find('a.verlag-editor') ;
+      // change to plugin ?
+      self.setEditFlags(flags);     
+      flags.click(function(){  
+        window.top.trigger = $(this);
+        window.top.location.hash = $(this).attr('href');  
+        return false;
+      });
+    }); 
+  },
+  
+  setEditFlags: function(element){  
+    element.css({
+      'position': 'relative',  
+      'display':  'block',
+      'height':   '0',
+      'width':    '0',
+      'text-decoration': 'none'    
+    }).find('span').css({
+      'display': 'block',
+      'position': 'absolute', 
+      'top': '-24px',
+      'left': '12px',
+      'padding': '4px 8px', 
+      'width': '100px',
+      'background': 'rgba(255, 255, 0, 0.7)'
+    });
+  }
+} 
 
 var delay = (function(){
   var timer = 0;

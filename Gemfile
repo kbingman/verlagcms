@@ -45,5 +45,5 @@ group :test do
   # gem 'capybara-webkit', '~> 0.5' # , :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl', :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'
-  # gem 'jasmine'
+  gem 'jasmine'
 end

@@ -21,4 +21,5 @@ defaults: &defaults
     :host: localhost
 
 :production:
-  <<: *defaults
+  <<: *defaults 
+  :domain: heroku.com

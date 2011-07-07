@@ -25,9 +25,13 @@ class Site
   
   def domain
     "#{self.subdomain}.#{monk_settings(:domain)}"
+  end  
+  
+  def as_json(options)
+    super(:methods => [:domain])
   end
   
-  liquid_methods :name, :root, :children 
+  # liquid_methods :name, :root, :children 
   
   protected
     

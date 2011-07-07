@@ -30,8 +30,11 @@ class Main
             format.html { redirect('/layouts') }
             format.json { template.to_json }
           end 
-        else
-          logger.info(template.errors.inspect)
+        else   
+          logger.info(template.errors.inspect)  
+          respond_to do |format|
+            format.json { { :errors => template.errors }.to_json }
+          end
         end
       end
       

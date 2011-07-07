@@ -1,19 +1,17 @@
-<div id="pages">
+<div id="sites">
   <h1>Sites</h1> 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead> 
-    {{#sites}}
-    <tbody>
-      <tr id="site-{{id}}">
-        <td>
-          <a href= "http://{{subdomain}}.davisapp.dev/admin/#/pages">{{name}}</a>   
-        </td>
-      </tr>
-    </tbody> 
-    {{/sites}}
-  </table>
+  <ul>
+  {{#sites}} 
+    <li class="site" id="site-{{id}}"> 
+      <div class="item"> 
+        <span class="title"> 
+           <a href= "http://{{domain}}/admin/#/pages">{{name}}</a>        
+        </span> 
+        <span class="modify">                 
+          <a class="edit-site" id="edit-site-{{id}}" href="#/sites/{{id}}/edit">edit</a> 
+        </span>  
+      </div>
+    </li>  
+  {{/sites}}  
+  </ul>
 </div>

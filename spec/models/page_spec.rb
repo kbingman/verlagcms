@@ -3,8 +3,9 @@ require 'spec_helper'
 describe Page do  
   before(:all) do  
     @site = Factory(:site) 
-    @second_site = Factory(:site, :name => 'second', :subdomain => 'second') 
-    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')
+    @second_site = Factory(:site, :name => 'second', :subdomain => 'second')  
+    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')             
+    @part_type = Factory(:part_type, :name => 'body', :layout_id => @layout.id)
     @root = Factory(:page, :title => 'root', :site => @site, :layout => @layout) 
     @child = Factory(:page, 
       :title => 'Child', 
@@ -39,7 +40,7 @@ describe Page do
     
     it 'should require a title' do
       Factory.build(:page, :title => '', :site => @site, :layout_id => @layout.id).should_not be_valid
-    end 
+    end   
     
     it 'should have a unique slug, within its parent' do
       # @parent = 
@@ -140,7 +141,27 @@ describe Page do
     
     describe 'api' do
       #TODO
-    end 
+    end  
+    
+    describe '#parts' do    
+      
+      it 'should build parts according to its layout' do
+        @root.part_names.should == [@part_type.name]
+      end   
+      
+      context 'new parts' do
+        before(:all) do
+          @new_part_type = Factory(:part_type, :name => 'sidebar', :layout_id => @layout.id) 
+        end    
+        
+        it 'should update all parts' do 
+          pending
+          @root.save
+          @root.part_names.should == [@part_type.name, @new_part_type.name]
+        end
+      end
+
+    end
     
     describe '#assets' do  
       

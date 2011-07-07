@@ -12,7 +12,7 @@ class Main
             admin_haml :'admin/sites/index'
           end 
           format.json do 
-            sites.to_json  
+            @sites.to_json  
           end
         end
       end

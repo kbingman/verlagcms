@@ -1,22 +1,17 @@
-class Part
+class ImagePart < Part
   include MongoMapper::EmbeddedDocument
   
   # TODO add custom validation
   key :name, String, :required => true, :unique => true 
-  key :content, String
+  key :content, String   
   
-  liquid_methods :name, :content, :render   
+  key :asset_id, ObjectId 
+  belongs_to :asset, :foreign_key => :artist_id
   
-  def render 
-    if self.content
-      RedCloth.new(self.content).to_html
-    else
-      ''
-    end
-  end
-
+  liquid_methods :name, :content, :render, :image_path
+  
   def image_path
-    self.asset.image_path if self.asset 
+    self.asset.image_path   
   end
   
   def as_json(options)

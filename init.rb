@@ -36,7 +36,8 @@ require 'lib/hunt/search_all'
 
 class Main < Monk::Glue
 
-  set :app_file, __FILE__   
+  set :app_file, __FILE__    
+  set :views, root_path('app', 'views') 
   set :sass, { 
     :cache => RACK_ENV == 'development' ? false : true, 
     :cache_location => './tmp/sass-cache',
@@ -120,13 +121,8 @@ Dir[root_path('app/views/**/*.rb')].each do |file|
   require file
 end
 
-# # Load all application files.
-# Dir[root_path('app/**/*.rb')].each do |file|
-#   require file
-# end  
-
 # Load all lib liquid files.
-Dir[root_path('lib/liquid/*.rb')].each do |file|
+Dir[root_path('app/liquid/*.rb')].each do |file|
   require file
 end  
 

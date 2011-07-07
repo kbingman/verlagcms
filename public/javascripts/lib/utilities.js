@@ -115,6 +115,30 @@ var iFramer = {
   }
 } 
 
+var TabControl = {
+  initialize: function(element){
+    var tabs = jQuery(element);  
+    if(!tabs) return;
+    var self = this; 
+    tabs.each(function(i, tab){
+      $(tab).hide();
+    }); 
+    tabs.first().show();   
+    self.tabControl(jQuery('.tab-control'));
+  },
+  
+  tabControl: function(element){  
+    element.click(function(){  
+      var partId = $(this).find('label').attr('for').split('-')[1];
+      var tabId = 'tab-' + partId;   
+      console.log(tabId)
+      
+      jQuery('.tab').hide(); 
+      jQuery('#' + tabId).show();
+    })
+  }
+}
+
 var delay = (function(){
   var timer = 0;
   return function(callback, ms){

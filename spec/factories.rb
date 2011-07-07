@@ -33,6 +33,10 @@ Factory.define :part do |f|
   f.content  ''
 end 
 
+Factory.define :part_type do |f|
+  f.name 'body'
+end
+
 Factory.define :site do |f|
   f.name 'The Daily Scan'
   f.subdomain  'scans'

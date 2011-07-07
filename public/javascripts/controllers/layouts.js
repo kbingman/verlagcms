@@ -84,6 +84,8 @@ Layouts = Sammy(function (app) {
     });            
   });
   
+  // New Layout
+  // ---------------------------------------------
   this.get('#/templates/new/:klass', function(request){    
     
     this.loadLayouts(function(){    
@@ -94,13 +96,22 @@ Layouts = Sammy(function (app) {
       newLayout.replace('#new-page-container');       
       request.renderIndex(Layout.all()); 
     }); 
-  }); 
+  });  
   
+  // Create Layout
+  // ---------------------------------------------  
   this.post('#/templates', function(request){
     var attributes = request.params['template'];  
       
-    Layout.create(attributes, function(){
-      request.redirect('#/templates');
+    Layout.create(attributes, { 
+      success: function(){  
+        request.redirect('#/templates'); 
+        jQuery('.notice').text('Successfully saved template');
+      },
+      error: function(){    
+        jQuery('.notice').text('errors creating template');
+        alert('hey');
+      }
     }); 
   });
   // 
@@ -124,38 +135,36 @@ Layouts = Sammy(function (app) {
     layout.attr(request.params['layout']);   
     layout.saveRemote({
       success: function(){  
-        request.renderIndex();
+        request.renderIndex();  
+        jQuery('.notice').text('Successfully saved template');
         // request.redirect('#/layouts');
+      },
+      error: function(){
+        
       }
     });  
   });
-  // 
-  // this.get('#/pages/:id/remove', function(request){   
-  //   this.loadPages(function(){   
-  //     var page_id = request.params['id'];
-  //     var page = Page.find(page_id);         
-  //     var displayContents = $('<div />').attr({'id': 'remove-page-container', 'class': 'small-modal'});   
-  //     
-  //     if($('#modal').length == 0){ Galerie.open(displayContents); } 
-  //     
-  //     if(context.refresh_templates){
-  //       request.renderTree(Page.root()); 
-  //     }
-  //     
-  //     var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
-  //     removePage.replace('#remove-page-container');
-  //   });  
-  // }); 
-  // 
-  // this.del('/pages/:id', function(request){
-  //   var page_id = request.params['id'];       
-  //   var page = Page.find(page_id);               
-  //     
-  //   page.deleteRemote(function(){
-  //     request.redirect('#/pages');
-  //   }); 
-  // });  
-  // 
+  
+  this.get('#/templates/:id/remove', function(request){ 
+    this.loadLayouts(function(){  
+      var layout = Layout.find(request.params['id']); 
+      Galerie.open();   
+      
+      var removeTemplate = request.render('/templates/admin/templates/remove.mustache', { layout: layout.asJSON() });    
+      removeTemplate.replace('#modal');
+      
+      request.renderIndex(Layout.all()); 
+    });
+  }); 
+  
+  this.del('/templates/:id', function(request){    
+    var layout = Layout.find(request.params['id']);               
+      
+    layout.deleteRemote(function(){
+      request.redirect('#/templates');
+    }); 
+  });  
+  
   
   // 
   // // Layout parts 

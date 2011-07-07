@@ -18,8 +18,25 @@ var Layout = Model('layout', function() {
         success: function(results) {
           self.merge(results);
           if(callback['success']){ callback['success'].call(this); }
+          if(callback['error']){ callback['error'].call(this); }
         }
       }); 
+    },
+    
+    deleteRemote: function(callback){
+      var self = this;
+      var url = '/admin/templates/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'DELETE',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          Layout.remove(self);    
+          callback.call(this);    
+        }
+      });
     }
   }), 
   
@@ -93,11 +110,16 @@ var Layout = Model('layout', function() {
         // contentType: "application/json",
         dataType: "json",
         data: { template: attributes },
-        success: function(results) {       
-          var layout = new Layout({ id: results.id });
-          layout.merge(results);
-          Layout.add(layout);
-          callback.call(this);
+        success: function(results) { 
+          console.log(results)  
+          if(results.errors){
+            if(callback['error']){ callback['error'].call(this); } 
+          }else{
+            var layout = new Layout({ id: results.id });
+            layout.merge(results);
+            Layout.add(layout);
+            if(callback['success']){ callback['success'].call(this); }   
+          }   
         }
       });
     },

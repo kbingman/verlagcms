@@ -51,13 +51,15 @@ Pages = Sammy(function (app) {
     }, 
     
     renderPagePreview: function(page){
-      var application = this;
-      var showPage = application.render('/templates/admin/pages/show.mustache', { 
-        page: page.asJSON()
-      });  
-      showPage.replace('#editor').then(function(){  
-        iFramer.initialize('#preview iframe'); 
-      });
+      var application = this;   
+      if(!context.modal){
+        var showPage = application.render('/templates/admin/pages/show.mustache', { 
+          page: page.asJSON()
+        });  
+        showPage.replace('#editor').then(function(){  
+          iFramer.initialize('#preview iframe'); 
+        });
+      }
     }, 
     
     renderPage: function(page){ 
@@ -66,7 +68,9 @@ Pages = Sammy(function (app) {
         page: page.asJSON(), 
         layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
       });  
-      editPage.replace('#modal');
+      editPage.replace('#modal').then(function(){
+        TabControl.initialize('.tab');
+      });
     }
     
   });
@@ -140,7 +144,8 @@ Pages = Sammy(function (app) {
         }); 
         jQuery('#page-' + page_id + ' ul').remove();
       } 
-      context.refresh_pages = false;
+      context.refresh_pages = false; 
+      context.modal = false;
       return false; 
     });
   });
@@ -206,7 +211,7 @@ Pages = Sammy(function (app) {
           request.renderPagePreview(page); 
         });
       } 
-      
+      context.modal = false;
       if(context.refresh_pages){
         request.renderTree(Page.root());
         context.refresh_pages = false;  
@@ -218,6 +223,7 @@ Pages = Sammy(function (app) {
     // alert('Soon you will be able to edit a page here!');
     // request.redirect('#/pages/' + request.params['id'])
     Galerie.open();  
+    context.modal = true;  
     
     // window.top.trigger.css({'border':'1px solid red'});
     
@@ -246,12 +252,13 @@ Pages = Sammy(function (app) {
     var page_id = request.params['page_id'],
       page = Page.find(page_id)
     // This is a hack, but otherwise the params get screwed up
-    var form = $('#edit-page')
-
+    var form = $('#edit-page');
+    
     page.attr(request.params['page']);   
     page.saveRemote(form.serialize(), {
       success: function(){ 
-        // request.renderTree(Page.root()); 
+        // request.renderTree(Page.root());  
+        context.modal = false;
         request.redirect('#/pages/' + page_id);
       }
     });  

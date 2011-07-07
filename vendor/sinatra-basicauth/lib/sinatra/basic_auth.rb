@@ -1,7 +1,9 @@
 require 'sinatra/base'   
 
-module Sinatra                                   
-  module BasicAuth  
+module Sinatra      
+                          
+  module BasicAuth   
+     
     
     module Helpers  
       
@@ -26,13 +28,13 @@ module Sinatra
       app.set :password, 'changeme'  
       
       app.get '/login' do 
-        haml :'/vendor/sinatra-basicauth/views/site/login'
+        haml :'site/login'
       end    
       
       app.post '/login' do 
-        if params[:user] == options.username && params[:pass] == options.password
+        if params[:username] == options.username && params[:password] == options.password
           session[:authorized] = true
-          redirect '/' 
+          redirect '/admin/' 
         else
           session[:authorized] = false
          redirect '/login' 

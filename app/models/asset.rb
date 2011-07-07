@@ -28,7 +28,9 @@ class Asset
   belongs_to :artist, :foreign_key => :artist_id  
   
   key :page_id, ObjectId
-  belongs_to :page, :foreign_key => :artist_id
+  belongs_to :page, :foreign_key => :artist_id  
+  
+  has_one :image_part
   
   timestamps!   
   
@@ -85,7 +87,7 @@ class Asset
     return image
   end
   
-  def image_path(name='display')
+  def image_path(name='original')
     "/images/#{name}/#{self.id}/#{self.file_name}" 
   end
   

@@ -1,9 +1,9 @@
 #overlay  
-  :position fixed
+  :position absolute  
   :top 0
   :left 0
-  :width 100%
-  :height 100%	
+  :bottom 0
+  :right 0 
   :background-color rgba(0, 0, 0, 0.7)
   :z-index 100
 
@@ -58,7 +58,8 @@
       :background red  
       :text-indent -10000px   
       
-  .small-modal
+  .small-modal, .notice
+    +border-radius(4px)
     :width 420px
     :margin 0 auto
     :background white

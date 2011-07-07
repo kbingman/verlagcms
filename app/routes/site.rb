@@ -6,15 +6,21 @@ class Main
     name =  params[:splat] 
     partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
   end   
-  
-  # Redirects to '/admin/' so that the page hash looks pretty
-  get '/admin' do
-    redirect '/admin/'
-  end
-  
-  # Site admin interface
-  admin_route = get '/admin/' do
-    admin_haml :'admin/index'  
+
+  # Site admin interface    
+  module Admin    
+    before do
+      authorize!  
+    end  
+    
+    # Redirects to '/admin/' so that the page hash looks pretty     
+    get '' do
+      redirect '/admin/'
+    end
+    
+    admin_route = get '/' do   
+      admin_haml :'admin/index'  
+    end  
   end
   
   # CSS Templates 
@@ -39,7 +45,8 @@ class Main
     end
   end  
   
-  preview_route = get '/preview*' do
+  preview_route = get '/preview*' do   
+    authorize!
     path = params[:splat].first   
     page = Page.find_by_path(path, current_site) 
     

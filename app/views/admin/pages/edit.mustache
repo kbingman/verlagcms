@@ -27,18 +27,31 @@
     </div>
   
     <div id="page-parts"> 
-      <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p--> 
+      <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p-->   
+      <div id="tab-controls">
+        {{#parts}}    
+          <div class="tab-control">
+            <label for='part-{{id}}-content'>{{name}}</label>
+          </div>
+        {{/parts}}  
+      </div>
       {{#parts}}  
-        <div class="part tab">
-          <label for='part-{{id}}-content'>{{name}}</label> 
+        <div class="part tab" id="tab-{{id}}">
           <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a-->
           <div class="hidden">                  
             <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
             <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
-          </div>
-          <div class="field">                     
+          </div>  
+          
+          <div class="field part-content"> 
+            {{#content}}                      
             <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
-          </div>
+            {{/content}}   
+            {{#image_path}} 
+            <img src="{{image_path}}" alt="{{name}}" />
+            {{/image_path}}
+          </div> 
+          
         </div> 
       {{/parts}}  
     </div> 

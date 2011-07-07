@@ -39,9 +39,9 @@ class Page
   
   # Liquid Stuff
   # liquid_methods :title, :path, :assets, :children, :data, :parts 
-  def to_liquid request = nil   
-    PageDrop.new self, request
-  end  
+  # def to_liquid request = nil   
+  #   PageDrop.new self, request
+  # end  
   
   def data request = nil 
     DataProxy.new self, request
@@ -54,7 +54,7 @@ class Page
       template = Liquid::Template.parse(self.layout.content)
       template.render({
         'page' => PageDrop.new(self, request), 
-        'site' => self.site, 
+        'site' => SiteDrop.new(self.site, request), 
         'request' => RequestDrop.new(request),  
         # TOTO move this into a page subclass?
         'search' => SearchDrop.new(self.site, request) 
@@ -176,13 +176,15 @@ class Page
     
     before_save :create_parts 
     def create_parts  
-      if self.parts.empty?
+      # if self.parts.empty?
         types = self.layout.part_types 
-        types.each do |type|
-          part = Part.new :name => type.name
-          self.parts << part
+        types.each do |type|    
+          unless self.part_names.include?(type.name)
+            part = Part.new :name => type.name
+            self.parts << part 
+          end
         end
-      end
+      # end
     end  
     
     def sanitize(text)

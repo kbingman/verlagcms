@@ -46,8 +46,8 @@ describe Site do
     
     before(:all) do
       @site = Factory(:site, :name => 'Daily Scans', :subdomain => '') 
-      @layout = Factory(:layout, :site_id => @site.id)
-      @page = Factory(:page, :site_id => @site.id, :layout_id => @layout.id) 
+      # @layout = Factory(:layout, :site_id => @site.id)
+      # @page = Factory(:page, :site_id => @site.id, :layout_id => @layout.id) 
     end
     
     after(:all) do
@@ -55,7 +55,27 @@ describe Site do
     end 
     
     it 'should find the root page' do
-      @site.root.should == @page
+      @site.root.should_not == nil
+    end  
+    
+  end  
+  
+  context 'defaults' do 
+    
+    before(:all) do 
+      @new_site = Site.create :name => 'new', :subdomain => 'new' 
+    end  
+      
+    after(:all) do
+      teardown
+    end
+    
+    it 'should create a default template on creation' do
+      @new_site.templates.first.should_not be_nil
+    end
+     
+    it 'should create a root page on creation' do  
+      @new_site.root.should_not be_nil
     end  
     
   end

@@ -25,7 +25,7 @@ Layouts = Sammy(function (app) {
     },
     
     // Renders the Page tree
-    renderIndex: function(){   
+    renderLayoutIndex: function(){   
       var application = this;
        
       var layoutIndex = application.render('/templates/admin/templates/index.mustache', {
@@ -74,13 +74,14 @@ Layouts = Sammy(function (app) {
   // Layout Index
   // ---------------------------------------------  
   this.get('#/templates', function(request){  
+
     Galerie.close();
     context.refresh_templates = false; 
     context.refresh_pages = true;     
     
-    jQuery('#editor').html(''); 
+    jQuery('#editor').html('<h1 class="section">Templates</div>'); 
     request.loadLayouts(function(){
-      request.renderIndex(Layout.all());  
+      request.renderLayoutIndex(Layout.all());  
     });            
   });
   
@@ -94,7 +95,7 @@ Layouts = Sammy(function (app) {
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       var newLayout = request.render('/templates/admin/templates/new.mustache', { klass: request.params['klass']}); 
       newLayout.replace('#new-page-container');       
-      request.renderIndex(Layout.all()); 
+      request.renderLayoutIndex(Layout.all()); 
     }); 
   });  
   
@@ -123,7 +124,7 @@ Layouts = Sammy(function (app) {
     this.loadLayouts(function(){  
       var layout = Layout.find(request.params['id']);   
       request.renderLayout(layout);   
-      request.renderIndex(Layout.all()); 
+      request.renderLayoutIndex(Layout.all()); 
     });
   });   
   
@@ -135,7 +136,7 @@ Layouts = Sammy(function (app) {
     layout.attr(request.params['layout']);   
     layout.saveRemote({
       success: function(){  
-        request.renderIndex();  
+        request.renderLayoutIndex();  
         jQuery('.notice').text('Successfully saved template');
         // request.redirect('#/layouts');
       },
@@ -153,7 +154,7 @@ Layouts = Sammy(function (app) {
       var removeTemplate = request.render('/templates/admin/templates/remove.mustache', { layout: layout.asJSON() });    
       removeTemplate.replace('#modal');
       
-      request.renderIndex(Layout.all()); 
+      request.renderLayoutIndex(Layout.all()); 
     });
   }); 
   

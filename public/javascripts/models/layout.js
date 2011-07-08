@@ -15,10 +15,14 @@ var Layout = Model('layout', function() {
         // contentType: "application/json",
         dataType: "json",
         data: { 'layout': self.attributes },
-        success: function(results) {
-          self.merge(results);
-          if(callback['success']){ callback['success'].call(this); }
-          if(callback['error']){ callback['error'].call(this); }
+        success: function(results) {   
+          if(results.errors){      
+            alert(JSON.stringify(results))
+            if(callback['error']){ callback['error'].call(this); } 
+          } else {
+            self.merge(results);
+            if(callback['success']){ callback['success'].call(this); }
+          }
         }
       }); 
     },

@@ -24,7 +24,14 @@ describe Layout do
       l = Factory.build(:layout, :name => '')
       l.site = @site
       l.should_not be_valid
-    end  
+    end      
+    
+    it "should create a default part type" do
+      l = Factory.build(:layout, :name => 'Layout')
+      l.site = @site   
+      l.save         
+      l.part_types.should_not be_nil
+    end
   end  
   
 end

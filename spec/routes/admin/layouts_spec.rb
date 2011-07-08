@@ -5,7 +5,7 @@ describe "routes/templates" do
   
   before(:all) do 
     setup_site
-    @layout = Factory(:layout, :site => @site)    
+    @layout = Factory(:layout, :site_id => @site.id)  
   end 
   
   after(:all) do

@@ -2,7 +2,23 @@ var Site = Model('site', function() {
   // this.persistence(Model.REST, "/assets"), 
  
   this.include({
-
+    saveRemote: function(callback){  
+      var self = this;  
+      var url = '/admin/sites/' + self.id() + '.json';
+      
+      // self.save();
+      jQuery.ajax({
+        type: 'PUT',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",
+        data: { 'site': self.changes },
+        success: function(results) {  
+          self.merge(results);
+          if(callback['success']){ callback['success'].call(this); }
+        }
+      });
+    }
   }),  
   
   this.extend({  

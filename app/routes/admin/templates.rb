@@ -6,12 +6,14 @@ class Main
       # layout Index
       # -------------------------------------------
       get '/?' do
-        @templates = current_site.templates
+        @templates = current_site.templates  
+        
         respond_to do |format|
           format.html do  
             admin_haml :'admin/layouts/index'
           end 
-          format.json do 
+          format.json do  
+            logger.debug 'HEY!!'  
             @templates.to_json  
           end
         end
@@ -67,7 +69,10 @@ class Main
             format.json { template.to_json }
           end 
         else
-          # error handling
+          logger.info(template.errors.inspect)  
+          respond_to do |format|
+            format.json { { :errors => template.errors }.to_json }
+          end
         end
       end     
       

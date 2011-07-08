@@ -62,7 +62,7 @@ class Main
     cache_request     
          
     path = params[:splat].first
-    page = Page.find_by_path(path, current_site) 
+    page = Page.find_by_path(path, current_site) if path
     
     if page 
       page.render(format, request)

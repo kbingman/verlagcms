@@ -4,9 +4,12 @@ describe Page do
   before(:all) do  
     @site = Factory(:site) 
     @second_site = Factory(:site, :name => 'second', :subdomain => 'second')  
-    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')             
+    # @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')             
+    @layout = @site.templates.first   
+    @layout.content = '<h1>{{page.title}}</h1>'
+    @layout.save
     @part_type = Factory(:part_type, :name => 'body', :layout_id => @layout.id)
-    @root = Factory(:page, :title => 'root', :site => @site, :layout => @layout) 
+    @root = @site.root 
     @child = Factory(:page, 
       :title => 'Child', 
       :parent_id => @root.id, 

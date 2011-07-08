@@ -110,7 +110,7 @@ describe Asset do
     end
     
     it 'should have an image path' do
-      @asset.image_path.should == "/images/display/#{@asset.id}/#{@asset.file_name}"
+      @asset.image_path.should == "/images/original/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should have a thumbnail path' do

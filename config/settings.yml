@@ -15,7 +15,8 @@ defaults: &defaults
   :log_level: debug
 
 :test:
-  <<: *defaults
+  <<: *defaults   
+  :log_level: debug
   :mongo:
     :database: davis_test
     :host: localhost

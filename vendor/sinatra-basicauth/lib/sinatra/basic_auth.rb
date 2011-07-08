@@ -8,7 +8,7 @@ module Sinatra
     module Helpers  
       
       def authorized?
-       session[:authorized] 
+        session[:authorized] 
       end     
       
       def authorize! 

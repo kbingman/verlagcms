@@ -153,6 +153,7 @@ Pages = Sammy(function (app) {
   // Page routes
   // ---------------------------------------------  
   this.get('#/pages', function(request){ 
+    
     Galerie.close();    
     // context.refresh_pages = true; 
 
@@ -162,7 +163,7 @@ Pages = Sammy(function (app) {
       });   
       
     } 
-    jQuery('#editor').html(''); 
+    jQuery('#editor').html('<h1 class="section">Pages</div>');  
     context.refresh_pages = false;              
   });
   
@@ -248,7 +249,7 @@ Pages = Sammy(function (app) {
     });        
   });   
   
-   this.put('#/pages/:page_id', function(request){  
+  this.put('#/pages/:page_id', function(request){  
     var page_id = request.params['page_id'],
       page = Page.find(page_id)
     // This is a hack, but otherwise the params get screwed up

@@ -42,6 +42,20 @@ class Site
     
     def sanitize(text)
       text.gsub(/[^a-z0-9\-.]+/i, '-').gsub(/\-$/,'').downcase
+    end    
+    
+    after_create :create_default_template
+    def create_default_template
+       t = Layout.new :name => 'default'
+       t.site_id = self.id 
+       t.save   
+     end
+    
+    after_create :create_root
+    def create_root
+      r = Page.new :slug => '/', :layout_id => self.templates.first.id, :title => 'Root' 
+      r.site_id = self.id   
+      r.save
     end
   
 end

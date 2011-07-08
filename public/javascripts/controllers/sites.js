@@ -23,7 +23,7 @@ Sites = Sammy(function (app) {
       }
     },
     
-    renderIndex: function(){  
+    renderSiteIndex: function(){  
       var application = this;    
       var siteIndex = application.render('/templates/admin/sites/index.mustache', Site.toMustache());
       siteIndex.replace('#sidebar');
@@ -38,21 +38,22 @@ Sites = Sammy(function (app) {
   // Site Index
   // ---------------------------------------------
   this.get('#/sites', function(request){
-    
-    Galerie.close(); 
+    Galerie.close();  
+    jQuery('#editor').html('<h1 class="section">Sites</div>'); 
+
     request.loadSites(function(){  
-      request.renderIndex();
+      request.renderSiteIndex();
     });
   });  
   
   // New Site 
   // --------------------------------------------- 
-  this.get('#/sites/new', function(request){ 
+  this.get('#/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
       var newSite = request.render('/templates/admin/sites/new.mustache');
       newSite.replace('#modal');  
-      request.renderIndex(Site.all());
+      request.renderSiteIndex(Site.all());
     });
   }); 
   
@@ -70,6 +71,35 @@ Sites = Sammy(function (app) {
         jQuery('.notice').text('errors creating template');
       }
     }); 
+  });  
+  
+  // Edit Site 
+  // --------------------------------------------- 
+  this.get('#/sites/:id/edit', function(request){  
+    Galerie.close();         
+    request.loadSites(function(){    
+      site = Site.find(request.params['id']); 
+      var editSite = request.render('/templates/admin/sites/edit.mustache', { site: site.asJSON() });
+      editSite.replace('#editor');  
+      request.renderSiteIndex(Site.all());
+    });
+  });    
+   
+  
+  // Update Site 
+  // --------------------------------------------- 
+  this.put('#/sites/:id', function(request){  
+    var site = Site.find(request.params['id'])
+    var attributes = request.params['site'];
+    
+    site.attr(attributes);   
+    site.saveRemote({
+      success: function(){  
+        request.redirect('#/sites/' + site.id() + '/edit');
+      }
+    });  
   });
+  
+  
   
 });

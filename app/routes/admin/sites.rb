@@ -51,8 +51,7 @@ class Main
       # -------------------------------------------
       put '/:id' do
         site = Site.find params['id']  
-        parts = params['site']['parts']
-                
+    
         if site.update_attributes(params['site'])
           respond_to do |format|
             format.html { redirect('/sites') }

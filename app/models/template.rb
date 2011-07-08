@@ -1,7 +1,7 @@
 class Template
   include MongoMapper::Document
   
-  key :name, String, :required => true, :unique => true 
+  key :name, String, :required => true #, :unique => true 
   key :content, String  
   
   key :site_id, ObjectId, :required => true 

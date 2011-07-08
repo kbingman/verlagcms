@@ -6,7 +6,7 @@ describe "routes/admin/assets" do
   before(:all) do    
     setup_site
     @artist = Factory(:artist, :name => 'Egon')                       
-    @asset = Factory(:asset, :artist => @artist, :site => @site) 
+    @asset = Factory(:asset, :artist => @artist, :site => @site)   
     @assets = [@asset]
   end 
   
@@ -16,23 +16,23 @@ describe "routes/admin/assets" do
   
   context 'GET index' do
     
-    context 'html' do 
-      def do_get
-        get '/admin/assets'
-      end
-      
-      it 'should be successful' do
-        pending 'deprecated' 
-        do_get
-        last_response.should be_ok
-      end
-      
-      it 'should set the content header to html' do  
-        pending 'deprecated' 
-        do_get
-        last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
-      end
-    end
+    # context 'html' do 
+    #   def do_get
+    #     get '/admin/assets'
+    #   end
+    #   
+    #   it 'should be successful' do
+    #     pending 'deprecated' 
+    #     do_get
+    #     last_response.should be_ok
+    #   end
+    #   
+    #   it 'should set the content header to html' do  
+    #     pending 'deprecated' 
+    #     do_get
+    #     last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
+    #   end
+    # end
     
     context 'json' do   
       def do_get
@@ -40,7 +40,7 @@ describe "routes/admin/assets" do
       end
     
       it 'should be successful' do
-        do_get
+        do_get    
         last_response.should be_ok
       end
       

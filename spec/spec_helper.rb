@@ -40,13 +40,17 @@ RSpec.configure do |conf|
   end  
   
   def setup_site     
-    @site = Factory(:site) 
+    @site = Factory(:site)   
     Main.class_eval do
       helpers do
         
         def current_site
           Site.first
-        end 
+        end   
+        
+        def authorized?
+          true
+        end
         
       end
     end 

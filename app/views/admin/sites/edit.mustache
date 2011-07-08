@@ -1,7 +1,10 @@
 {{#site}}
 <h1>Edit Site</h1>  
 
-<form action="#/sites" method= "post">  
+<form action="#/sites/{{id}}" method= "post">   
+  <div class="hidden">
+    <input type="hidden" name="_method" value="put" /> 
+  </div>
   <div class="field">   
     <label for="site_name">Name</label>
     <input type="text" id="site_name" name="site[name]" value="{{name}}" class="textfield" />  

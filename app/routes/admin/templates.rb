@@ -13,7 +13,6 @@ class Main
             admin_haml :'admin/layouts/index'
           end 
           format.json do  
-            logger.debug 'HEY!!'  
             @templates.to_json  
           end
         end
@@ -43,17 +42,17 @@ class Main
       # Show layout
       # -------------------------------------------
       get '/:id/?' do
-        @layout = Layout.by_site(current_site.id).find(params['id'])
+        @template = Template.by_site(current_site.id).find(params['id'])
         respond_to do |format|
           format.html { redirect('/layouts') }
-          format.json { @layout.to_json }
+          format.json { @template.to_json }
         end
       end
       
       # Edit layout
       # -------------------------------------------
       get '/:id/edit/?' do
-        @layout = Layout.by_site(current_site.id).find(params['id'])                             
+        @template = Template.by_site(current_site.id).find(params['id'])                             
         admin_haml :'/admin/layouts/edit'
       end
       
@@ -61,9 +60,9 @@ class Main
       # -------------------------------------------
       put '/:id' do
         template = Template.by_site(current_site.id).find(params['id'])  
-        parts = params['layout']['parts']
+        parts = params['template']['parts'] if params['template']
                 
-        if template.update_attributes(params['layout'])
+        if template.update_attributes(params['template'])
           respond_to do |format|
             format.html { redirect('/layouts') }
             format.json { template.to_json }
@@ -79,8 +78,8 @@ class Main
       # Delete layout
       # -------------------------------------------
       delete '/:id' do
-        layout = Layout.by_site(current_site.id).find(params['id'])             
-        if layout.destroy
+        template = Template.by_site(current_site.id).find(params['id'])             
+        if template.destroy
           respond_to do |format|
             format.html { redirect('/layouts') }
             format.json {}

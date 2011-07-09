@@ -161,7 +161,6 @@ Pages = Sammy(function (app) {
       request.loadPages(function(){
         request.renderTree(Page.root());  
       });   
-      
     } 
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
     context.refresh_pages = false;              

@@ -1,6 +1,6 @@
 Sites = Sammy(function (app) {
   
-  var application = this; 
+  var context = this; 
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -31,13 +31,14 @@ Sites = Sammy(function (app) {
   });
 
   this.bind('run', function () {
-    application.modal = false; 
-    application.first_run = true;  
+    context.modal = false;
+    context.refresh_pages = true; 
   }); 
   
   // Site Index
   // ---------------------------------------------
-  this.get('#/sites', function(request){
+  this.get('#/sites', function(request){ 
+    context.refresh_pages = true;  
     Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Sites</div>'); 
 
@@ -61,16 +62,16 @@ Sites = Sammy(function (app) {
   // ---------------------------------------------  
   this.post('#/sites', function(request){
     var attributes = request.params['site'];  
-      
-    Site.create(attributes, { 
-      success: function(){  
+    var site = new Site(request.params['site']);
+    
+    site.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
         request.redirect('#/sites'); 
-        jQuery('.notice').text('Successfully saved template');
-      },
-      error: function(){    
-        jQuery('.notice').text('errors creating template');
       }
-    }); 
+    });  
   });  
   
   // Edit Site 
@@ -90,16 +91,42 @@ Sites = Sammy(function (app) {
   // --------------------------------------------- 
   this.put('#/sites/:id', function(request){  
     var site = Site.find(request.params['id'])
-    var attributes = request.params['site'];
-    
-    site.attr(attributes);   
-    site.saveRemote({
-      success: function(){  
-        request.redirect('#/sites/' + site.id() + '/edit');
+
+    site.attr(request.params['site']);   
+    site.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
+        request.redirect('#/sites'); 
       }
     });  
+  }); 
+  
+  // Remove Site 
+  // --------------------------------------------- 
+  this.get('#/sites/:id/remove', function(request){ 
+    Galerie.open();         
+    request.loadSites(function(){    
+      site = Site.find(request.params['id']); 
+      var removeSite = request.render('/templates/admin/sites/remove.mustache', { site: site.asJSON() });
+      removeSite.replace('#modal');  
+      request.renderSiteIndex(Site.all());
+    });
+  }); 
+  
+  // Delete Site 
+  // --------------------------------------------- 
+  this.del('#/sites/:id', function(request){       
+     
+    site.destroy(function(success, results){   
+      //var response = JSON.parse(results.responseText);   
+      if(success){ 
+        request.redirect('#/sites'); 
+      }else{  
+        alert('there were issues');  
+      }
+    });
   });
-  
-  
   
 });

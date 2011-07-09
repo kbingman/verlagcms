@@ -27,6 +27,10 @@ class Main
             format.html { redirect('/sites') }
             format.json { site.to_json }
           end 
+        else
+          respond_to do |format|
+            format.json { { :errors => site.errors }.to_json }
+          end
         end
       end
       
@@ -58,14 +62,16 @@ class Main
             format.json { site.to_json }
           end 
         else
-          # error handling
+          respond_to do |format|
+            format.json { { :errors => site.errors }.to_json }
+          end
         end
       end     
       
       # Delete site
       # -------------------------------------------
       delete '/:id' do
-        site = Site.find params['id']             
+        site = Site.find params['id']           
         if site.destroy
           respond_to do |format|
             format.html { redirect('/sites') }

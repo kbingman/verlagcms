@@ -14,7 +14,7 @@ var Layout = Model('layout', function() {
         url: url,
         // contentType: "application/json",
         dataType: "json",
-        data: { 'layout': self.attributes },
+        data: { 'template': self.attributes },
         success: function(results) {   
           if(results.errors){      
             alert(JSON.stringify(results))

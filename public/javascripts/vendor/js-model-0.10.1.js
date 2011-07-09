@@ -574,7 +574,7 @@ Model.REST = function(klass, resource, methods) {
       if(jQuery.ajaxSettings.data){
         params = jQuery.extend({}, jQuery.ajaxSettings.data, params)
       }
-      return JSON.stringify(params)
+      return params //JSON.stringify(params)
     },
 
     read: function(callback) {
@@ -610,8 +610,8 @@ Model.REST = function(klass, resource, methods) {
       
       return jQuery.ajax({
         type: method,
-        url: url,
-        contentType: "application/json",
+        url: url + '.json',
+        // contentType: "application/json",
         dataType: "json",
         data: data,
         dataFilter: function(data, type) {

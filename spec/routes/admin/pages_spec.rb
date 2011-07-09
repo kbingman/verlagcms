@@ -120,7 +120,32 @@ describe "routes/assets" do
       end  
    
     end  
-  end 
+  end    
+  
+  context 'PUT update' do  
+          
+    context 'json' do   
+      def do_put
+        put "/admin/pages/#{@page.id}.json", :page => { :title => 'New Title' }
+      end
+    
+      it 'should be successful' do
+        do_put
+        last_response.should be_ok
+      end
+      
+      it 'should set the content header to json' do
+        do_put
+        last_response.headers['Content-Type'].should == 'application/json'
+      end
+      
+      it 'should include the new title in the json' do  
+        do_put
+        last_response.body.should include('New Title')
+      end  
+    end
+
+  end
   
   context 'DELETE destroy' do
         
@@ -150,7 +175,13 @@ describe "routes/assets" do
       it 'should include pages in the json' do  
         do_delete
         last_response.body.should_not include(@page.title)
-      end 
+      end  
+      
+      it 'should delete the template' do 
+        page_id = @page.id
+        do_delete
+        Page.find(page_id).should be_nil
+      end
     end
     
   end

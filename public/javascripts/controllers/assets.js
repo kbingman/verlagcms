@@ -87,27 +87,27 @@ Assets = Sammy(function (app) {
   this.get('#/assets/:id/edit', function(request){
     var query = request.params['query'] ? request.params['query'] : null;  
 
-    if(jQuery('#modal').length == 0){
-      Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
-    } 
+    //if(jQuery('#modal').length == 0){
+    //  Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
+    //} 
     
     this.loadAssets(query, function(){
       var asset = Asset.find(request.params['id']); 
       var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
-      editAsset.replace('#edit-asset-container').then(function(results){  
+      editAsset.replace('#editor').then(function(results){  
         setTimeout(function(){
           $('img.fade-in').fadeIn('slow'); 
         }, 100);
         Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
       });  
 
-      if(application.first_run){
-        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        assetIndex.replace('#editor');
-      }                                                                              
+      // if(application.first_run){
+      //   var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+      //   assetIndex.replace('#editor');
+      // }                                                                              
     }); 
     // sets a flag so the the search results are not reloaded   
-    application.modal = true;  
+    application.modal = false;  
   });
   
   // Update Asset

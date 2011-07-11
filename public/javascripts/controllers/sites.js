@@ -35,6 +35,14 @@ Sites = Sammy(function (app) {
     context.refresh_pages = true; 
   }); 
   
+  // Site Preview
+  // ---------------------------------------------
+  this.get('#/preview', function(request){ 
+    var host = document.location['hostname'];
+    window.open('/', 'preview');
+    // alert(host)
+  });
+  
   // Site Index
   // ---------------------------------------------
   this.get('#/sites', function(request){ 

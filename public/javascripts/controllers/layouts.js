@@ -54,11 +54,12 @@ Layouts = Sammy(function (app) {
         var editor_field = jQuery('#layout_content');
         editor_field.attr('value', layout.attr('content'));   
         var mode = editor_field.attr('class'); 
-  
-        CodeMirror.fromTextArea(document.getElementById('layout_content'), {
-          mode: mode,
-          lineNumbers: true
-        });
+        if(jQuery('#layout_content').length > 0){
+          CodeMirror.fromTextArea(document.getElementById('layout_content'), {
+            mode: mode,
+            lineNumbers: true
+          });
+        }
         // Utilities.formObserver('#layout_content, #layout_name'); 
       });
     }
@@ -133,17 +134,28 @@ Layouts = Sammy(function (app) {
   this.put('#/templates/:id', function(request){  
     var layout = Layout.find(request.params['id']);  
       
-    layout.attr(request.params['layout']);   
-    layout.saveRemote({
-      success: function(){  
-        request.renderLayoutIndex();  
-        jQuery('.notice').text('Successfully saved template');
-        // request.redirect('#/layouts');
-      },
-      error: function(){
-        
+    layout.attr(request.params['layout']); 
+    layout.save(function(success, results){
+      if(success){ 
+        request.renderLayoutIndex(); 
+        var notice = jQuery('.notice');
+        notice.text('Successfully saved template'); 
+        notice.slideDown('fast');
+        setTimeout(function(){
+          notice.slideUp('fast')
+        }, '2000')  
       }
     });  
+    // layout.saveRemote({
+    //   success: function(){  
+    //     request.renderLayoutIndex();  
+    //     jQuery('.notice').text('Successfully saved template');
+    //     // request.redirect('#/layouts');
+    //   },
+    //   error: function(){
+    //     
+    //   }
+    // });  
   });
   
   this.get('#/templates/:id/remove', function(request){ 

@@ -9,16 +9,18 @@
       </div>
     </form>    
   </div>
-
+  
+  <div class='buttons'>
   <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
     <div class='field'>
       <label for='ajax_uploader'></label>
       <input id='ajax_uploader' name='file' type='file' />
     </div>
-    <div class='buttons'>
+    <div>
       <input type='submit'>
     </div>
-  </form>
+  </form> 
+  </div>
 
   <ul id="assets">
     {{#assets}}

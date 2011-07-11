@@ -12,7 +12,7 @@ module Sinatra
         monk_settings(:images).each do |key, value|  
           if key.to_s == params[:size] 
             h, w, crop = value 
-          end
+          end      
         end    
 
         begin

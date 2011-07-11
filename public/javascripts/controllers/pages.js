@@ -54,7 +54,8 @@ Pages = Sammy(function (app) {
       var application = this;   
       if(!context.modal){
         var showPage = application.render('/templates/admin/pages/show.mustache', { 
-          page: page.asJSON()
+          page: page.asJSON(),
+          page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('#preview iframe'); 
@@ -78,11 +79,12 @@ Pages = Sammy(function (app) {
   this.bind('run', function () { 
     context.application = this;
     context.refresh_pages = true;
-    context.modal = false;      
+    context.modal = false;    
     
-    jQuery('#sidebar .node').live('click', function(){
-      alert('hey')
-    });
+    jQuery('.add-asset').live('click', function(){
+      context.application.trigger('add-asset');
+      return false;
+    });  
     
     // This needs to be moved
     jQuery('#sidebar .opener').live('click', function(e){    
@@ -163,7 +165,8 @@ Pages = Sammy(function (app) {
       });   
     } 
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
-    context.refresh_pages = false;              
+    context.refresh_pages = true; 
+    context.do_not_refresh = false;              
   });
   
   this.get('#/pages/:id/new', function(request){    
@@ -197,26 +200,29 @@ Pages = Sammy(function (app) {
   
   this.get('#/pages/:id', function(request){ 
     Galerie.close(); 
-    
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
       
-      if(page) {
-        request.renderPagePreview(page); 
-      } else {  
-        // Loads page if the current collection does not contain it
-        page = new Page({ id: page_id });
-        page.load(function(){
+      if(!context.do_not_refresh){
+        if(page) {
           request.renderPagePreview(page); 
-        });
-      } 
-      context.modal = false;
-      if(context.refresh_pages){
-        request.renderTree(Page.root());
-        context.refresh_pages = false;  
+        } else {  
+          // Loads page if the current collection does not contain it
+          page = new Page({ id: page_id });
+          page.load(function(){
+            request.renderPagePreview(page); 
+          });
+        } 
+        context.modal = false;
+        context.do_not_refresh = false;
+        if(context.refresh_pages){
+          request.renderTree(Page.root());
+          context.refresh_pages = false;  
+        } 
       }
-    });        
+    });
+    context.do_not_refresh = false;    
   });
   
   this.get('#/pages/:id/edit', function(request){  
@@ -294,17 +300,17 @@ Pages = Sammy(function (app) {
   
   // Page assets browser    
   // --------------------------------------------- 
-  this.get('#/pages/:id/search', function(request){
-    this.loadPages(function(){     
-      var page = Page.find(request.params['id']); 
-      
-      if($('#modal').length == 0){ Galerie.open(function(){
-        var searchForm = request.render('/templates/admin/pages/search_form.mustache', { page: page.asJSON() });    
-        searchForm.replace('#modal');
-      }); }  
-  
-    });
-  });  
+  // this.get('#/pages/:id/search', function(request){
+  //   this.loadPages(function(){     
+  //     var page = Page.find(request.params['id']); 
+  //     
+  //     if($('#modal').length == 0){ Galerie.open(function(){
+  //       var searchForm = request.render('/templates/admin/pages/search_form.mustache', { page: page.asJSON() });    
+  //       searchForm.replace('#modal');
+  //     }); }  
+  // 
+  //   });
+  // });  
 
   this.get('/pages/:id/results', function(request){ 
     this.loadPages(function(){
@@ -329,18 +335,37 @@ Pages = Sammy(function (app) {
       var page_id = request.params['page_id'];  
       var page = Page.find(page_id);  
       var asset = Asset.find(request.params['id']);  
-      var page_asset_input = $('#page-asset-ids');
+      var page_asset_input = jQuery('#page-asset-ids');
       var asset_ids_list = page_asset_input.attr('value'); 
-     
-      page_asset_input.attr('value', asset_ids_list + ', ' + asset.id());  
-      Galerie.close(); 
-      // Consider an elegant way to do this with the model...
-      var edit_form = jQuery('#edit-page').submit();
-      // alert(asset.id());
-      // asset.addToPage(page_id,function(){
-      //   request.renderPage(page); 
-      //   request.redirect('#/pages/' + page_id + '/edit');  
+      var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
+      
+      page_asset_input.attr('value', new_asset_ids_list);
+       
+      // page.attr('assets_list', assets_list);
+      // page.save(function(success){
+      //   if(success){
+      //     alert('hey');
+      //     request.redirect('#/pages/' + page_id);
+      //   }
       // });
+      
+      page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
+        success: function(){ 
+          // think of a better way to render these links 
+          var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
+          var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
+          var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
+          image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
+          image_div.html(image_link);
+          image_div.append(remove_link);
+          
+          jQuery('#page-assets').append(image_div); 
+          var preview = jQuery('#preview iframe');
+          preview.attr('src', preview.attr('src'));
+          context.do_not_refresh = true;
+          request.redirect('#/pages/' + page_id);  
+        }
+      });
     });  
   }); 
       
@@ -348,18 +373,26 @@ Pages = Sammy(function (app) {
     this.loadPages(function(){     
       var id = request.params['id']; 
       var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);  
-      var page_asset_input = $('#page-asset-ids');
-      var asset_ids_list = page_asset_input.attr('value');  
+      var page = Page.find(page_id);
+      var page_asset_input = jQuery('#page-asset-ids');   
+  
+      var asset_ids_list = page_asset_input.attr('value').split(','); 
+      var idx = asset_ids_list.indexOf(id);    
+      if(idx!=-1) asset_ids_list.splice(idx, 1);  
+
+      page_asset_input.attr('value', asset_ids_list);  
       
-      // asset_ids_list.delete(id);
-      alert(asset_ids_list);
-      var edit_form = jQuery('#edit-page').submit();   
-      
-      // Asset.removeFromPage(asset_id, page_id,function(){
-      //   request.renderPage(page);
-      //   request.redirect('#/pages/' + page_id + '/edit');  
-      // }); 
+      page.saveRemote({ page: { assets_list: asset_ids_list.join(',') }}, {
+        success: function(){  
+          jQuery('#page-asset-' + id).fadeOut('fast', function(){
+            $(this).remove();
+          }); 
+          var preview = jQuery('#preview iframe');
+          preview.attr('src', preview.attr('src'));
+          context.do_not_refresh = true;
+          request.redirect('#/pages/' + page_id);  
+        }
+      });
     }); 
   });
 

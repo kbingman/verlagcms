@@ -47,9 +47,9 @@ var Utilities = {
           $('a.next').click();
           break; 
         // 'W' key
-        case 87:
-          $('a.cancel').click();
-          break; 
+        // case 87:
+        //   $('a.cancel').click();
+        //   break; 
       }
     });
   }, 

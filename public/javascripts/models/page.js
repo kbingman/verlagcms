@@ -1,5 +1,5 @@
 var Page = Model('page', function() {
-  // this.persistence(Model.REST, "/assets"), 
+  // this.persistence(Model.SinatraREST, "/admin/pages"), 
    
   // Instance methods
   this.include({  

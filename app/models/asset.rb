@@ -27,8 +27,8 @@ class Asset
   key :artist_id, ObjectId
   belongs_to :artist, :foreign_key => :artist_id  
   
-  key :page_id, ObjectId
-  belongs_to :page, :foreign_key => :artist_id  
+  # key :page_id, ObjectId
+  # belongs_to :page, :foreign_key => :artist_id  
   
   has_one :image_part
   
@@ -75,8 +75,9 @@ class Asset
   def render_image(width=nil, height=nil, options={})
     file = self.file.read
     image = MiniMagick::Image.read(file)
-    quality = options[:quality] || '72'
-    if width && height
+    quality = options[:quality] || '72' 
+
+    if width && height && width != 0
       if options[:crop] == true
         image = resize_and_crop(image, width, height)
       else
@@ -87,7 +88,7 @@ class Asset
     return image
   end
   
-  def image_path(name='original')
+  def image_path(name='originals')
     "/images/#{name}/#{self.id}/#{self.file_name}" 
   end
   
@@ -100,7 +101,7 @@ class Asset
   end
   
   def as_json(options)
-    super(:only => [:id, :file_name, :created_at, :title, :artist_id, :page_id, :tags], :methods => [:tag_list])
+    super(:only => [:id, :file_name, :created_at, :title, :artist_id, :tags], :methods => [:tag_list])
   end
   
   def tag_list

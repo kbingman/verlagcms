@@ -129,7 +129,7 @@ class Page
   end
   
   def assets_list
-    self.assets.collect{ |a| a.id }.join(', ')
+    self.assets.collect{ |a| a.id }.join(',')
   end
   
   def assets_list=(list)

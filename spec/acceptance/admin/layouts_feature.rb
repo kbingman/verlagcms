@@ -7,7 +7,7 @@ feature "Admin Assest" do
     before(:all) do 
       Capybara.current_driver = :zombie  
       setup_site
-      @layout = Factory(:layout, :site => @site) 
+      @layout = Factory(:layout, :site => @site, :content => '<b>deprecated</b>') 
       puts @layout.name
     end
     
@@ -31,11 +31,11 @@ feature "Admin Assest" do
       visit '/admin/' 
       visit '/admin/#/templates'   
       
-      click_link 'Layout'
+      click_link @layout.name
       # page.should have_content('Title')  
-      # fill_in 'layout_name', :with => 'Fucked up layout'
+      fill_in 'layout_name', :with => 'Fucked up layout'
       # click_button 'Save'
-      
+      # 
       # page.should have_content('Fucked up layout')
     end
   end

@@ -1,5 +1,5 @@
-var Layout = Model('layout', function() {
-  // this.persistence(Model.REST, "/assets"), 
+var Layout = Model('template', function() {
+  this.persistence(Model.SinatraREST, "/admin/templates"), 
    
   // Instance methods
   this.include({  
@@ -85,26 +85,26 @@ var Layout = Model('layout', function() {
       });
     },
     
-    load: function(callback) {
-      Layout.each(function(){ Layout.remove(this); });  
-      var url = '/admin/templates.json';  
-      
-      jQuery.ajax({
-        type: 'get',
-        url: url,
-        contentType: "application/json",
-        dataType: "json",  
-        success: function(results) {  
-          jQuery.each(results, function(i, results) {
-            var page = new Layout({ id: results.id });
-            page.merge(results);
-            Layout.add(page);
-          });
-          if(callback){ callback.call(this); }
-        }
-      });
-      
-    },  
+    // load: function(callback) {
+    //   Layout.each(function(){ Layout.remove(this); });  
+    //   var url = '/admin/templates.json';  
+    //   
+    //   jQuery.ajax({
+    //     type: 'get',
+    //     url: url,
+    //     contentType: "application/json",
+    //     dataType: "json",  
+    //     success: function(results) {  
+    //       jQuery.each(results, function(i, results) {
+    //         var page = new Layout({ id: results.id });
+    //         page.merge(results);
+    //         Layout.add(page);
+    //       });
+    //       if(callback){ callback.call(this); }
+    //     }
+    //   });
+    //   
+    // },  
     
     create: function(attributes, callback){
       var url = '/admin/templates.json';

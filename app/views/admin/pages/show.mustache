@@ -1,16 +1,13 @@
 {{#page}}   
 <div id="preview" >
-  <iframe src="/preview{{path}}?edit=true">
-    Screw you, it takes a while...
-  </iframe>
+  <iframe src="/preview{{path}}?edit=true"></iframe>
 </div>    
 
 <div id="page-files">
   <div id="page-assets">
     <h2>Assets</h2>  
-    <p><a href="#/pages/{{id}}/search">add asset</a></p>
     {{#assets}} 
-      <div class="asset">
+      <div class="asset" id="page-asset-{{id}}">
         <a href="#/assets/{{id}}/edit{{query_path}}">
           <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
         </a> 
@@ -18,6 +15,43 @@
         <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
       </div>
     {{/assets}}
-  </div>
+  </div>     
+{{/page}}
+{{#assets}}        
+  <h2>Recent Assets</h2>
+  <ul>
+    <li id="asset-{{id}}">
+      <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
+        <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+      </a>  
+    </li>
+  </ul> 
+{{/assets}}     
+{{#page}} 
+  <form action="#/pages/{{id}}" method="post" id="edit-page">  
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" />            
+      <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+    </div>
+  </form>
+       
+  <form action='#/pages/{{id}}/results' id='search-form' method='get'>
+    <div class='field'>
+      <input class='textfield' id='search-query' name='query' type='text'>
+      <input class='button' type='submit' value='Search'>
+    </div>
+  </form> 
+     
+  <form action='#/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+    <div class='field'>
+      <label for='ajax_uploader'></label>
+      <input id='ajax_uploader' name='file' type='file'>
+    </div>
+    <div class='buttons_'>
+      <input type='submit'>
+    </div>
+  </form>  
+           
+  <div id="search-results-container"><div>
 </div>
 {{/page}}

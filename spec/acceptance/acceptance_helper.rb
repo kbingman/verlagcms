@@ -5,7 +5,8 @@ require 'spec_helper'
 require 'steak'
 require 'capybara'
 require 'capybara/dsl'
-require 'capybara/zombie'
+require 'capybara/zombie' 
+require 'capybara-webkit'
 require 'faker'
 
 # require 'factory_girl'
@@ -25,8 +26,14 @@ def setup_site
     helpers do
       
       def current_site
-        Site.first
+        @site ||= Site.first  
+        # puts @site.name
+        @site
       end 
+      
+      def authorized?
+        true
+      end
       
     end
   end 

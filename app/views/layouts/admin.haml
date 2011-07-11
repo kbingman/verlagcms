@@ -46,8 +46,10 @@
 
   %body
     .wrapper
-      #header  
-        %%h1
+      #header 
+        .notice
+          messages go here 
+        %h1
           %a{ :href => "http://#{current_site.domain}/#/preview", :target => '_blank' }= current_site.name   
         
         #tabs        
@@ -57,8 +59,7 @@
           %a{ :href => '#/assets' } Assets 
         = content :header
       #content  
-        .notice
-          messages go here
+        
         = yield  
 
 

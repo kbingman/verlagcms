@@ -64,7 +64,7 @@ describe "routes/admin/assets" do
     
   end  
   
-  context 'Post create' do
+  context 'POST create' do
     
     context 'html' do 
       def do_post
@@ -98,28 +98,53 @@ describe "routes/admin/assets" do
       end
     end
     
-  end
+  end   
   
-  context 'GET edit' do
-    
-    context 'html' do 
-      def do_get
-        get "/admin/assets/#{@asset.id}/edit"
+  context 'PUT update' do  
+          
+    context 'json' do   
+      def do_put
+        put "/admin/assets/#{@asset.id}.json", :asset => { :title => 'Really Awesome Image' }
       end
-      
-      it 'should be successful' do 
-        pending 'deprecated' 
-        do_get
+    
+      it 'should be successful' do
+        do_put
         last_response.should be_ok
       end
       
-      it 'should set the content header to html' do 
-        pending 'deprecated'
-        do_get
-        last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
+      it 'should set the content header to json' do
+        do_put
+        last_response.headers['Content-Type'].should == 'application/json'
       end
+      
+      it 'should include the title in the json' do  
+        do_put
+        last_response.body.should include('Really Awesome Image')
+      end  
     end
-    
+  
   end
+  
+  # context 'GET edit' do
+  #   
+  #   context 'html' do 
+  #     def do_get
+  #       get "/admin/assets/#{@asset.id}/edit"
+  #     end
+  #     
+  #     it 'should be successful' do 
+  #       pending 'deprecated' 
+  #       do_get
+  #       last_response.should be_ok
+  #     end
+  #     
+  #     it 'should set the content header to html' do 
+  #       pending 'deprecated'
+  #       do_get
+  #       last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
+  #     end
+  #   end
+  #   
+  # end
   
 end

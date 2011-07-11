@@ -34,7 +34,7 @@ class Asset
   
   timestamps!   
   
-  liquid_methods :title, :image_path, :thumb_path, :find
+  liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
   # validates_presence_of :artist_id # :story_id
   
@@ -98,6 +98,10 @@ class Asset
   
   def icon_path
     image_path('icons')
+  end   
+  
+  def id_string
+    self.id.to_s
   end
   
   def as_json(options)

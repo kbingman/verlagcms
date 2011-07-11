@@ -111,11 +111,10 @@ Dir[root_path('app/routes/admin/*.rb')].each do |file|
   require file
 end
 
-# Load site route.
-Dir[root_path('app/routes/site.rb')].each do |file|
-  require file
-end  
-
+# Load site and assets route. 
+require 'app/routes/assets.rb'  
+require 'app/routes/site.rb'
+  
 # Load all views.
 Dir[root_path('app/views/**/*.rb')].each do |file|
   require file

@@ -39,11 +39,18 @@
       
 #page-editor   
   +positionable 
+  :right 245px
   :padding 20px
   input[type=text]
     :width 80% 
-  #page-parts            
-    .textarea  
-      :width 80%
+  #page-parts
+    +positionable
+    :top 220px  
+    :bottom 80px
+    :padding 20px       
+    .textarea 
+      :margin-top 0.5em 
+      :width 100%
       :height 300px 
-      :font-size 1em
+      :font-size 1em 
+      :border none

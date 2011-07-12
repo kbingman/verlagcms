@@ -363,7 +363,7 @@ Pages = Sammy(function (app) {
           var preview = jQuery('#preview iframe');
           preview.attr('src', preview.attr('src'));
           context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id);  
+          request.redirect('#/pages/' + page_id + '/edit');  
         }
       });
     });  
@@ -390,7 +390,7 @@ Pages = Sammy(function (app) {
           var preview = jQuery('#preview iframe');
           preview.attr('src', preview.attr('src'));
           context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id);  
+          request.redirect('#/pages/' + page_id + '/edit');  
         }
       });
     }); 

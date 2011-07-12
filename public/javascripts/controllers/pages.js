@@ -2,10 +2,14 @@ Pages = Sammy(function (app) {
   
   var context = this;  
    
+  this.debug = false;
+  this.disable_push_state = true;
+  
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams);
+  this.use(Sammy.NestedParams); 
+  
   
   // Helper Methods 
   // ---------------------------------------------
@@ -76,7 +80,8 @@ Pages = Sammy(function (app) {
     
   });
 
-  this.bind('run', function () { 
+  this.bind('run', function () {   
+    
     context.application = this;
     context.refresh_pages = true;
     context.modal = false;    

@@ -2,6 +2,9 @@ Assets = Sammy(function (app) {
   
   var application = this; 
   
+  this.debug = false;
+  this.disable_push_state = true;
+    
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache); 

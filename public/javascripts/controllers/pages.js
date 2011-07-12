@@ -69,7 +69,7 @@ Pages = Sammy(function (app) {
         page: page.asJSON(), 
         layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
       });  
-      editPage.replace('#modal').then(function(){
+      editPage.replace('#editor').then(function(){
         TabControl.initialize('.tab');
       });
     }
@@ -228,7 +228,7 @@ Pages = Sammy(function (app) {
   this.get('#/pages/:id/edit', function(request){  
     // alert('Soon you will be able to edit a page here!');
     // request.redirect('#/pages/' + request.params['id'])
-    Galerie.open();  
+    Galerie.close();  
     context.modal = true;  
     
     // window.top.trigger.css({'border':'1px solid red'});

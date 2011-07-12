@@ -1,8 +1,10 @@
 jQuery(document).ready(function () {
+  
+  var login = jQuery('#login');   
+  if(!login.length){
+    Pages.run('#/pages');
+  }
 
-  Assets.run('#/pages');   
-  Pages.run();
-  Layouts.run();
   // AjaxUploader.initialize('#ajax_uploader');
   jQuery('#ajax_uploader').attr('multiple','multiple');
   jQuery('.js-only').show();  

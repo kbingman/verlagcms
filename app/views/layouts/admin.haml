@@ -2,7 +2,7 @@
 %html
   %head
     %title Verlag CMS &ndash #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
-    %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }   
+    %link{ :rel => 'stylesheet', :href => "/css/verlag/verlag.css", :type => 'text/css' }   
     -# These need to be moved to the sass folder, perhaps as scss
     %link{ :rel => 'stylesheet', :href => "/css/codemirror.css", :type => 'text/css' }
     %link{ :rel => 'stylesheet', :href => "/css/javascript.css", :type => 'text/css' } 
@@ -51,12 +51,12 @@
           messages go here 
         %h1
           %a{ :href => "http://#{current_site.domain}/#/preview", :target => '_blank' }= current_site.name   
-        
-        #tabs        
-          %a{ :href => '#/sites' } Sites
-          %a{ :href => '#/pages' } Pages 
-          %a{ :href => '#/templates' } Templates
-          %a{ :href => '#/assets' } Assets 
+        - if authorized?
+          #tabs        
+            %a{ :href => '#/sites' } Sites
+            %a{ :href => '#/pages' } Pages 
+            %a{ :href => '#/templates' } Templates
+            %a{ :href => '#/assets' } Assets 
         = content :header
       #content  
         

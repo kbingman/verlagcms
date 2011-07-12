@@ -28,8 +28,13 @@ module Sinatra
       app.set :password, 'changeme'  
       
       app.get '/login' do 
-        haml :'site/login'
-      end    
+        admin_haml :'site/login'
+      end 
+      
+      app.get '/logout' do 
+        logout!  
+        redirect '/login'  
+      end   
       
       app.post '/login' do 
         if params[:username] == options.username && params[:password] == options.password
@@ -37,7 +42,7 @@ module Sinatra
           redirect '/admin/' 
         else
           session[:authorized] = false
-         redirect '/login' 
+          redirect '/login' 
         end
       end 
     

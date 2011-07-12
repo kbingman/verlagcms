@@ -28,25 +28,19 @@
   
     <div id="page-parts"> 
       <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p-->   
-      <div id="tab-controls">
-        {{#parts}}    
-          <div class="tab-control">
-            <label for='part-{{id}}-content'>{{name}}</label>
-          </div>
-        {{/parts}}  
-      </div>
       {{#parts}}  
         <div class="part tab" id="tab-{{id}}">
-          <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a-->
+          <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a--> 
+          <label for='part-{{id}}-content'>{{name}}</label>
           <div class="hidden">                  
             <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
             <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
           </div>  
           
           <div class="field part-content"> 
-            {{#content}}                      
+                      
             <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
-            {{/content}}   
+    
             {{#image_path}} 
             <img src="{{image_path}}" alt="{{name}}" />
             {{/image_path}}
@@ -68,5 +62,57 @@
       <a href="#/pages/{{id}}">Cancel</a>
     </div>
   </form>    
-</div>   
-{{/page}}  
+</div>     
+
+<div id="page-files">
+  <div id="page-assets">
+    <h2>Assets</h2>  
+    {{#assets}} 
+      <div class="asset" id="page-asset-{{id}}">
+        <a href="#/assets/{{id}}/edit{{query_path}}">
+          <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+        </a> 
+        <br />
+        <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
+      </div>
+    {{/assets}}
+  </div>     
+{{/page}}
+{{#assets}}        
+  <h2>Recent Assets</h2>
+  <ul>
+    <li id="asset-{{id}}">
+      <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
+        <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+      </a>  
+    </li>
+  </ul> 
+{{/assets}}     
+{{#page}} 
+  <form action="#/pages/{{id}}" method="post" id="edit-page">  
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" />            
+      <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+    </div>
+  </form>
+       
+  <form action='#/pages/{{id}}/results' id='search-form' method='get'>
+    <div class='field'>
+      <input class='textfield' id='search-query' name='query' type='text'>
+      <input class='button' type='submit' value='Search'>
+    </div>
+  </form> 
+     
+  <form action='#/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+    <div class='field'>
+      <label for='ajax_uploader'></label>
+      <input id='ajax_uploader' name='file' type='file'>
+    </div>
+    <div class='buttons_'>
+      <input type='submit'>
+    </div>
+  </form>  
+           
+  <div id="search-results-container"><div>
+</div>
+{{/page}}

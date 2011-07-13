@@ -3881,7 +3881,16 @@ var Galerie = {
   }
 } 
 
-var Utilities = {        
+var Utilities = { 
+  
+  notice: function(message){
+    var notice = jQuery('.notice');
+    notice.text(message); 
+    notice.slideDown('fast');
+    setTimeout(function(){
+      notice.slideUp('fast')
+    }, '2000'); 
+  },       
   
   keyboard_nav: function(){
     jQuery('body').keydown(function(e){    

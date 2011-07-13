@@ -7205,7 +7205,16 @@ var Galerie = {
   }
 } 
 
-var Utilities = {        
+var Utilities = { 
+  
+  notice: function(message){
+    var notice = jQuery('.notice');
+    notice.text(message); 
+    notice.slideDown('fast');
+    setTimeout(function(){
+      notice.slideUp('fast')
+    }, '2000'); 
+  },       
   
   keyboard_nav: function(){
     jQuery('body').keydown(function(e){    
@@ -7575,10 +7584,10 @@ Layouts = Sammy(function (app) {
     Layout.create(attributes, { 
       success: function(){  
         request.redirect('#/templates'); 
-        jQuery('.notice').text('Successfully saved template');
+        Utilities.notice('Successfully saved template');
       },
-      error: function(){    
-        jQuery('.notice').text('errors creating template');
+      error: function(){   
+        Utilities.notice('errors creating template'); 
         alert('hey');
       }
     }); 
@@ -7605,12 +7614,7 @@ Layouts = Sammy(function (app) {
     layout.save(function(success, results){
       if(success){ 
         request.renderLayoutIndex(); 
-        var notice = jQuery('.notice');
-        notice.text('Successfully saved template'); 
-        notice.slideDown('fast');
-        setTimeout(function(){
-          notice.slideUp('fast')
-        }, '2000')  
+        Utilities.notice('Successfully saved template');
       }
     });  
     // layout.saveRemote({
@@ -8072,7 +8076,8 @@ Pages = Sammy(function (app) {
       attributes = request.params['page'];  
       
     Page.create(attributes, function(results, results2){ 
-      context.refresh_pages = true; 
+      context.refresh_pages = true;  
+      Utilities.notice('Successfully saved page')
       request.redirect('#/pages/' + results.id + '/edit');
     }); 
   }); 
@@ -8143,8 +8148,10 @@ Pages = Sammy(function (app) {
     page.saveRemote(form.serialize(), {
       success: function(){ 
         // request.renderTree(Page.root());  
-        context.modal = false;
-        request.redirect('#/pages/' + page_id);
+        context.modal = false;     
+        Utilities.notice('Successfully saved page');
+        
+        request.redirect('#/pages/' + page_id + '/edit');
       }
     });  
   });

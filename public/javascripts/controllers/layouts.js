@@ -111,10 +111,10 @@ Layouts = Sammy(function (app) {
     Layout.create(attributes, { 
       success: function(){  
         request.redirect('#/templates'); 
-        jQuery('.notice').text('Successfully saved template');
+        Utilities.notice('Successfully saved template');
       },
-      error: function(){    
-        jQuery('.notice').text('errors creating template');
+      error: function(){   
+        Utilities.notice('errors creating template'); 
         alert('hey');
       }
     }); 
@@ -141,12 +141,7 @@ Layouts = Sammy(function (app) {
     layout.save(function(success, results){
       if(success){ 
         request.renderLayoutIndex(); 
-        var notice = jQuery('.notice');
-        notice.text('Successfully saved template'); 
-        notice.slideDown('fast');
-        setTimeout(function(){
-          notice.slideUp('fast')
-        }, '2000')  
+        Utilities.notice('Successfully saved template');
       }
     });  
     // layout.saveRemote({

@@ -10,7 +10,9 @@ class Main
       @assets = params[:query] ? Asset.search_all(@query).all(:order => 'created_at DESC') : Asset.all(:order => 'created_at DESC') 
       
       respond_to do |format|
-        # format.html { admin_haml :'admin/assets/index' }
+        # format.html { admin_haml :'admin/assets/index' }  
+        format.html { haml :'assets/index' } 
+        format.js   { partial :'assets/index' }
         format.json { @assets.to_json }
       end
     end
@@ -18,13 +20,14 @@ class Main
     # Create Asset
     # -------------------------------------------
     post '' do
-      asset = Asset.new(:file => params[:file][:tempfile])
-      asset.file_name = params[:file][:filename]    
-      asset.site = current_site
-      asset.save
+      @asset = Asset.new(:file => params[:file][:tempfile])
+      @asset.file_name = params[:file][:filename]    
+      @asset.site = current_site
+      @asset.save
       respond_to do |format|
-        format.html { redirect('/') }
-        format.json { asset.to_json }
+        format.html { redirect('/') } 
+        format.js   { partial :'assets/show' }
+        format.json { @asset.to_json }
       end
     end
     
@@ -34,7 +37,8 @@ class Main
       # @asset = Asset.by_site(current_site.id).find params['id']
       @asset = Asset.find params['id']
       respond_to do |format|
-        # format.html { redirect('/assets') }
+        format.html { haml :'assets/show' } 
+        format.js   { partial :'assets/show' }
         format.json { @asset.to_json }
       end
     end 
@@ -43,11 +47,12 @@ class Main
     # -------------------------------------------
     put '/:id' do
       # asset = Asset.by_site(current_site.id).find params['id']
-      asset = Asset.find params['id']  
-      if asset.update_attributes(params['asset'])
+      @asset = Asset.find params['id']  
+      if @asset.update_attributes(params['asset'])
         respond_to do |format|
-          format.html { redirect('/') }
-          format.json { asset.to_json }
+          format.html { redirect('/') } 
+          format.js   { partial :'assets/show' }
+          format.json { @asset.to_json }
         end
       end
     end     
@@ -59,7 +64,7 @@ class Main
       asset = Asset.find params['id']                 
       if asset.destroy
         respond_to do |format|
-          # format.html { redirect('/assets') }
+          format.html { redirect('/') }   
           format.json {}
         end
       end

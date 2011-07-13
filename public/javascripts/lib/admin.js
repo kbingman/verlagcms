@@ -11,7 +11,14 @@ jQuery(document).ready(function () {
   
   // Grabs the keyboard shortcuts
   Utilities.keyboard_nav();  
-  Utilities.check_browser_version(); 
+  Utilities.check_browser_version();    
+   
+  // needs to fire on page load, too
+  var tabs = jQuery('#tabs a'); 
+  tabs.live('click', function(){   
+    tabs.removeClass('active');
+    $(this).addClass('active'); 
+  });
   
 });
 

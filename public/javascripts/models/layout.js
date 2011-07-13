@@ -126,7 +126,7 @@ var Layout = Model('template', function() {
           }   
         }
       });
-    },
+    }
 
   });
 

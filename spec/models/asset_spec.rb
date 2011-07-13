@@ -45,8 +45,7 @@ describe Asset do
         :tag_list =>'tag1, tag2', 
         :file_name => @asset.file_name,
         :id => @asset.id.to_s, 
-        :artist_id => @asset.artist_id.to_s,  
-        :page_id => nil,
+        # :artist_id => @asset.artist_id.to_s,  
         :created_at => @asset.created_at
       }.to_json)
     end
@@ -110,7 +109,7 @@ describe Asset do
     end
     
     it 'should have an image path' do
-      @asset.image_path.should == "/images/original/#{@asset.id}/#{@asset.file_name}"
+      @asset.image_path.should == "/images/originals/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should have a thumbnail path' do

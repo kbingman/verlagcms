@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "routes/css" do
   
   def do_get
-    get '/admin/css/verlag.css'
+    get '/css/verlag/verlag.css'
   end
 
   it "should respond to /css/verlag.css" do

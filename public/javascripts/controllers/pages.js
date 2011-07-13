@@ -270,7 +270,7 @@ Pages = Sammy(function (app) {
       success: function(){ 
         // request.renderTree(Page.root());  
         context.modal = false;
-        request.redirect('#/pages/' + page_id);
+        request.redirect('#/pages/' + page_id + '/edit');
       }
     });  
   });

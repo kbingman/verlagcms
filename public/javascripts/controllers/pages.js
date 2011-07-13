@@ -198,7 +198,8 @@ Pages = Sammy(function (app) {
       attributes = request.params['page'];  
       
     Page.create(attributes, function(results, results2){ 
-      context.refresh_pages = true; 
+      context.refresh_pages = true;  
+      jQuery('.notice').text('Successfully created template'); 
       request.redirect('#/pages/' + results.id + '/edit');
     }); 
   }); 
@@ -269,7 +270,8 @@ Pages = Sammy(function (app) {
     page.saveRemote(form.serialize(), {
       success: function(){ 
         // request.renderTree(Page.root());  
-        context.modal = false;
+        context.modal = false; 
+        jQuery('.notice').text('Successfully saved page'); 
         request.redirect('#/pages/' + page_id + '/edit');
       }
     });  

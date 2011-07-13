@@ -42,8 +42,8 @@ Sites = Sammy(function (app) {
   // ---------------------------------------------
   this.get('#/preview', function(request){ 
     var host = document.location['hostname'];
-    window.open('/', 'preview');
-    // alert(host)
+    window.open('/', 'preview');  
+    request.redirect('#/');
   });
   
   // Site Index

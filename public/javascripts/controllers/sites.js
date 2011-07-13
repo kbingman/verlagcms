@@ -43,7 +43,7 @@ Sites = Sammy(function (app) {
   this.get('#/preview', function(request){ 
     var host = document.location['hostname'];
     window.open('/', 'preview');  
-    request.redirect('#/');
+    request.redirect('admin/#/');
   });
   
   // Site Index

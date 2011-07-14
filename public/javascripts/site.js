@@ -3894,7 +3894,23 @@ var Utilities = {
   
   keyboard_nav: function(){
     jQuery('body').keydown(function(e){    
-      switch (e.keyCode) {
+      switch (e.keyCode) {  
+        // Cmd s
+        case 91 && 83:  
+          // logger.info('Save me!');     
+          // this needs to change...
+          var form = jQuery('form.command-save');
+          form.submit();    
+          return false;
+          break;
+        // Ctrl S
+        case 17 && 83: 
+          // logger.info('Save me!');       
+          // this needs to change...
+          var form = jQuery('form.command-save');
+          form.submit(); 
+          return false;   
+          break;
         // Left Arrow
         case 37:
           $('a.previous').click();

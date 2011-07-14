@@ -7217,9 +7217,10 @@ var Utilities = {
   },       
   
   keyboard_nav: function(){
-    jQuery('body').keydown(function(e){    
-      switch (e.keyCode) {  
-        // Cmd s
+    jQuery('body').keydown(function(event){    
+      switch (event.keyCode) {  
+        // Cmd s   
+        console.log(event.keyCode);
         case 91 && 83:  
           // logger.info('Save me!');     
           // this needs to change...

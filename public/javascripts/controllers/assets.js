@@ -119,15 +119,9 @@ Assets = Sammy(function (app) {
     var asset = Asset.find(req.params['id']);     
   
     asset.attr(req.params['asset']);
-    asset.saveRemote({
-      success: function(){
-        var notice = jQuery('.image-info .notice') ;
-        notice.html('<div class="message">Successfully updated!</div>');
-        delay(function(){
-          jQuery('.message', notice).fadeOut('slow', function(){
-            jQuery(this).remove();
-          });
-        }, 2000);
+    asset.save(function(success){   
+      if(success){
+        Utilities.notice('Successfully saved asset');   
       }
     });
   });    
@@ -153,16 +147,17 @@ Assets = Sammy(function (app) {
   });
   
   // Delete Asset
-  this.del('#/assets/:id', function(req){
+  this.del('#/assets/:id', function(request){
     var application = this;    
-    var query = req.params['query'] ? req.params['query'] : null; 
+    var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-    var asset = Asset.find(req.params['id']);     
-    
-    asset.deleteRemote({  
-      success: function(){
-        Galerie.close();  
-        req.redirect('#/assets' + query_path);
+    var asset = Asset.find(request.params['id']);  
+       
+    asset.destroy(function(success){   
+      if(success){ 
+        Galerie.close(); 
+        Utilities.notice('Successfully saved asset'); 
+        request.redirect('#/assets' + query_path);    
       }
     });
   });    

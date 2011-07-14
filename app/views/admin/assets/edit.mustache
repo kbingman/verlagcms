@@ -1,5 +1,5 @@
 {{#asset}}
-  <form method='post' action="#/assets/{{id}}" enctype='multipart/form-data' id='edit-asset'>
+  <form method='post' action="#/assets/{{id}}" enctype='multipart/form-data' id='edit-asset' class="command-save autosave">
     <div class="hidden">
       <input type='hidden' name='_method' value='put' />
     </div> 
@@ -32,7 +32,6 @@
       <a href="#/assets{{query_path}}" class="cancel">Cancel</a>
     </div>
   </form>   
-  <div class="notice"></div>
 {{/asset}}
 
   

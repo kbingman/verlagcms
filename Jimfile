@@ -20,7 +20,8 @@
       "lib/site"
     ],
     "admin": [
-      "vendor/jquery-1.6.1.min",  
+      "vendor/jquery-1.6.1.min", 
+      "vendor/jquery-ui-1.8.14.custom", 
       "vendor/sammy", 
       "vendor/sammy.title",
       "vendor/sammy.nested_params", 

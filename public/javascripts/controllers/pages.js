@@ -74,7 +74,11 @@ Pages = Sammy(function (app) {
         layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
       });  
       editPage.replace('#editor').then(function(){
-        TabControl.initialize('.tab');
+        // TabControl.initialize('.tab'); 
+        logger.info('hey') 
+        // jQuery('#page-assets .asset').each(function(i, el){
+        //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
+        // })
       });
     }
     
@@ -236,28 +240,28 @@ Pages = Sammy(function (app) {
     // request.redirect('#/pages/' + request.params['id'])
     Galerie.close();  
     context.modal = true;  
-    
-    // window.top.trigger.css({'border':'1px solid red'});
-    
+
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
-      
-      if(page) {
-        request.renderPage(page); 
-      } else {  
-        // Loads page if the current collection does not contain it
-        page = new Page({ id: page_id });
-        page.load(function(){
+      if(!context.do_not_refresh){     
+        if(page) {
           request.renderPage(page); 
-        });
-      } 
-      
-      if(context.refresh_pages){
-        request.renderTree(Page.root());
-        context.refresh_pages = false;  
+        } else {  
+          // Loads page if the current collection does not contain it
+          page = new Page({ id: page_id });
+          page.load(function(){
+            request.renderPage(page); 
+          });
+        } 
+        
+        if(context.refresh_pages){
+          request.renderTree(Page.root());
+          context.refresh_pages = false;  
+        }
       }
-    });        
+    }); 
+    context.do_not_refresh = false;       
   });   
   
   this.put('#/pages/:page_id', function(request){  
@@ -266,7 +270,14 @@ Pages = Sammy(function (app) {
     // This is a hack, but otherwise the params get screwed up
     var form = $('#edit-page');
     
-    page.attr(request.params['page']);   
+    // page.attr(request.params['page']);  
+    // page.save(function(success, result){
+    //   if(success){
+    //     context.modal = false;     
+    //     Utilities.notice('Successfully saved page');
+    //     request.redirect('#/pages/' + page_id + '/edit');
+    //   } 
+    // });
     page.saveRemote(form.serialize(), {
       success: function(){ 
         // request.renderTree(Page.root());  
@@ -299,10 +310,12 @@ Pages = Sammy(function (app) {
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
       
-    page.deleteRemote(function(){ 
-      jQuery('#page-' + page_id).remove();
-      context.refresh_pages = false;
-      request.redirect('#/pages');
+    page.destroy(function(success){  
+      if(success){
+        jQuery('#page-' + page_id).remove();
+        context.refresh_pages = false;
+        request.redirect('#/pages');
+      }
     }); 
   });  
   
@@ -348,14 +361,7 @@ Pages = Sammy(function (app) {
       var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
       
       page_asset_input.attr('value', new_asset_ids_list);
-       
-      // page.attr('assets_list', assets_list);
-      // page.save(function(success){
-      //   if(success){
-      //     alert('hey');
-      //     request.redirect('#/pages/' + page_id);
-      //   }
-      // });
+      // page.attr('assets_list', new_asset_ids_list);
       
       page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
         success: function(){ 

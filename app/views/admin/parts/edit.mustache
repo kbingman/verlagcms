@@ -1,0 +1,20 @@
+<div class="edit-modal">
+  {{#part}}   
+    <form method='post' action="/pages/{{page_id}}" enctype='multipart/form-data' id='edit-page'>
+      <div class="hidden">
+        <input type="hidden" name="_method" value="put" /> 
+        <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
+        <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
+      </div>
+      
+      <div class="field">
+        <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
+      </div>
+      
+      <div class="buttons">
+        <input type='submit' value="Save" class='button html-only' />
+        <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
+      </div>
+    </form>  
+  {{/part}}
+</div>

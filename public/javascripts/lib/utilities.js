@@ -38,6 +38,12 @@ var logger = {
     if(window.console){
       console.log(message);
     } 
+  },
+  
+  debug: function(message){
+    if(window.console){
+      console.log(message);
+    } 
   }
 }
 
@@ -46,31 +52,35 @@ var Utilities = {
   notice: function(message){
     var notice = jQuery('.notice');
     notice.text(message); 
-    notice.slideDown('fast');
-    setTimeout(function(){
-      notice.slideUp('fast');
-    }, '1000'); 
+    notice.slideDown('slow', function(){
+      setTimeout(function(){
+        notice.slideUp('slow');
+      }, 1000);
+    });
+
   },     
   
   keyboard_nav: function(){      
-    jQuery('body').keydown(function(e){  
+    jQuery('body').keydown(function(e){ 
+      logger.info(e.keyCode);  
       switch (e.keyCode) {    
         // Cmd s
-        case 91 && 83:  
-          // logger.info('Save me!');     
-          // this needs to change...
-          var form = jQuery('form.command-save');
-          form.submit();    
-          return false;
-          break;
-        // Ctrl S
-        case 17 && 83: 
-          // logger.info('Save me!');       
-          // this needs to change...
-          var form = jQuery('form.command-save');
-          form.submit(); 
-          return false;   
-          break;
+        // case 91 && 83:  
+        //   logger.info('Save me!');     
+        //   // this needs to change...
+        //   var form = jQuery('form.command-save');
+        //   form.submit();    
+        //   // return false;
+        //   e.preventDefault();
+        //   break;
+        // // Ctrl S
+        // case 17 && 83: 
+        //   logger.info('Save me!');       
+        //   // this needs to change...
+        //   // var form = jQuery('form.command-save');
+        //   // form.submit(); 
+        //   e.preventDefault();    
+        //   break;
         // Left Arrow
         case 37:
           $('a.previous').click();
@@ -115,7 +125,7 @@ var iFramer = {
   initialize: function(element){   
     var trigger = jQuery(element);  
     var self = this;
-    if(!trigger) return;
+    if(!trigger.length) return;
     trigger.load(function(){   
       var iFrameContent = $(this).contents();  
       var flags = iFrameContent.find('a.verlag-editor') ;

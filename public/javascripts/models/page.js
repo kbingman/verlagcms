@@ -30,6 +30,22 @@ var Page = Model('page', function() {
       return Asset;
     },
     
+    parts: function(){
+      var self = this;
+      var parts = self.attr('parts'); 
+      var length = parts.length;                                 
+      // Part.each(function(){ Part.remove(this); });
+      
+      for (var i=0, l=length; i<l; ++i ){
+        var part_data = parts[i];
+        var part = new Part({ id: part_data.id });  
+        part.merge(part_data);
+        part.attr('page_id', self.id());
+        Part.add(part);
+      } 
+      return Part;
+    },
+    
     load: function(callback){
       var self = this;
       var url = '/admin/pages/' + self.id()  + '.json';   

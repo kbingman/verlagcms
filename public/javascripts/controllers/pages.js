@@ -163,7 +163,7 @@ Pages = Sammy(function (app) {
 
   // Page routes
   // ---------------------------------------------  
-  this.get('#/pages', function(request){ 
+  this.get('#/pages/?', function(request){ 
     
     Galerie.close();    
     // context.refresh_pages = true; 
@@ -178,7 +178,7 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;              
   });
   
-  this.get('#/pages/:id/new', function(request){    
+  this.get('#/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
@@ -208,7 +208,7 @@ Pages = Sammy(function (app) {
     }); 
   }); 
   
-  this.get('#/pages/:id', function(request){ 
+  this.get('#/pages/:id/?', function(request){ 
     Galerie.close(); 
     this.loadPages(function(){  
       var page_id = request.params['id'];
@@ -235,7 +235,7 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;    
   });
   
-  this.get('#/pages/:id/edit', function(request){  
+  this.get('#/pages/:id/edit/?', function(request){  
     // alert('Soon you will be able to edit a page here!');
     // request.redirect('#/pages/' + request.params['id'])
     Galerie.close();  
@@ -407,6 +407,62 @@ Pages = Sammy(function (app) {
           request.redirect('#/pages/' + page_id + '/edit');  
         }
       });
+    }); 
+  });
+  
+  this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
+    this.loadPages(function(){     
+      var id = request.params['id'];   
+      var page = Page.find(request.params['page_id']);
+      var part = page.parts().find(id);
+      
+      // Move to iFramer object
+      var iframe_content = $('iframe').contents();  
+      var part_editor = iframe_content.find('#editor-' + id);
+      
+      var application = this;
+      
+      var edit_part = application.render('/templates/admin/parts/edit.mustache', { 
+        part: part.asJSON()
+      });  
+      edit_part.replace(part_editor).then(function(){
+        var part_form = part_editor.find('textarea');
+        part_form.css({'width':'400px', 'height':'100px'});
+        iframe_content.find('a.cancel').click(function(e){
+          e.preventDefault();  
+          window.top.location.hash = $(this).attr('href');  
+        });
+        // Basically the 'put' action goes here
+        // can't use sammy because of the iframe...
+        iframe_content.find('form').submit(function(e){
+          e.preventDefault(); 
+          var form = jQuery(this);
+          // part.attr('content', )
+          
+          var parts = page.attr('parts'); 
+          var length = parts.length;                                 
+          // Updates part
+          for (var i=0, l=length; i<l; ++i ){
+            var part = parts[i];
+            if(id == part.id){
+              part.content = iframe_content.find('#part-' + id + '-content').attr('value');
+            }
+          }
+          logger.info(page.attr());
+          
+          // page.merge(form.serialize());
+          page.save();
+          // page.saveRemote(page.asJSON(), {
+          //   success: function(){  
+          //     Utilities.notice('Successfully saved page');
+          //     // redirect
+          //     window.top.location.hash = '#/pages/' + page.id();
+          //   }
+          // });
+        });
+      });
+      
+
     }); 
   });
 

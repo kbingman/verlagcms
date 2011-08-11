@@ -15,8 +15,8 @@ class Main
       # -------------------------------------------
       get '/?' do  
         @query = params[:query] ? params[:query].split('.')[0] : ''
-        # @assets = params[:query] ? Asset.by_site(current_site.id).search_all(@query).all(:order => 'created_at DESC') : Asset.by_site(current_site.id).all(:order => 'created_at DESC') 
-        @assets = params[:query] ? Asset.search_all(@query).all(:order => 'created_at DESC') : Asset.all(:order => 'created_at DESC') 
+        @assets = params[:query] ? Asset.by_site(current_site.id).search_all(@query).all(:order => 'created_at DESC') : Asset.by_site(current_site.id).all(:order => 'created_at DESC') 
+        # @assets = params[:query] ? Asset.search_all(@query).all(:order => 'created_at DESC') : Asset.all(:order => 'created_at DESC') 
         
         respond_to do |format|
           format.html { admin_haml :'admin/assets/index' }

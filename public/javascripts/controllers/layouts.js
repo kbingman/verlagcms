@@ -135,7 +135,9 @@ Layouts = Sammy(function (app) {
   // Update Layout
   // ---------------------------------------------
   this.put('#/templates/:id', function(request){  
-    var template = Layout.find(request.params['id']);  
+    var template = Layout.find(request.params['id']);   
+    
+    console.log(request.params['layout'])
       
     template.attr(request.params['layout']); 
     template.save(function(success, results){

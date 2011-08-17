@@ -25,7 +25,7 @@ describe Page do
   describe 'validations' do
     it 'should create a valid page' do  
       page = Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id, :title => 'page', :parent_id => @root.id) 
-      page.valid?  
+      # page.valid?  
       page.should be_valid
     end
     
@@ -154,11 +154,14 @@ describe Page do
       
       context 'new parts' do
         before(:all) do
-          @new_part_type = Factory(:part_type, :name => 'sidebar', :layout_id => @layout.id) 
+          @new_part_type = Factory.build(:part_type, :name => 'sidebar', :layout_id => @layout.id) 
+          @layout.part_types << @new_part_type
+          # Because part_types are embedded
+          @layout.save
         end    
         
         it 'should update all parts' do 
-          pending
+          # pending
           @root.save
           @root.part_names.should == [@part_type.name, @new_part_type.name]
         end

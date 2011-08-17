@@ -76,6 +76,13 @@ class Main
       # -------------------------------------------
       put '/:id' do
         page = Page.by_site(current_site.id).find(params['id'])  
+        
+        # This is a bit of a hack needed to get the parts to save when sent by jQuery / js-model
+        if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)
+          parts = []
+          params['page']['parts'].each{|k,v| parts << v if v }
+          params['page']['parts'] = parts
+        end
                 
         if page.update_attributes(params['page'])
           respond_to do |format|

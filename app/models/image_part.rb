@@ -6,7 +6,7 @@ class ImagePart < Part
   key :content, String   
   
   key :asset_id, ObjectId 
-  belongs_to :asset, :foreign_key => :artist_id
+  belongs_to :asset, :foreign_key => :asset_id
   
   liquid_methods :name, :content, :render, :image_path
   
@@ -16,6 +16,19 @@ class ImagePart < Part
   
   def as_json(options)
     super(:methods => [:image_path])
+  end
+  
+  def render(edit=false)
+    if edit == 'true' 
+      # This is used for the inline editor, setting a small flag with the edit page / part path
+      r =  "<div class='part-editor' id='editor-#{self.id}'>"
+      r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/parts/#{self.id}/edit'>"
+      r += "<span>Upload #{self.name}</span></a></div>"
+      r += "#{self.asset.image_path}" if self.asset
+      r
+    else
+      self.asset ? self.asset.image_path : ''
+    end
   end
   
   # validate :unique_name

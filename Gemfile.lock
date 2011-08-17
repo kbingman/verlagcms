@@ -1,90 +1,19 @@
 GIT
-  remote: https://github.com/jnicklas/capybara.git
-  revision: d956e5eec64b03aa3d97d182439433184aef888a
+  remote: https://github.com/nesquena/rabl.git
+  revision: c429bdceea69f47b7ca581d196768d7cefe55696
   specs:
-    capybara (1.0.0)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      selenium-webdriver (~> 0.2.0)
-      xpath (~> 0.1.4)
-
-GIT
-  remote: https://github.com/jnunemaker/joint.git
-  revision: cbfe32e5918326fe142169157173629e5afb090d
-  specs:
-    joint (0.6.0)
-      mime-types
-      mongo_mapper (~> 0.9.0)
-      wand (~> 0.4)
-
-GIT
-  remote: https://github.com/jnunemaker/mongomapper.git
-  revision: 19d1e42ad20127f589610160a70cff20f43b0b6a
-  specs:
-    mongo_mapper (0.9.0)
-      activemodel (~> 3.0)
-      activesupport (~> 3.0)
-      plucky (~> 0.3.8)
-
-GIT
-  remote: https://github.com/monkrb/glue.git
-  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
-  specs:
-    monk-glue (0.0.1)
-
-GIT
-  remote: https://github.com/quirkey/jim.git
-  revision: 9c1e7583155b7e6794ad558bbcac6187d7788c76
-  specs:
-    jim (0.3.1)
-      downlow (~> 0.1.4)
-      downlow (~> 0.1.3)
-      fakeweb (>= 1.2.8)
-      fssm
-      fssm (~> 0.2.0)
-      jeweler
-      leftright
-      mocha
-      rack-test
-      rake
-      shoulda
-      test-unit
-      thor (~> 0.14.4)
-      thor
-      version_sorter (~> 1.1.0)
-      version_sorter (~> 1.1.0)
-      yajl-ruby
-      yajl-ruby
-
-GIT
-  remote: https://github.com/rkh/sinatra-namespace.git
-  revision: c043f986733c3f4a447bdcec065328877a4e7d2a
-  specs:
-    sinatra-namespace (0.6.1)
-      sinatra (~> 1.1)
-
-GIT
-  remote: https://github.com/thoughtbot/capybara-webkit.git
-  revision: 9fe7301d489179390d7c5ce69f5941b76cc3584d
-  specs:
-    capybara-webkit (0.5.0)
-      capybara (~> 1.0.0)
-
-GIT
-  remote: https://github.com/thoughtbot/factory_girl.git
-  revision: 4f5f5df39a1b565160ad7138a1f7d7a7c836664d
-  specs:
-    factory_girl (2.0.0.beta2)
+    rabl (0.3.0)
+      multi_json (~> 1.0.3)
 
 PATH
-  remote: vendor/capybara-zombie
+  remote: vendor/canable
   specs:
-    capybara-zombie (0.0.1)
-      capybara (~> 1.0.0beta)
-      childprocess (~> 0.1.7)
-      multi_json (~> 0.0.5)
+    canable (0.2.0)
+
+PATH
+  remote: vendor/glue
+  specs:
+    monk-glue (0.0.1)
 
 PATH
   remote: vendor/hunt
@@ -93,94 +22,111 @@ PATH
       fast-stemmer (~> 1.0)
       mongo_mapper (~> 0.9.0)
 
+PATH
+  remote: vendor/joint
+  specs:
+    joint (0.6.0)
+      mime-types
+      mongo_mapper (~> 0.9.0)
+      wand (~> 0.4)
+
+PATH
+  remote: vendor/mongomapper
+  specs:
+    mongo_mapper (0.9.0)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      plucky (~> 0.3.8)
+
+PATH
+  remote: vendor/sinatra-namespace
+  specs:
+    sinatra-namespace (0.6.1)
+      sinatra (~> 1.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
     RedCloth (4.2.7)
-    activemodel (3.0.7)
-      activesupport (= 3.0.7)
+    activemodel (3.0.9)
+      activesupport (= 3.0.9)
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
-    activesupport (3.0.7)
-    archive-tar-minitar (0.5.2)
-    backports (2.1.0)
+    activesupport (3.0.9)
+    backports (2.3.0)
     bson (1.3.0)
     bson_ext (1.3.0)
     builder (2.1.2)
-    childprocess (0.1.9)
+    capybara (0.4.1.2)
+      celerity (>= 0.7.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
+    capybara-webkit (0.5.0)
+      capybara (~> 0.4.1)
+    celerity (0.8.9)
+    childprocess (0.2.1)
       ffi (~> 1.0.6)
-    daemons (1.1.3)
+    culerity (0.2.15)
+    daemons (1.1.4)
     diff-lcs (1.1.2)
-    downlow (0.1.4)
-      archive-tar-minitar (>= 0.5.2)
-      rubyzip (>= 0.9.4)
     eventmachine (0.12.10)
+    factory_girl (2.0.3)
     faker (0.9.5)
       i18n (~> 0.4)
-    fakeweb (1.3.0)
     fast-stemmer (1.0.0)
     ffi (1.0.9)
-    fssm (0.2.7)
-    git (1.2.5)
-    haml (3.1.1)
+    haml (3.1.2)
     i18n (0.5.0)
-    jasmine (1.0.1.1)
+    jasmine (1.0.2.1)
       json_pure (>= 1.4.3)
-      rack (>= 1.0.0)
-      rake (>= 0.8.7)
-      rspec (>= 1.1.5)
-      selenium-client (>= 1.2.17)
-      selenium-rc (>= 2.1.0)
-    jeweler (1.6.0)
-      bundler (~> 1.0.0)
-      git (>= 1.2.5)
-      rake
-    json (1.5.1)
-    json_pure (1.5.2)
-    leftright (0.9.1)
-    liquid (2.0.0)
+      rack (>= 1.1)
+      rspec (>= 1.3.1)
+      selenium-webdriver (>= 0.1.3)
+    json (1.5.3)
+    json_pure (1.5.3)
+    liquid (2.2.2)
     mime-types (1.16)
-    mini_magick (3.2.1)
-      subexec (~> 0.0.4)
-    mocha (0.9.12)
+    mini_magick (3.3)
+      subexec (~> 0.1.0)
     mongo (1.3.0)
       bson (>= 1.3.0)
     mongo_ext (0.19.3)
     monkey-lib (0.5.4)
       backports
-    multi_json (0.0.5)
-    mustache (0.99.3)
-    nokogiri (1.4.5)
+    multi_json (1.0.3)
+    mustache (0.99.4)
+    nokogiri (1.5.0)
     plucky (0.3.8)
       mongo (~> 1.3)
-    rack (1.2.2)
+    rack (1.3.2)
     rack-cache (1.0.2)
       rack (>= 0.4)
-    rack-flash (0.1.1)
+    rack-flash (0.1.2)
       rack
-    rack-test (0.6.0)
+    rack-test (0.6.1)
       rack (>= 1.0)
-    rake (0.8.7)
+    rake (0.9.2)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
       rspec-mocks (~> 2.6.0)
-    rspec-core (2.6.1)
+    rspec-core (2.6.4)
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
     rubyzip (0.9.4)
     safe_shell (1.0.1)
-    sass (3.1.1)
-    selenium-client (1.2.18)
-    selenium-rc (2.3.2)
-      selenium-client (>= 1.2.18)
-    selenium-webdriver (0.2.1)
-      childprocess (>= 0.1.7)
+    sass (3.1.7)
+    selenium-webdriver (2.4.0)
+      childprocess (>= 0.2.1)
       ffi (>= 1.0.7)
       json_pure
       rubyzip
-    shoulda (2.11.3)
     sinatra (1.2.6)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -191,24 +137,20 @@ GEM
     sinatra-sugar (0.5.1)
       monkey-lib (~> 0.5.0)
       sinatra (~> 1.0)
-    steak (1.1.0)
-      rspec (>= 1.3)
-    subexec (0.0.4)
-    system_timer (1.0)
-    test-unit (2.3.0)
+    subexec (0.1.0)
+    system_timer (1.2.4)
+    test-unit (2.3.1)
     thin (1.2.11)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     thor (0.14.6)
     tilt (1.3)
-    version_sorter (1.1.0)
     wand (0.4)
       mime-types
       safe_shell (~> 1.0.0)
     xpath (0.1.4)
       nokogiri (~> 1.3)
-    yajl-ruby (0.8.2)
 
 PLATFORMS
   ruby
@@ -217,15 +159,15 @@ DEPENDENCIES
   RedCloth
   bson (= 1.3)
   bson_ext (= 1.3)
-  capybara!
-  capybara-webkit!
-  capybara-zombie!
-  factory_girl!
+  canable!
+  capybara
+  capybara-webkit
+  factory_girl
   faker
+  fast-stemmer (~> 1.0)
   haml
   hunt!
   jasmine
-  jim!
   joint!
   json
   liquid
@@ -235,16 +177,17 @@ DEPENDENCIES
   mongo_mapper!
   monk-glue!
   mustache
+  rabl!
   rack
   rack-cache
   rack-flash
   rack-test
+  rake
   rspec (>= 2.5.0)
   sass
   sinatra (= 1.2.6)
   sinatra-advanced-routes
   sinatra-namespace!
-  steak (>= 1.0.0)
   system_timer
   test-unit
   thin

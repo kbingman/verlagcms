@@ -180,12 +180,21 @@ class Page
         types = self.layout.part_types 
         types.each do |type|    
           unless self.part_names.include?(type.name)
-            part = Part.new :name => type.name
+            klass = type.kind.constantize
+            part = klass.new :name => type.name, :page_id => self.id
             self.parts << part 
           end
         end
       # end
     end  
+    
+    before_save :update_parts 
+    def update_parts
+      self.parts.each do |p|
+        p.page_id = self.id
+      end
+    end
+      
     
     def sanitize(text)
       text.gsub(/[^a-z0-9-]+/i, '-').downcase

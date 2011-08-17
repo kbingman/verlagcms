@@ -27,7 +27,7 @@ require 'rack/request'
 require 'haml' 
 require 'liquid' 
 require 'RedCloth' 
-require 'jim'
+# require 'jim'
 
 require 'lib/rack/raw_upload'
 require 'lib/rack/subdomains'

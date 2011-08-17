@@ -35,6 +35,7 @@ end
 
 Factory.define :part_type do |f|
   f.name 'body'
+  f.kind 'Part'
 end
 
 Factory.define :site do |f|

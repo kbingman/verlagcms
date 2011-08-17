@@ -5,8 +5,8 @@ class PageDrop < Liquid::Drop
     @request = request
   end   
   
-  def title
-    @page.title
+  def title(edit=false)
+    edit ? 'fibble' + @page.title : @page.title
   end
   
   def path  

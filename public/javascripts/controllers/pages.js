@@ -59,10 +59,13 @@ Pages = Sammy(function (app) {
       if(!context.modal){
         var showPage = application.render('/templates/admin/pages/show.mustache', { 
           page: page.asJSON(),
-          page_id: page.id()
+          base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('#preview iframe'); 
+          // jQuery('#page-assets .asset').each(function(i, el){
+          //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
+          // });
         });
       }
     }, 
@@ -75,7 +78,6 @@ Pages = Sammy(function (app) {
       });  
       editPage.replace('#editor').then(function(){
         // TabControl.initialize('.tab'); 
-        logger.info('hey') 
         // jQuery('#page-assets .asset').each(function(i, el){
         //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
         // })
@@ -107,7 +109,7 @@ Pages = Sammy(function (app) {
       var page = Page.find(page_id)  
 
       var active_page_cookie = jQuery.cookie('active_page_ids');
-      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []  
+      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
 
       if(!parent.hasClass('open')){
         active_page_ids.push(page_id);
@@ -208,8 +210,11 @@ Pages = Sammy(function (app) {
     }); 
   }); 
   
+  // Show Page
+  // ---------------------------------------------
   this.get('#/pages/:id/?', function(request){ 
     Galerie.close(); 
+    jQuery('.modal-editor').remove();
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
@@ -235,6 +240,8 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;    
   });
   
+  // Edit Page
+  // ---------------------------------------------
   this.get('#/pages/:id/edit/?', function(request){  
     // alert('Soon you will be able to edit a page here!');
     // request.redirect('#/pages/' + request.params['id'])
@@ -262,33 +269,27 @@ Pages = Sammy(function (app) {
       }
     }); 
     context.do_not_refresh = false;       
-  });   
-  
-  this.put('#/pages/:page_id', function(request){  
-    var page_id = request.params['page_id'],
-      page = Page.find(page_id)
-    // This is a hack, but otherwise the params get screwed up
-    var form = $('#edit-page');
+  }); 
     
-    // page.attr(request.params['page']);  
-    // page.save(function(success, result){
-    //   if(success){
-    //     context.modal = false;     
-    //     Utilities.notice('Successfully saved page');
-    //     request.redirect('#/pages/' + page_id + '/edit');
-    //   } 
-    // });
-    page.saveRemote(form.serialize(), {
-      success: function(){ 
-        // request.renderTree(Page.root());  
+  
+  // Update Page
+  // ---------------------------------------------  
+  this.put('#/pages/:page_id', function(request){  
+    var page_id = request.params['page_id'];
+    var page = Page.find(page_id);
+    
+    page.attr(request.params['page']);  
+    page.save(function(success, result){
+      if(success){
         context.modal = false;     
         Utilities.notice('Successfully saved page');
-        
-        request.redirect('#/pages/' + page_id + '/edit');
-      }
-    });  
+        // request.redirect('#/pages/' + page_id + '/edit');
+      } 
+    });
   });
   
+  // Remove Page
+  // ---------------------------------------------
   this.get('#/pages/:id/remove', function(request){   
     this.loadPages(function(){   
       var page_id = request.params['id'];
@@ -318,20 +319,6 @@ Pages = Sammy(function (app) {
       }
     }); 
   });  
-  
-  // Page assets browser    
-  // --------------------------------------------- 
-  // this.get('#/pages/:id/search', function(request){
-  //   this.loadPages(function(){     
-  //     var page = Page.find(request.params['id']); 
-  //     
-  //     if($('#modal').length == 0){ Galerie.open(function(){
-  //       var searchForm = request.render('/templates/admin/pages/search_form.mustache', { page: page.asJSON() });    
-  //       searchForm.replace('#modal');
-  //     }); }  
-  // 
-  //   });
-  // });  
 
   this.get('/pages/:id/results', function(request){ 
     this.loadPages(function(){
@@ -375,9 +362,12 @@ Pages = Sammy(function (app) {
           
           jQuery('#page-assets').append(image_div); 
           var preview = jQuery('#preview iframe');
-          preview.attr('src', preview.attr('src'));
+          preview.hide().attr('src', preview.attr('src'));
+          preview.load(function(){
+            preview.fadeIn('fast')
+          })
           context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id + '/edit');  
+          request.redirect('#/pages/' + page_id);  
         }
       });
     });  
@@ -395,75 +385,84 @@ Pages = Sammy(function (app) {
       if(idx!=-1) asset_ids_list.splice(idx, 1);  
 
       page_asset_input.attr('value', asset_ids_list);  
-      
-      page.saveRemote({ page: { assets_list: asset_ids_list.join(',') }}, {
-        success: function(){  
-          jQuery('#page-asset-' + id).fadeOut('fast', function(){
-            $(this).remove();
-          }); 
-          var preview = jQuery('#preview iframe');
-          preview.attr('src', preview.attr('src'));
-          context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id + '/edit');  
-        }
-      });
+      page.attr('assets_list', asset_ids_list.join(','));
+      page.save(function(){
+        jQuery('#page-asset-' + id).fadeOut('fast', function(){
+          $(this).remove();
+        }); 
+        var preview = jQuery('#preview iframe');
+        preview.hide().attr('src', preview.attr('src'));
+        preview.load(function(){
+          preview.fadeIn('fast')
+        })
+        context.do_not_refresh = true;
+        request.redirect('#/pages/' + page_id);
+      })
     }); 
   });
   
+  
+  // Edit Parts
+  // ---------------------------------------------
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
     this.loadPages(function(){     
+      var application = this;
+      jQuery('.edit-modal').remove();
       var id = request.params['id'];   
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(id);
       
-      // Move to iFramer object
       var iframe_content = $('iframe').contents();  
       var part_editor = iframe_content.find('#editor-' + id);
-      
-      var application = this;
-      
       var edit_part = application.render('/templates/admin/parts/edit.mustache', { 
         part: part.asJSON()
-      });  
-      edit_part.replace(part_editor).then(function(){
-        var part_form = part_editor.find('textarea');
-        part_form.css({'width':'400px', 'height':'100px'});
-        iframe_content.find('a.cancel').click(function(e){
-          e.preventDefault();  
-          window.top.location.hash = $(this).attr('href');  
+      }); 
+      logger.info(part_editor.offset());
+      logger.info(part_editor.scrollTop())
+      edit_part.appendTo(jQuery('body')).then(function(){
+        var modal_editor = jQuery('.modal-editor');
+        modal_editor.fadeIn('fast').css({
+          'top' : part_editor.offset().top + 0 + 'px',
+          'left':  part_editor.offset().left + 400 + 'px'
         });
-        // Basically the 'put' action goes here
-        // can't use sammy because of the iframe...
-        iframe_content.find('form').submit(function(e){
-          e.preventDefault(); 
-          var form = jQuery(this);
-          // part.attr('content', )
-          
-          var parts = page.attr('parts'); 
-          var length = parts.length;                                 
-          // Updates part
-          for (var i=0, l=length; i<l; ++i ){
-            var part = parts[i];
-            if(id == part.id){
-              part.content = iframe_content.find('#part-' + id + '-content').attr('value');
-            }
-          }
-          logger.info(page.attr());
-          
-          // page.merge(form.serialize());
-          page.save();
-          // page.saveRemote(page.asJSON(), {
-          //   success: function(){  
-          //     Utilities.notice('Successfully saved page');
-          //     // redirect
-          //     window.top.location.hash = '#/pages/' + page.id();
-          //   }
-          // });
-        });
-      });
-      
+      });    
 
     }); 
+  });
+  
+  // Update Parts
+  // ---------------------------------------------
+  this.put('#/pages/:page_id/parts/:id', function(request){
+    var id = request.params['id'];  
+    var page_id =  request.params['page_id'];
+    var page = Page.find(page_id);
+    var part = page.parts().find(id);
+    
+    logger.info(request.params['part']);
+    
+    // Updates part
+    var parts = page.attr('parts'); 
+    var length = parts.length;
+    for (var i=0, l=length; i<l; ++i ){
+      var part = parts[i];
+      if(id == part.id){
+        var content = request.params['part']['content'];
+        part.content = content;
+        var p = Part.find(part.id);
+        p.attr('content', content);
+        p.save();
+      }
+    }
+    
+    // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
+    page.save(function(success, result){
+      if(success){
+        context.modal = false;     
+        // Utilities.notice('Successfully saved page');
+        request.redirect('#/pages/' + page_id);
+      } 
+    });
+    
   });
 
 });

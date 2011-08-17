@@ -1,6 +1,7 @@
 {{#page}}   
-<div id="preview" >
-  <iframe src="/preview{{path}}?edit=true"></iframe>
+<div id="preview">
+  <div class="loader">LOADING</div>
+  <iframe src="/preview{{path}}?edit=true">LOADING</iframe>
 </div>    
 
 <div id="page-files">
@@ -12,7 +13,7 @@
           <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
         </a> 
         <br />
-        <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
+        <a href="#/pages/{{base_page_id}}/assets/{{id}}/remove">Remove</a>  
       </div>
     {{/assets}}
   </div>     

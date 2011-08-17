@@ -7,6 +7,7 @@ describe "routes/assets" do
     teardown   
     setup_site  
     @layout = Factory(:layout, :site_id => @site.id) 
+    @alt_layout = Factory(:layout, :name => 'alt', :site_id => @site.id) 
     @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)   
     @child_a = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child A', :layout => @layout) 
     @child_b = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child B', :layout => @layout) 
@@ -126,7 +127,7 @@ describe "routes/assets" do
           
     context 'json' do   
       def do_put
-        put "/admin/pages/#{@page.id}.json", :page => { :title => 'New Title' }
+        put "/admin/pages/#{@page.id}.json", :page => { :title => 'New Title', :layout_id => @alt_layout.id  }
       end
     
       it 'should be successful' do
@@ -143,6 +144,11 @@ describe "routes/assets" do
         do_put
         last_response.body.should include('New Title')
       end  
+      
+      it 'should include the new layout in the json' do  
+        do_put
+        last_response.body.should include(@alt_layout.id)
+      end
     end
 
   end

@@ -62,7 +62,7 @@ var Utilities = {
   
   keyboard_nav: function(){      
     jQuery('body').keydown(function(e){ 
-      logger.info(e.keyCode);  
+      // logger.info(e.keyCode);  
       switch (e.keyCode) {    
         // Cmd s
         // case 91 && 83:  
@@ -128,14 +128,21 @@ var iFramer = {
     if(!trigger.length) return;
     trigger.load(function(){   
       var iFrameContent = $(this).contents();  
-      var flags = iFrameContent.find('a.verlag-editor') ;
+      var editor = iFrameContent.find('div.part-editor');
+      var flags = editor.find('a');   
+      logger.info('load')
+      $(this).fadeIn('fast');
+      // setTimeout(function(){
+      //   
+      // }, 13);
       // change to plugin ?
-      self.setEditFlags(flags);     
+      self.setEditFlags(editor); 
       flags.click(function(){  
         window.top.trigger = $(this);
         window.top.location.hash = $(this).attr('href');  
         return false;
       });
+
     }); 
   },
   

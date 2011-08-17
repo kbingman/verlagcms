@@ -1,14 +1,14 @@
-<div class="edit-modal">
+<div class="modal-editor fade-in">
   {{#part}}   
-    <form method='post' action="/pages/{{page_id}}" enctype='multipart/form-data' id='edit-page'>
+    <form method='post' action="#/pages/{{page_id}}/parts/{{id}}" enctype='multipart/form-data' id='edit-page'>
       <div class="hidden">
         <input type="hidden" name="_method" value="put" /> 
-        <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
-        <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
+        <input type='hidden' name='part[id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
+        <input type='hidden' name='part[name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
       </div>
       
       <div class="field">
-        <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
+        <textarea type='text' name='part[content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
       </div>
       
       <div class="buttons">

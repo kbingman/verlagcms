@@ -1,5 +1,6 @@
 class Page
   include MongoMapper::Document
+  include Canable::Ables
   # plugin MongoMapper::Plugins::IdentityMap 
   
   plugin Hunt
@@ -22,7 +23,7 @@ class Page
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) } 
+  scope :by_site,  lambda { |site| where(:site_id => site.id) } 
   
   key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
@@ -30,6 +31,15 @@ class Page
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
   timestamps!
+  userstamps!
+  
+  def viewable_by?(user)
+    user.site_ids.include? self.site_id
+  end
+  
+  def updatable_by?(user)
+    user.site_ids.include? self.site_id
+  end
   
   validates_presence_of :title 
   
@@ -197,7 +207,8 @@ class Page
       
     
     def sanitize(text)
-      text.gsub(/[^a-z0-9-]+/i, '-').downcase
+      # text.gsub(/[^a-z0-9-]+/i, '-').downcase
+      ActiveSupport::Inflector.parameterize(text, '-')
     end  
     
     def clean_path(path)

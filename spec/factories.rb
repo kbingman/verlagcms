@@ -39,12 +39,16 @@ Factory.define :part_type do |f|
 end
 
 Factory.define :site do |f|
-  f.name 'The Daily Scan'
-  f.subdomain  'scans'
+  f.name { Faker::Name.first_name } 
 end 
 
 Factory.define :stylesheet do |f|
   f.name 'CSS'
   f.content 'body: {}' 
   # f.association :site
+end
+
+Factory.define :user do |f|
+  f.name { Faker::Name.first_name }
+  f.email { Faker::Internet.email }
 end

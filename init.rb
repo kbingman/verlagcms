@@ -8,7 +8,11 @@ Bundler.setup
 require 'monk/glue'
 require 'sinatra/base' 
 require 'sinatra/advanced_routes'  
-require 'sinatra/namespace'    
+require 'sinatra/namespace'   
+
+require 'warden'
+require 'bcrypt'
+# require 'lib/warden/strategies' 
 
 # Improve this...
 require 'vendor/sinatra-basicauth/lib/sinatra/basic_auth'
@@ -20,6 +24,8 @@ require 'lib/sinatra/get_subdomain'
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
+require 'canable'
+
 require 'rack/cache'
 require 'mustache/sinatra'
 require 'rack/cache' 
@@ -28,6 +34,7 @@ require 'haml'
 require 'liquid' 
 require 'RedCloth' 
 # require 'jim'
+
 
 require 'lib/rack/raw_upload'
 require 'lib/rack/subdomains'
@@ -52,7 +59,7 @@ class Main < Monk::Glue
     :verbose => false,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
-  use Rack::Session::Cookie  
+  use Rack::Session::Cookie, :secret => "replace this with some secret key"
   use Rack::RawUpload  
   
   # use Jim::Rack, :bundle_uri => '/js/'
@@ -77,6 +84,20 @@ class Main < Monk::Glue
     mime_type :'octet-stream', 'application/octet-stream' 
   end
 
+  # use Warden::Manager do |manager|
+  #   manager.default_strategies :password
+  #   manager.failure_app = Main
+  # end
+  
+
+
+  use Warden::Manager do |manager|
+    manager.default_strategies :fibble
+    manager.failure_app = Main
+  end
+  
+
+  
 end
 
 # Connect to mongodb

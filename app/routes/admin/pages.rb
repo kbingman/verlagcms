@@ -3,14 +3,6 @@ class Main
   module Admin 
     module Pages 
       
-      # Redirects if no site is found
-      # ------------------------------------------- 
-      before do
-        unless current_site   
-          redirect '/admin/sites' 
-        end
-      end
-      
       # page Index
       # -------------------------------------------
       get '/?' do
@@ -47,18 +39,18 @@ class Main
       
       # Show page
       # -------------------------------------------
-      get '/:id/?' do
-        @page = Page.by_site(current_site.id).find(params['id'])
-        respond_to do |format|
-          format.html { redirect('/pages') }
-          format.json { @page.to_json }
-        end
-      end 
+      # get '/:id/?' do
+      #   @page = Page.by_site(current_site.id).find(params['id'])
+      #   respond_to do |format|
+      #     format.html { redirect('/pages') }
+      #     format.json { @page.to_json }
+      #   end
+      # end 
       
       # Show page children
       # -------------------------------------------
       get '/:id/children' do
-        @page = Page.by_site(current_site.id).find(params['id'])
+        @page = Page.by_site(current_site).find(params['id'])
         respond_to do |format|
           format.html { redirect('/pages') }
           format.json { @page.children.to_json }
@@ -67,15 +59,16 @@ class Main
       
       # Edit page
       # -------------------------------------------
-      get '/:id/edit/?' do
-        @page = Page.by_site(current_site.id).find(params['id'])                             
-        admin_haml :'/admin/pages/edit'
-      end
+      # get '/:id/edit/?' do
+      #   @page = Page.by_site(current_site.id).find(params['id'])                             
+      #   admin_haml :'/admin/pages/edit'
+      # end
       
       # Update page
       # -------------------------------------------
       put '/:id' do
-        page = Page.by_site(current_site.id).find(params['id'])  
+        page = Page.by_site(current_site).find(params['id']) 
+        # enforce_update_permission(page) 
         
         # This is a bit of a hack needed to get the parts to save when sent by jQuery / js-model
         if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)
@@ -102,15 +95,15 @@ class Main
       
       # Delete page
       # -------------------------------------------
-      delete '/:id' do
-        page = Page.by_site(current_site.id).find(params['id'])             
-        if page.destroy
-          respond_to do |format|
-            format.html { redirect('/pages') }
-            format.json {}
-          end
-        end
-      end
+      # delete '/:id' do
+      #   page = Page.by_site(current_site.id).find(params['id'])             
+      #   if page.destroy
+      #     respond_to do |format|
+      #       format.html { redirect('/pages') }
+      #       format.json {}
+      #     end
+      #   end
+      # end
       
     end  
   end

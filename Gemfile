@@ -9,6 +9,9 @@ gem 'thin'
 gem 'monk-glue', :path => 'vendor/glue' # :git => 'https://github.com/monkrb/glue.git'
 gem 'rack-cache'
 
+gem 'warden'
+gem 'bcrypt-ruby'
+
 # Mongomapper and plugins
 # gem 'mongo_mapper', :git => 'https://github.com/jnunemaker/mongomapper.git'
 gem 'mongo_mapper', :path => 'vendor/mongomapper'
@@ -44,7 +47,7 @@ group :test do
   gem 'rspec', '>= 2.5.0'
   # gem 'steak', '>= 1.0.0'  
   gem 'capybara' #, :git => 'https://github.com/jnicklas/capybara.git'
-  # gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
+  gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
   gem 'capybara-webkit' #, :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl' #, :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'

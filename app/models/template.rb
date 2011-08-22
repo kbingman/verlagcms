@@ -1,12 +1,16 @@
 class Template
   include MongoMapper::Document
+  include Canable::Ables
   
   key :name, String, :required => true #, :unique => true 
   key :content, String  
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) } 
+
+  def self.by_site(site, admin = false)
+    self.where :site_id => site.id
+  end
   
   timestamps! 
   

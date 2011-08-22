@@ -50,6 +50,16 @@ describe Page do
     end 
   end
   
+  context 'scopes' do
+    it 'should find pages by site' do
+      Page.by_site(@site).all.should include(@child)
+    end
+    
+    it 'should not find pages in a foreign site' do
+      Page.by_site(@second_site).all.should_not include(@child)
+    end
+  end
+  
   context 'valid page' do
     before(:all) do  
       

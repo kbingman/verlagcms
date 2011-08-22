@@ -24,9 +24,17 @@ RSpec.configure do |conf|
     Main.new
   end 
   
-  # conf.before(:all) do        
-  #   setup_site 
-  # end   
+  conf.before(:all) do
+    teardown 
+    @site = Factory(:site)
+    @current_user = Factory.build(:user)
+    @current_user.sites << @site
+    @current_user.save
+  end
+  
+  conf.after(:all) do        
+    teardown
+  end   
 
   def t(text)
     I18n.translate(text)
@@ -39,8 +47,8 @@ RSpec.configure do |conf|
     end
   end  
   
-  def setup_site     
-    @site = Factory(:site)   
+  def setup_site    
+
     Main.class_eval do
       helpers do
         
@@ -48,7 +56,11 @@ RSpec.configure do |conf|
           Site.first
         end   
         
-        def authorized?
+        def current_user
+          User.first
+        end
+        
+        def authenticated?
           true
         end
         

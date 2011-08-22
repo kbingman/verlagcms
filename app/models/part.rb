@@ -16,7 +16,7 @@ class Part
       r =  "<div class='part-editor' id='editor-#{self.id}'>"
       r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/parts/#{self.id}/edit'>"
       r += "<span>Edit #{self.name}</span></a></div>"
-      r += self.content ? "#{RedCloth.new(self.content).to_html}" : 'Placeholder'
+      r += self.content ? "#{RedCloth.new(self.content).to_html}" : 'Add Content Here'
       r
     else
       RedCloth.new(self.content).to_html

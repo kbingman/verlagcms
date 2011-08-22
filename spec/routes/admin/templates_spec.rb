@@ -48,7 +48,7 @@ describe "routes/templates" do
         
     context 'json' do   
       def do_post
-        post '/admin/templates.json', :template => { :name => 'Template', :site_id => @site.id, :klass => 'layout' }
+        post '/admin/templates.json', :template => { :name => 'Template', :klass => 'layout' }
       end
     
       it 'should be successful' do
@@ -61,10 +61,15 @@ describe "routes/templates" do
         last_response.headers['Content-Type'].should == 'application/json'
       end
     
-      it 'should include pages in the json' do  
+      it 'should include the template in the json' do  
         do_post
         last_response.body.should include('Template')
       end  
+      
+      it 'should include the class in the json' do  
+        do_post
+        last_response.body.should include('Layout')
+      end
     end
     
   end  

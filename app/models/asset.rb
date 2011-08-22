@@ -3,6 +3,7 @@ require 'mini_magick'
 class Asset
   
   include MongoMapper::Document
+  include Canable::Ables
   
   plugin Joint # add the plugin
   attachment :file # declare an attachment named file
@@ -19,7 +20,7 @@ class Asset
   
   key :site_id, ObjectId, :required => true
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) }
+  scope :by_site, lambda { |site| where(:site_id => site.id) }
 
   # key :story_id, ObjectId
   # belongs_to :story, :foreign_key => :story_id

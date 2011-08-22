@@ -407,7 +407,7 @@ Pages = Sammy(function (app) {
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
     this.loadPages(function(){     
       var application = this;
-      jQuery('.edit-modal').remove();
+      jQuery('.modal-editor').remove();
       var id = request.params['id'];   
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(id);
@@ -418,11 +418,11 @@ Pages = Sammy(function (app) {
         part: part.asJSON()
       }); 
       logger.info(part_editor.offset());
-      logger.info(part_editor.scrollTop())
+      logger.info(iframe_content.find('body').scrollTop());
       edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
         modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top + 0 + 'px',
+          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
           'left':  part_editor.offset().left + 400 + 'px'
         });
       });    

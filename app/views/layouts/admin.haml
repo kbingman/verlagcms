@@ -2,7 +2,7 @@
 %html
   %head
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
-    %link{ :rel => 'stylesheet', :href => "/css/verlag/verlag.css", :type => 'text/css' }   
+    %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }   
     -# These need to be moved to the sass folder, perhaps as scss
     %link{ :rel => 'stylesheet', :href => "/css/codemirror.css", :type => 'text/css' }
     %link{ :rel => 'stylesheet', :href => "/css/javascript.css", :type => 'text/css' } 
@@ -40,6 +40,7 @@
       %script{ :src => '/javascripts/controllers/layouts.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/pages.js', :type => 'text/javascript', :charset => 'utf-8' }   
       %script{ :src => '/javascripts/controllers/sites.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/controllers/rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }    
       
     -# This is where the mustache templates are rendered  
@@ -51,6 +52,7 @@
         .notice
           messages go here 
         %h1
+          = current_user.email
           %a{ :href => "http://#{current_site.domain}/#/preview", :target => '_blank' }= current_site.name   
         - if authorized?
           #tabs        

@@ -5,41 +5,43 @@ require "bundler/setup"
 
 Bundler.setup
 
+# Monk
 require 'monk/glue'
 require 'sinatra/base' 
 require 'sinatra/advanced_routes'  
 require 'sinatra/namespace'   
 
+# Warden / Login
 require 'warden'
 require 'bcrypt'
-# require 'lib/warden/strategies' 
 
-# Improve this...
+# Sinatra Extensions
 require 'vendor/sinatra-basicauth/lib/sinatra/basic_auth'
 require 'lib/sinatra/respond_to'  
 require 'lib/sinatra/logger' 
 require 'lib/sinatra/images' 
 require 'lib/sinatra/get_subdomain' 
 
+# Mongo stuff
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
 require 'canable'
 
+# Rack
 require 'rack/cache'
-require 'mustache/sinatra'
 require 'rack/cache' 
 require 'rack/request' 
+require 'lib/rack/raw_upload'
+require 'lib/rack/subdomains'
+require 'lib/hunt/search_all'
+
+# Templating
+require 'mustache/sinatra'
 require 'haml' 
 require 'liquid' 
 require 'RedCloth' 
 # require 'jim'
-
-
-require 'lib/rack/raw_upload'
-require 'lib/rack/subdomains'
-require 'lib/hunt/search_all'  
-
 
 class Main < Monk::Glue
 
@@ -54,12 +56,15 @@ class Main < Monk::Glue
     :ugly => RACK_ENV == 'development' ? false : true } 
   set :default_content_type, :html
   
+  # Not sure if this is the correct syntax
+  register Rabl
+  
   # Rack Middleware 
   use Rack::Cache,
     :verbose => false,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
-  use Rack::Session::Cookie, :secret => "replace this with some secret key"
+  use Rack::Session::Cookie, :secret => "fibble this must be longer"
   use Rack::RawUpload  
   
   # use Jim::Rack, :bundle_uri => '/js/'
@@ -84,20 +89,11 @@ class Main < Monk::Glue
     mime_type :'octet-stream', 'application/octet-stream' 
   end
 
-  # use Warden::Manager do |manager|
-  #   manager.default_strategies :password
-  #   manager.failure_app = Main
-  # end
-  
-
-
   use Warden::Manager do |manager|
     manager.default_strategies :fibble
     manager.failure_app = Main
   end
-  
 
-  
 end
 
 # Connect to mongodb

@@ -22,12 +22,12 @@ class ImagePart < Part
     if edit == 'true' 
       # This is used for the inline editor, setting a small flag with the edit page / part path
       r =  "<div class='part-editor' id='editor-#{self.id}'>"
-      r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/parts/#{self.id}/edit'>"
+      r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/image_parts/#{self.id}/edit'>"
       r += "<span>Upload #{self.name}</span></a></div>"
-      r += "#{self.asset.image_path}" if self.asset
+      r += "<img src='#{self.asset.image_path}' />" if self.asset
       r
     else
-      self.asset ? self.asset.image_path : ''
+      self.asset ? "<img src='#{self.asset.image_path}' />" : ''
     end
   end
   

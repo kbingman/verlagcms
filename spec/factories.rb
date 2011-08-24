@@ -51,4 +51,5 @@ end
 Factory.define :user do |f|
   f.name { Faker::Name.first_name }
   f.email { Faker::Internet.email }
+  f.role_id 100
 end

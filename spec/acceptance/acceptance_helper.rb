@@ -2,9 +2,9 @@ ENV['RACK_ENV'] = 'test'
         
 require 'spec_helper'   
 
-require 'steak'
-require 'capybara'
+require 'capybara/rspec'
 require 'capybara/dsl'
+require 'yajl'
 require 'capybara/zombie' 
 require 'capybara-webkit'
 require 'faker'
@@ -14,7 +14,7 @@ require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :zombie
+Capybara.default_driver = :webkit
 Capybara.app = Main
 
 # Put your acceptance spec helpers inside /spec/acceptance/support
@@ -27,11 +27,13 @@ def setup_site
       
       def current_site
         @site ||= Site.first  
-        # puts @site.name
-        @site
       end 
+       
+      def current_user
+        @user ||= User.first
+      end
       
-      def authorized?
+      def authenticated?
         true
       end
       

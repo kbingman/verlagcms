@@ -5,17 +5,10 @@ class Main
       
       # site Index
       # -------------------------------------------
-      # get '/?' do
-      #   @sites = Site.all
-      #   respond_to do |format|
-      #     format.html do  
-      #       admin_haml :'admin/sites/index'
-      #     end 
-      #     format.json do 
-      #       @sites.to_json  
-      #     end
-      #   end
-      # end
+      get '/?' do
+        collection = current_user.is_super_user? ? Site.all : current_user.sites
+        collection.to_json
+      end
       # 
       # # Create site
       # # -------------------------------------------

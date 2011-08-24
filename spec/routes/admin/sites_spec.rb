@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/templates" do
+describe "routes/admin/sites" do
   include Rack::Test::Methods
     
   context 'GET index' do  
@@ -8,6 +8,8 @@ describe "routes/templates" do
     before(:all) do 
       setup_site
       @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')  
+      @current_user.sites << @site
+      @current_user.save
     end 
 
     after(:all) do
@@ -75,6 +77,8 @@ describe "routes/templates" do
     before(:all) do 
       setup_site
       @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')  
+      @current_user.sites << @site
+      @current_user.save
     end 
     
     after(:all) do
@@ -108,6 +112,8 @@ describe "routes/templates" do
     
     before(:each) do 
       @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')    
+      @current_user.sites << @site
+      @current_user.save
     end
         
     context 'json' do    

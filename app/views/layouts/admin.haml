@@ -22,25 +22,29 @@
       %script{ :src => '/javascripts/vendor/sammy.mustache.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }  
       %script{ :src => '/javascripts/vendor/sinatra-rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      
       %script{ :src => '/javascripts/vendor/codemirror.js', :type => 'text/javascript', :charset => 'utf-8' }  
       %script{ :src => '/javascripts/vendor/jquery.cookie.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      
       %script{ :src => '/javascripts/modes/javascript.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/modes/css.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/modes/xml.js', :type => 'text/javascript', :charset => 'utf-8' }  
       %script{ :src => '/javascripts/modes/liquid.js', :type => 'text/javascript', :charset => 'utf-8' }
+      
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/layout.js', :type => 'text/javascript', :charset => 'utf-8' }  
       %script{ :src => '/javascripts/models/part.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' }   
       %script{ :src => '/javascripts/models/site.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      // %script{ :src => '/javascripts/lib/ajax_uploader.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/models/user.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      
       %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
+      
       %script{ :src => '/javascripts/controllers/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/layouts.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/pages.js', :type => 'text/javascript', :charset => 'utf-8' }   
       %script{ :src => '/javascripts/controllers/sites.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/controllers/rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/controllers/users.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      
       %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }    
       
     -# This is where the mustache templates are rendered  
@@ -52,9 +56,10 @@
         .notice
           messages go here 
         %h1
-          = current_user.email
-          %a{ :href => "http://#{current_site.domain}/#/preview", :target => '_blank' }= current_site.name   
-        - if authorized?
+          - if authenticated?
+            = current_user.email
+          %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
+        - if authenticated?
           #tabs        
             %a{ :href => '#/sites' } Sites
             %a{ :href => '#/pages' } Pages 

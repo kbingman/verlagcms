@@ -16,6 +16,7 @@ class Main
           format.json do  
             active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
             pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+            puts pages.length
             pages.to_json  
           end
         end
@@ -37,16 +38,6 @@ class Main
         end
       end
       
-      # Show page
-      # -------------------------------------------
-      # get '/:id/?' do
-      #   @page = Page.by_site(current_site.id).find(params['id'])
-      #   respond_to do |format|
-      #     format.html { redirect('/pages') }
-      #     format.json { @page.to_json }
-      #   end
-      # end 
-      
       # Show page children
       # -------------------------------------------
       get '/:id/children' do
@@ -56,13 +47,6 @@ class Main
           format.json { @page.children.to_json }
         end
       end
-      
-      # Edit page
-      # -------------------------------------------
-      # get '/:id/edit/?' do
-      #   @page = Page.by_site(current_site.id).find(params['id'])                             
-      #   admin_haml :'/admin/pages/edit'
-      # end
       
       # Update page
       # -------------------------------------------
@@ -92,18 +76,6 @@ class Main
           end
         end
       end     
-      
-      # Delete page
-      # -------------------------------------------
-      # delete '/:id' do
-      #   page = Page.by_site(current_site.id).find(params['id'])             
-      #   if page.destroy
-      #     respond_to do |format|
-      #       format.html { redirect('/pages') }
-      #       format.json {}
-      #     end
-      #   end
-      # end
       
     end  
   end

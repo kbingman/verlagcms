@@ -1,0 +1,26 @@
+{{#user}}
+<h1>Edit User</h1>  
+
+<form action="#/users/{{id}}" method= "post" class="command-save autosave">   
+  <div class="hidden">
+    <input type="hidden" name="_method" value="put" /> 
+  </div>
+  <div class="field">   
+    <label for="user_name">Name</label>
+    <input type="text" id="user_name" name="user[name]" value="{{name}}" class="textfield" />  
+  </div> 
+  <div class="field">   
+    <label for="user_email">Email</label>
+    <input type="text" id="user_email" name="user[email]" value="{{email}}" class="textfield" />  
+  </div>
+  {{#is_admin?}}
+  <div class="field">  
+  Roles go here!
+  </div>
+  {{/is_admin?}}
+  <div class="">
+    <input type="submit" id="save-user" value="Save" class="button" /> 
+    <a href="#/users" class="cancel">Cancel</a> 
+  </div>
+</form>  
+{{/user}}

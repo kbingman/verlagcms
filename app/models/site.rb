@@ -9,8 +9,12 @@ class Site
   many :assets
   many :templates   
   
-  key :user_ids, Array
-  many :users, :in => :user_ids
+  # key :user_ids, Array
+  # many :users, :in => :user_ids
+  
+  def users
+    User.by_site(self).all
+  end
   
   # Need to rename this... used in the REST controllers
   def self.by_site(site, admin = false)
@@ -35,7 +39,7 @@ class Site
     pages << self.root
     pages
   end
-  
+   
   def domain
     "#{self.subdomain}.#{monk_settings(:domain)}"
   end  
@@ -50,6 +54,10 @@ class Site
   
   def viewable_by?(user)
     user.site_ids.include? self.site_id
+  end
+  
+  def updatable_by?(user)
+    user.site_ids.include?(self.id) && user.is_admin?
   end
   
   protected

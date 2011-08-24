@@ -14,7 +14,7 @@ module Sinatra
       def authenticated?
         warden.user ? true : false
       end
-      alias_method :authorized?, :authenticated?
+      alias_method :logged_in?, :authenticated?
 
       # Access the currently logged in user
       def current_user(*args)

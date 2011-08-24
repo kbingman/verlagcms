@@ -14,36 +14,21 @@ require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :webkit
+Capybara.default_driver = :selenium
 Capybara.app = Main
 
-# Put your acceptance spec helpers inside /spec/acceptance/support
-# Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}     
-
-def setup_site     
-  @site = Factory(:site) 
-  Main.class_eval do
-    helpers do
-      
-      def current_site
-        @site ||= Site.first  
-      end 
-       
-      def current_user
-        @user ||= User.first
-      end
-      
-      def authenticated?
-        true
-      end
-      
-    end
-  end 
+def screen_shot_and_save_page(title)
+  require 'capybara/util/save_and_open_page'
+  path = "tmp/capybara/#{title}-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+  Capybara.save_page body, "#{path}.html"
+  # page.driver.render "#{path}.png"
 end
 
-# Drop all columns after each test case.
-def teardown
-  MongoMapper.database.collections.each do |coll|
-    coll.remove
-  end
-end
+# begin
+#   After do |scenario|
+#     screen_shot_and_save_page if scenario.failed?
+#   end
+# rescue Exception => e
+#   puts "Snapshots not available for this environment.\n
+#     Have you got gem 'capybara-webkit' in your Gemfile and have you enabled the javascript driver?"
+# end

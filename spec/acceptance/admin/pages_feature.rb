@@ -7,27 +7,62 @@ feature "Pages", %q{
   I want to create and manage pages
 } do
 
-  background do
+  before(:all) do
     setup_site   
     @layout = Factory(:layout, :site_id => @site.id) 
-    puts @site.name
-    @root = Factory(:page, :title => 'Home', :site_id => @site.id, :layout_id => @layout.id)
+    @root = @site.root
     @child = Factory(:page, :title => 'About', :parent => @root, :site_id => @site.id, :layout_id => @layout.id)
   end
+  
+  after(:each) do 
+    # screen_shot_and_save_page('pages-index')
+  end
 
-  scenario "Page index" do
+  scenario "view the page index" do
+    # visit '/admin/'
     visit '/admin/#/pages' 
     
-    # page.should have_content(@site.name)
+    current_path.should == '/admin/'
+    current_url.should match(%r(/#/pages$))
+    
+    page.should have_content(@site.name)
 
     page.should have_css('#editor')
     page.should have_css('#sidebar')
     page.should have_css('#sidebar ul')   
     
-    current_path.should == '/admin/'
-    current_url.should match(%r(/#/pages$))
+    page.should have_content(@root.title)  
+    page.should have_css("#edit-#{@root.id}")
+    # page.should have_content(@child.title) 
+    # 
+    page.should have_css("#add-child-#{@root.id}") 
+    page.should have_css("#remove-page-#{@root.id}")
+  end
+  
+  scenario "edit the root page" do 
+    visit "/admin/#/pages/#{@root.id}" 
+      
+    screen_shot_and_save_page('pages-show')
     
-    page.driver.render "tmp/capybara/pages-index-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png"
+    page.should have_css('#preview')
+    page.should have_css('iframe')
+    # click_link("edit-#{@root.id}")   
+    # page.should have_content('Title')
+    
+  end
+  
+  scenario "add a page" do 
+    # visit '/admin/' 
+    visit '/admin/#/pages'    
+  
+    click_link "add-child-#{@root.id}"   
+    page.should have_content('New Page')     
+    page.should have_css('#modal')
+    
+    fill_in 'page[title]', :with => 'New Page' 
+    click_button 'Save'  
+    
+    page.should have_content('New Page')
   end
 
 end

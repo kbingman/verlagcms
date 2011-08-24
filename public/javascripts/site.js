@@ -3249,7 +3249,7 @@ Model.Base = (function() {
 })();
 
 var Asset = Model('asset', function() {
-  // this.persistence(Model.REST, "/assets"), 
+  this.persistence(Model.REST, "/admin/assets"), 
   
   // var invokeCallback = function (callbackName, instance) {
   //   if (instanceMethods[callbackName]) {
@@ -3258,82 +3258,6 @@ var Asset = Model('asset', function() {
   // },
   
   this.include({
-    saveRemote: function(callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;
-      // self.save();
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",
-        data: { 'asset': self.changes },
-        success: function(results) {
-          self.merge(results);
-          if(callback['success']){ callback['success'].call(this); }
-        }
-      });
-    },  
-    
-    deleteRemote: function(callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;
-      jQuery.ajax({
-        type: 'DELETE',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",                   
-        success: function(results) {    
-          Asset.remove(self); 
-          if(callback['success']){ callback['success'].call(this); }    
-        }
-      });
-    },  
-     
-    // TODO this could all be handled with a general update?
-    // Add to page
-    addToPage: function(page_id, callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': page_id } }, 
-        dataType: "json",                   
-        success: function(results) {
-          self.merge(results);  
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    }, 
-    
-    // Remove from page
-    removeFromPage: function(page_id, callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': null } }, 
-        dataType: "json",                   
-        success: function(results) {
-          self.merge(results);  
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    },
     
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
@@ -3393,28 +3317,6 @@ var Asset = Model('asset', function() {
       });                                     
       return tags;
     },
-    
-    // This is hack 
-    // I do it like this, as I don't have any assets loaded...
-    removeFromPage: function(id, page_id, callback){
-      var url = '/admin/assets/' + id + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': null } }, 
-        dataType: "json",                   
-        success: function(results) { 
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    },
 
     searchRemote: function(query, callback) {
       var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
@@ -3458,6 +3360,7 @@ var Asset = Model('asset', function() {
       });
     },
     
+    // Ajax uploader code
     create: function (file, callback) { 
       var url = '/admin/assets.json';
       Asset.callback = callback;
@@ -3514,7 +3417,7 @@ var Asset = Model('asset', function() {
 
 
 var Page = Model('page', function() {
-  // this.persistence(Model.SinatraREST, "/admin/pages"), 
+  this.persistence(Model.SinatraREST, "/admin/pages"), 
    
   // Instance methods
   this.include({  
@@ -3545,19 +3448,21 @@ var Page = Model('page', function() {
       return Asset;
     },
     
-    // parts: function(){ 
-    //   var self = this;
-    //   var parts = self.attr('parts'); 
-    //   var length = parts.length;                                 
-    //   
-    //   for (var i=0, l=length; i<l; ++i ){
-    //     var part_data = parts[i];
-    //     var part = new Part({ id: part_data.id });  
-    //     part.merge(part_data);
-    //     Part.add(part);
-    //   } 
-    //   return Part;
-    // },  
+    parts: function(){
+      var self = this;
+      var parts = self.attr('parts'); 
+      var length = parts.length;                                 
+      // Part.each(function(){ Part.remove(this); });
+      
+      for (var i=0, l=length; i<l; ++i ){
+        var part_data = parts[i];
+        var part = new Part({ id: part_data.id });  
+        part.merge(part_data);
+        part.attr('page_id', self.id());
+        Part.add(part);
+      } 
+      return Part;
+    },
     
     load: function(callback){
       var self = this;
@@ -3596,23 +3501,7 @@ var Page = Model('page', function() {
           }
         }
       });
-    },
-    
-    deleteRemote: function(callback){
-      var self = this;
-      var url = '/admin/pages/' + self.id()  + '.json';   
-      
-      jQuery.ajax({
-        type: 'DELETE',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",                   
-        success: function(results) {    
-          Page.remove(self);    
-          callback.call(this);    
-        }
-      });
-    }  
+    }
     
   }), 
   
@@ -3662,31 +3551,10 @@ var Page = Model('page', function() {
           var page = new Page({ id: results.id });
           page.merge(results);
           Page.add(page); 
-          console.log(results) 
           callback.call(this, results)
         }
       });
-    },
-    
-    load: function(callback) {
-      Page.each(function(){ Page.remove(this); });
-      var url = '/admin/pages.json';
-      jQuery.ajax({
-        type: 'get',
-        url: url,
-        contentType: "application/json",
-        dataType: "json",  
-        success: function(results) {
-          jQuery.each(results, function(i, results) {
-            var page = new Page({ id: results.id });
-            page.merge(results);
-            Page.add(page);
-          });
-          if(callback){ callback.call(this); }
-        }
-      });
     }
-
   });
 
 });
@@ -3879,22 +3747,56 @@ var Galerie = {
       });
     });
   }
-} 
+}    
+
+var logger = {
+  info: function(message){
+    if(window.console){
+      console.log(message);
+    } 
+  },
+  
+  debug: function(message){
+    if(window.console){
+      console.log(message);
+    } 
+  }
+}
 
 var Utilities = { 
   
   notice: function(message){
     var notice = jQuery('.notice');
     notice.text(message); 
-    notice.slideDown('fast');
-    setTimeout(function(){
-      notice.slideUp('fast')
-    }, '2000'); 
-  },       
+    notice.slideDown('slow', function(){
+      setTimeout(function(){
+        notice.slideUp('slow');
+      }, 1000);
+    });
+
+  },     
   
-  keyboard_nav: function(){
-    jQuery('body').keydown(function(e){    
-      switch (e.keyCode) {
+  keyboard_nav: function(){      
+    jQuery('body').keydown(function(e){ 
+      // logger.info(e.keyCode);  
+      switch (e.keyCode) {    
+        // Cmd s
+        // case 91 && 83:  
+        //   logger.info('Save me!');     
+        //   // this needs to change...
+        //   var form = jQuery('form.command-save');
+        //   form.submit();    
+        //   // return false;
+        //   e.preventDefault();
+        //   break;
+        // // Ctrl S
+        // case 17 && 83: 
+        //   logger.info('Save me!');       
+        //   // this needs to change...
+        //   // var form = jQuery('form.command-save');
+        //   // form.submit(); 
+        //   e.preventDefault();    
+        //   break;
         // Left Arrow
         case 37:
           $('a.previous').click();
@@ -3939,17 +3841,24 @@ var iFramer = {
   initialize: function(element){   
     var trigger = jQuery(element);  
     var self = this;
-    if(!trigger) return;
+    if(!trigger.length) return;
     trigger.load(function(){   
       var iFrameContent = $(this).contents();  
-      var flags = iFrameContent.find('a.verlag-editor') ;
+      var editor = iFrameContent.find('div.part-editor');
+      var flags = editor.find('a');   
+      logger.info('load')
+      $(this).fadeIn('fast');
+      // setTimeout(function(){
+      //   
+      // }, 13);
       // change to plugin ?
-      self.setEditFlags(flags);     
+      self.setEditFlags(editor); 
       flags.click(function(){  
         window.top.trigger = $(this);
         window.top.location.hash = $(this).attr('href');  
         return false;
       });
+
     }); 
   },
   

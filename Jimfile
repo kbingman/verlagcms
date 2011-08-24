@@ -20,9 +20,8 @@
       "lib/site"
     ],
     "admin": [
-      "vendor/jquery-1.6.1.min", 
-      "vendor/jquery-ui-1.8.14.custom", 
-      "vendor/sammy", 
+      "vendor/jquery-1.6.2.min", 
+      "vendor/sammy.min", 
       "vendor/sammy.title",
       "vendor/sammy.nested_params", 
       "vendor/sammy.json",  
@@ -41,11 +40,13 @@
       "models/layout",  
       "models/part",
       "models/site", 
+      "models/user",
       "lib/utilities",  
       "controllers/sites",  
       "controllers/layouts",    
       "controllers/assets",
       "controllers/pages",
+      "controllers/users",
       "lib/admin"
     ]
   }

@@ -214,6 +214,7 @@ Pages = Sammy(function (app) {
   // Show Page
   // ---------------------------------------------
   this.get('#/pages/:id/?', function(request){ 
+    logger.info('pages show')
     Galerie.close(); 
     jQuery('.modal-editor').remove();
     this.loadPages(function(){  

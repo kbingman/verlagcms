@@ -153,7 +153,7 @@ var Asset = Model('asset', function() {
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
-        var asset = new Asset({ id: response.id });  
+        var asset = new Asset({ id: response.id }); 
         
         asset.merge(response);
         Asset.add(asset); 

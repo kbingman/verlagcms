@@ -2,12 +2,8 @@
 %html
   %head
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
-    %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }   
-    -# These need to be moved to the sass folder, perhaps as scss
-    %link{ :rel => 'stylesheet', :href => "/css/codemirror.css", :type => 'text/css' }
-    %link{ :rel => 'stylesheet', :href => "/css/javascript.css", :type => 'text/css' } 
-    %link{ :rel => 'stylesheet', :href => "/css/css.css", :type => 'text/css' }   
-    %link{ :rel => 'stylesheet', :href => "/css/xml.css", :type => 'text/css' }   
+    %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }     
+  
     - if RACK_ENV == 'production'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else   

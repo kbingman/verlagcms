@@ -41,7 +41,7 @@ Assets = Sammy(function (app) {
   this.get('#/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
-    params['limit'] = 12;
+    params['limit'] = 24;
     params['page'] = request.params['page'] || 1;
     
     Galerie.close();
@@ -74,16 +74,24 @@ Assets = Sammy(function (app) {
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
+    var params = query ? { 'query': query } : {}; 
+    params['limit'] = 24;
+    params['page'] = request.params['page'] || 1;
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
-
+    
+    var counter = 0;
     for(var i = 0; i < files.length; i++) {   
-      
       Asset.create(files[i], function(){  
-        var assetIndex = request.render('/templates/admin/assets/new.mustache', Asset.toMustache(query));
-        assetIndex.replace('#editor').then(function(){
-          jQuery('#ajax_uploader').attr('multiple','multiple'); 
-        });
+        counter = counter + 1;
+        if(counter == files.length){
+          Asset.searchAdmin(params, function(){  
+            var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+            assetIndex.replace('#editor').then(function(){
+              jQuery('#ajax_uploader').attr('multiple','multiple'); 
+            });
+          });
+        };
       });     
     }
     return false; 

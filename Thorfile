@@ -9,10 +9,10 @@ class Monk < Thor
     exec "rspec #{spec_opts} #{spec_files}"
   end
 
-  desc "features", "Run all Steak features"
+  desc "acceptance", "Run all Steak features"
   def features
-    spec_root = File.join(File.dirname(__FILE__), 'spec')
-    spec_files = Dir[File.join(spec_root, 'acceptance', '**', '*feature.rb')].map{ |f| File.expand_path(f) }.join(' ')
+    acceptance_root = File.join(File.dirname(__FILE__), 'acceptance')
+    spec_files = Dir[File.join(acceptance_root, '**', '*feature.rb')].map{ |f| File.expand_path(f) }.join(' ')
     spec_opts = "-f p -c -b -p"  
     puts `rspec #{spec_files}`
   end

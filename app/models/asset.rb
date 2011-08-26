@@ -48,7 +48,7 @@ class Asset
   #                                                               {:tags => /#{query}/i}] }) }                                                        
   
   def self.per_page
-    48
+    24
   end
   
   def self.search_with_artist(query)

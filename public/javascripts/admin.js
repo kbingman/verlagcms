@@ -4798,7 +4798,7 @@ var Asset = Model('asset', function() {
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
-        var asset = new Asset({ id: response.id });  
+        var asset = new Asset({ id: response.id }); 
         
         asset.merge(response);
         Asset.add(asset); 
@@ -5764,16 +5764,27 @@ Assets = Sammy(function (app) {
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
+    var params = query ? { 'query': query } : {}; 
+    params['limit'] = 24;
+    params['page'] = request.params['page'] || 1;
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
-
+    
+    var counter = 0;
     for(var i = 0; i < files.length; i++) {   
       
+      // alert('hey ' + i);
+      // var counter = i;
       Asset.create(files[i], function(){  
-        var assetIndex = request.render('/templates/admin/assets/new.mustache', Asset.toMustache(query));
-        assetIndex.replace('#editor').then(function(){
-          jQuery('#ajax_uploader').attr('multiple','multiple'); 
-        });
+        counter = counter + 1;
+        if(counter == files.length){
+          Asset.searchAdmin(params, function(){  
+            var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+            assetIndex.replace('#editor').then(function(){
+              jQuery('#ajax_uploader').attr('multiple','multiple'); 
+            });
+          });
+        };
       });     
     }
     return false; 

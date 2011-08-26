@@ -7,7 +7,9 @@ class Template
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-
+  
+  validates :name, :uniqueness => { :scope => :site_id }
+  
   def self.by_site(site, admin = false)
     self.where :site_id => site.id
   end

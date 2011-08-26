@@ -309,6 +309,8 @@ Pages = Sammy(function (app) {
     });  
   }); 
   
+  // Destroy Page
+  // ---------------------------------------------
   this.del('/pages/:id', function(request){
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
@@ -321,14 +323,19 @@ Pages = Sammy(function (app) {
       }
     }); 
   });  
-
+  
+  
+  // Asset Search Results
+  // ---------------------------------------------
   this.get('/pages/:id/results', function(request){ 
     this.loadPages(function(){
       var page_id = request.params['id'];  
       var page = Page.find(page_id);  
-      var query = request.params['query'];  
       
-      Asset.searchAdmin(query, function(){  
+      var query = request.params['query'] ? request.params['query'] : null; 
+      var params = query ? { 'query': query } : {};
+      
+      Asset.searchAdmin(params, function(){  
         Asset.each(function(asset){
           asset.attr('current_page_id', page.id());
           asset.save();
@@ -339,48 +346,10 @@ Pages = Sammy(function (app) {
       });
     });
   });   
-  
-  this.get('/pages/:page_id/parts/:id/results', function(request){ 
-    var app = this;
-    this.loadPages(function(){
-      var page = Page.find(request.params['page_id']);
-      var part = Part.find(request.params['id']);
-      var query = request.params['query']; 
-      
-      logger.info(part.id()); 
 
-      Asset.searchAdmin(query, function(){           
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container').then(function(){
-          
-          jQuery('#search-results-container li.asset').each(function(i, el){
-            var link = jQuery(el).find('a');
-            var asset_id = jQuery(el).attr('id').split('-')[1];
-            link.click(function(e){
-              e.preventDefault();
-              // Updates part
-              var parts = page.attr('parts'); 
-              var length = parts.length;
-              for (var i=0, l=length; i<l; ++i ){
-                var p = parts[i];
-                if(part.id() == p.id){
-                  p.asset_id = asset_id;
-                  part.attr('asset_id', asset_id);
-                  part.save();
-                }
-              }
-              page.save(function(success){
-                jQuery('.modal-editor').remove();
-                // Change to sammy method
-                document.location.hash = '#/pages/' + page.id();
-              });
-            });
-          });
-        });
-      });
-    });
-  });
   
+  // Add Page Asset
+  // ---------------------------------------------  
   this.get('#/pages/:page_id/assets/:id/add', function(request){ 
     this.loadPages(function(){   
       var page_id = request.params['page_id'];  
@@ -415,7 +384,10 @@ Pages = Sammy(function (app) {
       });
     });  
   }); 
-      
+  
+  
+  // Remove Page Asset
+  // ---------------------------------------------   
   this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
     this.loadPages(function(){     
       var id = request.params['id']; 
@@ -443,97 +415,6 @@ Pages = Sammy(function (app) {
       })
     }); 
   });
-  
-  
-  // Edit Parts
-  // ---------------------------------------------
-  this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
-    this.loadPages(function(){     
-      var application = this;
-      jQuery('.modal-editor').remove();
-      var id = request.params['id'];   
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(id);
-      
-      var iframe_content = $('iframe').contents();  
-      var part_editor = iframe_content.find('#editor-' + id);
-      var edit_part = application.render('/templates/admin/parts/edit.mustache', { 
-        part: part.asJSON()
-      }); 
-      logger.info(part_editor.offset());
-      logger.info(iframe_content.find('body').scrollTop());
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
-        });
-      });    
 
-    }); 
-  });
-  
-  // Edit Image Parts
-  // ---------------------------------------------
-  this.get('#/pages/:page_id/image_parts/:id/edit', function(request){ 
-    this.loadPages(function(){     
-      var application = this;
-      jQuery('.modal-editor').remove();
-      var id = request.params['id'];   
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(id);
-      
-      var iframe_content = $('iframe').contents();  
-      var part_editor = iframe_content.find('#editor-' + id);
-      var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
-        part: part.asJSON(),
-        page: page.asJSON()
-      }); 
-
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
-        });
-      });    
-
-    }); 
-  });
-  
-  // Update Parts
-  // ---------------------------------------------
-  this.put('#/pages/:page_id/parts/:id', function(request){
-    var id = request.params['id'];  
-    var page_id =  request.params['page_id'];
-    var page = Page.find(page_id);
-    var part = page.parts().find(id);
-    
-    logger.info(request.params['part']);
-    
-    // Updates part
-    var parts = page.attr('parts'); 
-    var length = parts.length;
-    for (var i=0, l=length; i<l; ++i ){
-      var part = parts[i];
-      if(id == part.id){
-        var content = request.params['part']['content'];
-        part.content = content;
-        var p = Part.find(part.id);
-        p.attr('content', content);
-        p.save();
-      }
-    }
-    
-    // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
-    page.save(function(success, result){
-      if(success){
-        context.modal = false;     
-        // Utilities.notice('Successfully saved page');
-        request.redirect('#/pages/' + page_id);
-      } 
-    });
-    
-  });
 
 });

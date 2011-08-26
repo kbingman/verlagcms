@@ -2,20 +2,9 @@ require 'spec_helper'
  
 describe Page do  
   before(:all) do  
-    @site = Factory(:site) 
-    @second_site = Factory(:site, :name => 'second', :subdomain => 'second')  
-    # @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>')             
-    @layout = @site.templates.first   
-    @layout.content = '<h1>{{page.title}}</h1>'
-    @layout.save
-    @part_type = Factory(:part_type, :name => 'body', :layout_id => @layout.id)
-    @root = @site.root 
-    @child = Factory(:page, 
-      :title => 'Child', 
-      :parent_id => @root.id, 
-      :tag_list => 'tag1, tag2',
-      :layout => @layout, 
-      :site => @site) 
+    teardown
+    build_complete_site
+    @second_site = Factory(:site, :name => 'second', :subdomain => 'second') 
   end  
   
   after(:all) do
@@ -24,18 +13,23 @@ describe Page do
   
   describe 'validations' do
     it 'should create a valid page' do  
-      page = Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id, :title => 'page', :parent_id => @root.id) 
-      # page.valid?  
+      page = Factory.build(:page, :site_id => @site.id, :layout_id => @layout.id, :title => 'new wlwlwhwpage', :slug =>'new-wlwlwhwpage', :parent_id => @root.id) 
       page.should be_valid
     end
     
     it 'should allow a root page with another site_id' do 
-      second_root = Factory(:page, :title => 'root', :site_id => @second_site.id, :layout => @layout)
+      @second_site.root.should be_valid
     end
-   
+    
     it 'should require a site' do
       Factory.build(:page, :site => nil, :layout_id => @layout.id).should_not be_valid
     end 
+    
+    it 'should assign the parent site' do
+      p = Factory.build(:page, :site => nil, :layout_id => @layout.id, :parent => @root)
+      p.valid?
+      p.site.should == @site
+    end
     
     it 'should require a layout' do  
       Factory.build(:page, :site => @site, :layout_id => nil).should_not be_valid
@@ -45,9 +39,9 @@ describe Page do
       Factory.build(:page, :title => '', :site => @site, :layout_id => @layout.id).should_not be_valid
     end   
     
-    it 'should have a unique slug, within its parent' do
-      # @parent = 
-    end 
+    # it 'should have a unique slug, within its parent' do
+    #   # @parent = 
+    # end 
   end
   
   context 'scopes' do
@@ -144,6 +138,7 @@ describe Page do
       end   
       
       it 'should render the page (html)' do
+        pending
         @child.render(:html).should == '<h1>Child</h1>'
       end   
       
@@ -159,24 +154,22 @@ describe Page do
     describe '#parts' do    
       
       it 'should build parts according to its layout' do
-        @root.part_names.should == [@part_type.name]
+        @child.part_names.should == ['body', @part_type.name]
       end   
       
       context 'new parts' do
         before(:all) do
-          @new_part_type = Factory.build(:part_type, :name => 'sidebar', :layout_id => @layout.id) 
+          @new_part_type = Factory.build(:part_type, :name => 'footer', :layout_id => @layout.id) 
           @layout.part_types << @new_part_type
-          # Because part_types are embedded
           @layout.save
         end    
         
         it 'should update all parts' do 
-          # pending
-          @root.save
-          @root.part_names.should == [@part_type.name, @new_part_type.name]
+          @child.save
+          @child.part_names.should == ['body', @part_type.name, @new_part_type.name]
         end
       end
-
+  
     end
     
     describe '#assets' do  
@@ -185,7 +178,7 @@ describe Page do
         @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')) 
         @asset = Factory(:asset, :file => @file, :title => 'Image', :site_id => @site.id) 
         @page = Factory(:page, 
-          :title => 'Child', 
+          :title => 'Assets Page', 
           :parent_id => @root.id, 
           :assets => [@asset],
           :layout => @layout, 

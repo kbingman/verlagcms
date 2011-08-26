@@ -43,6 +43,8 @@ class Page
   
   validates_presence_of :title 
   
+  validates :slug, :uniqueness => { :scope => [:site_id, :parent_id] }
+
   attr_accessible :title, :content, :slug, :parent_id, :layout_id, :parts, :assets_list, :tag_list
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
@@ -204,10 +206,8 @@ class Page
         p.page_id = self.id
       end
     end
-      
-    
+
     def sanitize(text)
-      # text.gsub(/[^a-z0-9-]+/i, '-').downcase
       ActiveSupport::Inflector.parameterize(text, '-')
     end  
     

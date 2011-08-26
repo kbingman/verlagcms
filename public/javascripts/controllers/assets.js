@@ -19,10 +19,10 @@ Assets = Sammy(function (app) {
   this.helpers({  
 
     // Checks for loaded assets, then executes the callback   
-    loadAssets: function(query, callback){  
+    loadAssets: function(params, callback){  
       
       if(Asset.all().length == 0 ){
-        Asset.searchAdmin(query, function(){      
+        Asset.searchAdmin(params, function(){      
           if(callback){ callback.call(this); } 
         });
       } else {        
@@ -39,10 +39,14 @@ Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   this.get('#/assets', function(request){ 
-    var query = request.params['query'] ? request.params['query'] : null;  
+    var query = request.params['query'];
+    var params = query ? { 'query': query } : {};   
+    params['limit'] = 12;
+    params['page'] = request.params['page'] || 1;
+    
     Galerie.close();
     if(!application.modal){
-      Asset.searchAdmin(query, function(){  
+      Asset.searchAdmin(params, function(){  
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
@@ -88,9 +92,10 @@ Assets = Sammy(function (app) {
   // Edit Asset 
   // ---------------------------------------------  
   this.get('#/assets/:id/edit', function(request){
-    var query = request.params['query'] ? request.params['query'] : null;  
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : {};   
     
-    this.loadAssets(query, function(){
+    this.loadAssets(params, function(){
       var asset = Asset.find(request.params['id']); 
       var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
       editAsset.replace('#editor').then(function(results){  
@@ -119,12 +124,13 @@ Assets = Sammy(function (app) {
   
   // Remove Asset
   this.get('#/assets/:id/remove', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null;                            
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : null;                             
 
     Galerie.close();
     Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'})); 
     
-    this.loadAssets(query, function(){ 
+    this.loadAssets(params, function(){ 
       var asset = Asset.find(request.params['id']);  
       
       var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 

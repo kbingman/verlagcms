@@ -8,10 +8,13 @@ feature "Pages", %q{
 } do
 
   before(:all) do
+    teardown
+    build_complete_site 
     setup_site   
-    @layout = Factory(:layout, :site_id => @site.id) 
-    @root = @site.root
-    @child = Factory(:page, :title => 'About', :parent => @root, :site_id => @site.id, :layout_id => @layout.id)
+  end
+  
+  after(:all) do 
+    teardown
   end
   
   after(:each) do 
@@ -19,8 +22,8 @@ feature "Pages", %q{
   end
 
   scenario "view the page index" do
-    # visit '/admin/'
-    visit '/admin/#/pages' 
+    visit '/admin/'
+    click_link 'Pages'
     
     current_path.should == '/admin/'
     current_url.should match(%r(/#/pages$))
@@ -40,20 +43,23 @@ feature "Pages", %q{
   end
   
   scenario "edit the root page" do 
-    visit "/admin/#/pages/#{@root.id}" 
+    visit '/admin/'
+    click_link @root.title
+    # visit "/admin/#/pages/#{@root.id}" 
       
-    screen_shot_and_save_page('pages-show')
     
     page.should have_css('#preview')
     page.should have_css('iframe')
     # click_link("edit-#{@root.id}")   
     # page.should have_content('Title')
+    sleep(0.1)
+    screen_shot_and_save_page('pages-show')
     
   end
   
   scenario "add a page" do 
-    # visit '/admin/' 
-    visit '/admin/#/pages'    
+    visit '/admin/'
+    click_link 'Pages'
   
     click_link "add-child-#{@root.id}"   
     page.should have_content('New Page')     

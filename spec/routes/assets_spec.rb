@@ -4,6 +4,8 @@ describe "routes/admin/assets" do
   include Rack::Test::Methods
   
   before(:all) do    
+    teardown
+    build_complete_site 
     setup_site                   
     @asset = Factory(:asset, :site => @site)   
     @assets = [@asset]

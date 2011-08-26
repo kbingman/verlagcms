@@ -9,6 +9,8 @@ class PartType
   
   liquid_methods :name
   
+  # validates :name, :uniqueness => true
+  
   # def page_id
   #   self.page.id
   # end

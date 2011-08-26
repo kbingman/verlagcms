@@ -3,10 +3,10 @@ require 'spec_helper'
 describe "routes/site" do
   include Rack::Test::Methods   
   
-  before(:all) do
-    setup_site   
-    @layout = Factory(:layout, :site => @site)
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site => @site, :layout => @layout) 
+  before(:all) do  
+    teardown
+    build_complete_site 
+    setup_site
   end
   
   after(:all) do

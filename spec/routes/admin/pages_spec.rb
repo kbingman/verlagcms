@@ -4,12 +4,11 @@ describe "routes/pages" do
   include Rack::Test::Methods
   
   before(:all) do 
-    setup_site  
-    @layout = Factory(:layout, :site_id => @site.id) 
-    @alt_layout = Factory(:layout, :name => 'alt', :site_id => @site.id) 
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)   
-    @child_a = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child A', :layout => @layout) 
-    @child_b = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child B', :layout => @layout) 
+    teardown
+    build_complete_site 
+    setup_site 
+    @child_a = Factory(:page, :parent_id => @page.id, :title => 'Child A', :layout => @layout) 
+    @child_b = Factory(:page, :parent_id => @page.id, :title => 'Child B', :layout => @layout) 
   end 
   
   after(:all) do
@@ -59,7 +58,7 @@ describe "routes/pages" do
       it 'should not include pages from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')  
         @alien_layout = Factory(:layout, :site_id => @alien_site.id, :name => 'alien')
-        @alien_page = Factory(:page, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
+        @alien_page = Factory(:page, :title => 'alien page', :parent => @alien_site.root, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
         do_get 
         last_response.body.should_not include(@alien_page.title)  
       end
@@ -71,7 +70,8 @@ describe "routes/pages" do
         
     context 'json' do   
       def do_post
-        post '/admin/pages.json', :page => { :title => 'The Page', :layout_id => @layout.id }
+        puts @root.id
+        post "/admin/pages/#{@root.id}.json", :page => { :title => 'The Page', :layout_id => @layout.id }
       end
     
       it 'should be successful' do
@@ -156,7 +156,7 @@ describe "routes/pages" do
         
     context 'json' do  
       before(:each) do 
-        @page = Factory(:page, :title => 'killme', :parent_id => nil, :site_id => @site.id, :layout_id => @layout.id) 
+        @page = Factory(:page, :title => 'killme', :parent_id => @root.id, :site_id => @site.id, :layout_id => @layout.id) 
       end    
       
       after(:all) do

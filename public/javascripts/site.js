@@ -3339,8 +3339,8 @@ var Asset = Model('asset', function() {
       });
     },
 
-    searchAdmin: function(query, callback) {
-      var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
+    searchAdmin: function(params, callback) {
+      // var data = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
       Asset.each(function(){ Asset.remove(this); });
       var url = '/admin/assets.json';
       jQuery.ajax({
@@ -3348,7 +3348,7 @@ var Asset = Model('asset', function() {
         url: url,
         contentType: "application/json",
         dataType: "json",
-        data: queryData,
+        data: params,
         success: function(results) {
           $.each(results, function(i, assetData) {
             var asset = new Asset({ id: assetData.id });

@@ -1,8 +1,6 @@
-{{#user}}
-<form action="#/users/{{id}}" method= "post" class="command-save autosave">   
-  <div class="hidden">
-    <input type="hidden" name="_method" value="put" /> 
-  </div>
+<div class="small-modal"> 
+<h1>Create User</h1>
+<form action="#/users" method= "post" class="command-save ">   
   <div class="field">   
     <label for="user_name">Name</label>
     <input type="text" id="user_name" name="user[name]" value="{{name}}" class="textfield" />  
@@ -15,14 +13,9 @@
     <label for="user_email">Password</label>
     <input type="password" id="user_password" name="user[password]" value="{{password}}" class="textfield" />  
   </div>
-  {{#is_admin?}}
-  <div class="field">  
-  Roles go here!
-  </div>
-  {{/is_admin?}}
   <div class="">
     <input type="submit" id="save-user" value="Save" class="button" /> 
     <a href="#/users" class="cancel">Cancel</a> 
   </div>
 </form>  
-{{/user}}
+</div>

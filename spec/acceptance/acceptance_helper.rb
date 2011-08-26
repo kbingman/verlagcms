@@ -14,14 +14,14 @@ require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :selenium
+Capybara.default_driver = :webkit
 Capybara.app = Main
 
 def screen_shot_and_save_page(title)
   require 'capybara/util/save_and_open_page'
   path = "tmp/capybara/#{title}-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
-  Capybara.save_page body, "#{path}.html"
-  # page.driver.render "#{path}.png"
+  # Capybara.save_page body, "#{path}.html"
+  page.driver.render "#{path}.png"
 end
 
 # begin

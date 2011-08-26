@@ -26,10 +26,12 @@ Sites = Sammy(function (app) {
       }
     },
     
-    renderUserIndex: function(){  
+    renderUserIndex: function(callback){  
       var application = this;    
       var userIndex = application.render('/templates/admin/users/index.mustache', User.toMustache());
-      userIndex.replace('#editor');
+      userIndex.replace('#editor').then(function(){
+        if(callback){ callback.call(this); }  
+      });
     }
   });
 
@@ -38,32 +40,65 @@ Sites = Sammy(function (app) {
     context.refresh_pages = true; 
   }); 
   
-  // Site Index
+  // User Index
   // ---------------------------------------------
   this.get('#/users', function(request){ 
     Galerie.close();  
-    jQuery('#editor').html('<h1 class="section">Sites</div>'); 
+    jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
     request.loadUsers(function(){  
       request.renderUserIndex();
     });
   }); 
   
-  // Edit Site
-  // ---------------------------------------------
-  this.get('#/users/:id/edit', function(request){ 
-    Galerie.close();  
-    jQuery('#editor').html('<h1 class="section">Sites</div>'); 
-
-    request.loadUsers(function(){  
-      user = User.find(request.params['id']); 
-      var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
-      editUser.replace('#editor');  
-      // request.renderUserIndex();
+  // New User 
+  // --------------------------------------------- 
+  this.get('#/users/new', function(request){   
+    request.loadUsers(function(){    
+      if (!jQuery('#modal').length){ Galerie.open(); }  
+      var new_user = request.render('/templates/admin/users/new.mustache');
+      new_user.replace('#modal');  
+      request.renderUserIndex();
+    });
+  }); 
+  
+  // Create User
+  // ---------------------------------------------  
+  this.post('#/users', function(request){
+    var attributes = request.params['user'];  
+    var user = new User(request.params['user']);
+    
+    user.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
+        request.redirect('#/users'); 
+      }
     });
   });
   
-  // Update Site
+  // Edit Users
+  // ---------------------------------------------
+  this.get('#/users/:id/edit', function(request){ 
+    request.loadUsers(function(){  
+      user = User.find(request.params['id']); 
+      var users_list = jQuery('#users');
+      if(!users_list.length){
+        request.renderUserIndex(function(){
+          jQuery('.user-form').html('');
+          var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+          editUser.replace('#user-form-' + user.id());
+        });
+      } else {
+        jQuery('.user-form').html('');
+        var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+        editUser.replace('#user-form-' + user.id());
+      } 
+    });
+  });
+  
+  // Update Users
   // ---------------------------------------------
   this.put('#/users/:id', function(request){ 
     var user = User.find(request.params['id'])
@@ -78,6 +113,8 @@ Sites = Sammy(function (app) {
       }
     });
   });
+  
+  
  
   
 });

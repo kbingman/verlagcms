@@ -7,20 +7,22 @@ feature "Assets", %q{
 } do
 
   before(:all) do
-    setup_site   
-    @layout = Factory(:layout, :site_id => @site.id) 
+    teardown
+    build_complete_site 
+    setup_site  
+    # @layout = Factory(:layout, :site_id => @site.id) 
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
     @asset = Factory.build(:asset, :file => @file, :tags => ['Tie'], :site => @site) 
     @asset.save
   end
   
   after(:each) do 
-    screen_shot_and_save_page('assets-index')
+    # screen_shot_and_save_page('assets-index')
   end
   
   scenario "view the assets page" do   
     visit '/admin/'
-    visit '/admin/#/assets'         
+    click_link 'Assets'        
        
     current_path.should == '/admin/'
     current_url.should match(%r(/#/assets$))
@@ -32,7 +34,8 @@ feature "Assets", %q{
   
   scenario "view an image" do 
     visit '/admin/'
-    visit '/admin/#/assets'     
+    click_link 'Assets'     
+       
     current_path.should == '/admin/'
     current_url.should match(%r(/#/assets$))
                                          
@@ -42,12 +45,15 @@ feature "Assets", %q{
     click_link "edit-asset-#{@asset.id}"  
     
     page.should have_css("#image-display-#{@asset.id}")
-    page.should have_css("#image-info-#{@asset.id}")     
+    page.should have_css("#image-info-#{@asset.id}")  
+    
+    sleep(0.5)
+    screen_shot_and_save_page('assets-edit')   
   end
   
   scenario "close an image" do    
     visit '/admin/'
-    visit '/admin/#/assets'
+    click_link 'Assets'     
     click_link "edit-asset-#{@asset.id}"  
     
     click_link "Cancel"
@@ -56,7 +62,7 @@ feature "Assets", %q{
   
   scenario "enter a search term" do 
     visit '/admin/'
-    visit '/admin/#/assets'
+    click_link 'Assets'     
     fill_in 'search-query', :with => "TIE"
     click_button 'Search'      
     
@@ -69,7 +75,7 @@ feature "Assets", %q{
   
   scenario "view an image" do 
     visit '/admin/'
-    visit '/admin/#/assets'
+    click_link 'Assets'     
     fill_in 'search-query', :with => "TIE"
     click_button 'Search'      
   
@@ -88,7 +94,7 @@ feature "Assets", %q{
   
   scenario "remove an image" do 
     visit '/admin/'
-    visit '/admin/#/assets'                                          
+    click_link 'Assets'                                              
     page.should have_content('Assets')
     page.should have_css("li#asset-#{@asset.id}")
     

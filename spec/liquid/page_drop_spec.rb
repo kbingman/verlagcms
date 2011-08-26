@@ -3,11 +3,14 @@ require 'spec_helper'
 describe "lib/data_proxy" do
   
   before(:all) do 
-    @site = Factory(:site)  
-    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>') 
-    @part = Factory.build(:part, :content => 'fibble', :name => 'body')
-    @part2 = Factory.build(:part, :content => 'sidebar', :name => 'sidebar')
-    @page = Factory(:page, :title => 'root', :site => @site, :layout => @layout, :parts => [@part, @part2])
+    teardown
+    build_complete_site
+    # Parts
+    body = @page.parts.detect { |p| p.name == 'body' } 
+    body.content = 'page body' 
+    sidebar = @page.parts.detect { |p| p.name == 'sidebar' }
+    sidebar.content = 'page sidebar'
+    @page.save
   end
   
   after(:all) do
@@ -17,19 +20,19 @@ describe "lib/data_proxy" do
   context 'images' do   
     
     it "should return the title" do
-      @page.data.title.to_liquid.should == 'root'
+      @page.data.title.to_liquid.should == 'Page with Parts'
     end 
     
-    it "should return the title" do
-      @page.data.slug.to_liquid.should == '/'
+    it "should return the slug" do
+      @page.data.slug.to_liquid.should == 'page-with-parts'
     end 
     
     it "should return the body content as a liquid attribute" do
-      @page.data.body.to_liquid.should == '<p>fibble</p>'
+      @page.data.body.to_liquid.should == '<p>page body</p>'
     end   
     
     it "should return the sidebar content as a liquid attribute" do
-      @page.data.sidebar.to_liquid.should == '<p>sidebar</p>'
+      @page.data.sidebar.to_liquid.should == '<p>page sidebar</p>'
     end
     
   end

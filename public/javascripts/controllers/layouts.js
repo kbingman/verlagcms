@@ -5,7 +5,7 @@ Layouts = Sammy(function (app) {
   this.debug = false;
   this.disable_push_state = true;  
   
-  this.use(Sammy.Title);  
+  // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache);
   this.use(Sammy.NestedParams);

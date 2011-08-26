@@ -1,3 +1,32 @@
+require 'acceptance/acceptance_helper'
+
+feature "Site", %q{
+  In order to have a decent CMS
+  As an author
+  I want to actually view a site
+} do
+
+  before(:all) do
+    teardown
+    build_complete_site 
+    setup_site
+  end
+  
+  after(:all) do 
+    teardown
+  end
+
+  scenario "view the home page" do
+    visit '/'
+    current_path.should == '/'
+    page.should have_content(@root.title)
+    page.should have_css('#container')
+    
+    sleep(0.1)
+    screen_shot_and_save_page('site-index')
+  end
+    
+end
 # require File.dirname(__FILE__) + '/acceptance_helper'
 # 
 # feature "Home Page: " do

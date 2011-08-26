@@ -2,23 +2,6 @@
   "bundle_dir": "public/javascripts/",
   "vendor_dir": "public/javascripts/vendor",
   "bundles": { 
-    "site": [ 
-      "vendor/jquery-1.6.1.min", 
-      "vendor/handlebars", 
-      "vendor/sammy", 
-      "vendor/sammy.title",
-      "vendor/sammy.nested_params", 
-      "vendor/modernizr-1.7.min", 
-      "vendor/js-model-0.10.1", 
-      "models/asset",
-      "models/page",
-      "models/part", 
-      "lib/ajax_uploader",
-      "lib/utilities",
-      "lib/view",  
-      "views/asset_list_view", 
-      "lib/site"
-    ],
     "admin": [
       "vendor/jquery-1.6.2.min", 
       "vendor/sammy.min", 
@@ -31,21 +14,26 @@
       "vendor/sinatra-rest",  
       "vendor/codemirror",
       "vendor/jquery.cookie",
+      
       "modes/javascript", 
       "modes/xml",  
       "modes/css",  
       "modes/liquid",  
+      
       "models/asset",
       "models/page",
       "models/layout",  
       "models/part",
       "models/site", 
       "models/user",
+      
       "lib/utilities",  
+      
       "controllers/sites",  
       "controllers/layouts",    
       "controllers/assets",
       "controllers/pages",
+      "controllers/parts",
       "controllers/users",
       "lib/admin"
     ]

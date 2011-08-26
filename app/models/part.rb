@@ -8,6 +8,8 @@ class Part
   key :page_id, ObjectId
   belongs_to :page
   
+  # validates :name, :uniqueness => true
+  
   liquid_methods :name, :content, :render   
   
   def render(edit=false)
@@ -19,14 +21,8 @@ class Part
       r += self.content ? "#{RedCloth.new(self.content).to_html}" : 'Add Content Here'
       r
     else
-      RedCloth.new(self.content).to_html
+      RedCloth.new(self.content).to_html if self.content
     end
-  end
-  
-  
-
-  def image_path
-    self.asset.image_path if self.asset 
   end
   
   def as_json(options)

@@ -47,8 +47,9 @@ module Sinatra
       app.post '/login' do 
         warden.custom_failure!       
         puts params.inspect
-        warden.authenticate(:fibble)
+        warden.authenticate(:password)
         puts current_user
+        @email = params['username']
         
         if warden.authenticated?
           redirect '/admin/'
@@ -62,7 +63,7 @@ module Sinatra
   
   # HACK: blows up on test environment
   unless RACK_ENV == 'test' 
-    Warden::Strategies.add(:fibble) do
+    Warden::Strategies.add(:password) do
       def subdomain
         request.subdomains.join('.')    
       end   

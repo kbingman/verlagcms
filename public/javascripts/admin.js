@@ -4734,8 +4734,8 @@ var Asset = Model('asset', function() {
       });
     },
 
-    searchAdmin: function(query, callback) {
-      var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
+    searchAdmin: function(params, callback) {
+      // var data = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
       Asset.each(function(){ Asset.remove(this); });
       var url = '/admin/assets.json';
       jQuery.ajax({
@@ -4743,7 +4743,7 @@ var Asset = Model('asset', function() {
         url: url,
         contentType: "application/json",
         dataType: "json",
-        data: queryData,
+        data: params,
         success: function(results) {
           $.each(results, function(i, assetData) {
             var asset = new Asset({ id: assetData.id });
@@ -5464,7 +5464,7 @@ Layouts = Sammy(function (app) {
   this.debug = false;
   this.disable_push_state = true;  
   
-  this.use(Sammy.Title);  
+  // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
   this.use(Sammy.Mustache);
   this.use(Sammy.NestedParams);
@@ -5709,10 +5709,10 @@ Assets = Sammy(function (app) {
   this.helpers({  
 
     // Checks for loaded assets, then executes the callback   
-    loadAssets: function(query, callback){  
+    loadAssets: function(params, callback){  
       
       if(Asset.all().length == 0 ){
-        Asset.searchAdmin(query, function(){      
+        Asset.searchAdmin(params, function(){      
           if(callback){ callback.call(this); } 
         });
       } else {        
@@ -5729,10 +5729,14 @@ Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   this.get('#/assets', function(request){ 
-    var query = request.params['query'] ? request.params['query'] : null;  
+    var query = request.params['query'];
+    var params = query ? { 'query': query } : {};   
+    params['limit'] = 12;
+    params['page'] = request.params['page'] || 1;
+    
     Galerie.close();
     if(!application.modal){
-      Asset.searchAdmin(query, function(){  
+      Asset.searchAdmin(params, function(){  
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
@@ -5778,9 +5782,10 @@ Assets = Sammy(function (app) {
   // Edit Asset 
   // ---------------------------------------------  
   this.get('#/assets/:id/edit', function(request){
-    var query = request.params['query'] ? request.params['query'] : null;  
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : {};   
     
-    this.loadAssets(query, function(){
+    this.loadAssets(params, function(){
       var asset = Asset.find(request.params['id']); 
       var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
       editAsset.replace('#editor').then(function(results){  
@@ -5809,12 +5814,13 @@ Assets = Sammy(function (app) {
   
   // Remove Asset
   this.get('#/assets/:id/remove', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null;                            
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : null;                             
 
     Galerie.close();
     Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'})); 
     
-    this.loadAssets(query, function(){ 
+    this.loadAssets(params, function(){ 
       var asset = Asset.find(request.params['id']);  
       
       var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
@@ -6159,6 +6165,8 @@ Pages = Sammy(function (app) {
     });  
   }); 
   
+  // Destroy Page
+  // ---------------------------------------------
   this.del('/pages/:id', function(request){
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
@@ -6171,14 +6179,19 @@ Pages = Sammy(function (app) {
       }
     }); 
   });  
-
+  
+  
+  // Asset Search Results
+  // ---------------------------------------------
   this.get('/pages/:id/results', function(request){ 
     this.loadPages(function(){
       var page_id = request.params['id'];  
       var page = Page.find(page_id);  
-      var query = request.params['query'];  
       
-      Asset.searchAdmin(query, function(){  
+      var query = request.params['query'] ? request.params['query'] : null; 
+      var params = query ? { 'query': query } : {};
+      
+      Asset.searchAdmin(params, function(){  
         Asset.each(function(asset){
           asset.attr('current_page_id', page.id());
           asset.save();
@@ -6189,48 +6202,10 @@ Pages = Sammy(function (app) {
       });
     });
   });   
-  
-  this.get('/pages/:page_id/parts/:id/results', function(request){ 
-    var app = this;
-    this.loadPages(function(){
-      var page = Page.find(request.params['page_id']);
-      var part = Part.find(request.params['id']);
-      var query = request.params['query']; 
-      
-      logger.info(part.id()); 
 
-      Asset.searchAdmin(query, function(){           
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container').then(function(){
-          
-          jQuery('#search-results-container li.asset').each(function(i, el){
-            var link = jQuery(el).find('a');
-            var asset_id = jQuery(el).attr('id').split('-')[1];
-            link.click(function(e){
-              e.preventDefault();
-              // Updates part
-              var parts = page.attr('parts'); 
-              var length = parts.length;
-              for (var i=0, l=length; i<l; ++i ){
-                var p = parts[i];
-                if(part.id() == p.id){
-                  p.asset_id = asset_id;
-                  part.attr('asset_id', asset_id);
-                  part.save();
-                }
-              }
-              page.save(function(success){
-                jQuery('.modal-editor').remove();
-                // Change to sammy method
-                document.location.hash = '#/pages/' + page.id();
-              });
-            });
-          });
-        });
-      });
-    });
-  });
   
+  // Add Page Asset
+  // ---------------------------------------------  
   this.get('#/pages/:page_id/assets/:id/add', function(request){ 
     this.loadPages(function(){   
       var page_id = request.params['page_id'];  
@@ -6265,7 +6240,10 @@ Pages = Sammy(function (app) {
       });
     });  
   }); 
-      
+  
+  
+  // Remove Page Asset
+  // ---------------------------------------------   
   this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
     this.loadPages(function(){     
       var id = request.params['id']; 
@@ -6293,7 +6271,54 @@ Pages = Sammy(function (app) {
       })
     }); 
   });
+
+
+});
+Pages = Sammy(function (app) {   
   
+  var context = this;  
+   
+  this.debug = false;
+  this.disable_push_state = true;
+  
+  // this.use(Sammy.Title);  
+  this.use(Sammy.JSON); 
+  this.use(Sammy.Mustache);
+  this.use(Sammy.NestedParams); 
+  
+  
+  // Helper Methods 
+  // ---------------------------------------------
+  app.helpers({  
+    
+    // Sets add asset links
+    set_asset_links: function(page, part){
+      jQuery('#search-results-container li.asset').each(function(i, el){
+        var link = jQuery(el).find('a');
+        var asset_id = jQuery(el).attr('id').split('-')[1];
+        link.click(function(e){
+          e.preventDefault();
+          // Updates part
+          var parts = page.attr('parts'); 
+          var length = parts.length;
+          for (var i=0, l=length; i<l; ++i ){
+            var p = parts[i];
+            if(part.id() == p.id){
+              p.asset_id = asset_id;
+              part.attr('asset_id', asset_id);
+              part.save();
+            }
+          }
+          page.save(function(success){
+            jQuery('.modal-editor').remove();
+            // Change to sammy method
+            document.location.hash = '#/pages/' + page.id();
+          });
+        });
+      });
+    }
+    
+  });  
   
   // Edit Parts
   // ---------------------------------------------
@@ -6332,23 +6357,48 @@ Pages = Sammy(function (app) {
       var id = request.params['id'];   
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(id);
-      
       var iframe_content = $('iframe').contents();  
       var part_editor = iframe_content.find('#editor-' + id);
-      var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
-        part: part.asJSON(),
-        page: page.asJSON()
-      }); 
-
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
+      
+      Asset.searchAdmin({ 'limit': '5' }, function(){ 
+        //alert(Asset.toMustache().length);
+        var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
+          part: part.asJSON(),
+          page: page.asJSON(), 
+          assets: Asset.asJSON()
+        }); 
+        edit_part.appendTo(jQuery('body')).then(function(){
+          var modal_editor = jQuery('.modal-editor');
+          modal_editor.fadeIn('fast').css({
+            'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
+            'left':  part_editor.offset().left + 400 + 'px'
+          });
+          application.set_asset_links(page, part);
         });
-      });    
-
+         
+        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+        // searchResults.replace('#search-results-container');
+      });  
     }); 
+  });
+  
+  // Add Image Page Parts
+  // ---------------------------------------------
+  this.get('/pages/:page_id/parts/:id/results', function(request){ 
+    var application = this;
+    this.loadPages(function(){
+      var page = Page.find(request.params['page_id']);
+      var part = Part.find(request.params['id']);
+      var query = request.params['query'] ? request.params['query'] : null; 
+      var params = query ? { 'query': query } : {};
+
+      Asset.searchAdmin(params, function(){           
+        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+        searchResults.replace('#search-results-container').then(function(){
+          application.set_asset_links(page, part);
+        });
+      });
+    });
   });
   
   // Update Parts
@@ -6367,6 +6417,7 @@ Pages = Sammy(function (app) {
     for (var i=0, l=length; i<l; ++i ){
       var part = parts[i];
       if(id == part.id){
+        // This needs to be more generalized
         var content = request.params['part']['content'];
         part.content = content;
         var p = Part.find(part.id);
@@ -6415,10 +6466,12 @@ Sites = Sammy(function (app) {
       }
     },
     
-    renderUserIndex: function(){  
+    renderUserIndex: function(callback){  
       var application = this;    
       var userIndex = application.render('/templates/admin/users/index.mustache', User.toMustache());
-      userIndex.replace('#editor');
+      userIndex.replace('#editor').then(function(){
+        if(callback){ callback.call(this); }  
+      });
     }
   });
 
@@ -6427,32 +6480,65 @@ Sites = Sammy(function (app) {
     context.refresh_pages = true; 
   }); 
   
-  // Site Index
+  // User Index
   // ---------------------------------------------
   this.get('#/users', function(request){ 
     Galerie.close();  
-    jQuery('#editor').html('<h1 class="section">Sites</div>'); 
+    jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
     request.loadUsers(function(){  
       request.renderUserIndex();
     });
   }); 
   
-  // Edit Site
-  // ---------------------------------------------
-  this.get('#/users/:id/edit', function(request){ 
-    Galerie.close();  
-    jQuery('#editor').html('<h1 class="section">Sites</div>'); 
-
-    request.loadUsers(function(){  
-      user = User.find(request.params['id']); 
-      var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
-      editUser.replace('#editor');  
-      // request.renderUserIndex();
+  // New User 
+  // --------------------------------------------- 
+  this.get('#/users/new', function(request){   
+    request.loadUsers(function(){    
+      if (!jQuery('#modal').length){ Galerie.open(); }  
+      var new_user = request.render('/templates/admin/users/new.mustache');
+      new_user.replace('#modal');  
+      request.renderUserIndex();
+    });
+  }); 
+  
+  // Create User
+  // ---------------------------------------------  
+  this.post('#/users', function(request){
+    var attributes = request.params['user'];  
+    var user = new User(request.params['user']);
+    
+    user.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
+        request.redirect('#/users'); 
+      }
     });
   });
   
-  // Update Site
+  // Edit Users
+  // ---------------------------------------------
+  this.get('#/users/:id/edit', function(request){ 
+    request.loadUsers(function(){  
+      user = User.find(request.params['id']); 
+      var users_list = jQuery('#users');
+      if(!users_list.length){
+        request.renderUserIndex(function(){
+          jQuery('.user-form').html('');
+          var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+          editUser.replace('#user-form-' + user.id());
+        });
+      } else {
+        jQuery('.user-form').html('');
+        var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+        editUser.replace('#user-form-' + user.id());
+      } 
+    });
+  });
+  
+  // Update Users
   // ---------------------------------------------
   this.put('#/users/:id', function(request){ 
     var user = User.find(request.params['id'])
@@ -6467,12 +6553,14 @@ Sites = Sammy(function (app) {
       }
     });
   });
+  
+  
  
   
 });
 jQuery(document).ready(function () {
   
-  logger.info('Starting!!!')
+  // logger.info('Starting!!!')
   
   var login = jQuery('#login');   
   if(!login.length){
@@ -6480,19 +6568,19 @@ jQuery(document).ready(function () {
   }
 
   // AjaxUploader.initialize('#ajax_uploader');
-  jQuery('#ajax_uploader').attr('multiple','multiple');
-  jQuery('.js-only').show();  
+  // jQuery('#ajax_uploader').attr('multiple','multiple');
+  // jQuery('.js-only').show();  
   
   // Grabs the keyboard shortcuts
   Utilities.keyboard_nav();  
   Utilities.check_browser_version();    
    
   // needs to fire on page load, too
-  var tabs = jQuery('#tabs a'); 
-  tabs.live('click', function(){   
-    tabs.removeClass('active');
-    $(this).addClass('active'); 
-  });
+  // var tabs = jQuery('#tabs a'); 
+  // tabs.live('click', function(){   
+  //   tabs.removeClass('active');
+  //   $(this).addClass('active'); 
+  // });
   
 });
 

@@ -17,6 +17,12 @@ GIT
       plucky (~> 0.3.8)
 
 GIT
+  remote: https://github.com/monkrb/glue.git
+  revision: 8a59f5c27b98399f80e9289530675366ad298b4c
+  specs:
+    monk-glue (0.0.1)
+
+GIT
   remote: https://github.com/nesquena/rabl.git
   revision: c429bdceea69f47b7ca581d196768d7cefe55696
   specs:
@@ -42,11 +48,6 @@ PATH
       capybara (~> 1.0.0beta)
       childprocess (~> 0.2.1)
       multi_json (~> 1.0.3)
-
-PATH
-  remote: vendor/glue
-  specs:
-    monk-glue (0.0.1)
 
 PATH
   remote: vendor/hunt

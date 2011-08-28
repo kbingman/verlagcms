@@ -6,7 +6,7 @@ gem 'tilt', '1.3'
 gem 'sinatra-namespace', :path => 'vendor/sinatra-namespace' #, :git => 'https://github.com/rkh/sinatra-namespace.git' 
 gem 'sinatra-advanced-routes'
 gem 'thin' 
-gem 'monk-glue', :path => 'vendor/glue' # :git => 'https://github.com/monkrb/glue.git'
+gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git' # :path => 'vendor/glue' 
 gem 'rack-cache'
 
 gem 'warden'

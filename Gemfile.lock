@@ -8,6 +8,15 @@ GIT
       wand (~> 0.4)
 
 GIT
+  remote: https://github.com/jnunemaker/mongomapper.git
+  revision: 705aab2173ef04433d432a5d718a3495169e1f73
+  specs:
+    mongo_mapper (0.9.0)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      plucky (~> 0.3.8)
+
+GIT
   remote: https://github.com/nesquena/rabl.git
   revision: c429bdceea69f47b7ca581d196768d7cefe55696
   specs:
@@ -45,14 +54,6 @@ PATH
     hunt (0.3)
       fast-stemmer (~> 1.0)
       mongo_mapper (~> 0.9.0)
-
-PATH
-  remote: vendor/mongomapper
-  specs:
-    mongo_mapper (0.9.0)
-      activemodel (~> 3.0)
-      activesupport (~> 3.0)
-      plucky (~> 0.3.8)
 
 PATH
   remote: vendor/sinatra-namespace

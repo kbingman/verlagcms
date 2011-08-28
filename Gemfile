@@ -13,8 +13,8 @@ gem 'warden'
 gem 'bcrypt-ruby'
 
 # Mongomapper and plugins
-# gem 'mongo_mapper', :git => 'https://github.com/jnunemaker/mongomapper.git'
-gem 'mongo_mapper', :path => 'vendor/mongomapper'
+gem 'mongo_mapper', :git => 'https://github.com/jnunemaker/mongomapper.git'
+# gem 'mongo_mapper', :path => 'vendor/mongomapper'
 gem 'mongo_ext', :require => 'mongo'
 gem 'mongo', '1.3'
 gem 'bson', '1.3'

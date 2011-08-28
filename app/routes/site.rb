@@ -5,8 +5,8 @@ class Main
   # -------------------------------------------  
   template_route = get '/templates/*' do  
     cache_request  
-    name =  params[:splat] 
-    partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
+    name =  params[:splat][0]
+    partial :'layouts/template', :locals => { :template => "/#{name}" }
   end   
 
   # Site admin interface  

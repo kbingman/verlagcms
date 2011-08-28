@@ -84,7 +84,7 @@ Pages = Sammy(function (app) {
       var iframe_content = $('iframe').contents();  
       var part_editor = iframe_content.find('#editor-' + id);
       
-      Asset.searchAdmin({ 'limit': '5' }, function(){ 
+      Asset.searchAdmin({ 'limit': '12' }, function(){ 
         //alert(Asset.toMustache().length);
         var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
           part: part.asJSON(),

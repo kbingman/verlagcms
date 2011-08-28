@@ -39,26 +39,32 @@ describe "routes/site" do
   end  
     
   context 'mustache templates' do
-    it 'should show the asset template' do
-      get '/search' 
+    it 'should set the content headers' do
+      get '/templates/admin/pages/show.mustache' 
       # Very basic way of checking for the mustache template
-      last_response.body.should include("type='mustache'")
+      # last_response.headers.should include("mustache")
     end
     
-    it 'should set the asset template id' do
-      get '/search' 
-      last_response.body.should include("asset-list-template")
-    end
+    # it 'should set the asset template id' do
+    #   get '/templates/admin/pages/show.mustache' 
+    #   last_response.body.should include("asset-list-template")
+    # end
     
-    it 'should include the asset list template' do
-      template = File.open(root_path(File.join('app/views/', 'search', 'asset_list.mustache')))
-      get '/search' 
+    it 'should include the admin/pages show template' do
+      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'show.mustache')))
+      get '/templates/admin/pages/show.mustache' 
       last_response.body.should include(template.read.html_safe)
     end
     
-    it 'should include the asset display template' do
-      template = File.open(root_path(File.join('app/views/', 'search', 'asset_display.mustache')))
-      get '/search' 
+    it 'should include the admin/pages index template' do
+      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'node.mustache')))
+      get '/templates/admin/pages/node.mustache'
+      last_response.body.should include(template.read.html_safe)
+    end
+    
+    it 'should include the admin/pages edit template' do
+      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'edit.mustache')))
+      get '/templates/admin/pages/edit.mustache' 
       last_response.body.should include(template.read.html_safe)
     end
     

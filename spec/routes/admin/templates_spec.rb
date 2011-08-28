@@ -4,8 +4,9 @@ describe "routes/templates" do
   include Rack::Test::Methods
   
   before(:all) do 
+    teardown
+    build_complete_site 
     setup_site
-    @layout = Factory(:layout, :site_id => @site.id)  
   end 
   
   after(:all) do
@@ -48,7 +49,8 @@ describe "routes/templates" do
         
     context 'json' do   
       def do_post
-        post '/admin/templates.json', :template => { :name => 'Template', :klass => 'layout' }
+        @template_name = Faker::Name.first_name
+        post '/admin/templates.json', :template => { :name => @template_name, :klass => 'layout' }
       end
     
       it 'should be successful' do
@@ -63,7 +65,7 @@ describe "routes/templates" do
     
       it 'should include the template in the json' do  
         do_post
-        last_response.body.should include('Template')
+        last_response.body.should include(@template_name)
       end  
       
       it 'should include the class in the json' do  

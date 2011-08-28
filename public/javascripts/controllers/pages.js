@@ -59,10 +59,23 @@ Pages = Sammy(function (app) {
       if(!context.modal){
         var showPage = application.render('/templates/admin/pages/show.mustache', { 
           page: page.asJSON(),
+          layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('#preview iframe'); 
+          jQuery('.toggle-page-editor').click(function(e){
+            e.preventDefault();
+            var page_editor = jQuery('#page-editor');
+            var page_title_input = jQuery('#page-title');
+            if (page_editor.hasClass('open')){
+              page_editor.removeClass('open').animate({'height': '0'}, 300);
+              page_title_input.attr('disabled', 'disabled');
+            } else {
+              page_editor.addClass('open').animate({'height': '200px'}, 300);
+              page_title_input.removeAttr('disabled').focus();
+            }
+          })
           // jQuery('#page-assets .asset').each(function(i, el){
           //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
           // });
@@ -203,7 +216,8 @@ Pages = Sammy(function (app) {
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
-      
+    
+    // Needs to be rewritten  
     Page.create(attributes, function(results, results2){ 
       context.refresh_pages = true;  
       Utilities.notice('Successfully saved page')
@@ -220,7 +234,7 @@ Pages = Sammy(function (app) {
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
-      
+
       if(!context.do_not_refresh){
         if(page) {
           request.renderPagePreview(page); 
@@ -277,6 +291,7 @@ Pages = Sammy(function (app) {
   // Update Page
   // ---------------------------------------------  
   this.put('#/pages/:page_id', function(request){  
+    var application = this;
     var page_id = request.params['page_id'];
     var page = Page.find(page_id);
     
@@ -285,6 +300,8 @@ Pages = Sammy(function (app) {
       if(success){
         context.modal = false;     
         Utilities.notice('Successfully saved page');
+        // application.renderNode(page);
+        request.renderTree(Page.root()); 
         // request.redirect('#/pages/' + page_id + '/edit');
       } 
     });

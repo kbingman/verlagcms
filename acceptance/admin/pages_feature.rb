@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../acceptance_helper'
-require 'acceptance/acceptance_helper'
 
 feature "Pages", %q{
   In order to have a decent CMS

@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/jnunemaker/joint.git
+  revision: 4ecfeaae2c800c5a37d60a1566dfe7f923221055
+  specs:
+    joint (0.6.0)
+      mime-types
+      mongo_mapper (~> 0.9.0)
+      wand (~> 0.4)
+
+GIT
   remote: https://github.com/nesquena/rabl.git
   revision: c429bdceea69f47b7ca581d196768d7cefe55696
   specs:
@@ -36,14 +45,6 @@ PATH
     hunt (0.3)
       fast-stemmer (~> 1.0)
       mongo_mapper (~> 0.9.0)
-
-PATH
-  remote: vendor/joint
-  specs:
-    joint (0.6.0)
-      mime-types
-      mongo_mapper (~> 0.9.0)
-      wand (~> 0.4)
 
 PATH
   remote: vendor/mongomapper
@@ -148,7 +149,6 @@ GEM
       monkey-lib (~> 0.5.0)
       sinatra (~> 1.0)
     subexec (0.1.0)
-    system_timer (1.2.4)
     test-unit (2.3.2)
     thin (1.2.11)
       daemons (>= 1.0.9)
@@ -203,7 +203,6 @@ DEPENDENCIES
   sinatra (= 1.2.6)
   sinatra-advanced-routes
   sinatra-namespace!
-  system_timer
   test-unit
   thin
   thor

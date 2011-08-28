@@ -1,7 +1,7 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 
 require 'rubygems'  
-require "bundler/setup"  
+require 'bundler/setup' 
 
 Bundler.setup
 
@@ -16,11 +16,14 @@ require 'warden'
 require 'bcrypt'
 
 # Sinatra Extensions
-require 'vendor/sinatra-basicauth/lib/sinatra/basic_auth'
-require 'lib/sinatra/respond_to'  
-require 'lib/sinatra/logger' 
-require 'lib/sinatra/images' 
-require 'lib/sinatra/get_subdomain' 
+require './lib/sinatra/basic_auth'
+require './lib/sinatra/respond_to'  
+require './lib/sinatra/logger' 
+require './lib/sinatra/images' 
+require './lib/sinatra/get_subdomain' 
+# Dir[root_path("lib/**/*.rb")].each do |file|
+#   require file
+# end
 
 # Mongo stuff
 require 'mongo_mapper'
@@ -30,11 +33,10 @@ require 'canable'
 
 # Rack
 require 'rack/cache'
-require 'rack/cache' 
 require 'rack/request' 
-require 'lib/rack/raw_upload'
-require 'lib/rack/subdomains'
-require 'lib/hunt/search_all'
+require './lib/rack/raw_upload'
+require './lib/rack/subdomains'
+require './lib/hunt/search_all'
 
 # Templating
 require 'mustache/sinatra'
@@ -50,7 +52,7 @@ class Main < Monk::Glue
   set :sass, { 
     :cache => RACK_ENV == 'development' ? false : true, 
     :cache_location => './tmp/sass-cache',
-    :style => :compact }
+    :style => RACK_ENV == 'development' ? :compact : :compressed }
   set :haml, { 
     :format => :html5, 
     :ugly => RACK_ENV == 'development' ? false : true } 
@@ -65,7 +67,7 @@ class Main < Monk::Glue
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie, :secret => "fibble this must be longer"
-  use Rack::RawUpload  
+  use Rack::RawUpload 
   
   # use Jim::Rack, :bundle_uri => '/js/'
   
@@ -129,8 +131,8 @@ Dir[root_path('app/routes/admin/*.rb')].each do |file|
 end
 
 # Load site and assets route. 
-require 'app/routes/assets.rb'  
-require 'app/routes/site.rb'
+require root_path('app/routes/assets.rb') 
+require root_path('app/routes/site.rb')
   
 # Load all views.
 Dir[root_path('app/views/**/*.rb')].each do |file|

@@ -41,7 +41,7 @@ Assets = Sammy(function (app) {
   this.get('#/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
-    params['limit'] = 24;
+    params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
     
     Galerie.close();
@@ -75,7 +75,7 @@ Assets = Sammy(function (app) {
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
     var params = query ? { 'query': query } : {}; 
-    params['limit'] = 24;
+    params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
@@ -83,7 +83,11 @@ Assets = Sammy(function (app) {
     var counter = 0;
     for(var i = 0; i < files.length; i++) {   
       Asset.create(files[i], function(){  
+        // Progress bar goes here
         counter = counter + 1;
+        logger.info('asset ' + (counter / files.length * 100) + '%');
+        jQuery('.progress').text((counter / files.length * 100) + '%');
+        
         if(counter == files.length){
           Asset.searchAdmin(params, function(){  
             var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));

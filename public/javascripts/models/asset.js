@@ -129,18 +129,18 @@ var Asset = Model('asset', function() {
     },  
     
     onloadstartHandler:function (evt) {
-      // console.log('started')
+      console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
     onloadHandler: function (evt) { 
-      // console.log('success');   
+      console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
     onprogressHandler: function (evt) {
       var percent = evt.loaded / evt.total * 100; 
-      // console.log(percent); 
+      console.log(percent); 
       // $('#upload_progress .bar').width(percent + '%');
     },
     

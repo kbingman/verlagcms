@@ -1,4 +1,4 @@
-require 'acceptance/acceptance_helper'
+require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Site", %q{
   In order to have a decent CMS

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/pages" do
+describe "routes/admin/pages" do
   include Rack::Test::Methods
   
   before(:all) do 
@@ -70,8 +70,8 @@ describe "routes/pages" do
         
     context 'json' do   
       def do_post
-        puts @root.id
-        post "/admin/pages/#{@root.id}.json", :page => { :title => 'The Page', :layout_id => @layout.id }
+        @name = Faker::Name.first_name
+        post "/admin/pages.json", :page => { :title => @name, :layout_id => @layout.id, :parent_id => @root.id }
       end
     
       it 'should be successful' do
@@ -86,7 +86,7 @@ describe "routes/pages" do
     
       it 'should include pages in the json' do  
         do_post
-        last_response.body.should include('The Page')
+        last_response.body.should include(@name)
       end  
     end
     
@@ -123,10 +123,15 @@ describe "routes/pages" do
   end    
   
   context 'PUT update' do  
+    
+    before(:all) do
+      @alt_layout = Factory(:layout, :site_id => @site.id, :name => 'Alt')
+    end
           
     context 'json' do   
       def do_put
-        put "/admin/pages/#{@page.id}.json", :page => { :title => 'New Title', :layout_id => @alt_layout.id  }
+        @new_title = Faker::Name.first_name
+        put "/admin/pages/#{@page.id}.json", :page => { :title => @new_title, :layout_id => @alt_layout.id  }
       end
     
       it 'should be successful' do
@@ -141,7 +146,7 @@ describe "routes/pages" do
       
       it 'should include the new title in the json' do  
         do_put
-        last_response.body.should include('New Title')
+        last_response.body.should include(@new_title)
       end  
       
       it 'should include the new layout in the json' do  

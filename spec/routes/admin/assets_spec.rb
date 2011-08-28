@@ -39,7 +39,7 @@ describe "routes/admin/assets" do
       
       it 'should not include assets from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
-        @alien_asset = Factory(:asset, :site => @alien_site, :title => 'Alien') 
+        @alien_asset = Factory(:asset, :site => @alien_site) 
         do_get 
         last_response.body.should_not include(@alien_asset.to_json) 
       end 

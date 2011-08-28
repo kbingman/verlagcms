@@ -5,6 +5,22 @@ module Sinatra
 
     def self.registered(app)   
       
+      app.get '/images/originals/:id/:filename' do
+        cache_request(3600 * 24) # 24 Hour cache     
+
+        begin
+          asset = Asset.find params[:id]
+          file = asset.file.read
+
+          status 200 
+          content_type(asset.file_type)
+          file
+        rescue BSON::InvalidObjectId
+          status 404 
+          haml :'site/404'
+        end
+      end
+      
       app.get '/images/:size/:id/:filename' do
         cache_request(3600 * 24) # 24 Hour cache  
         

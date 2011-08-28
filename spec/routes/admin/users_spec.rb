@@ -4,6 +4,8 @@ describe "routes/users" do
   include Rack::Test::Methods
   
   before(:all) do 
+    teardown
+    build_complete_site 
     setup_site
     @user = Factory.build(:user, :password => 'secret')
     @user.sites << @site

@@ -14,7 +14,7 @@ class Asset
   
   # before_save :set_title
   
-  key :title, String, :required => { :message => :required }, :unique => true 
+  key :title, String, :required => { :message => :required }
   key :description, String 
   key :tags, Array, :index => true      
   
@@ -37,7 +37,14 @@ class Asset
   
   liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
+  # validates :title, :uniqueness => { :scope => :site_id }
   # validates_presence_of :artist_id # :story_id
+  # validate :ensure_proper_file_size 
+  # def ensure_proper_file_size 
+  #   if file_size? && file_size > 3.megabytes 
+  #     errors.add(:file, 'must be smaller than 3 megabytes') 
+  #   end 
+  # end
   
   scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }

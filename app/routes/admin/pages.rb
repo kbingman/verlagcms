@@ -28,12 +28,14 @@ class Main
         page.site = current_site
         
         if page.save
-          respond_to do |format|
-            format.html { redirect('/pages') }
-            format.json { page.to_json }
-          end 
+          page.to_json 
+          # respond_to do |format|
+          #   format.html { redirect('/pages') }
+          #   format.json { page.to_json }
+          # end 
         else
-          logger.info(page.errors.inspect)
+          puts page.errors.inspect
+          { :errors => page.errors }
         end
       end
       

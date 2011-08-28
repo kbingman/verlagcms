@@ -605,8 +605,6 @@ Model.REST = function(klass, resource, methods) {
     xhr: function(method, url, model, callback) {
       var self = this;
       var data = method == 'GET' ? undefined : this.params(model);
-      console.log(data)
-      console.log(method)
       
       return jQuery.ajax({
         type: method,

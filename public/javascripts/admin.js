@@ -1618,8 +1618,6 @@ Model.REST = function(klass, resource, methods) {
     xhr: function(method, url, model, callback) {
       var self = this;
       var data = method == 'GET' ? undefined : this.params(model);
-      console.log(data)
-      console.log(method)
       
       return jQuery.ajax({
         type: method,
@@ -5731,7 +5729,7 @@ Assets = Sammy(function (app) {
   this.get('#/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
-    params['limit'] = 12;
+    params['limit'] = 48;
     params['page'] = request.params['page'] || 1;
     
     Galerie.close();
@@ -5765,18 +5763,19 @@ Assets = Sammy(function (app) {
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
     var params = query ? { 'query': query } : {}; 
-    params['limit'] = 24;
+    params['limit'] = 48;
     params['page'] = request.params['page'] || 1;
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
     
     var counter = 0;
     for(var i = 0; i < files.length; i++) {   
-      
-      // alert('hey ' + i);
-      // var counter = i;
       Asset.create(files[i], function(){  
+        // Progress bar goes here
         counter = counter + 1;
+        logger.info('asset ' + (counter / files.length * 100) + '%');
+        jQuery('.progress').text((counter / files.length * 100) + '%');
+        
         if(counter == files.length){
           Asset.searchAdmin(params, function(){  
             var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
@@ -6371,7 +6370,7 @@ Pages = Sammy(function (app) {
       var iframe_content = $('iframe').contents();  
       var part_editor = iframe_content.find('#editor-' + id);
       
-      Asset.searchAdmin({ 'limit': '5' }, function(){ 
+      Asset.searchAdmin({ 'limit': '12' }, function(){ 
         //alert(Asset.toMustache().length);
         var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
           part: part.asJSON(),
@@ -6570,7 +6569,7 @@ Sites = Sammy(function (app) {
   
 });
 jQuery(document).ready(function () {
-  
+
   // logger.info('Starting!!!')
   
   var login = jQuery('#login');   

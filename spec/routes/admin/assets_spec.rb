@@ -4,9 +4,10 @@ describe "routes/admin/assets" do
   include Rack::Test::Methods
   
   before(:all) do    
-    setup_site
-    @artist = Factory(:artist, :name => 'Egon')                       
-    @asset = Factory(:asset, :artist => @artist, :site => @site)   
+    teardown
+    build_complete_site 
+    setup_site                   
+    @asset = Factory(:asset, :site_id => @site.id)   
     @assets = [@asset]
   end 
   
@@ -15,24 +16,6 @@ describe "routes/admin/assets" do
   end   
   
   context 'GET index' do
-    
-    # context 'html' do 
-    #   def do_get
-    #     get '/admin/assets'
-    #   end
-    #   
-    #   it 'should be successful' do
-    #     pending 'deprecated' 
-    #     do_get
-    #     last_response.should be_ok
-    #   end
-    #   
-    #   it 'should set the content header to html' do  
-    #     pending 'deprecated' 
-    #     do_get
-    #     last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
-    #   end
-    # end
     
     context 'json' do   
       def do_get
@@ -54,10 +37,9 @@ describe "routes/admin/assets" do
         last_response.body.should include(@asset.to_json)
       end 
       
-      it 'should not include assets from other sites' do  
-        pending 
+      it 'should not include assets from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
-        @alien_asset = Factory(:asset, :site => @alien_site, :title => 'Alien') 
+        @alien_asset = Factory(:asset, :site => @alien_site) 
         do_get 
         last_response.body.should_not include(@alien_asset.to_json) 
       end 
@@ -126,26 +108,35 @@ describe "routes/admin/assets" do
   
   end
   
-  # context 'GET edit' do
-  #   
-  #   context 'html' do 
-  #     def do_get
-  #       get "/admin/assets/#{@asset.id}/edit"
-  #     end
-  #     
-  #     it 'should be successful' do 
-  #       pending 'deprecated' 
-  #       do_get
-  #       last_response.should be_ok
-  #     end
-  #     
-  #     it 'should set the content header to html' do 
-  #       pending 'deprecated'
-  #       do_get
-  #       last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
-  #     end
-  #   end
-  #   
-  # end
+  context 'DELETE destroy' do  
+
+    before(:each) do 
+      @kill_me = Factory(:asset, :title => 'killme', :site_id => @site.id)    
+    end
+
+    context 'json' do    
+      def do_delete
+        delete "/admin/assets/#{@kill_me.id}.json"
+      end
+
+      it 'should be successful' do
+        do_delete
+        last_response.should be_ok
+      end
+
+      it 'should set the content header to json' do
+        do_delete
+        last_response.headers['Content-Type'].should == 'application/json'
+      end 
+
+      it 'should delete the site' do 
+        asset_id = @kill_me.id
+        do_delete
+        Asset.find(asset_id).should be_nil
+      end
+    end
+
+  end
+  
   
 end

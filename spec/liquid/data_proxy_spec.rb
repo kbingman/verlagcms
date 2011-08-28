@@ -3,12 +3,14 @@ require 'spec_helper'
 describe "lib/data_proxy" do
   
   before(:all) do 
-    @site = Factory(:site)  
-    @layout = Factory(:layout, :name => 'Layout', :site => @site, :content => '<h1>{{page.title}}</h1>') 
-    @part = Factory.build(:part, :content => 'fibble', :name => 'body')
-    @part2 = Factory.build(:part, :content => 'sidebar', :name => 'sidebar')
-    @page = Factory(:page, :title => 'root', :site => @site, :layout => @layout, :parts => [@part, @part2])  
-    #  @request = stub!(:params => { :edit => 'true' })
+    teardown
+    build_complete_site
+    # Parts
+    body = @page.parts.detect { |p| p.name == 'body' } 
+    body.content = 'page body' 
+    sidebar = @page.parts.detect { |p| p.name == 'sidebar' }
+    sidebar.content = 'page sidebar'
+    @page.save
   end
   
   after(:all) do
@@ -18,16 +20,17 @@ describe "lib/data_proxy" do
   context 'data' do   
     
     it "should return the part content" do
-      @page.data.body.should == '<p>fibble</p>'
+      @page.data.body.should == '<p>page body</p>'
     end  
     
     it "should return the sidebar content" do
-      @page.data.sidebar.should == '<p>sidebar</p>'
+      @page.data.sidebar.should == '<p>page sidebar</p>'
     end   
     
     it "should return the sidebar content with an edit flag" do   
       pending
-      @page.data.sidebar.should == '<p>sidebar</p>'
+      # @request = stub!(:params => { :edit => 'true' })
+      @page.data.sidebar.should == '<p>page sidebar</p>'
     end
         
   end

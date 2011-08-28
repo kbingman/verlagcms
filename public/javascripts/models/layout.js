@@ -3,45 +3,7 @@ var Layout = Model('template', function() {
    
   // Instance methods
   this.include({  
-    // extract this for general use...
-    saveRemote: function(callback){ 
-      var self = this;  
-      var url = '/admin/templates/' + self.id() + '.json';
-      
-      self.save();
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",
-        data: { 'template': self.attributes },
-        success: function(results) {   
-          if(results.errors){      
-            alert(JSON.stringify(results))
-            if(callback['error']){ callback['error'].call(this); } 
-          } else {
-            self.merge(results);
-            if(callback['success']){ callback['success'].call(this); }
-          }
-        }
-      }); 
-    },
-    
-    deleteRemote: function(callback){
-      var self = this;
-      var url = '/admin/templates/' + self.id()  + '.json';   
-      
-      jQuery.ajax({
-        type: 'DELETE',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",                   
-        success: function(results) {    
-          Layout.remove(self);    
-          callback.call(this);    
-        }
-      });
-    }
+
   }), 
   
   // Class methods
@@ -82,49 +44,6 @@ var Layout = Model('template', function() {
     asJSON_by_class: function(klass){
       return this.find_all_by_class(function(){
         return klass.map(function(item){ return item.attributes });
-      });
-    },
-    
-    // load: function(callback) {
-    //   Layout.each(function(){ Layout.remove(this); });  
-    //   var url = '/admin/templates.json';  
-    //   
-    //   jQuery.ajax({
-    //     type: 'get',
-    //     url: url,
-    //     contentType: "application/json",
-    //     dataType: "json",  
-    //     success: function(results) {  
-    //       jQuery.each(results, function(i, results) {
-    //         var page = new Layout({ id: results.id });
-    //         page.merge(results);
-    //         Layout.add(page);
-    //       });
-    //       if(callback){ callback.call(this); }
-    //     }
-    //   });
-    //   
-    // },  
-    
-    create: function(attributes, callback){
-      var url = '/admin/templates.json';
-      jQuery.ajax({
-        type: 'post',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",
-        data: { template: attributes },
-        success: function(results) { 
-          console.log(results)  
-          if(results.errors){
-            if(callback['error']){ callback['error'].call(this); } 
-          }else{
-            var layout = new Layout({ id: results.id });
-            layout.merge(results);
-            Layout.add(layout);
-            if(callback['success']){ callback['success'].call(this); }   
-          }   
-        }
       });
     }
 

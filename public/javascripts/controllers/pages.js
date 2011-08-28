@@ -54,15 +54,34 @@ Pages = Sammy(function (app) {
       });       
     }, 
     
-    renderPagePreview: function(page){
+    renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
         var showPage = application.render('/templates/admin/pages/show.mustache', { 
           page: page.asJSON(),
-          page_id: page.id()
+          layouts: Layout.asLayoutJSON(page.attr('layout_id')),
+          base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
-          iFramer.initialize('#preview iframe'); 
+          iFramer.initialize('#preview iframe', function(){
+            if(callback){ callback.call(this); } 
+          }); 
+          jQuery('.toggle-page-editor').click(function(e){
+            e.preventDefault();
+            var page_editor = jQuery('#page-editor');
+            var page_title_input = jQuery('#page-title');
+            if (page_editor.hasClass('open')){
+              page_editor.removeClass('open').animate({'height': '0'}, 300);
+              page_title_input.attr('disabled', 'disabled');
+            } else {
+              page_editor.addClass('open').animate({'height': '200px'}, 300);
+              page_title_input.removeAttr('disabled').focus();
+            }
+          });
+         
+          // jQuery('#page-assets .asset').each(function(i, el){
+          //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
+          // });
         });
       }
     }, 
@@ -74,7 +93,10 @@ Pages = Sammy(function (app) {
         layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
       });  
       editPage.replace('#editor').then(function(){
-        TabControl.initialize('.tab');
+        // TabControl.initialize('.tab'); 
+        // jQuery('#page-assets .asset').each(function(i, el){
+        //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
+        // })
       });
     }
     
@@ -103,7 +125,7 @@ Pages = Sammy(function (app) {
       var page = Page.find(page_id)  
 
       var active_page_cookie = jQuery.cookie('active_page_ids');
-      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : []  
+      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
 
       if(!parent.hasClass('open')){
         active_page_ids.push(page_id);
@@ -159,14 +181,15 @@ Pages = Sammy(function (app) {
 
   // Page routes
   // ---------------------------------------------  
-  this.get('#/pages', function(request){ 
-    
+  this.get('#/pages/?', function(request){ 
+  
     Galerie.close();    
     // context.refresh_pages = true; 
 
     if(context.refresh_pages){
       request.loadPages(function(){
         request.renderTree(Page.root());  
+        logger.info('pages')
       });   
     } 
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
@@ -174,7 +197,7 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;              
   });
   
-  this.get('#/pages/:id/new', function(request){    
+  this.get('#/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
@@ -196,7 +219,8 @@ Pages = Sammy(function (app) {
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
-      
+    
+    // Needs to be rewritten  
     Page.create(attributes, function(results, results2){ 
       context.refresh_pages = true;  
       Utilities.notice('Successfully saved page')
@@ -204,12 +228,16 @@ Pages = Sammy(function (app) {
     }); 
   }); 
   
-  this.get('#/pages/:id', function(request){ 
+  // Show Page
+  // ---------------------------------------------
+  this.get('#/pages/:id/?', function(request){ 
+    logger.info('pages show')
     Galerie.close(); 
+    jQuery('.modal-editor').remove();
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
-      
+
       if(!context.do_not_refresh){
         if(page) {
           request.renderPagePreview(page); 
@@ -231,53 +259,59 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;    
   });
   
-  this.get('#/pages/:id/edit', function(request){  
+  // Edit Page
+  // ---------------------------------------------
+  this.get('#/pages/:id/edit/?', function(request){  
     // alert('Soon you will be able to edit a page here!');
     // request.redirect('#/pages/' + request.params['id'])
     Galerie.close();  
     context.modal = true;  
-    
-    // window.top.trigger.css({'border':'1px solid red'});
-    
+
     this.loadPages(function(){  
       var page_id = request.params['id'];
       var page = Page.find(page_id); 
-      
-      if(page) {
-        request.renderPage(page); 
-      } else {  
-        // Loads page if the current collection does not contain it
-        page = new Page({ id: page_id });
-        page.load(function(){
+      if(!context.do_not_refresh){     
+        if(page) {
           request.renderPage(page); 
-        });
-      } 
-      
-      if(context.refresh_pages){
-        request.renderTree(Page.root());
-        context.refresh_pages = false;  
+        } else {  
+          // Loads page if the current collection does not contain it
+          page = new Page({ id: page_id });
+          page.load(function(){
+            request.renderPage(page); 
+          });
+        } 
+        
+        if(context.refresh_pages){
+          request.renderTree(Page.root());
+          context.refresh_pages = false;  
+        }
       }
-    });        
-  });   
-  
-  this.put('#/pages/:page_id', function(request){  
-    var page_id = request.params['page_id'],
-      page = Page.find(page_id)
-    // This is a hack, but otherwise the params get screwed up
-    var form = $('#edit-page');
+    }); 
+    context.do_not_refresh = false;       
+  }); 
     
-    page.attr(request.params['page']);   
-    page.saveRemote(form.serialize(), {
-      success: function(){ 
-        // request.renderTree(Page.root());  
+  
+  // Update Page
+  // ---------------------------------------------  
+  this.put('#/pages/:page_id', function(request){  
+    var application = this;
+    var page_id = request.params['page_id'];
+    var page = Page.find(page_id);
+    
+    page.attr(request.params['page']);  
+    page.save(function(success, result){
+      if(success){
         context.modal = false;     
         Utilities.notice('Successfully saved page');
-        
-        request.redirect('#/pages/' + page_id + '/edit');
-      }
-    });  
+        // application.renderNode(page);
+        request.renderTree(Page.root()); 
+        // request.redirect('#/pages/' + page_id + '/edit');
+      } 
+    });
   });
   
+  // Remove Page
+  // ---------------------------------------------
   this.get('#/pages/:id/remove', function(request){   
     this.loadPages(function(){   
       var page_id = request.params['id'];
@@ -295,38 +329,33 @@ Pages = Sammy(function (app) {
     });  
   }); 
   
+  // Destroy Page
+  // ---------------------------------------------
   this.del('/pages/:id', function(request){
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
       
-    page.deleteRemote(function(){ 
-      jQuery('#page-' + page_id).remove();
-      context.refresh_pages = false;
-      request.redirect('#/pages');
+    page.destroy(function(success){  
+      if(success){
+        jQuery('#page-' + page_id).remove();
+        context.refresh_pages = false;
+        request.redirect('#/pages');
+      }
     }); 
   });  
   
-  // Page assets browser    
-  // --------------------------------------------- 
-  // this.get('#/pages/:id/search', function(request){
-  //   this.loadPages(function(){     
-  //     var page = Page.find(request.params['id']); 
-  //     
-  //     if($('#modal').length == 0){ Galerie.open(function(){
-  //       var searchForm = request.render('/templates/admin/pages/search_form.mustache', { page: page.asJSON() });    
-  //       searchForm.replace('#modal');
-  //     }); }  
-  // 
-  //   });
-  // });  
-
+  
+  // Asset Search Results
+  // ---------------------------------------------
   this.get('/pages/:id/results', function(request){ 
     this.loadPages(function(){
       var page_id = request.params['id'];  
       var page = Page.find(page_id);  
-      var query = request.params['query'];  
       
-      Asset.searchAdmin(query, function(){  
+      var query = request.params['query'] ? request.params['query'] : null; 
+      var params = query ? { 'query': query } : {};
+      
+      Asset.searchAdmin(params, function(){  
         Asset.each(function(asset){
           asset.attr('current_page_id', page.id());
           asset.save();
@@ -337,7 +366,10 @@ Pages = Sammy(function (app) {
       });
     });
   });   
+
   
+  // Add Page Asset
+  // ---------------------------------------------  
   this.get('#/pages/:page_id/assets/:id/add', function(request){ 
     this.loadPages(function(){   
       var page_id = request.params['page_id'];  
@@ -348,14 +380,7 @@ Pages = Sammy(function (app) {
       var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
       
       page_asset_input.attr('value', new_asset_ids_list);
-       
-      // page.attr('assets_list', assets_list);
-      // page.save(function(success){
-      //   if(success){
-      //     alert('hey');
-      //     request.redirect('#/pages/' + page_id);
-      //   }
-      // });
+      // page.attr('assets_list', new_asset_ids_list);
       
       page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
         success: function(){ 
@@ -369,14 +394,20 @@ Pages = Sammy(function (app) {
           
           jQuery('#page-assets').append(image_div); 
           var preview = jQuery('#preview iframe');
-          preview.attr('src', preview.attr('src'));
+          preview.hide().attr('src', preview.attr('src'));
+          preview.load(function(){
+            preview.fadeIn('fast')
+          })
           context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id + '/edit');  
+          request.redirect('#/pages/' + page_id);  
         }
       });
     });  
   }); 
-      
+  
+  
+  // Remove Page Asset
+  // ---------------------------------------------   
   this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
     this.loadPages(function(){     
       var id = request.params['id']; 
@@ -389,19 +420,21 @@ Pages = Sammy(function (app) {
       if(idx!=-1) asset_ids_list.splice(idx, 1);  
 
       page_asset_input.attr('value', asset_ids_list);  
-      
-      page.saveRemote({ page: { assets_list: asset_ids_list.join(',') }}, {
-        success: function(){  
-          jQuery('#page-asset-' + id).fadeOut('fast', function(){
-            $(this).remove();
-          }); 
-          var preview = jQuery('#preview iframe');
-          preview.attr('src', preview.attr('src'));
-          context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id + '/edit');  
-        }
-      });
+      page.attr('assets_list', asset_ids_list.join(','));
+      page.save(function(){
+        jQuery('#page-asset-' + id).fadeOut('fast', function(){
+          $(this).remove();
+        }); 
+        var preview = jQuery('#preview iframe');
+        preview.hide().attr('src', preview.attr('src'));
+        preview.load(function(){
+          preview.fadeIn('fast')
+        })
+        context.do_not_refresh = true;
+        request.redirect('#/pages/' + page_id);
+      })
     }); 
   });
+
 
 });

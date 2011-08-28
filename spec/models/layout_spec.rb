@@ -2,7 +2,10 @@ require 'spec_helper'
  
 describe Layout do  
   before(:all) do  
+    teardown
     @site = Factory(:site)
+    @layout = Factory(:layout, :name => 'first layout', :site => @site)
+    @second_site = Factory(:site)
   end  
   
   after(:all) do
@@ -17,19 +20,28 @@ describe Layout do
     end
    
     it "should require a site" do
-      Factory.build(:layout, :name => 'Layout', :site => nil).should_not be_valid
+      l = Factory.build(:layout, :name => 'Layout', :site => nil)
+      l.should_not be_valid
     end
     
-    it "should require a title" do
+    it "should require a name" do
       l = Factory.build(:layout, :name => '')
       l.site = @site
       l.should_not be_valid
-    end      
+    end   
+    
+    it "should require a unique name" do
+      l2 = Factory.build(:layout, :name => 'first layout', :site => @site)
+      l2.should_not be_valid
+    end   
+    
+    it "should not require a unique name in a different site" do    
+      l2 = Factory.build(:layout, :name => 'first layout', :site => @second_site)
+      l2.should be_valid
+    end
     
     it "should create a default part type" do
-      l = Factory.build(:layout, :name => 'Layout')
-      l.site = @site   
-      l.save         
+      l = Factory(:layout, :name => 'Layout', :site => @site)       
       l.part_types.should_not be_nil
     end
   end  

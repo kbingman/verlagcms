@@ -1,0 +1,21 @@
+<div id="users">
+  <h1>Users</h1> 
+  <ul>
+  {{#users}} 
+    <li class="site" id="user-{{id}}"> 
+      <div class="item"> 
+        <span class="name"> 
+           {{name}}        
+        </span> 
+        <span class="email"> 
+           {{#role}}{{name}}{{/role}}       
+        </span>
+        <span class="modify">                 
+          <a class="edit-user" id="edit-user-{{id}}" href="#/users/{{id}}/edit">edit</a> 
+        </span>  
+      </div>
+      <div class="user-form" id="user-form-{{id}}"></div>
+    </li>  
+  {{/users}}  
+  </ul>
+</div>

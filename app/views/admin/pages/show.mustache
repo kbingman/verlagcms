@@ -1,57 +1,43 @@
-{{#page}}   
-<div id="preview" >
-  <iframe src="/preview{{path}}?edit=true"></iframe>
-</div>    
+{{#page}}  
 
-<div id="page-files">
-  <div id="page-assets">
-    <h2>Assets</h2>  
-    {{#assets}} 
-      <div class="asset" id="page-asset-{{id}}">
-        <a href="#/assets/{{id}}/edit{{query_path}}">
-          <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
-        </a> 
-        <br />
-        <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
-      </div>
-    {{/assets}}
-  </div>     
-{{/page}}
-{{#assets}}        
-  <h2>Recent Assets</h2>
-  <ul>
-    <li id="asset-{{id}}">
-      <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
-        <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
-      </a>  
-    </li>
-  </ul> 
-{{/assets}}     
-{{#page}} 
-  <form action="#/pages/{{id}}" method="post" id="edit-page">  
+<div id="preview">
+  <div class="loader">LOADING</div>
+  <iframe src="/preview{{path}}?edit=true">LOADING</iframe>
+</div>   
+<div id="page-editor">
+  <form action="#/pages/{{id}}" method= "post" id="edit-page" class="command-save autosave">  
     <div class="hidden">
-      <input type="hidden" name="_method" value="put" />            
+      <input type="hidden" name="_method" value="put" /> 
       <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+    </div> 
+    <div class="field" id="page-title-field">   
+      <label for='page_title'>Title</label> 
+      <input type="text" id="page-title" name="page[title]" value="{{title}}" class="textfield" disabled="disabled" />  
+      <a class="toggle-page-editor" href="#">Edit Page Properties</a>
+    </div> 
+
+    <div id="extra-info">
+      <div class="field"> 
+        <label for="page-slug">Slug</label>
+        <input type="text" id="page-slug" name="page[slug]" value="{{slug}}" class="textfield" />  
+      </div>   
+      <div class="field">
+        <label for='page_tags'>Tags</label> 
+        <input type='text' name='page[tag_list]' id='page-tag-list' value="{{tag_list}}" class='textfield' /> 
+      </div>
+      <div class="select-boxes">
+        <label for='page_layout'>Layout</label> 
+        <select id="page-layout" class="select" name="page[layout_id]"> 
+          {{#layouts}}
+          <option value="{{id}}" {{selected}}>{{name}}</option>
+          {{/layouts}}
+        </select>  
+      </div
+    </div> 
+    <div class="">
+      <input type="submit" id="page_save" value="Save" class="button" />   
+      <a class="toggle-page-editor" href="#/pages/{{id}}">Cancel</a>
     </div>
   </form>
-       
-  <form action='#/pages/{{id}}/results' id='search-form' method='get'>
-    <div class='field'>
-      <input class='textfield' id='search-query' name='query' type='text'>
-      <input class='button' type='submit' value='Search'>
-    </div>
-  </form> 
-     
-  <form action='#/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-    <div class='field'>
-      <label for='ajax_uploader'></label>
-      <input id='ajax_uploader' name='file' type='file'>
-    </div>
-    <div class='buttons_'>
-      <input type='submit'>
-    </div>
-  </form>  
-           
-  <div id="search-results-container"><div>
-</div>
+</div> 
 {{/page}}

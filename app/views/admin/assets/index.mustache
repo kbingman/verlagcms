@@ -5,21 +5,22 @@
       <div class='field'>
         <label for='ajax_uploader'></label>
         <input id='search-query' name='query' type='text' value="{{query}}"/>
-        <input type='submit'>
+        <input type='submit' value='Search'>
       </div>
     </form>    
   </div>
   
   <div class='buttons'>
-  <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-    <div class='field'>
-      <label for='ajax_uploader'></label>
-      <input id='ajax_uploader' name='file' type='file' />
-    </div>
-    <div>
-      <input type='submit'>
-    </div>
-  </form> 
+    <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+      <div class='field'>
+        <label for='ajax_uploader'></label>
+        <input id='ajax_uploader' name='file' type='file' />
+      </div>
+      <div>
+        <input type='submit'>
+      </div>
+    </form> 
+    <div class="progress"></div>
   </div>
 
   <ul id="assets">

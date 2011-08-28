@@ -1,15 +1,14 @@
 require 'spec_helper'
 
-describe "routes/assets" do
+describe "routes/admin/pages" do
   include Rack::Test::Methods
   
-  before(:all) do
-    teardown   
-    setup_site  
-    @layout = Factory(:layout, :site_id => @site.id) 
-    @page = Factory(:page, :title => 'root', :parent_id => nil, :site_id => @site.id, :layout => @layout)   
-    @child_a = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child A', :layout => @layout) 
-    @child_b = Factory(:page, :parent_id => @page.id, :site_id => @site.id, :title => 'Child B', :layout => @layout) 
+  before(:all) do 
+    teardown
+    build_complete_site 
+    setup_site 
+    @child_a = Factory(:page, :parent_id => @page.id, :title => 'Child A', :layout => @layout) 
+    @child_b = Factory(:page, :parent_id => @page.id, :title => 'Child B', :layout => @layout) 
   end 
   
   after(:all) do
@@ -18,23 +17,23 @@ describe "routes/assets" do
   
   context 'GET index' do
     
-    context 'html' do 
-      def do_get
-        get '/admin/pages'
-      end
-      
-      it 'should be successful' do 
-        pending 'deprecated'
-        do_get
-        last_response.should be_ok
-      end
-      
-      it 'should set the content header to html' do
-        pending 'deprecated'
-        do_get
-        last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
-      end 
-    end
+    # context 'html' do 
+    #   def do_get
+    #     get '/admin/pages'
+    #   end
+    #   
+    #   it 'should be successful' do 
+    #     pending 'deprecated'
+    #     do_get
+    #     last_response.should be_ok
+    #   end
+    #   
+    #   it 'should set the content header to html' do
+    #     pending 'deprecated'
+    #     do_get
+    #     last_response.headers['Content-Type'].should == 'text/html;charset=utf-8'
+    #   end 
+    # end
     
     context 'json' do   
       def do_get
@@ -59,7 +58,7 @@ describe "routes/assets" do
       it 'should not include pages from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')  
         @alien_layout = Factory(:layout, :site_id => @alien_site.id, :name => 'alien')
-        @alien_page = Factory(:page, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
+        @alien_page = Factory(:page, :title => 'alien page', :parent => @alien_site.root, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
         do_get 
         last_response.body.should_not include(@alien_page.title)  
       end
@@ -71,7 +70,8 @@ describe "routes/assets" do
         
     context 'json' do   
       def do_post
-        post '/admin/pages.json', :page => { :title => 'The Page', :layout_id => @layout.id }
+        @name = Faker::Name.first_name
+        post "/admin/pages.json", :page => { :title => @name, :layout_id => @layout.id, :parent_id => @root.id }
       end
     
       it 'should be successful' do
@@ -86,7 +86,7 @@ describe "routes/assets" do
     
       it 'should include pages in the json' do  
         do_post
-        last_response.body.should include('The Page')
+        last_response.body.should include(@name)
       end  
     end
     
@@ -123,10 +123,15 @@ describe "routes/assets" do
   end    
   
   context 'PUT update' do  
+    
+    before(:all) do
+      @alt_layout = Factory(:layout, :site_id => @site.id, :name => 'Alt')
+    end
           
     context 'json' do   
       def do_put
-        put "/admin/pages/#{@page.id}.json", :page => { :title => 'New Title' }
+        @new_title = Faker::Name.first_name
+        put "/admin/pages/#{@page.id}.json", :page => { :title => @new_title, :layout_id => @alt_layout.id  }
       end
     
       it 'should be successful' do
@@ -141,8 +146,13 @@ describe "routes/assets" do
       
       it 'should include the new title in the json' do  
         do_put
-        last_response.body.should include('New Title')
+        last_response.body.should include(@new_title)
       end  
+      
+      it 'should include the new layout in the json' do  
+        do_put
+        last_response.body.should include(@alt_layout.id)
+      end
     end
 
   end
@@ -151,7 +161,7 @@ describe "routes/assets" do
         
     context 'json' do  
       before(:each) do 
-        @page = Factory(:page, :title => 'killme', :parent_id => nil, :site_id => @site.id, :layout_id => @layout.id) 
+        @page = Factory(:page, :title => 'killme', :parent_id => @root.id, :site_id => @site.id, :layout_id => @layout.id) 
       end    
       
       after(:all) do
@@ -177,7 +187,7 @@ describe "routes/assets" do
         last_response.body.should_not include(@page.title)
       end  
       
-      it 'should delete the template' do 
+      it 'should delete the page' do 
         page_id = @page.id
         do_delete
         Page.find(page_id).should be_nil

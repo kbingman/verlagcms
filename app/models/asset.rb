@@ -3,6 +3,7 @@ require 'mini_magick'
 class Asset
   
   include MongoMapper::Document
+  include Canable::Ables
   
   plugin Joint # add the plugin
   attachment :file # declare an attachment named file
@@ -13,13 +14,13 @@ class Asset
   
   # before_save :set_title
   
-  key :title, String, :required => { :message => :required }, :unique => true 
+  key :title, String, :required => { :message => :required }
   key :description, String 
   key :tags, Array, :index => true      
   
   key :site_id, ObjectId, :required => true
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) }
+  scope :by_site, lambda { |site| where(:site_id => site.id) }
 
   # key :story_id, ObjectId
   # belongs_to :story, :foreign_key => :story_id
@@ -36,7 +37,14 @@ class Asset
   
   liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
+  # validates :title, :uniqueness => { :scope => :site_id }
   # validates_presence_of :artist_id # :story_id
+  # validate :ensure_proper_file_size 
+  # def ensure_proper_file_size 
+  #   if file_size? && file_size > 3.megabytes 
+  #     errors.add(:file, 'must be smaller than 3 megabytes') 
+  #   end 
+  # end
   
   scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
@@ -47,7 +55,7 @@ class Asset
   #                                                               {:tags => /#{query}/i}] }) }                                                        
   
   def self.per_page
-    48
+    24
   end
   
   def self.search_with_artist(query)

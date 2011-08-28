@@ -3,8 +3,8 @@
   
   %form{ :action => '/login', :method => 'post' }
     .field
-      %label Username
-      %input{ :type => 'text', :name => 'username' }
+      %label Email
+      %input{ :type => 'text', :name => 'username', :value => @email }
     .field    
       %label Password
       %input{ :type => 'password', :name => 'password' }  

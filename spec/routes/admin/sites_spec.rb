@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-describe "routes/templates" do
+describe "routes/admin/sites" do
   include Rack::Test::Methods
+  before(:all) do 
+    teardown
+    build_complete_site 
+    setup_site
+  end
+    
+  after(:all) do
+    teardown
+  end
     
   context 'GET index' do  
-    
-    before(:all) do 
-      setup_site
-      @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')  
-    end 
 
-    after(:all) do
-      teardown
-    end
-    
     context 'json' do   
       def do_get
         get '/admin/sites.json'
@@ -40,16 +40,13 @@ describe "routes/templates" do
   context 'POST create' do  
     
     before(:all) do 
-      setup_site  
-    end
-    
-    after(:each) do
-      teardown
+      
     end
         
     context 'json' do   
       def do_post
-        post '/admin/sites.json', :site => { :name => 'More Awesomeness', :subdomain => 'moreawesome' }
+        @site_name = Faker::Name.first_name
+        post '/admin/sites.json', :site => { :name => @site_name }
       end
     
       it 'should be successful' do
@@ -64,7 +61,7 @@ describe "routes/templates" do
     
       it 'should include the name in the json' do  
         do_post
-        last_response.body.should include('More Awesomeness')
+        last_response.body.should include(@site_name)
       end  
     end
     
@@ -73,17 +70,12 @@ describe "routes/templates" do
   context 'PUT update' do  
     
     before(:all) do 
-      setup_site
-      @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')  
+      @new_name = Faker::Name.first_name
     end 
-    
-    after(:all) do
-      teardown
-    end   
         
     context 'json' do   
       def do_put
-        put "/admin/sites/#{@site.id}.json", :site => { :name => 'Really Awesome Site' }
+        put "/admin/sites/#{@site.id}.json", :site => { :name => @new_name }
       end
     
       it 'should be successful' do
@@ -98,7 +90,7 @@ describe "routes/templates" do
       
       it 'should include pages in the json' do  
         do_put
-        last_response.body.should include('Really Awesome Site')
+        last_response.body.should include(@new_name)
       end  
     end
   
@@ -108,6 +100,8 @@ describe "routes/templates" do
     
     before(:each) do 
       @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')    
+      @current_user.sites << @site
+      @current_user.save
     end
         
     context 'json' do    

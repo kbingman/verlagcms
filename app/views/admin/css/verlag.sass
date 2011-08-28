@@ -12,6 +12,11 @@
   :-moz-border-radius $radius
   :border-radius $radius   
   
+=box-shadow($radius: 15px, $color: #888)
+  :-webkit-box-shadow 0 0 $radius $color
+  :-moz-box-shadow 0 0 $radius $color
+  :box-shadow 0 0 $radius $color
+  
 =positionable
   :position absolute
   :display block   
@@ -32,9 +37,17 @@ $fonts: "Helvetica Neue", "Helvetica", sans-serif
 @import '_modal.sass'
 @import '_uploader.sass' 
 @import '_tables.sass' 
-@import '_preview.sass'
+@import '_page_preview.sass'
 @import '_page_editor.sass'
 @import '_editor.sass'
+@import '_modal_editor.sass'
+
+// Code Mirror Files
+// SCSS will import plain css, useful for libraries and plugins...
+@import '_codemirror.scss'
+@import '_javascript.scss'
+@import '_css.scss'
+@import '_xml.scss'
 
     
 

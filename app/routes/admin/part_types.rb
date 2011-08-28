@@ -3,7 +3,7 @@ class Main
   module Admin 
     module Templates
 
-      # Create Page Part 
+      # Create Page Type 
       # -------------------------------------------
       post '/:id/parts' do
         template = Template.find(params[:id])

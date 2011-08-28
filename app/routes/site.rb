@@ -1,16 +1,24 @@
-class Main    
+class Main   
+  include Canable::Enforcers 
   
-  # Admin Mustache Templates   
+  # Admin Mustache Templates 
+  # -------------------------------------------  
   template_route = get '/templates/*' do  
     cache_request  
-    name =  params[:splat] 
-    partial :'layouts/template', :locals => { :template => "/#{params[:splat]}" }
+    name =  params[:splat][0]
+    partial :'layouts/template', :locals => { :template => "/#{name}" }
   end   
 
-  # Site admin interface    
+  # Site admin interface  
+  # -------------------------------------------  
   module Admin    
     before do
-      authorize!  
+      authenticate! unless request.path.match(/^\/admin\/css\//)
+  
+      # Redirects if no site is found
+      # unless current_site   
+      #   redirect '/admin/' 
+      # end 
     end  
     
     # Redirects to '/admin/' so that the page hash looks pretty     
@@ -24,9 +32,10 @@ class Main
   end
   
   # CSS Templates 
+  # -------------------------------------------
   css_route = get '/css/:name' do 
     name = "#{params[:name]}.#{format.to_s}"
-    css = Stylesheet.by_site(current_site.id).find_by_name(name)  
+    css = Stylesheet.by_site(current_site).find_by_name(name)  
     if css    
       css.render 
     else
@@ -35,9 +44,10 @@ class Main
   end 
   
   # Javascript Templates
+  # -------------------------------------------
   js_route = get '/js/:name' do
     name = "#{params[:name]}.#{format.to_s}"
-    js = Javascript.by_site(current_site.id).find_by_name(name) 
+    js = Javascript.by_site(current_site).find_by_name(name) 
     if js    
       js.render 
     else
@@ -45,8 +55,10 @@ class Main
     end
   end  
   
+  # Site Preview
+  # -------------------------------------------
   preview_route = get '/preview*' do   
-    authorize!
+    authenticate!
     path = params[:splat].first   
     page = Page.find_by_path(path, current_site) 
     
@@ -58,6 +70,7 @@ class Main
   end
   
   # Site Pages
+  # -------------------------------------------
   pages_route = get '*' do   
     # cache_request     
          

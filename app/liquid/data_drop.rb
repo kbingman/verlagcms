@@ -17,12 +17,7 @@ class DataDrop < Liquid::Drop
     part = @page.parts.detect { |p| p.name == meth.to_s }   
     edit = @request.params['edit'] unless @request.nil?
     if part
-      if edit == 'true' 
-        # This is used for the inline editor, setting a small flag with the edit page / part path
-        "<a class='verlag-editor' href='#/pages/#{@page.id}/edit'><span>Edit #{part.name}</span></a>#{part.render}" 
-      else
-        part.render 
-      end
+      part.render(edit)
     else
       ''
     end 

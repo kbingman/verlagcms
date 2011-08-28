@@ -1,5 +1,6 @@
 class Site
   include MongoMapper::Document
+  include Canable::Ables
   
   key :name, String, :required => true, :unique => true 
   key :subdomain, String, :required => true, :unique => true 
@@ -7,6 +8,22 @@ class Site
   many :pages
   many :assets
   many :templates   
+  
+  # key :user_ids, Array
+  # many :users, :in => :user_ids
+  
+  def users
+    User.by_site(self).all
+  end
+  
+  # Need to rename this... used in the REST controllers
+  def self.by_site(site, admin = false)
+    Site
+  end
+  
+  def sites
+    Site.all
+  end
   
   def root
     self.pages.first :conditions => { :parent_id => nil }
@@ -22,7 +39,7 @@ class Site
     pages << self.root
     pages
   end
-  
+   
   def domain
     "#{self.subdomain}.#{monk_settings(:domain)}"
   end  
@@ -32,6 +49,16 @@ class Site
   end
   
   # liquid_methods :name, :root, :children 
+  
+  # Permissions
+  
+  def viewable_by?(user)
+    user.site_ids.include? self.site_id
+  end
+  
+  def updatable_by?(user)
+    user.site_ids.include?(self.id) && user.is_admin?
+  end
   
   protected
     

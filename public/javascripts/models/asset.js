@@ -1,5 +1,5 @@
 var Asset = Model('asset', function() {
-  // this.persistence(Model.REST, "/assets"), 
+  this.persistence(Model.REST, "/admin/assets"), 
   
   // var invokeCallback = function (callbackName, instance) {
   //   if (instanceMethods[callbackName]) {
@@ -8,82 +8,6 @@ var Asset = Model('asset', function() {
   // },
   
   this.include({
-    saveRemote: function(callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;
-      // self.save();
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",
-        data: { 'asset': self.changes },
-        success: function(results) {
-          self.merge(results);
-          if(callback['success']){ callback['success'].call(this); }
-        }
-      });
-    },  
-    
-    deleteRemote: function(callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;
-      jQuery.ajax({
-        type: 'DELETE',
-        url: url,
-        // contentType: "application/json",
-        dataType: "json",                   
-        success: function(results) {    
-          Asset.remove(self); 
-          if(callback['success']){ callback['success'].call(this); }    
-        }
-      });
-    },  
-     
-    // TODO this could all be handled with a general update?
-    // Add to page
-    addToPage: function(page_id, callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': page_id } }, 
-        dataType: "json",                   
-        success: function(results) {
-          self.merge(results);  
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    }, 
-    
-    // Remove from page
-    removeFromPage: function(page_id, callback){
-      var url = '/admin/assets/' + this.id() + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': null } }, 
-        dataType: "json",                   
-        success: function(results) {
-          self.merge(results);  
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    },
     
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
@@ -143,28 +67,6 @@ var Asset = Model('asset', function() {
       });                                     
       return tags;
     },
-    
-    // This is hack 
-    // I do it like this, as I don't have any assets loaded...
-    removeFromPage: function(id, page_id, callback){
-      var url = '/admin/assets/' + id + '.json';
-      var self = this;   
-      var page = Page.find(page_id)
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        // contentType: "application/json", 
-        data: { 'asset': { 'page_id': null } }, 
-        dataType: "json",                   
-        success: function(results) { 
-          // There might be a better way to do this without
-          // hitting the server... 
-          page.load(function(){
-            if(callback){ callback.call(this); }   
-          });            
-        }
-      });
-    },
 
     searchRemote: function(query, callback) {
       var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
@@ -187,8 +89,8 @@ var Asset = Model('asset', function() {
       });
     },
 
-    searchAdmin: function(query, callback) {
-      var queryData = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
+    searchAdmin: function(params, callback) {
+      // var data = query != null ? decodeURIComponent(jQuery.param({'query': query})) : '';
       Asset.each(function(){ Asset.remove(this); });
       var url = '/admin/assets.json';
       jQuery.ajax({
@@ -196,7 +98,7 @@ var Asset = Model('asset', function() {
         url: url,
         contentType: "application/json",
         dataType: "json",
-        data: queryData,
+        data: params,
         success: function(results) {
           $.each(results, function(i, assetData) {
             var asset = new Asset({ id: assetData.id });
@@ -208,6 +110,7 @@ var Asset = Model('asset', function() {
       });
     },
     
+    // Ajax uploader code
     create: function (file, callback) { 
       var url = '/admin/assets.json';
       Asset.callback = callback;
@@ -226,18 +129,18 @@ var Asset = Model('asset', function() {
     },  
     
     onloadstartHandler:function (evt) {
-      // console.log('started')
+      console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
     onloadHandler: function (evt) { 
-      // console.log('success');   
+      console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
     onprogressHandler: function (evt) {
       var percent = evt.loaded / evt.total * 100; 
-      // console.log(percent); 
+      console.log(percent); 
       // $('#upload_progress .bar').width(percent + '%');
     },
     
@@ -250,7 +153,7 @@ var Asset = Model('asset', function() {
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
-        var asset = new Asset({ id: response.id });  
+        var asset = new Asset({ id: response.id }); 
         
         asset.merge(response);
         Asset.add(asset); 

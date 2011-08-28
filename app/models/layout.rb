@@ -9,9 +9,11 @@ class Layout < Template
         
     after_create :create_default_part_type
     def create_default_part_type
-      p = PartType.new :name => 'body'
-      p.layout_id = self.id 
-      p.save   
+      p = PartType.new :name => 'body', :kind => 'Part'
+      p.layout = self 
+      p.save 
+      self.part_types << p
+      self.save 
     end 
   
 end

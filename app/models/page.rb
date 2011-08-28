@@ -1,5 +1,6 @@
 class Page
   include MongoMapper::Document
+  include Canable::Ables
   # plugin MongoMapper::Plugins::IdentityMap 
   
   plugin Hunt
@@ -22,7 +23,7 @@ class Page
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |id| where(:site_id => id) } 
+  scope :by_site,  lambda { |site| where(:site_id => site.id) } 
   
   key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
@@ -30,9 +31,20 @@ class Page
   many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
   timestamps!
+  userstamps!
+  
+  def viewable_by?(user)
+    user.site_ids.include? self.site_id
+  end
+  
+  def updatable_by?(user)
+    user.site_ids.include? self.site_id
+  end
   
   validates_presence_of :title 
   
+  validates :slug, :uniqueness => { :scope => [:site_id, :parent_id] }
+
   attr_accessible :title, :content, :slug, :parent_id, :layout_id, :parts, :assets_list, :tag_list
   
   scope :all_roots, lambda { where(:parent_id => nil) } 
@@ -180,15 +192,23 @@ class Page
         types = self.layout.part_types 
         types.each do |type|    
           unless self.part_names.include?(type.name)
-            part = Part.new :name => type.name
+            klass = type.kind.constantize
+            part = klass.new :name => type.name, :page_id => self.id
             self.parts << part 
           end
         end
       # end
     end  
     
+    before_save :update_parts 
+    def update_parts
+      self.parts.each do |p|
+        p.page_id = self.id
+      end
+    end
+
     def sanitize(text)
-      text.gsub(/[^a-z0-9-]+/i, '-').downcase
+      ActiveSupport::Inflector.parameterize(text, '-')
     end  
     
     def clean_path(path)

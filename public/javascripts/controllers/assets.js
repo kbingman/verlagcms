@@ -19,10 +19,10 @@ Assets = Sammy(function (app) {
   this.helpers({  
 
     // Checks for loaded assets, then executes the callback   
-    loadAssets: function(query, callback){  
+    loadAssets: function(params, callback){  
       
       if(Asset.all().length == 0 ){
-        Asset.searchAdmin(query, function(){      
+        Asset.searchAdmin(params, function(){      
           if(callback){ callback.call(this); } 
         });
       } else {        
@@ -39,10 +39,14 @@ Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   this.get('#/assets', function(request){ 
-    var query = request.params['query'] ? request.params['query'] : null;  
+    var query = request.params['query'];
+    var params = query ? { 'query': query } : {};   
+    params['limit'] = request.params['limit'] || 48;
+    params['page'] = request.params['page'] || 1;
+    
     Galerie.close();
     if(!application.modal){
-      Asset.searchAdmin(query, function(){  
+      Asset.searchAdmin(params, function(){  
         var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
         assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
@@ -70,31 +74,40 @@ Assets = Sammy(function (app) {
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
+    var params = query ? { 'query': query } : {}; 
+    params['limit'] = request.params['limit'] || 48;
+    params['page'] = request.params['page'] || 1;
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
-
+    
+    var counter = 0;
     for(var i = 0; i < files.length; i++) {   
-      
       Asset.create(files[i], function(){  
-        var assetIndex = request.render('/templates/admin/assets/new.mustache', Asset.toMustache(query));
-        assetIndex.replace('#editor').then(function(){
-          jQuery('#ajax_uploader').attr('multiple','multiple'); 
-        });
+        // Progress bar goes here
+        counter = counter + 1;
+        logger.info('asset ' + (counter / files.length * 100) + '%');
+        jQuery('.progress').text((counter / files.length * 100) + '%');
+        
+        if(counter == files.length){
+          Asset.searchAdmin(params, function(){  
+            var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+            assetIndex.replace('#editor').then(function(){
+              jQuery('#ajax_uploader').attr('multiple','multiple'); 
+            });
+          });
+        };
       });     
     }
     return false; 
   });
 
-  // // Edit Asset 
-  // // ---------------------------------------------  
+  // Edit Asset 
+  // ---------------------------------------------  
   this.get('#/assets/:id/edit', function(request){
-    var query = request.params['query'] ? request.params['query'] : null;  
-
-    //if(jQuery('#modal').length == 0){
-    //  Galerie.open(jQuery('<div />').attr({'id': 'edit-asset-container', 'class': 'wide-modal'}));
-    //} 
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : {};   
     
-    this.loadAssets(query, function(){
+    this.loadAssets(params, function(){
       var asset = Asset.find(request.params['id']); 
       var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
       editAsset.replace('#editor').then(function(results){  
@@ -102,12 +115,7 @@ Assets = Sammy(function (app) {
           $('img.fade-in').fadeIn('slow'); 
         }, 100);
         Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
-      });  
-
-      // if(application.first_run){
-      //   var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-      //   assetIndex.replace('#editor');
-      // }                                                                              
+      });                                                                           
     }); 
     // sets a flag so the the search results are not reloaded   
     application.modal = false;  
@@ -119,27 +127,22 @@ Assets = Sammy(function (app) {
     var asset = Asset.find(req.params['id']);     
   
     asset.attr(req.params['asset']);
-    asset.saveRemote({
-      success: function(){
-        var notice = jQuery('.image-info .notice') ;
-        notice.html('<div class="message">Successfully updated!</div>');
-        delay(function(){
-          jQuery('.message', notice).fadeOut('slow', function(){
-            jQuery(this).remove();
-          });
-        }, 2000);
+    asset.save(function(success){   
+      if(success){
+        Utilities.notice('Successfully saved asset');   
       }
     });
   });    
   
   // Remove Asset
   this.get('#/assets/:id/remove', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null;                            
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': request.params['query']} : null;                             
 
     Galerie.close();
     Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'})); 
     
-    this.loadAssets(query, function(){ 
+    this.loadAssets(params, function(){ 
       var asset = Asset.find(request.params['id']);  
       
       var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
@@ -153,16 +156,17 @@ Assets = Sammy(function (app) {
   });
   
   // Delete Asset
-  this.del('#/assets/:id', function(req){
+  this.del('#/assets/:id', function(request){
     var application = this;    
-    var query = req.params['query'] ? req.params['query'] : null; 
+    var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-    var asset = Asset.find(req.params['id']);     
-    
-    asset.deleteRemote({  
-      success: function(){
-        Galerie.close();  
-        req.redirect('#/assets' + query_path);
+    var asset = Asset.find(request.params['id']);  
+       
+    asset.destroy(function(success){   
+      if(success){ 
+        Galerie.close(); 
+        Utilities.notice('Successfully saved asset'); 
+        request.redirect('#/assets' + query_path);    
       }
     });
   });    

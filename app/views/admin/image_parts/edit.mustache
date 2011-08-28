@@ -1,0 +1,36 @@
+<div class="modal-editor fade-in">
+  {{#part}} 
+  <form action='#/pages/{{page_id}}/parts/{{id}}/results' id='search-form' method='get'>
+    <div class='field'>
+      <input class='textfield' id='search-query' name='query' type='text'>
+      <input class='button' type='submit' value='Search'>
+    </div>
+  </form> 
+  
+  <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+    <div class='field'>
+      <label for='ajax_uploader'></label>
+      <input id='ajax_uploader' name='file' type='file'>
+    </div>
+    <div class='buttons_'>
+      <input type='submit'>
+    </div>
+    <div class="buttons">
+      <input type='submit' value="Save" class='button html-only' />
+      <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
+    </div>
+  </form>  
+  {{/part}}
+  <div id="search-results-container"> 
+    <h1>Recent Assets</h1>
+    <ul>
+      {{#assets}}
+        <li id="asset-{{id}}" class="asset">
+          <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
+            <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+          </a>  
+        </li>
+      {{/assets}}
+    </ul>
+  <div>  
+</div>

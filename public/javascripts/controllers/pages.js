@@ -54,7 +54,7 @@ Pages = Sammy(function (app) {
       });       
     }, 
     
-    renderPagePreview: function(page){
+    renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
         var showPage = application.render('/templates/admin/pages/show.mustache', { 
@@ -63,7 +63,9 @@ Pages = Sammy(function (app) {
           base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
-          iFramer.initialize('#preview iframe'); 
+          iFramer.initialize('#preview iframe', function(){
+            if(callback){ callback.call(this); } 
+          }); 
           jQuery('.toggle-page-editor').click(function(e){
             e.preventDefault();
             var page_editor = jQuery('#page-editor');
@@ -75,7 +77,8 @@ Pages = Sammy(function (app) {
               page_editor.addClass('open').animate({'height': '200px'}, 300);
               page_title_input.removeAttr('disabled').focus();
             }
-          })
+          });
+         
           // jQuery('#page-assets .asset').each(function(i, el){
           //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
           // });

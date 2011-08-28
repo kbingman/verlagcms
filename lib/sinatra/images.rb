@@ -6,7 +6,8 @@ module Sinatra
     def self.registered(app)   
       
       app.get '/images/originals/:id/:filename' do
-        cache_request(3600 * 24) # 24 Hour cache     
+        # cache_request(3600 * 24) # 24 Hour cache  
+        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
 
         begin
           asset = Asset.find params[:id]
@@ -22,7 +23,8 @@ module Sinatra
       end
       
       app.get '/images/:size/:id/:filename' do
-        cache_request(3600 * 24) # 24 Hour cache  
+        # cache_request(3600 * 24) # 24 Hour cache 
+        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
         
         h, w, crop = [nil, nil, {}]
         monk_settings(:images).each do |key, value|  

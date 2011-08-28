@@ -122,7 +122,7 @@ var Utilities = {
 } 
 
 var iFramer = {       
-  initialize: function(element){   
+  initialize: function(element, callback){   
     var trigger = jQuery(element);  
     var self = this;
     if(!trigger.length) return;
@@ -142,7 +142,7 @@ var iFramer = {
         window.top.location.hash = $(this).attr('href');  
         return false;
       });
-
+      if(callback){ callback.call(this); } 
     }); 
   },
   

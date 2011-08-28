@@ -14,9 +14,29 @@ Pages = Sammy(function (app) {
   // Helper Methods 
   // ---------------------------------------------
   app.helpers({  
+    // Render Part
+    render_part: function(part, page, template){
+      var application = this;   
+      var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
+        part: part.asJSON(),
+        page: page.asJSON(),
+        assets: Asset.asJSON()
+      }); 
+      edit_part.appendTo(jQuery('body')).then(function(){
+        var modal_editor = jQuery('.modal-editor');
+        var iframe_content = $('iframe').contents();  
+        var part_editor = iframe_content.find('#editor-' + part.id());
+        modal_editor.fadeIn('fast').css({
+          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
+          'left':  part_editor.offset().left + 400 + 'px'
+        });
+        application.set_asset_links(part, page);
+        context.modal = true;
+      });
+    },
     
     // Sets add asset links
-    set_asset_links: function(page, part){
+    set_asset_links: function(part, page){
       jQuery('#search-results-container li.asset').each(function(i, el){
         var link = jQuery(el).find('a');
         var asset_id = jQuery(el).attr('id').split('-')[1];
@@ -36,6 +56,7 @@ Pages = Sammy(function (app) {
           page.save(function(success){
             jQuery('.modal-editor').remove();
             // Change to sammy method
+            context.modal = false;
             document.location.hash = '#/pages/' + page.id();
           });
         });
@@ -47,63 +68,49 @@ Pages = Sammy(function (app) {
   // Edit Parts
   // ---------------------------------------------
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
+    var application = this;
+    jQuery('.modal-editor').remove();
+    
     this.loadPages(function(){     
-      var application = this;
-      jQuery('.modal-editor').remove();
-      var id = request.params['id'];   
       var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(id);
+      var part = page.parts().find(request.params['id']);
+      var iframe = $('iframe');
+      var template = 'parts';
       
-      var iframe_content = $('iframe').contents();  
-      var part_editor = iframe_content.find('#editor-' + id);
-      var edit_part = application.render('/templates/admin/parts/edit.mustache', { 
-        part: part.asJSON()
-      }); 
-      logger.info(part_editor.offset());
-      logger.info(iframe_content.find('body').scrollTop());
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
-        });
-      });    
-
+      if(iframe.length){
+        application.render_part(part, page, template);
+      }else{
+        request.renderPagePreview(page, function(){
+          application.render_part(part, page, template);
+        }); 
+      }
     }); 
+    // context.modal = true;
   });
   
   // Edit Image Parts
   // ---------------------------------------------
   this.get('#/pages/:page_id/image_parts/:id/edit', function(request){ 
+    var application = this;
+    jQuery('.modal-editor').remove(); 
+    
     this.loadPages(function(){     
-      var application = this;
-      jQuery('.modal-editor').remove();
-      var id = request.params['id'];   
       var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(id);
-      var iframe_content = $('iframe').contents();  
-      var part_editor = iframe_content.find('#editor-' + id);
+      var part = page.parts().find(request.params['id']);
+      var template = 'image_parts';
+      var iframe = $('iframe');
       
       Asset.searchAdmin({ 'limit': '12' }, function(){ 
-        //alert(Asset.toMustache().length);
-        var edit_part = application.render('/templates/admin/image_parts/edit.mustache', { 
-          part: part.asJSON(),
-          page: page.asJSON(), 
-          assets: Asset.asJSON()
-        }); 
-        edit_part.appendTo(jQuery('body')).then(function(){
-          var modal_editor = jQuery('.modal-editor');
-          modal_editor.fadeIn('fast').css({
-            'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-            'left':  part_editor.offset().left + 400 + 'px'
-          });
-          application.set_asset_links(page, part);
-        });
-         
-        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        // searchResults.replace('#search-results-container');
+        if(iframe.length){
+          application.render_part(part, page, template);
+        }else{
+          request.renderPagePreview(page, function(){
+            application.render_part(part, page, template);
+          }); 
+        }
       });  
     }); 
+    // context.modal = true; 
   });
   
   // Add Image Page Parts
@@ -119,7 +126,8 @@ Pages = Sammy(function (app) {
       Asset.searchAdmin(params, function(){           
         var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
-          application.set_asset_links(page, part);
+          
+          application.set_asset_links(part, page);
         });
       });
     });

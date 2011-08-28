@@ -128,7 +128,7 @@ var iFramer = {
     if(!trigger.length) return;
     trigger.load(function(){   
       var iFrameContent = $(this).contents();  
-      var editor = iFrameContent.find('div.part-editor');
+      var editor = iFrameContent.find('span.part-editor');
       var flags = editor.find('a');   
       logger.info('load')
       $(this).fadeIn('fast');

@@ -15,9 +15,9 @@ class Part
   def render(edit=false)
     if edit == 'true' 
       # This is used for the inline editor, setting a small flag with the edit page / part path
-      r =  "<div class='part-editor' id='editor-#{self.id}'>"
+      r =  "<span class='part-editor' id='editor-#{self.id}'>"
       r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/parts/#{self.id}/edit'>"
-      r += "<span>Edit #{self.name}</span></a></div>"
+      r += "<span>Edit #{self.name}</span></a></span>"
       r += !self.content.blank? ? "#{RedCloth.new(self.content).to_html}" : 'Add Content Here'
       r
     else

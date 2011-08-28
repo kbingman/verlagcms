@@ -2,6 +2,14 @@ jQuery(document).ready(function () {
 
   // logger.info('Starting!!!')
   
+  jQuery('body').ajaxStart(function() {
+    logger.info('starting');
+  });
+  
+  jQuery('body').ajaxSuccess(function() {
+    logger.info('success!');
+  });
+  
   var login = jQuery('#login');   
   if(!login.length){
     Pages.run('#/pages');

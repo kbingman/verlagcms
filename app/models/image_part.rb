@@ -21,9 +21,9 @@ class ImagePart < Part
   def render(edit=false)
     if edit == 'true' 
       # This is used for the inline editor, setting a small flag with the edit page / part path
-      r =  "<div class='part-editor' id='editor-#{self.id}'>"
+      r =  "<span class='part-editor' id='editor-#{self.id}'>"
       r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/image_parts/#{self.id}/edit'>"
-      r += "<span>Upload #{self.name}</span></a></div>"
+      r += "<span>Upload #{self.name}</span></a></span>"
       r += "<img src='#{self.asset.image_path}' />" if self.asset
       r
     else

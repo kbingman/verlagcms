@@ -12,6 +12,11 @@
   :-moz-border-radius $radius
   :border-radius $radius   
   
+=box-shadow($radius: 15px, $color: #888)
+  :-webkit-box-shadow 0 0 $radius $color
+  :-moz-box-shadow 0 0 $radius $color
+  :box-shadow 0 0 $radius $color
+  
 =positionable
   :position absolute
   :display block   

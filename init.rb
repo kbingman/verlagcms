@@ -40,7 +40,7 @@ require 'liquid'
 require 'RedCloth' 
 # require 'jim'
 
-require './lib/rack/raw_upload'
+# require 'rack/raw_upload'
 require './lib/rack/subdomains'
 require './lib/hunt/search_all'
 
@@ -66,7 +66,7 @@ class Main < Monk::Glue
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie, :secret => "fibble this must be longer"
-  use Rack::RawUpload 
+  # use Rack::RawUpload 
   
   # use Jim::Rack, :bundle_uri => '/js/'
   

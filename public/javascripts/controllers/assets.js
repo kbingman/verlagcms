@@ -20,13 +20,34 @@ Assets = Sammy(function (app) {
 
     // Checks for loaded assets, then executes the callback   
     loadAssets: function(params, callback){  
-      
       if(Asset.all().length == 0 ){
         Asset.searchAdmin(params, function(){      
           if(callback){ callback.call(this); } 
         });
       } else {        
         if(callback){ callback.call(this); } 
+      }
+    },
+    
+    // Sends each file to the server in turn, instead of all at once...
+    send_files: function(files, params, callback){
+      var application = this;
+      var counter = 0;
+      for(var i = 0; i < files.length; i++) {   
+        Asset.create(files[i], function(){  
+          // Progress bar goes here
+          counter = counter + 1;
+          logger.info('asset ' + (counter / files.length * 100) + '%');
+          jQuery('.progress').text((counter / files.length * 100) + '%');
+
+          if(counter == files.length){
+            // This needs to be fixed, as it sends another request to the server that isn't really needed...
+            // I could simply fix the ordering or something...
+            Asset.searchAdmin(params, function(){ 
+              if(callback){ callback.call(this); }  
+            });
+          };
+        });     
       }
     }
   });
@@ -70,6 +91,7 @@ Assets = Sammy(function (app) {
   // Create Asset
   // ---------------------------------------------  
   this.post('/admin/assets', function(request){   
+    var application = this;
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
@@ -80,24 +102,13 @@ Assets = Sammy(function (app) {
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
     
-    var counter = 0;
-    for(var i = 0; i < files.length; i++) {   
-      Asset.create(files[i], function(){  
-        // Progress bar goes here
-        counter = counter + 1;
-        logger.info('asset ' + (counter / files.length * 100) + '%');
-        jQuery('.progress').text((counter / files.length * 100) + '%');
-        
-        if(counter == files.length){
-          Asset.searchAdmin(params, function(){  
-            var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-            assetIndex.replace('#editor').then(function(){
-              jQuery('#ajax_uploader').attr('multiple','multiple'); 
-            });
-          });
-        };
-      });     
-    }
+    this.send_files(files, params, function(){
+      var assetIndex = application.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
+      assetIndex.replace('#editor').then(function(){
+        jQuery('#ajax_uploader').attr('multiple','multiple'); 
+      });
+    });
+
     return false; 
   });
 
@@ -122,6 +133,7 @@ Assets = Sammy(function (app) {
   });
   
   // Update Asset
+  // ---------------------------------------------  
   this.put('#/assets/:id', function(req){
     var application = this;
     var asset = Asset.find(req.params['id']);     
@@ -135,6 +147,7 @@ Assets = Sammy(function (app) {
   });    
   
   // Remove Asset
+  // ---------------------------------------------  
   this.get('#/assets/:id/remove', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : null;                             
@@ -156,6 +169,7 @@ Assets = Sammy(function (app) {
   });
   
   // Delete Asset
+  // ---------------------------------------------  
   this.del('#/assets/:id', function(request){
     var application = this;    
     var query = request.params['query'] ? request.params['query'] : null; 
@@ -170,9 +184,5 @@ Assets = Sammy(function (app) {
       }
     });
   });    
-        
-  app.get('/', function (req) {
-    // jQuery('h1').text('Start Page');
-  });
 
 });

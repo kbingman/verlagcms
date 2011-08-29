@@ -7,13 +7,13 @@
     </div>
   </form> 
   
-  <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+  <form action='#/pages/{{page_id}}/image_parts/{{id}}/assets' enctype='multipart/form-data' id='new_asset' method='post'>
+    <div class='hidden'>
+      <input name='limit' value='12' type='hidden' />
+    </div>
     <div class='field'>
       <label for='ajax_uploader'></label>
-      <input id='ajax_uploader' name='file' type='file'>
-    </div>
-    <div class='buttons_'>
-      <input type='submit'>
+      <input id='ajax_uploader' name='file' type='file' />
     </div>
     <div class="buttons">
       <input type='submit' value="Save" class='button html-only' />

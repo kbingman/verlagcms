@@ -12,11 +12,15 @@ class Part
   
   liquid_methods :name, :content, :render   
   
+  def path
+   "/pages/#{self.page_id}/parts/#{self.id}" 
+  end
+  
   def render(edit=false)
     if edit == 'true' 
       # This is used for the inline editor, setting a small flag with the edit page / part path
       r =  "<span class='part-editor' id='editor-#{self.id}'>"
-      r += "<a class='verlag-editor' href='#/pages/#{self.page_id}/parts/#{self.id}/edit'>"
+      r += "<a class='verlag-editor' href='##{self.path}/edit'>"
       r += "<span>Edit #{self.name}</span></a></span>"
       r += !self.content.blank? ? "#{RedCloth.new(self.content).to_html}" : 'Add Content Here'
       r
@@ -26,7 +30,7 @@ class Part
   end
   
   def as_json(options)
-    super(:methods => [:image_path])
+    super(:methods => [:path])
   end
   
   # validate :unique_name

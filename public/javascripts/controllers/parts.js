@@ -30,6 +30,7 @@ Pages = Sammy(function (app) {
           'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
           'left':  part_editor.offset().left + 400 + 'px'
         });
+        jQuery('#ajax_uploader').attr('multiple','multiple'); 
         application.set_asset_links(part, page);
         context.modal = true;
       });
@@ -126,7 +127,7 @@ Pages = Sammy(function (app) {
       Asset.searchAdmin(params, function(){           
         var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
-          
+        
           application.set_asset_links(part, page);
         });
       });
@@ -167,6 +168,29 @@ Pages = Sammy(function (app) {
       } 
     });
     
+  });
+  
+  // Upload Assets to Part (Create)
+  // ---------------------------------------------  
+  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){   
+    var fileInput = document.getElementById('ajax_uploader');
+    var files = fileInput.files; 
+    var query = request.params['query'] ? request.params['query'] : null;
+    var uploadForm = jQuery('form#new_asset');
+    var params = query ? { 'query': query } : {}; 
+    params['limit'] = request.params['limit'] || 48;
+    params['page'] = request.params['page'] || 1;
+    //  fileInput = uploadForm.find('input[type=file]'),
+    //  files = fileInput.attr('files');
+    
+    this.send_files(files, params, function(){
+      var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      searchResults.replace('#search-results-container').then(function(){
+        jQuery('#ajax_uploader').attr('files', null); 
+        application.set_asset_links(part, page);
+      });
+    });
+
   });
 
 });

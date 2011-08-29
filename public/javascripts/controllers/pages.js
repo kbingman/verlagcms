@@ -31,24 +31,28 @@ Pages = Sammy(function (app) {
     },
     
     // Renders the Page tree
-    renderTree: function(page){ 
+    renderTree: function(page, active_page){ 
       var application = this;
       var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
-        application.renderNode(page); 
+        application.renderNode(page, active_page); 
       });
     },
     
-    renderNode: function(page){ 
+    renderNode: function(page, active_page){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
       pageNode.appendTo('#page-' + page.id()).then(function(){
-        page.children().each(function(child){   
+
+        page.children().each(function(child){  
+          if(child.id() == active_page.id()){
+            jQuery('li#page-' + child.id()).addClass('active');
+          }
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child);  
+            application.renderNode(child, active_page);  
           }
         });
       });       
@@ -63,41 +67,27 @@ Pages = Sammy(function (app) {
           base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
-          iFramer.initialize('#preview iframe', function(){
+          iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
-          jQuery('.toggle-page-editor').click(function(e){
-            e.preventDefault();
-            var page_editor = jQuery('#page-editor');
-            var page_title_input = jQuery('#page-title');
-            if (page_editor.hasClass('open')){
-              page_editor.removeClass('open').animate({'height': '0'}, 300);
-              page_title_input.attr('disabled', 'disabled');
-            } else {
-              page_editor.addClass('open').animate({'height': '200px'}, 300);
-              page_title_input.removeAttr('disabled').focus();
-            }
-          });
-         
-          // jQuery('#page-assets .asset').each(function(i, el){
-          //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
-          // });
+          jQuery('li.node').removeClass('active');
+          jQuery('#page-' + page.id()).addClass('active');
         });
       }
     }, 
     
-    renderPage: function(page){ 
-      var application = this;
-      var editPage = application.render('/templates/admin/pages/edit.mustache', { 
-        page: page.asJSON(), 
-        layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
-      });  
-      editPage.replace('#editor').then(function(){
-        // TabControl.initialize('.tab'); 
-        // jQuery('#page-assets .asset').each(function(i, el){
-        //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
-        // })
-      });
+    open_page_editor: function(){
+      var page_editor = jQuery('#page-editor');
+      var page_title_input = jQuery('#page-title');
+      page_editor.addClass('open').animate({'height': '200px'}, 300);
+      page_title_input.removeAttr('disabled').focus();
+    }, 
+    
+    close_page_editor: function(){
+      var page_editor = jQuery('#page-editor');
+      var page_title_input = jQuery('#page-title');
+      page_editor.removeClass('open').animate({'height': '0'}, 300);
+      page_title_input.attr('disabled', 'disabled');
     }
     
   });
@@ -156,9 +146,6 @@ Pages = Sammy(function (app) {
         // Should really only load the relavent ones...
         Page.load(function(){  
           context.application.renderNode(page);
-          var now = new Date();
-          var end = now.getTime() - start; 
-          console.log(end)
           // Hide spinner    
         });
       } else {    
@@ -197,6 +184,9 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;              
   });
   
+  
+  // New Page
+  // ---------------------------------------------
   this.get('#/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
@@ -210,28 +200,38 @@ Pages = Sammy(function (app) {
         context.refresh_pages = true;
       }
 
-      var newPage = request.render('/templates/admin/pages/new.mustache', { parent: page.asJSON() }); 
+      var newPage = request.render('/templates/admin/pages/new.mustache', { 
+        parent: page.asJSON(),
+        layouts: Layout.asLayoutJSON(page.attr('layout_id')),
+      }); 
       newPage.replace('#new-page-container');
     }); 
   }); 
   
+  // Create Page
+  // ---------------------------------------------
   this.post('#/pages/:page_id', function(request){
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
     
-    // Needs to be rewritten  
-    Page.create(attributes, function(results, results2){ 
-      context.refresh_pages = true;  
-      Utilities.notice('Successfully saved page')
-      request.redirect('#/pages/' + results.id + '/edit');
-    }); 
+    var page = new Page(request.params['page']); 
+    page.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
+        context.refresh_pages = true;  
+        Utilities.notice('Successfully saved page');
+        request.redirect('#/pages/' + response.id);
+      }
+    });
   }); 
   
   // Show Page
   // ---------------------------------------------
   this.get('#/pages/:id/?', function(request){ 
-    logger.info('pages show')
+    var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();
     this.loadPages(function(){  
@@ -251,9 +251,11 @@ Pages = Sammy(function (app) {
         context.modal = false;
         context.do_not_refresh = false;
         if(context.refresh_pages){
-          request.renderTree(Page.root());
+          request.renderTree(Page.root(), page);
           context.refresh_pages = false;  
         } 
+      }else{
+        application.close_page_editor();
       }
     });
     context.do_not_refresh = false;    
@@ -262,32 +264,25 @@ Pages = Sammy(function (app) {
   // Edit Page
   // ---------------------------------------------
   this.get('#/pages/:id/edit/?', function(request){  
-    // alert('Soon you will be able to edit a page here!');
-    // request.redirect('#/pages/' + request.params['id'])
+    var application = this;
     Galerie.close();  
-    context.modal = true;  
+    context.modal = false;  
 
     this.loadPages(function(){  
-      var page_id = request.params['id'];
-      var page = Page.find(page_id); 
-      if(!context.do_not_refresh){     
-        if(page) {
-          request.renderPage(page); 
-        } else {  
-          // Loads page if the current collection does not contain it
-          page = new Page({ id: page_id });
-          page.load(function(){
-            request.renderPage(page); 
-          });
-        } 
-        
+      var page = Page.find(request.params['id']); 
+      if(jQuery('#preview-' + page.id()).length){
+        application.open_page_editor();
+      } else {
+        request.renderPagePreview(page, function(){
+          application.open_page_editor();
+        }); 
         if(context.refresh_pages){
-          request.renderTree(Page.root());
+          request.renderTree(Page.root(), page);
           context.refresh_pages = false;  
         }
       }
     }); 
-    context.do_not_refresh = false;       
+    context.do_not_refresh = true;       
   }); 
     
   
@@ -393,7 +388,7 @@ Pages = Sammy(function (app) {
           image_div.append(remove_link);
           
           jQuery('#page-assets').append(image_div); 
-          var preview = jQuery('#preview iframe');
+          var preview = jQuery('.preview iframe');
           preview.hide().attr('src', preview.attr('src'));
           preview.load(function(){
             preview.fadeIn('fast')
@@ -425,7 +420,7 @@ Pages = Sammy(function (app) {
         jQuery('#page-asset-' + id).fadeOut('fast', function(){
           $(this).remove();
         }); 
-        var preview = jQuery('#preview iframe');
+        var preview = jQuery('.preview iframe');
         preview.hide().attr('src', preview.attr('src'));
         preview.load(function(){
           preview.fadeIn('fast')

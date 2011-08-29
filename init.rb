@@ -32,9 +32,6 @@ require 'canable'
 # Rack
 require 'rack/cache'
 require 'rack/request' 
-require './lib/rack/raw_upload'
-require './lib/rack/subdomains'
-require './lib/hunt/search_all'
 
 # Templating
 require 'mustache/sinatra'
@@ -42,6 +39,10 @@ require 'haml'
 require 'liquid' 
 require 'RedCloth' 
 # require 'jim'
+
+require './lib/rack/raw_upload'
+require './lib/rack/subdomains'
+require './lib/hunt/search_all'
 
 class Main < Monk::Glue
 

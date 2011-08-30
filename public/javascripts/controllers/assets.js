@@ -40,14 +40,15 @@ Assets = Sammy(function (app) {
             // console.log(upload.filename + ': ' + percent)
           },
           success: function(){  
+            Asset.searchAdmin(params, function(){ 
+              if(callback){ callback.call(this); }  
+            });
             counter = counter + 1;        
-            if(counter == files.length){
-              // This needs to be fixed, as it sends another request to the server that isn't really needed...
-              // I could simply fix the ordering or something...
-              Asset.searchAdmin(params, function(){ 
-                if(callback){ callback.call(this); }  
-              });
-            }
+            // if(counter == files.length){
+            //   // This needs to be fixed, as it sends another request to the server that isn't really needed...
+            //   // I could simply fix the ordering or something...
+            // 
+            // }
           }
         });     
       }

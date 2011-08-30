@@ -34,28 +34,24 @@ Assets = Sammy(function (app) {
       var application = this;
       var counter = 0;
       for(var i = 0; i < files.length; i++) {   
-        // var uuid = Asset.generate_uuid();
-        
-        var file = files[i];
-        var name = file.name
-
         Asset.create(file, {
           progress: function(upload, percent){
-            console.log(upload.filename + ': ' + percent)
+            // deprecated for now...
+            // console.log(upload.filename + ': ' + percent)
           },
           success: function(){  
             // Total Progress bar goes here
             counter = counter + 1;
-            console.log(counter)
             // logger.info('asset ' + (counter / files.length * 100) + '%');
             // jQuery('.progress').text((counter / files.length * 100) + '%');
+            Asset.searchAdmin(params, function(){ 
+              if(callback){ callback.call(this); }  
+            });
 
             if(counter == files.length){
               // This needs to be fixed, as it sends another request to the server that isn't really needed...
               // I could simply fix the ordering or something...
-              Asset.searchAdmin(params, function(){ 
-                if(callback){ callback.call(this); }  
-              });
+   
             }
           }
         });     

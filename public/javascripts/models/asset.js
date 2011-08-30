@@ -151,7 +151,7 @@ var Asset = Model('asset', function() {
     onprogressHandler: function(evt) {
       var percent = evt.loaded / evt.total * 100; 
       var uuid = evt.target.uuid;
-      jQuery('#progress-' + uuid + ' .percentage').text(percent + '%');
+      jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
       // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  
     },
     

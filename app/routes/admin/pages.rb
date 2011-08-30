@@ -8,17 +8,19 @@ class Main
       get '/?' do
         # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
         
-        respond_to do |format|
-          format.html do  
-            @root = current_site.root
-            admin_haml :'admin/pages/index'
-          end 
-          format.json do  
-            active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
-            pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
-            pages.to_json  
-          end
-        end
+        active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+        pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        pages.to_json
+        
+        # respond_to do |format|
+        #   # format.html do  
+        #   #   @root = current_site.root
+        #   #   admin_haml :'admin/pages/index'
+        #   # end 
+        #   # format.json do  
+        # 
+        #   # end
+        # end
       end
       
       # Create page
@@ -43,10 +45,11 @@ class Main
       # -------------------------------------------
       get '/:id/children' do
         @page = Page.by_site(current_site).find(params['id'])
-        respond_to do |format|
-          format.html { redirect('/pages') }
-          format.json { @page.children.to_json }
-        end
+        @page.children.to_json
+        # respond_to do |format|
+        #   format.html { redirect('/pages') }
+        #   format.json { @page.children.to_json }
+        # end
       end
       
       # Update page
@@ -63,17 +66,19 @@ class Main
         end
                 
         if page.update_attributes(params['page'])
-          respond_to do |format|
-            format.html { redirect("/admin/#/pages/#{page.id}/edit") }
-            format.json { page.to_json }
-          end 
+          page.to_json 
+          # respond_to do |format|
+          #   format.html { redirect("/admin/#/pages/#{page.id}/edit") }
+          #   format.json { page.to_json }
+          # end 
         else
           logger.debug "Page errors: #{page.errors}"
           respond_to do |format|
+            { :errors => page.errors }.to_json  
             # format.html { redirect("/admin/#/pages/#{page.id}/edit") }
-            format.json do
-              { :errors => page.errors }.to_json  
-            end
+            # format.json do
+            #   { :errors => page.errors }.to_json  
+            # end
           end
         end
       end     

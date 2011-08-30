@@ -30,13 +30,6 @@ GIT
       multi_json (~> 1.0.3)
 
 GIT
-  remote: https://github.com/newbamboo/rack-raw-upload.git
-  revision: e45abbf42795ca4edc7390a1e321f7ad13d8e8d7
-  specs:
-    rack-raw-upload (1.0.6)
-      json
-
-GIT
   remote: https://github.com/thoughtbot/capybara-webkit.git
   revision: 3b025e7115c8f9688e83df47937f53c5ed029e18
   specs:
@@ -205,7 +198,6 @@ DEPENDENCIES
   rack
   rack-cache
   rack-flash
-  rack-raw-upload!
   rack-test
   rake
   rspec (>= 2.5.0)

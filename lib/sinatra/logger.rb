@@ -12,7 +12,7 @@ module Sinatra
         logger.debug "Parameters: #{params.inspect}" 
         logger.debug "Content Type:  #{request.content_type}"   
         logger.debug "Subdomain:  #{subdomain}"
-        logger.debug "Format: #{format}" if format 
+        # logger.debug "Format: #{format}" if format 
       end
 
       app.after do    

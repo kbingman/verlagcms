@@ -14,10 +14,7 @@ class Main
         # Mongomapper seems to need to save the parent for this to work...   
         # Seems to be an identity map issue
         if template.save 
-          respond_to do |format| 
-            format.html { }
-            format.json { template.to_json }
-          end
+          template.to_json 
         else
           'error'
         end

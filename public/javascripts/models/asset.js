@@ -125,6 +125,7 @@ var Asset = Model('asset', function() {
       xhr.open('POST', url, true);
       xhr.setRequestHeader("Content-Type", "application/octet-stream");
       xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.setRequestHeader("X-File-Upload", "true");
       xhr.send(file); 
     },  
     
@@ -146,18 +147,17 @@ var Asset = Model('asset', function() {
     
     onreadystatechangeHandler: function(evt){
       var status = null;
-      
       try { status = evt.target.status; }
       catch(e) { return; }
       
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+        
         var response = JSON.parse(evt.target.responseText);
         var asset = new Asset({ id: response.id }); 
-        
         asset.merge(response);
         Asset.add(asset); 
-
+        
         if(Asset.callback){ Asset.callback.call(this); }   
       }
     }

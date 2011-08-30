@@ -175,7 +175,7 @@ Pages = Sammy(function (app) {
 
     if(context.refresh_pages){
       request.loadPages(function(){
-        request.renderTree(Page.root());  
+        request.renderTree(Page.root(), Page.root());  
         logger.info('pages')
       });   
     } 
@@ -196,7 +196,7 @@ Pages = Sammy(function (app) {
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
       if(context.refresh_pages){
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), page); 
         context.refresh_pages = true;
       }
 
@@ -299,7 +299,7 @@ Pages = Sammy(function (app) {
         context.modal = false;     
         Utilities.notice('Successfully saved page');
         // application.renderNode(page);
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), page); 
         // request.redirect('#/pages/' + page_id + '/edit');
       } 
     });
@@ -316,7 +316,7 @@ Pages = Sammy(function (app) {
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
       if(context.refresh_pages){
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), Page.root()); 
       }
       
       var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    

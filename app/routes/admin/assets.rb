@@ -15,23 +15,24 @@ class Main
         end
         @assets = plucky_query.paginate(:order => 'created_at DESC', :per_page => per_page, :page => params[:page])
         
-        respond_to do |format|
-          format.html { admin_haml :'admin/assets/index' }
-          format.json { @assets.to_json }
-        end
+        @assets.to_json 
       end
       
       # Create Asset
       # -------------------------------------------
       post '' do
-        asset = Asset.new(:file => params[:file][:tempfile])
-        asset.file_name = params[:file][:filename]    
+        # For some reason Sinatra is not picking up the params here...
+        data = params.empty? ? request.env["rack.request.form_hash"] : params
+        
+        asset = Asset.new(:file => data['file'][:tempfile])
+        asset.file_name = data['file'][:filename]    
         asset.site = current_site
         asset.save
-        respond_to do |format|
-          format.html { redirect('/assets') }
-          format.json { asset.to_json }
-        end
+        asset.to_json
+        # respond_to do |format|
+        #   format.html { redirect('/assets') }
+        #   # format.json { asset.to_json }
+        # end
       end
 
     end  

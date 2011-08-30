@@ -36,7 +36,7 @@ gem 'RedCloth'
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
-gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
+# gem 'rack-raw-upload' #, :git => 'https://github.com/newbamboo/rack-raw-upload.git'
 gem 'rake'
 gem 'thor'   
 

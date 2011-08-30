@@ -117,12 +117,13 @@ var Asset = Model('asset', function() {
       var url = '/admin/assets.json';
       Asset.callback = callback;
       
+      xhr = new XMLHttpRequest();
+      
       var uuid = Asset.generate_uuid(); 
       jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
       xhr.upload.uuid = uuid;
       xhr.upload.filename = file.name
-      
-      xhr = new XMLHttpRequest();
+
       xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
       xhr.upload.addEventListener('progress', Asset.onprogressHandler);
       xhr.upload.addEventListener('load', Asset.onloadHandler, false);

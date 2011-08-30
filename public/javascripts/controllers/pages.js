@@ -202,7 +202,7 @@ Pages = Sammy(function (app) {
 
       var newPage = request.render('/templates/admin/pages/new.mustache', { 
         parent: page.asJSON(),
-        layouts: Layout.asLayoutJSON(page.attr('layout_id')),
+        layouts: Layout.asLayoutJSON(page.attr('layout_id'))
       }); 
       newPage.replace('#new-page-container');
     }); 

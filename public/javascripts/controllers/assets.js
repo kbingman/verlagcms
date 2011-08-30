@@ -56,7 +56,7 @@ Assets = Sammy(function (app) {
               Asset.searchAdmin(params, function(){ 
                 if(callback){ callback.call(this); }  
               });
-            };
+            }
           }
         });     
       }

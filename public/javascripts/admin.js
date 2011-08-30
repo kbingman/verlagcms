@@ -3885,6 +3885,567 @@ jQuery.cookie = function(name, value, options) {
         return cookieValue;
     }
 };
+function Sanskrit (textarea, options) {
+
+  this.options = options || {};
+  this.textarea = textarea;
+  this.form = textarea.form;
+  this.container = document.createElement('div');
+  this.iframe = document.createElement('iframe');
+  this.hiddenInput = document.createElement('input');
+  this.hiddenInput.type = 'hidden';
+  this.callbacks = Sanskrit.inherit(Sanskrit.prototype.callbacks);
+  
+  for (var callback in Sanskrit.prototype.callbacks) {
+    if (
+      Sanskrit.prototype.callbacks.hasOwnProperty(callback) &&
+      typeof this.options[callback] === 'function'
+    ) {
+      this.callbacks[callback] = this.options[callback];
+    }
+  }
+  
+  this.replaceTextarea();
+  
+  var self = this;
+  this.onReady(function(){
+    self.findContentDocument();
+    
+    if (self.richTextIsAvailable()) {
+      self.applyClassNames();
+      self.enableEditor();
+      self.addStyle(Sanskrit.defaultStyle);
+      self.createToolbar();
+      self.hijackForm();
+    } else {
+      self.unreplaceTextarea();
+    }
+  });
+  
+  Sanskrit.editors.push(this);
+
+};
+
+Sanskrit.inherit = function(o){
+  function F(){};
+  F.prototype = o;
+  return new F();
+};
+
+Sanskrit.getClassName = function(element){
+  return element.getAttribute('class') || element.getAttribute('className')
+};
+
+Sanskrit.setClassName = function(element, className){
+  element.setAttribute('class', className);
+  element.className = className;
+};
+
+Sanskrit.hasClassName = function(element, className){
+  if (!Sanskrit.getClassName(element)) { return false; }
+  var classNames = Sanskrit.getClassName(element).split(' ');
+  for (var i=0; i<classNames.length; i++) {
+    if (classNames[i] == className) { return true; }
+  }
+  return false;
+};
+
+Sanskrit.addClassName = function(element, className){
+  if (Sanskrit.hasClassName(element, className)) { return false; }
+  var currentClassName = Sanskrit.getClassName(element) || '';
+  Sanskrit.setClassName(element, currentClassName == '' ? className : currentClassName+' '+className);
+  return true;
+};
+
+Sanskrit.removeClassName = function(element, className) {
+  var classNames = (Sanskrit.getClassName(element) || '').split(' ');
+  var newClassNames = [];
+  for (var i=0; i<classNames.length; i++) {
+    if (classNames[i] != className) { newClassNames.push(classNames[i]); }
+  }
+  newClassNames = newClassNames.join(' ');
+  Sanskrit.setClassName(element, newClassNames);
+  return newClassNames;
+};
+
+Sanskrit.defaultStyle = 'html { padding:0; cursor:text; } body { font-size:90%; margin:0; padding:0.5em; cursor:text; } p { margin: 0.5em 0; }';
+
+Sanskrit.editors = [];
+
+
+
+Sanskrit.prototype = {
+
+  //Gecko needs some time to initialise the iframe or something
+  onReady: function(f){
+    setTimeout(f, 250);
+  },
+
+  findContentDocument: function(){
+    if (this.iframe.contentDocument) { //Gecko
+      this.internetExplorer = false;
+      this.contentDocument = this.iframe.contentDocument;
+    } else { //IE
+      this.internetExplorer = true;
+      this.contentDocument = this.iframe.contentWindow.document;
+    }
+    
+    return this.contentDocument;
+  },
+
+  replaceTextarea: function(){
+    this.container.appendChild(this.iframe);
+    this.hiddenInput.value = this.textarea.value;
+    this.hiddenInput.name = this.textarea.name;
+    this.hiddenInput.id = this.textarea.id;
+    this.container.insertBefore(this.hiddenInput, this.iframe);
+    this.textarea.parentNode.insertBefore(this.container, this.textarea);
+    this.textarea.parentNode.removeChild(this.textarea);
+  },
+  
+  unreplaceTextarea: function(){
+    this.container.parentNode.insertBefore(this.textarea, this.container);
+    this.container.parentNode.removeChild(this.container);
+  },
+  
+  toggleTextarea: function(){
+    if (this.iframe.parentNode) {
+      this.textarea.value = this.textilize(this.getContents());
+      this.iframe.parentNode.insertBefore(this.textarea, this.iframe);
+      this.iframe.parentNode.removeChild(this.iframe);
+      return true;
+    } else {
+      this.textarea.parentNode.insertBefore(this.iframe, this.textarea);
+      this.textarea.parentNode.removeChild(this.textarea);
+      var self = this;
+      this.onReady(function(){
+        self.findContentDocument();
+        self.hiddenInput.value = self.textarea.value;
+        self.enableEditor();
+        self.toolbar.observeEditor();
+      });
+      return false;
+    }
+  },
+  
+  enableEditor: function(){
+    this.contentDocument.designMode = 'on';
+    try { //Opera chokes when trying to set styleWithCSS
+      this.execCommand('styleWithCSS', false);
+    } catch(e) {}
+    this.setContents(this.htmlize(this.hiddenInput.value));
+  },
+  
+  focusEditor: function(){
+    this.iframe.contentWindow.focus();
+  },
+  
+  createToolbar: function(){
+    this.toolbar = new SanskritToolbar(this, this.options.toolbar || {});
+  },
+  
+  insertToolbar: function(toolbar){
+    this.container.insertBefore(toolbar, this.iframe);
+  },
+  
+  getContents: function(){
+    return this.contentDocument.getElementsByTagName('body')[0].innerHTML;
+  },
+  
+  setContents: function(contents){
+    var self = this;
+    setTimeout(function(){
+      self.contentDocument.getElementsByTagName('body')[0].innerHTML = contents;
+    }, 250)
+  },
+  
+  getSelection: function(){
+    if (this.iframe.contentWindow.document.selection) {
+      return this.iframe.contentWindow.document.selection;
+    } else {
+      return this.iframe.contentWindow.getSelection();
+    }
+  },
+  
+  //Returns an array with the ancestor nodes that surround the current selection
+  //Closer relatives come first
+  getCurrentAncestors: function(){
+    var selection = this.getSelection();
+    
+    if (selection.createRange) {
+      var range = selection.createRange();
+      var ancestor = range.parentElement();
+    } else {
+      var range = selection.getRangeAt(0);
+      var ancestor = range.commonAncestorContainer;
+    }
+    
+    var ancestors = [];
+    while (ancestor.nodeType !== 1 || ancestor.nodeName.toLowerCase() !== 'body') {
+      if (ancestor.nodeType === 1) {
+        ancestors.push(ancestor);
+      }
+      
+      ancestor = ancestor.parentNode;
+    }
+    
+    return ancestors;
+  },
+  
+  //Returns true if a node with nodeName surrounds the current selection
+  includeAncestor: function(nodeName, ancestors){
+    ancestors = ancestors || this.getCurrentAncestors();
+    var includesNodeName = false;
+    for (var i=0; i<ancestors.length; i++) {
+      if (ancestors[i].nodeName.toLowerCase() == nodeName.toLowerCase()) {
+        includesNodeName = true;
+      }
+    }
+    return includesNodeName;
+  },
+  
+  applyClassNames: function(){
+    Sanskrit.addClassName(this.container, this.options.className || 'sanskrit');
+  },
+  
+  //Put the contents of the iframe into the form onsubmit
+  hijackForm: function(){
+    var self = this;
+    var old = this.form.onsubmit || function(){};
+    
+    this.form.onsubmit = function(){
+      old();
+      self.hiddenInput.value = self.textilize(self.iframe.parentNode ? self.getContents() : self.textarea.value);
+      return self.callbacks.onSubmit.call(self);
+    }
+  },
+  
+  addStyle: function(styles){
+    var self = this;
+    setTimeout(function(){
+      if (document.createStyleSheet) {//IE
+          var s = self.contentDocument.createStyleSheet(),
+              rules = styles.split('}'),
+              i, nv;
+          for (i = 0; i < rules.length-1; i++) {
+            nv = rules[i].split('{');
+            s.addRule(nv[0], nv[1]);
+          }
+      } else {//Others
+        var s = document.createElement('style');
+        s.appendChild(document.createTextNode(styles));
+        self.contentDocument.getElementsByTagName('head')[0].appendChild(s);
+      }
+    }, 250);
+  },
+  
+  textilize: function(html, escape){
+    html = html.replace(/\s*<p>((.|[\r\n])*?)<\/p>\s*/gi, "\n\n$1\n\n");
+    html = html.replace(/<br ?\/?>/gi, "\n");
+    html = html.replace(/<(?:b|strong)>((.|[\r\n])*?)<\/(?:b|strong)>/gi, '*$1*');
+    html = html.replace(/<(?:i|em)>((.|[\r\n])*?)<\/(?:i|em)>/gi, '_$1_');
+    html = html.replace(/<(?:strike|del)>((.|[\r\n])*?)<\/(?:strike|del)>/gi, '-$1-');
+    html = html.replace(/<(?:u|ins)>((.|[\r\n])*?)<\/(?:u|ins)>/gi, '+$1+');
+    html = html.replace(/<a href="(.*?)">((.|[\r\n])*?)<\/a>/gi, '"$2":$1');
+    html = html.replace(/<code.*?>((.|[\r\n])*?)<\/code>/gi, '@$1@');
+    if (escape){
+      html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');//Escape any remaining HTML
+    }
+    html = html.replace(/(\r\n|\n){3,}/g, "\n\n");
+    html = html.replace(/^[\r\n]+|[\r\n]+$/g, '');
+    return html;
+  },
+  
+  htmlize: function(textile, escape){
+    var paragraphs = textile.split("\n\n");
+    for (var i=0; i<paragraphs.length; i++) {
+      paragraphs[i] = paragraphs[i].replace(/(^|\r\n|\n|\r)\* (.*)/g, '$1###LI### $2');
+      paragraphs[i] = paragraphs[i].replace(/\n/gi, '<br/>');
+      paragraphs[i] = paragraphs[i].replace(/@((.|[\r\n])*?)@/gi, '<code>$1</code>');
+      paragraphs[i] = paragraphs[i].replace(/\*(.+?)\*/gi, (this.internetExplorer ? '<strong>$1</strong>' : '<b>$1</b>'));
+      paragraphs[i] = paragraphs[i].replace(/_(.+?)_/gi, (this.internetExplorer ? '<em>$1</em>' : '<i>$1</i>'));
+      paragraphs[i] = paragraphs[i].replace(/\+(.+?)\+/gi, '<u>$1</u>');
+      paragraphs[i] = paragraphs[i].replace(/-(.+?)-/gi, '<strike>$1</strike>');
+      paragraphs[i] = paragraphs[i].replace(/"(.+?)":([^\s\n<]+)/gi, '<a href="$2">$1</a>');
+      paragraphs[i] = paragraphs[i].replace(/###LI###/gi, '*');
+      paragraphs[i] = '<p>'+paragraphs[i]+'</p>';
+    }
+    textile = paragraphs.join("\n");
+    textile = textile.replace(/<p>[\s\n]*<\/p>/g, '');
+    if (escape){
+      textile = textile.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    }
+    return textile;
+  },
+  
+  execCommand: function(name, value){
+    if (typeof value == 'undefined') { value = null; }
+    this.contentDocument.execCommand(name, false, value);
+  },
+  
+  richTextIsAvailable: function(){
+    return(typeof this.contentDocument.execCommand != 'undefined');
+  },
+  
+  callbacks: {
+    onSubmit: function(){ return true; }
+  }
+
+};
+
+
+
+
+function SanskritToolbar(editor, options) {
+
+  this.options = options || {};
+  this.editor = editor;
+  this.list = document.createElement('ul');
+  this.listItems = [];
+  this.listItemCallbacks = {};
+  this.availableActions = {'strong': 'strong', 'em': 'em', 'ins': 'ins', 'del': 'del', 'link': 'link', 'unlink': 'unlink', 'textile': 'textile'};
+  this.callbacks = Sanskrit.inherit(SanskritToolbar.prototype.callbacks);
+  
+  for (var action in this.actions) {
+    var callbackName = 'on'+action.slice(0,1).toUpperCase()+action.slice(1);
+    if (typeof this.options[callbackName] === 'function') {
+      this.callbacks[callbackName] = this.options[callbackName];
+    }
+  }
+  
+  this.addListItems();
+  this.applyClassNames();
+  this.injectListIntoEditor();
+  this.observeEditor();
+
+};
+
+SanskritToolbar.prototype = {
+
+  actions: {
+  
+    strong: function(editor){
+      editor.execCommand('Bold');
+    },
+    
+    em: function(editor){
+      editor.execCommand('Italic');
+    },
+    
+    link: function(editor){
+      var uri = prompt('Enter link address:');
+      if (typeof uri === 'string') {
+        if (!uri.match(/^[a-zA-Z]+:\/\//)) { uri = 'http://' + uri; }
+        editor.execCommand('createLink', uri);
+      } else {
+        return false;
+      }
+    },
+    
+    unlink: function(editor){
+      editor.execCommand('unlink');
+      editor.toolbar.deactivateListItem('link'); //Turn off link action
+      editor.toolbar.activateListItem('unlink'); //This action can't be "active"
+    },
+    
+    del: function(editor){
+      editor.execCommand('strikeThrough');
+    },
+    
+    ins: function(editor){
+      editor.execCommand('underline');
+    },
+    
+    textile: function(editor) {
+      editor.toolbar.resetListStatus();
+      
+      var tb = editor.toolbar;
+      var b = editor.toggleTextarea();
+      if (b) { tb.activateListItem('textile'); } else { tb.deactivateListItem('textile'); }
+      
+      for (var key in tb.actions) {
+        if (tb.actions.hasOwnProperty(key) && key !== 'textile') {
+          if(b) { tb.hideListItem(key); } else { tb.showListItem(key); }
+        }
+      }
+      
+      return false;
+    }
+  
+  },
+  
+  callbacks: {},
+  
+  createAction: function(link, action){
+    var self = this;
+    var old = link.onclick || function(){};
+    
+    return function(){
+      old();
+      
+      if (self.actions[action](self.editor) !== false) {
+        var callbackName = 'on'+action.slice(0,1).toUpperCase()+action.slice(1);
+        if (typeof self.callbacks[callbackName] === 'function') {
+          self.callbacks[callbackName].call(self.editor);
+        }
+        
+        self.updateListStatus(self.editor.getCurrentAncestors());
+        self.editor.focusEditor();
+      }
+      
+      return false;
+    };
+  },
+  
+  addListItems: function(){
+    var actions = this.options.actions || this.availableActions;
+    
+    for (var key in actions) {
+      if (actions.hasOwnProperty(key)) {
+        var listItem = document.createElement('li');
+        var link = document.createElement('a');
+        link.setAttribute('href', '#');
+        Sanskrit.addClassName(listItem, key);
+        link.appendChild((typeof actions[key] == 'string') ? document.createTextNode(actions[key]) : actions[key]);
+        link.onclick = this.createAction(link, key);
+        
+        listItem.appendChild(link);
+        this.listItems.push(listItem);
+        this.list.appendChild(listItem);
+      }
+    }
+  },
+  
+  applyClassNames: function(){
+    Sanskrit.addClassName(this.list, 'toolbar');
+  },
+  
+  injectListIntoEditor: function(){
+    this.editor.insertToolbar(this.list);
+  },
+  
+  observeEditor: function(){
+    var self = this;
+    setTimeout(function(){
+      if (self.editor.contentDocument.addEventListener) {
+        self.editor.contentDocument.addEventListener('mouseup', function(){self.updateListStatus(self.editor.getCurrentAncestors())}, false);
+        self.editor.contentDocument.addEventListener('keyup', function(){self.updateListStatus(self.editor.getCurrentAncestors())}, false);
+        self.editor.contentDocument.addEventListener('keydown', function(){self.updateListStatus(self.editor.getCurrentAncestors())}, false);
+        self.editor.contentDocument.addEventListener('blur', function(){self.resetListStatus()}, false);
+      } else {
+        self.editor.contentDocument.attachEvent('onmouseup', function(){self.updateListStatus(self.editor.getCurrentAncestors())});
+        self.editor.contentDocument.attachEvent('onkeyup', function(){self.updateListStatus(self.editor.getCurrentAncestors())});
+        self.editor.contentDocument.attachEvent('onkeydown', function(){self.updateListStatus(self.editor.getCurrentAncestors())}, false);
+        self.editor.contentDocument.attachEvent('onblur', function(){self.resetListStatus()}, false);
+      }
+    }, 100);
+  },
+  
+  getListItem: function(className){
+    if (!(typeof className == 'string')) { return className; }
+    for (var i=0; i<this.listItems.length; i++){
+      if (Sanskrit.hasClassName(this.listItems[i], className)) {
+        return this.listItems[i];
+      }
+    }
+    return document.createElement('li');
+  },
+  
+  activateListItem: function(className){
+    Sanskrit.addClassName(this.getListItem(className), 'active');
+  },
+  
+  deactivateListItem: function(className){
+    Sanskrit.removeClassName(this.getListItem(className), 'active');
+  },
+  
+  toggleListItem: function(className){
+    var li = this.getListItem(className);
+    if (Sanskrit.hasClassName(li, 'active')) {
+      Sanskrit.removeClassName(li, 'active');
+    } else {
+      Sanskrit.addClassName(li, 'active');
+    }
+  },
+  
+  hideListItem: function(className){
+    var li = this.getListItem(className);
+    li.previousDisplayValue = li.style.display;
+    li.style.display = 'none';
+  },
+  
+  showListItem: function(className) {
+    var li = this.getListItem(className);
+    li.style.display = li.previousDisplayValue || '';
+  },
+  
+  resetListStatus: function(){
+    for (var i=0; i<this.listItems.length; i++){
+      this.deactivateListItem(this.listItems[i]);
+    }
+  },
+  
+  updateListStatus: function(ancestors){
+    this.resetListStatus();
+    
+    for (var i=0; i<ancestors.length; i++) {
+      switch (ancestors[i].nodeName.toLowerCase()) {
+        case 'b':
+          this.activateListItem('strong');
+          break;
+        case 'strong':
+          this.activateListItem('strong');
+          break;
+        case 'i':
+          this.activateListItem('em');
+          break;
+        case 'em':
+          this.activateListItem('em');
+          break;
+        case 'u':
+          this.activateListItem('ins');
+          break;
+        case 'strike':
+          this.activateListItem('del');
+          break;
+        case 'a':
+          this.activateListItem('link');
+          break;
+      }
+    }
+  }
+
+};
+
+
+//Looks for textareas with the class name "sanskrit" and makes them rich-text
+Sanskrit.onLoadFunction = function(){
+  var textareas = [];
+  var textareasCollection = document.getElementsByTagName('textarea');
+  for(var i=0; i<textareasCollection.length; i++){ textareas.push(textareasCollection[i]); }
+  
+  for (var i=0; i<textareas.length; i++) {
+    if (Sanskrit.hasClassName(textareas[i], 'sanskrit')) {
+      new Sanskrit(textareas[i]);
+    }
+  }
+};
+
+if (typeof Event != 'undefined' && Event.onReady) { //LowPro
+  Event.onReady(Sanskrit.onLoadFunction);
+} else if (typeof Event != 'undefined' && Event.observe) { //Prototype
+  Event.observe(window, 'load', Sanskrit.onLoadFunction);
+} else if (window.addEventListener) { //W3C
+  window.addEventListener('load', Sanskrit.onLoadFunction, false);
+} else if (window.attachEvent) { //IE
+  window.attachEvent('onload', Sanskrit.onLoadFunction, false);
+} else { //1980s event handling
+  var old = window.onload;
+  window.onload = function(){
+    old();
+    Sanskrit.onLoadFunction();
+  };
+}
 CodeMirror.defineMode("javascript", function(config, parserConfig) {
   var indentUnit = config.indentUnit;
   var jsonMode = parserConfig.json;
@@ -4753,57 +5314,78 @@ var Asset = Model('asset', function() {
       });
     },
     
+    keys: {},
+    
     // Ajax uploader code
     create: function (file, callback) { 
       var url = '/admin/assets.json';
       Asset.callback = callback;
       
-      var xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
-      xhr.upload.addEventListener('progress', Asset.onprogressHandler, false);
-      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
-      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);   
+      var uuid = Asset.generate_uuid(); 
+      jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
       
+      
+      this.xhr = new XMLHttpRequest();
+      this.xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      this.xhr.upload.addEventListener('progress', Asset.onprogressHandler);
+      this.xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      this.xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
+      
+      this.xhr.upload.uuid = uuid;
+      this.xhr.upload.filename = file.name
+
       // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-      xhr.open('POST', url, true);
-      xhr.setRequestHeader("Content-Type", "application/octet-stream");
-      xhr.setRequestHeader("X-File-Name", file.name);
-      xhr.send(file); 
+      this.xhr.open('POST', url, true);
+      this.xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      this.xhr.setRequestHeader("X-File-Name", file.name);
+      this.xhr.setRequestHeader("X-File-Upload", "true");
+      this.xhr.send(file); 
     },  
     
-    onloadstartHandler:function (evt) {
+    onloadstartHandler: function(evt) {
       console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
-    onloadHandler: function (evt) { 
+    onloadHandler: function(evt) { 
       console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
-    onprogressHandler: function (evt) {
+    onprogressHandler: function(evt) {
       var percent = evt.loaded / evt.total * 100; 
-      console.log(percent); 
-      // $('#upload_progress .bar').width(percent + '%');
+      var uuid = evt.target.uuid;
+      jQuery('#progress-' + uuid + ' .percentage').text(percent + '%');
+      // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  
     },
     
     onreadystatechangeHandler: function(evt){
       var status = null;
-      
       try { status = evt.target.status; }
       catch(e) { return; }
       
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+        
         var response = JSON.parse(evt.target.responseText);
         var asset = new Asset({ id: response.id }); 
-        
         asset.merge(response);
         Asset.add(asset); 
-
-        if(Asset.callback){ Asset.callback.call(this); }   
+        
+        if(Asset.callback['success']){ Asset.callback['success'].call(this); }   
       }
+    },
+    
+    generate_uuid: function(){
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = "0123456789ABCDEF";
+      for (var i = 0; i < 32; i++) { s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1); }
+      s[12] = "4";                                       // bits 12-15 of the time_hi_and_version field to 0010
+      s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      return s.join(''); 
     }
+
   });
 
 });
@@ -5708,13 +6290,45 @@ Assets = Sammy(function (app) {
 
     // Checks for loaded assets, then executes the callback   
     loadAssets: function(params, callback){  
-      
       if(Asset.all().length == 0 ){
         Asset.searchAdmin(params, function(){      
           if(callback){ callback.call(this); } 
         });
       } else {        
         if(callback){ callback.call(this); } 
+      }
+    },
+    
+    // Sends each file to the server in turn, instead of all at once...
+    send_files: function(files, params, callback){
+      var application = this;
+      var counter = 0;
+      for(var i = 0; i < files.length; i++) {   
+        // var uuid = Asset.generate_uuid();
+        
+        var file = files[i];
+        var name = file.name
+
+        Asset.create(file, {
+          progress: function(upload, percent){
+            console.log(upload.filename + ': ' + percent)
+          },
+          success: function(){  
+            // Total Progress bar goes here
+            counter = counter + 1;
+            console.log(counter)
+            // logger.info('asset ' + (counter / files.length * 100) + '%');
+            // jQuery('.progress').text((counter / files.length * 100) + '%');
+
+            if(counter == files.length){
+              // This needs to be fixed, as it sends another request to the server that isn't really needed...
+              // I could simply fix the ordering or something...
+              Asset.searchAdmin(params, function(){ 
+                if(callback){ callback.call(this); }  
+              });
+            }
+          }
+        });     
       }
     }
   });
@@ -5758,6 +6372,7 @@ Assets = Sammy(function (app) {
   // Create Asset
   // ---------------------------------------------  
   this.post('/admin/assets', function(request){   
+    var application = this;
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
@@ -5768,24 +6383,13 @@ Assets = Sammy(function (app) {
     //  fileInput = uploadForm.find('input[type=file]'),
     //  files = fileInput.attr('files');
     
-    var counter = 0;
-    for(var i = 0; i < files.length; i++) {   
-      Asset.create(files[i], function(){  
-        // Progress bar goes here
-        counter = counter + 1;
-        logger.info('asset ' + (counter / files.length * 100) + '%');
-        jQuery('.progress').text((counter / files.length * 100) + '%');
-        
-        if(counter == files.length){
-          Asset.searchAdmin(params, function(){  
-            var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-            assetIndex.replace('#editor').then(function(){
-              jQuery('#ajax_uploader').attr('multiple','multiple'); 
-            });
-          });
-        };
-      });     
-    }
+    this.send_files(files, params, function(){
+      var assetIndex = application.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
+      assetIndex.replace('#editor').then(function(){
+        jQuery('#ajax_uploader').attr('multiple','multiple'); 
+      });
+    });
+
     return false; 
   });
 
@@ -5810,6 +6414,7 @@ Assets = Sammy(function (app) {
   });
   
   // Update Asset
+  // ---------------------------------------------  
   this.put('#/assets/:id', function(req){
     var application = this;
     var asset = Asset.find(req.params['id']);     
@@ -5823,6 +6428,7 @@ Assets = Sammy(function (app) {
   });    
   
   // Remove Asset
+  // ---------------------------------------------  
   this.get('#/assets/:id/remove', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : null;                             
@@ -5844,6 +6450,7 @@ Assets = Sammy(function (app) {
   });
   
   // Delete Asset
+  // ---------------------------------------------  
   this.del('#/assets/:id', function(request){
     var application = this;    
     var query = request.params['query'] ? request.params['query'] : null; 
@@ -5858,10 +6465,6 @@ Assets = Sammy(function (app) {
       }
     });
   });    
-        
-  app.get('/', function (req) {
-    // jQuery('h1').text('Start Page');
-  });
 
 });
 Pages = Sammy(function (app) {   
@@ -5897,24 +6500,28 @@ Pages = Sammy(function (app) {
     },
     
     // Renders the Page tree
-    renderTree: function(page){ 
+    renderTree: function(page, active_page){ 
       var application = this;
       var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
-        application.renderNode(page); 
+        application.renderNode(page, active_page); 
       });
     },
     
-    renderNode: function(page){ 
+    renderNode: function(page, active_page){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
       pageNode.appendTo('#page-' + page.id()).then(function(){
-        page.children().each(function(child){   
+
+        page.children().each(function(child){  
+          if(child.id() == active_page.id()){
+            jQuery('li#page-' + child.id()).addClass('active');
+          }
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child);  
+            application.renderNode(child, active_page);  
           }
         });
       });       
@@ -5929,41 +6536,27 @@ Pages = Sammy(function (app) {
           base_page_id: page.id()
         });  
         showPage.replace('#editor').then(function(){  
-          iFramer.initialize('#preview iframe', function(){
+          iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
-          jQuery('.toggle-page-editor').click(function(e){
-            e.preventDefault();
-            var page_editor = jQuery('#page-editor');
-            var page_title_input = jQuery('#page-title');
-            if (page_editor.hasClass('open')){
-              page_editor.removeClass('open').animate({'height': '0'}, 300);
-              page_title_input.attr('disabled', 'disabled');
-            } else {
-              page_editor.addClass('open').animate({'height': '200px'}, 300);
-              page_title_input.removeAttr('disabled').focus();
-            }
-          });
-         
-          // jQuery('#page-assets .asset').each(function(i, el){
-          //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
-          // });
+          jQuery('li.node').removeClass('active');
+          jQuery('#page-' + page.id()).addClass('active');
         });
       }
     }, 
     
-    renderPage: function(page){ 
-      var application = this;
-      var editPage = application.render('/templates/admin/pages/edit.mustache', { 
-        page: page.asJSON(), 
-        layouts: Layout.asLayoutJSON(page.attr('layout_id')) 
-      });  
-      editPage.replace('#editor').then(function(){
-        // TabControl.initialize('.tab'); 
-        // jQuery('#page-assets .asset').each(function(i, el){
-        //   $(el).css({'z-index': '100000', 'position': 'relative'}).draggable({ revert: true }); 
-        // })
-      });
+    open_page_editor: function(){
+      var page_editor = jQuery('#page-editor');
+      var page_title_input = jQuery('#page-title');
+      page_editor.addClass('open').animate({'height': '200px'}, 300);
+      page_title_input.removeAttr('disabled').focus();
+    }, 
+    
+    close_page_editor: function(){
+      var page_editor = jQuery('#page-editor');
+      var page_title_input = jQuery('#page-title');
+      page_editor.removeClass('open').animate({'height': '0'}, 300);
+      page_title_input.attr('disabled', 'disabled');
     }
     
   });
@@ -6022,9 +6615,6 @@ Pages = Sammy(function (app) {
         // Should really only load the relavent ones...
         Page.load(function(){  
           context.application.renderNode(page);
-          var now = new Date();
-          var end = now.getTime() - start; 
-          console.log(end)
           // Hide spinner    
         });
       } else {    
@@ -6054,7 +6644,7 @@ Pages = Sammy(function (app) {
 
     if(context.refresh_pages){
       request.loadPages(function(){
-        request.renderTree(Page.root());  
+        request.renderTree(Page.root(), Page.root());  
         logger.info('pages')
       });   
     } 
@@ -6063,6 +6653,9 @@ Pages = Sammy(function (app) {
     context.do_not_refresh = false;              
   });
   
+  
+  // New Page
+  // ---------------------------------------------
   this.get('#/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
@@ -6072,32 +6665,42 @@ Pages = Sammy(function (app) {
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
       if(context.refresh_pages){
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), page); 
         context.refresh_pages = true;
       }
 
-      var newPage = request.render('/templates/admin/pages/new.mustache', { parent: page.asJSON() }); 
+      var newPage = request.render('/templates/admin/pages/new.mustache', { 
+        parent: page.asJSON(),
+        layouts: Layout.asLayoutJSON(page.attr('layout_id'))
+      }); 
       newPage.replace('#new-page-container');
     }); 
   }); 
   
+  // Create Page
+  // ---------------------------------------------
   this.post('#/pages/:page_id', function(request){
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
     
-    // Needs to be rewritten  
-    Page.create(attributes, function(results, results2){ 
-      context.refresh_pages = true;  
-      Utilities.notice('Successfully saved page')
-      request.redirect('#/pages/' + results.id + '/edit');
-    }); 
+    var page = new Page(request.params['page']); 
+    page.save(function(success, results){   
+      var response = JSON.parse(results.responseText);   
+      if(response.errors){
+        alert(JSON.stringify(response));  
+      }else{  
+        context.refresh_pages = true;  
+        Utilities.notice('Successfully saved page');
+        request.redirect('#/pages/' + response.id);
+      }
+    });
   }); 
   
   // Show Page
   // ---------------------------------------------
   this.get('#/pages/:id/?', function(request){ 
-    logger.info('pages show')
+    var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();
     this.loadPages(function(){  
@@ -6117,9 +6720,11 @@ Pages = Sammy(function (app) {
         context.modal = false;
         context.do_not_refresh = false;
         if(context.refresh_pages){
-          request.renderTree(Page.root());
+          request.renderTree(Page.root(), page);
           context.refresh_pages = false;  
         } 
+      }else{
+        application.close_page_editor();
       }
     });
     context.do_not_refresh = false;    
@@ -6128,32 +6733,25 @@ Pages = Sammy(function (app) {
   // Edit Page
   // ---------------------------------------------
   this.get('#/pages/:id/edit/?', function(request){  
-    // alert('Soon you will be able to edit a page here!');
-    // request.redirect('#/pages/' + request.params['id'])
+    var application = this;
     Galerie.close();  
-    context.modal = true;  
+    context.modal = false;  
 
     this.loadPages(function(){  
-      var page_id = request.params['id'];
-      var page = Page.find(page_id); 
-      if(!context.do_not_refresh){     
-        if(page) {
-          request.renderPage(page); 
-        } else {  
-          // Loads page if the current collection does not contain it
-          page = new Page({ id: page_id });
-          page.load(function(){
-            request.renderPage(page); 
-          });
-        } 
-        
+      var page = Page.find(request.params['id']); 
+      if(jQuery('#preview-' + page.id()).length){
+        application.open_page_editor();
+      } else {
+        request.renderPagePreview(page, function(){
+          application.open_page_editor();
+        }); 
         if(context.refresh_pages){
-          request.renderTree(Page.root());
+          request.renderTree(Page.root(), page);
           context.refresh_pages = false;  
         }
       }
     }); 
-    context.do_not_refresh = false;       
+    context.do_not_refresh = true;       
   }); 
     
   
@@ -6170,7 +6768,7 @@ Pages = Sammy(function (app) {
         context.modal = false;     
         Utilities.notice('Successfully saved page');
         // application.renderNode(page);
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), page); 
         // request.redirect('#/pages/' + page_id + '/edit');
       } 
     });
@@ -6187,7 +6785,7 @@ Pages = Sammy(function (app) {
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
       if(context.refresh_pages){
-        request.renderTree(Page.root()); 
+        request.renderTree(Page.root(), Page.root()); 
       }
       
       var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
@@ -6259,7 +6857,7 @@ Pages = Sammy(function (app) {
           image_div.append(remove_link);
           
           jQuery('#page-assets').append(image_div); 
-          var preview = jQuery('#preview iframe');
+          var preview = jQuery('.preview iframe');
           preview.hide().attr('src', preview.attr('src'));
           preview.load(function(){
             preview.fadeIn('fast')
@@ -6291,7 +6889,7 @@ Pages = Sammy(function (app) {
         jQuery('#page-asset-' + id).fadeOut('fast', function(){
           $(this).remove();
         }); 
-        var preview = jQuery('#preview iframe');
+        var preview = jQuery('.preview iframe');
         preview.hide().attr('src', preview.attr('src'));
         preview.load(function(){
           preview.fadeIn('fast')
@@ -6336,6 +6934,7 @@ Pages = Sammy(function (app) {
           'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
           'left':  part_editor.offset().left + 400 + 'px'
         });
+        jQuery('#ajax_uploader').attr('multiple','multiple'); 
         application.set_asset_links(part, page);
         context.modal = true;
       });
@@ -6432,7 +7031,7 @@ Pages = Sammy(function (app) {
       Asset.searchAdmin(params, function(){           
         var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
-          
+        
           application.set_asset_links(part, page);
         });
       });
@@ -6473,6 +7072,29 @@ Pages = Sammy(function (app) {
       } 
     });
     
+  });
+  
+  // Upload Assets to Part (Create)
+  // ---------------------------------------------  
+  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){   
+    var fileInput = document.getElementById('ajax_uploader');
+    var files = fileInput.files; 
+    var query = request.params['query'] ? request.params['query'] : null;
+    var uploadForm = jQuery('form#new_asset');
+    var params = query ? { 'query': query } : {}; 
+    params['limit'] = request.params['limit'] || 48;
+    params['page'] = request.params['page'] || 1;
+    //  fileInput = uploadForm.find('input[type=file]'),
+    //  files = fileInput.attr('files');
+    
+    this.send_files(files, params, function(){
+      var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      searchResults.replace('#search-results-container').then(function(){
+        jQuery('#ajax_uploader').attr('files', null); 
+        application.set_asset_links(part, page);
+      });
+    });
+
   });
 
 });

@@ -34,16 +34,13 @@ Assets = Sammy(function (app) {
       var application = this;
       var counter = 0;
       for(var i = 0; i < files.length; i++) {   
+        var file = files[i];
         Asset.create(file, {
           progress: function(upload, percent){
-            // deprecated for now...
             // console.log(upload.filename + ': ' + percent)
           },
           success: function(){  
-            // Total Progress bar goes here
-            counter = counter + 1;
-            // logger.info('asset ' + (counter / files.length * 100) + '%');
-            // jQuery('.progress').text((counter / files.length * 100) + '%');
+            counter = counter + 1;        
             Asset.searchAdmin(params, function(){ 
               if(callback){ callback.call(this); }  
             });

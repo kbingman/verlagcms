@@ -34,19 +34,30 @@ Assets = Sammy(function (app) {
       var application = this;
       var counter = 0;
       for(var i = 0; i < files.length; i++) {   
-        Asset.create(files[i], function(){  
-          // Progress bar goes here
-          counter = counter + 1;
-          logger.info('asset ' + (counter / files.length * 100) + '%');
-          jQuery('.progress').text((counter / files.length * 100) + '%');
+        // var uuid = Asset.generate_uuid();
+        
+        var file = files[i];
+        var name = file.name
 
-          if(counter == files.length){
-            // This needs to be fixed, as it sends another request to the server that isn't really needed...
-            // I could simply fix the ordering or something...
-            Asset.searchAdmin(params, function(){ 
-              if(callback){ callback.call(this); }  
-            });
-          };
+        Asset.create(file, {
+          progress: function(upload, percent){
+            console.log(upload.filename + ': ' + percent)
+          },
+          success: function(){  
+            // Total Progress bar goes here
+            counter = counter + 1;
+            console.log(counter)
+            // logger.info('asset ' + (counter / files.length * 100) + '%');
+            // jQuery('.progress').text((counter / files.length * 100) + '%');
+
+            if(counter == files.length){
+              // This needs to be fixed, as it sends another request to the server that isn't really needed...
+              // I could simply fix the ordering or something...
+              Asset.searchAdmin(params, function(){ 
+                if(callback){ callback.call(this); }  
+              });
+            };
+          }
         });     
       }
     }

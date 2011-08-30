@@ -110,39 +110,49 @@ var Asset = Model('asset', function() {
       });
     },
     
+    keys: {},
+    
     // Ajax uploader code
     create: function (file, callback) { 
       var url = '/admin/assets.json';
       Asset.callback = callback;
       
-      var xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
-      xhr.upload.addEventListener('progress', Asset.onprogressHandler, false);
-      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
-      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);   
+      var uuid = Asset.generate_uuid(); 
+      jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
       
+      
+      this.xhr = new XMLHttpRequest();
+      this.xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      this.xhr.upload.addEventListener('progress', Asset.onprogressHandler);
+      this.xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      this.xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
+      
+      this.xhr.upload.uuid = uuid;
+      this.xhr.upload.filename = file.name
+
       // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-      xhr.open('POST', url, true);
-      xhr.setRequestHeader("Content-Type", "application/octet-stream");
-      xhr.setRequestHeader("X-File-Name", file.name);
-      xhr.setRequestHeader("X-File-Upload", "true");
-      xhr.send(file); 
+      this.xhr.open('POST', url, true);
+      this.xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      this.xhr.setRequestHeader("X-File-Name", file.name);
+      this.xhr.setRequestHeader("X-File-Upload", "true");
+      this.xhr.send(file); 
     },  
     
-    onloadstartHandler:function (evt) {
+    onloadstartHandler: function(evt) {
       console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
-    onloadHandler: function (evt) { 
+    onloadHandler: function(evt) { 
       console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
-    onprogressHandler: function (evt) {
+    onprogressHandler: function(evt) {
       var percent = evt.loaded / evt.total * 100; 
-      console.log(percent); 
-      // $('#upload_progress .bar').width(percent + '%');
+      var uuid = evt.target.uuid;
+      jQuery('#progress-' + uuid + ' .percentage').text(percent + '%');
+      // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  
     },
     
     onreadystatechangeHandler: function(evt){
@@ -158,9 +168,20 @@ var Asset = Model('asset', function() {
         asset.merge(response);
         Asset.add(asset); 
         
-        if(Asset.callback){ Asset.callback.call(this); }   
+        if(Asset.callback['success']){ Asset.callback['success'].call(this); }   
       }
+    },
+    
+    generate_uuid: function(){
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = "0123456789ABCDEF";
+      for (var i = 0; i < 32; i++) { s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1); }
+      s[12] = "4";                                       // bits 12-15 of the time_hi_and_version field to 0010
+      s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      return s.join(''); 
     }
+
   });
 
 });

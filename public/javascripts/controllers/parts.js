@@ -172,7 +172,11 @@ Pages = Sammy(function (app) {
   
   // Upload Assets to Part (Create)
   // ---------------------------------------------  
-  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){   
+  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){  
+    var application = this; 
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
+    
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;

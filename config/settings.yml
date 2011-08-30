@@ -23,4 +23,4 @@ defaults: &defaults
 
 :production:
   <<: *defaults 
-  :domain: invisible.ch
+  :domain: heroku.com

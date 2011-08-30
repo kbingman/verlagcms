@@ -117,10 +117,9 @@ var Asset = Model('asset', function() {
       var url = '/admin/assets.json';
       Asset.callback = callback;
       
-      xhr = new XMLHttpRequest();
-      
+      var xhr = new XMLHttpRequest();
       var uuid = Asset.generate_uuid(); 
-      jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
+      
       xhr.upload.uuid = uuid;
       xhr.upload.filename = file.name
 
@@ -134,24 +133,21 @@ var Asset = Model('asset', function() {
       xhr.setRequestHeader("Content-Type", "application/octet-stream");
       xhr.setRequestHeader("X-File-Name", file.name);
       xhr.setRequestHeader("X-File-Upload", "true");
-      xhr.send(file); 
+      xhr.send(file);   
+      if(callback['before']){ callback['before'].call(this, uuid); } 
     },  
     
     onloadstartHandler: function(evt) {
-      console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
     onloadHandler: function(evt) { 
-      console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
     onprogressHandler: function(evt) {
       var percent = Math.round(evt.loaded / evt.total * 100); 
-      var uuid = evt.target.uuid;
-      jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
-      // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  
+      if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target.uuid, percent); }  
     },
     
     onreadystatechangeHandler: function(evt){
@@ -167,7 +163,6 @@ var Asset = Model('asset', function() {
         asset.merge(response);
         Asset.add(asset); 
 
-        
         if(Asset.callback['success']){ Asset.callback['success'].call(this, asset); }   
       }
     },

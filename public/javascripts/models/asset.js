@@ -166,8 +166,9 @@ var Asset = Model('asset', function() {
         var asset = new Asset({ id: response.id }); 
         asset.merge(response);
         Asset.add(asset); 
+
         
-        if(Asset.callback['success']){ Asset.callback['success'].call(this); }   
+        if(Asset.callback['success']){ Asset.callback['success'].call(this, asset); }   
       }
     },
     

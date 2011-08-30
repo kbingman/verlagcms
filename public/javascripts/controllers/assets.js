@@ -39,15 +39,19 @@ Assets = Sammy(function (app) {
           progress: function(upload, percent){
             // console.log(upload.filename + ': ' + percent)
           },
-          success: function(){  
-            counter = counter + 1;        
-            if(counter == files.length){
-              // This needs to be fixed, as it sends another request to the server that isn't really needed...
-              // I could simply fix the ordering or something...
-              Asset.searchAdmin(params, function(){ 
-                if(callback){ callback.call(this); }  
-              });
-            }
+          success: function(asset){  
+            
+            var assetItem = application.render('/templates/admin/assets/asset.mustache', { asset: asset.attr() });
+            assetItem.prependTo('#assets');
+                  
+            // if(counter == files.length){
+            //  // This needs to be fixed, as it sends another request to the server that isn't really needed...
+            //  // I could simply fix the ordering or something...
+            //  
+            //  Asset.searchAdmin(params, function(){ 
+            //    if(callback){ callback.call(this); }  
+            //  });
+            // }
           }
         });     
       }

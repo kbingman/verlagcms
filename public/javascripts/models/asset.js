@@ -119,23 +119,21 @@ var Asset = Model('asset', function() {
       
       var uuid = Asset.generate_uuid(); 
       jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
+      xhr.upload.uuid = uuid;
+      xhr.upload.filename = file.name
       
+      xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      xhr.upload.addEventListener('progress', Asset.onprogressHandler);
+      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
       
-      this.xhr = new XMLHttpRequest();
-      this.xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
-      this.xhr.upload.addEventListener('progress', Asset.onprogressHandler);
-      this.xhr.upload.addEventListener('load', Asset.onloadHandler, false);
-      this.xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
-      
-      this.xhr.upload.uuid = uuid;
-      this.xhr.upload.filename = file.name
-
       // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-      this.xhr.open('POST', url, true);
-      this.xhr.setRequestHeader("Content-Type", "application/octet-stream");
-      this.xhr.setRequestHeader("X-File-Name", file.name);
-      this.xhr.setRequestHeader("X-File-Upload", "true");
-      this.xhr.send(file); 
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.setRequestHeader("X-File-Upload", "true");
+      xhr.send(file); 
     },  
     
     onloadstartHandler: function(evt) {
@@ -149,7 +147,7 @@ var Asset = Model('asset', function() {
     },
 
     onprogressHandler: function(evt) {
-      var percent = evt.loaded / evt.total * 100; 
+      var percent = Math.round(evt.loaded / evt.total * 100); 
       var uuid = evt.target.uuid;
       jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
       // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  

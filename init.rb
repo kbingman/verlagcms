@@ -32,6 +32,7 @@ require 'canable'
 # Rack
 require 'rack/cache'
 require 'rack/request' 
+require 'rack/raw_upload'
 
 # Templating
 require 'mustache/sinatra'
@@ -40,7 +41,7 @@ require 'liquid'
 require 'RedCloth' 
 # require 'jim'
 
-require './lib/rack/raw_upload'
+# require './lib/rack/raw_upload'
 require './lib/rack/subdomains'
 require './lib/hunt/search_all'
 

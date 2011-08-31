@@ -37,6 +37,9 @@ Pages = Sammy(function (app) {
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
         application.renderNode(page, active_page); 
+        if(page.id() == active_page.id()){
+          jQuery('li#page-' + page.id()).addClass('active');
+        }
       });
     },
     

@@ -37,7 +37,7 @@ class Asset
   
   liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
-  # validates :title, :uniqueness => { :scope => :site_id }
+  validates :title, :uniqueness => { :scope => :site_id }
   # validates_presence_of :artist_id # :story_id
   # validate :ensure_proper_file_size 
   # def ensure_proper_file_size 
@@ -56,6 +56,10 @@ class Asset
   
   def self.per_page
     24
+  end
+  
+  def self.search_all_with_title(term)
+    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :title => /#{term}/i }])
   end
   
   def self.search_with_artist(query)

@@ -7,13 +7,15 @@ class Main
       # -------------------------------------------
       get '/?' do  
         @query = params[:query] ? params[:query].split('.')[0] : ''
-        per_page = params[:limit] ? params[:limit] : Asset.per_page
+        options = { :order => 'created_at DESC',  :page => params[:page] }
+        options[:per_page] = params[:limit] ? params[:limit] : Asset.per_page
+        
         plucky_query = if params[:query]
-          Asset.by_site(current_site).search_all(@query)
+          Asset.by_site(current_site).search_all_with_title(@query)
         else
           Asset.by_site(current_site)
         end
-        @assets = plucky_query.paginate(:order => 'created_at DESC', :per_page => per_page, :page => params[:page])
+        @assets = plucky_query.paginate(options)
         
         @assets.to_json 
       end

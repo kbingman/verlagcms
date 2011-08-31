@@ -138,6 +138,11 @@ end
 # require root_path('app/routes/admin/users')
 # require root_path('app/routes/admin/rest_controller') 
 
+# Load api routes
+Dir[root_path('app/routes/api/*.rb')].each do |file|
+  require file
+end
+
 # Load site and assets route. 
 require root_path('app/routes/assets.rb') 
 require root_path('app/routes/site.rb')

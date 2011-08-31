@@ -62,6 +62,7 @@ var Page = Model('page', function() {
       });
     }, 
     
+    // TODO remove
     // exatract this for general use...
     saveRemote: function(params, callback){ 
       var self = this;  

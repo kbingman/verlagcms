@@ -17,19 +17,19 @@ Pages = Sammy(function (app) {
     // Render Part
     render_part: function(part, page, template){
       var application = this;   
-      
       var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
       }); 
-      edit_part.replace(jQuery('#extra-info')).then(function(){
+      edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
-        modal_editor.show(function(){
-          application.open_page_editor();
+        var iframe_content = $('iframe').contents();  
+        var part_editor = iframe_content.find('#editor-' + part.id());
+        modal_editor.fadeIn('fast').css({
+          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
+          'left':  part_editor.offset().left + 400 + 'px'
         });
-        // TODO Set conditional here (Modernizr)
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
         application.set_asset_links(part, page);
         context.modal = true;
       });

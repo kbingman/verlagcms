@@ -92,7 +92,7 @@ class Page
   end   
     
   def as_json(options)
-    super(:methods => [:path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+    super(:methods => [:path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :admin_path])
   end     
   
   def path
@@ -101,6 +101,10 @@ class Page
   
   def edit_path
     "/edit#{self.path}"
+  end
+  
+  def admin_path
+    "/pages/#{self.id}"
   end
   
   def child_path(child)

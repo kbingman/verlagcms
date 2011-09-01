@@ -24,10 +24,7 @@ Pages = Sammy(function (app) {
         assets: Asset.asJSON()
       }); 
       edit_part.replace(jQuery('#extra-info')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.show(function(){
-          application.open_page_editor();
-        });
+        application.open_page_editor();
         // TODO Set conditional here (Modernizr)
         jQuery('#ajax_uploader').attr('multiple','multiple'); 
         application.set_asset_links(part, page);

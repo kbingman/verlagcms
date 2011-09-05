@@ -37,7 +37,7 @@ class Asset
   
   liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
-  validates :title, :uniqueness => { :scope => :site_id }
+  # validates :title, :uniqueness => { :scope => :site_id }
   # validates_presence_of :artist_id # :story_id
   # validate :ensure_proper_file_size 
   # def ensure_proper_file_size 

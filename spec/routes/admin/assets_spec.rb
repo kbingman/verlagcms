@@ -39,7 +39,10 @@ describe "routes/admin/assets" do
       
       it 'should not include assets from other sites' do   
         @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
-        @alien_asset = Factory(:asset, :site => @alien_site) 
+        @alien_asset = Factory(:asset, 
+          :site => @alien_site,
+          :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
+          :title => 'alien-image') 
         do_get 
         last_response.body.should_not include(@alien_asset.to_json) 
       end 
@@ -51,7 +54,7 @@ describe "routes/admin/assets" do
     
     context 'html' do 
       def do_post
-        post "/admin/assets", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
+        post "/admin/assets", :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => 'test_file.jpg' }
       end
       
       it 'should be a redirect' do
@@ -111,7 +114,11 @@ describe "routes/admin/assets" do
   context 'DELETE destroy' do  
 
     before(:each) do 
-      @kill_me = Factory(:asset, :title => 'killme', :site_id => @site.id)    
+      @kill_me = Factory(:asset, 
+        :title => 'killme', 
+        :site_id => @site.id, 
+        :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
+        :title => 'kill_me.jpg')    
     end
 
     context 'json' do    

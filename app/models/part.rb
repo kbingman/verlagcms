@@ -10,7 +10,7 @@ class Part
   
   # validates :name, :uniqueness => true
   
-  liquid_methods :name, :content, :render   
+  liquid_methods :name, :content, :render, :id 
   
   def path
    "/pages/#{self.page_id}/parts/#{self.id}" 

@@ -28,7 +28,7 @@ describe Asset do
     end
     
     it "should set the title automatically" do
-      asset = Asset.new(:site => @site, :file => @file)
+      asset = Asset.new(:site => @site, :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')))
       asset.valid?
       asset.title.should == '830px-Tieboardingcraft'
     end  

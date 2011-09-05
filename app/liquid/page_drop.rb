@@ -13,7 +13,7 @@ class PageDrop < Liquid::Drop
      edit = @request.params['edit'] unless @request.nil?
      if edit == 'true' 
        # This is used for the inline editor, setting a small flag with the edit page / part path
-       "/preview#{@page.path}?edit=true" 
+       "/preview#{@page.path}" 
      else
        @page.path 
      end
@@ -50,14 +50,14 @@ class PageDrop < Liquid::Drop
   
 end  
 
-class RenderPart < Liquid::Tag                                             
-  def initialize(tag_name, name, tokens)
+class RenderPart < Liquid::Block                                             
+  def initialize(name, params, tokens)
     super 
-    @name = name
+    @name = params
   end
 
   def render(context)  
-    "This renders the #{@name} part #{@page.title}"  
+    "This renders the #{@name} part"  
     # page.parts.first{|p| p.name == @name}
   end    
 end

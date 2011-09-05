@@ -121,6 +121,12 @@ var Page = Model('page', function() {
       });
     },
     
+    find_by_path: function(path){
+      return this.detect(function(){
+        return this.attr('path') == path
+      });
+    },
+    
     create: function(attributes, callback){
       var url = '/admin/pages.json';
       jQuery.ajax({

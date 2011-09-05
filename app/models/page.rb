@@ -90,9 +90,13 @@ class Page
     # this needs to be moved out of the model...
     self.level * 12
   end   
+  
+  def admin_path
+    "/pages/#{self.id}"
+  end
     
   def as_json(options)
-    super(:methods => [:path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+    super(:methods => [:path, :admin_path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
   end     
   
   def path

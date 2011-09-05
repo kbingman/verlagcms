@@ -31,6 +31,14 @@ Pages = Sammy(function (app) {
           'left':  part_editor.offset().left + 400 + 'px'
         });
         application.set_asset_links(part, page);
+
+        jQuery('#ajax_uploader')
+          .attr('multiple','multiple')
+          .change(function(e){
+            var form = jQuery(this).parents('form:first');
+            jQuery('.progress').slideDown('slow');
+            form.submit();
+          });
         context.modal = true;
       });
     },
@@ -57,7 +65,7 @@ Pages = Sammy(function (app) {
             jQuery('.modal-editor').remove();
             // TODO Change to sammy method
             context.modal = false;
-            document.location.hash = '#/pages/' + page.id();
+            document.location.hash = '#' + page.attr('admin_path');
           });
         });
       });
@@ -190,6 +198,9 @@ Pages = Sammy(function (app) {
       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
         jQuery('#ajax_uploader').attr('files', null); 
+        jQuery('.progress').slideUp('slow', function(){
+          jQuery(this).html('');
+        });
         application.set_asset_links(part, page);
       });
     });

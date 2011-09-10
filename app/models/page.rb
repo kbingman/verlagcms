@@ -1,12 +1,17 @@
 class Page
   include MongoMapper::Document
   include Canable::Ables
-  # plugin MongoMapper::Plugins::IdentityMap 
   
+  # Plugins
+  # ----------------------------------------
+  # plugin MongoMapper::Plugins::IdentityMap 
   plugin Hunt
   searches :title, :tags  
   before_save :index_search_terms  
   
+  
+  # Attributes
+  # ----------------------------------------
   key :title, String, :required => true
   key :slug, String, :required => true #, :unique => { :scope => :parent_id }
   key :description, String 
@@ -20,19 +25,19 @@ class Page
   
   key :parent_id, ObjectId
   belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id  
+  many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
-  scope :by_site,  lambda { |site| where(:site_id => site.id) } 
   
   key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
 
-  many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
-  
   timestamps!
   userstamps!
   
+  # Permissions
+  # ----------------------------------------
   def viewable_by?(user)
     user.site_ids.include? self.site_id
   end
@@ -41,22 +46,29 @@ class Page
     user.site_ids.include? self.site_id
   end
   
+  # Validations
+  # ----------------------------------------
   validates_presence_of :title 
-  
   validates :slug, :uniqueness => { :scope => [:site_id, :parent_id] }
-
+  
+  # Accessible attributes
+  # ----------------------------------------
   attr_accessible :title, :content, :slug, :parent_id, :layout_id, :parts, :assets_list, :tag_list
-  
+
+  # Scopes
+  # ----------------------------------------  
   scope :all_roots, lambda { where(:parent_id => nil) } 
+  scope :by_site,  lambda { |site| where(:site_id => site.id) } 
   
+   
   # Liquid Stuff
-  # liquid_methods :title, :path, :assets, :children, :data, :parts 
-  # def to_liquid request = nil   
-  #   PageDrop.new self, request
-  # end  
-  
+  # ----------------------------------------
   def data request = nil 
     DataProxy.new self, request
+  end
+  
+  def to_liquid
+    PageDrop.new(self)
   end
   
   def render format='html', request=nil 
@@ -69,11 +81,19 @@ class Page
         'site' => SiteDrop.new(self.site, request), 
         'request' => RequestDrop.new(request),  
         # TOTO move this into a page subclass?
-        'search' => SearchDrop.new(self.site, request) 
+        'search' => SearchDrop.new(self.site, request),
+        'registers' => { 'page_id' => self.id.to_s, 'site_id' => self.site_id.to_s }
       })
     end
   end
+  # liquid_methods :title, :path, :assets, :children, :data, :parts 
+  # def to_liquid request = nil   
+  #   PageDrop.new self, request
+  # end
   
+  
+  # Page Tree
+  # ----------------------------------------
   def root?
     self.parent.nil? ? true : false
   end 
@@ -91,14 +111,47 @@ class Page
     self.level * 12
   end   
   
+  
+  # JSON API
+  # ----------------------------------------
+  def as_json(options)
+    super(:methods => [:path, :admin_path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+  end  
+  
+  # Tags
+  # ----------------------------------------
+  def tag_list
+    self.tags.join(', ')
+  end
+  
+  def tag_list=(list)
+    new_tags = list.split(',').map{ |t| t.strip.downcase }
+    self.tags = new_tags.uniq
+  end
+  
+  # Assets
+  # ----------------------------------------
+  def assets_list
+    self.assets.collect{ |a| a.id }.join(',')
+  end
+  
+  def assets_list=(list)
+    new_ids = list.split(',').map{ |t| t.strip }
+    self.asset_ids = new_ids.uniq
+  end  
+  
+  # Parts
+  # ----------------------------------------
+  def part_names
+    self.parts.collect{ |p| p.name } 
+  end
+  
+  # Paths
+  # ----------------------------------------   
   def admin_path
     "/pages/#{self.id}"
   end
-    
-  def as_json(options)
-    super(:methods => [:path, :admin_path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
-  end     
-  
+   
   def path
     self.parent.nil? ? slug : parent.child_path(self)
   end
@@ -129,32 +182,11 @@ class Page
     end
   end
   
+  # Class Methods
+  # ----------------------------------------
   def self.find_by_path(path, site)
     root = site.root
     root.find_by_path(path)
-  end 
-  
-  # TODO move to lib
-  def tag_list
-    self.tags.join(', ')
-  end
-  
-  def tag_list=(list)
-    new_tags = list.split(',').map{ |t| t.strip.downcase }
-    self.tags = new_tags.uniq
-  end
-  
-  def assets_list
-    self.assets.collect{ |a| a.id }.join(',')
-  end
-  
-  def assets_list=(list)
-    new_ids = list.split(',').map{ |t| t.strip }
-    self.asset_ids = new_ids.uniq
-  end  
-  
-  def part_names
-    self.parts.collect{ |p| p.name } 
   end
   
   protected

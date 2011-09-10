@@ -3,6 +3,22 @@ var Layout = Model('template', function() {
    
   // Instance methods
   this.include({  
+    
+    load: function(callback){
+      var self = this;
+      var url = '/admin/templates/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          self.merge(results);    
+          callback.call(this, results);    
+        }
+      });
+    }
 
   }), 
   

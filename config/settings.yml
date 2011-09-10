@@ -7,8 +7,8 @@ defaults: &defaults
   :images:               
     :large: [640, 640, false] 
     :display: [640, 480, false]
-    :thumbnails: [120, 120, false]
-    :icons: [72, 72, true]
+    :thumbnail: [120, 120, false]
+    :icon: [72, 72, true]
 
 :development:
   <<: *defaults

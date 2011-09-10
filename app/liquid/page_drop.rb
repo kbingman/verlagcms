@@ -43,26 +43,33 @@ class PageDrop < Liquid::Drop
     @page.data(@request)
   end 
   
-  def before_method(meth) 
-    part = @page.parts.detect { |p| p.name == meth.to_s } 
-    part
-  end 
+  def find
+    Page.first
+  end
+  
+  # def before_method(meth) 
+  #   part = @page.parts.detect { |p| p.name == meth.to_s } 
+  #   part
+  # end 
   
 end  
 
-class RenderPart < Liquid::Block                                             
+class RenderCss < Liquid::Tag                                             
   def initialize(name, params, tokens)
     super 
-    @name = params
+    @name = name
+    @params = params
   end
 
   def render(context)  
-    "This renders the #{@name} part"  
+    puts @name
+    @params
+    # "This renders the #{@name} part"  
     # page.parts.first{|p| p.name == @name}
   end    
 end
 
-Liquid::Template.register_tag('render_part', RenderPart) 
+Liquid::Template.register_tag('render_css', RenderCss) 
  
 # 
 # class PageDrop < Liquid::Block                                             

@@ -47,7 +47,7 @@ feature "Pages", %q{
     # visit "/admin/#/pages/#{@root.id}" 
       
     
-    page.should have_css('#preview')
+    page.should have_css('.preview')
     page.should have_css('iframe')
     # click_link("edit-#{@root.id}")   
     # page.should have_content('Title')

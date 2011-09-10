@@ -14,6 +14,10 @@ jQuery(document).ready(function () {
   if(!login.length){
     Pages.run('#/pages');
   }
+  
+  window.focus(function(){
+    logger.info('focus');
+  })
 
 
   // AjaxUploader.initialize('#ajax_uploader');

@@ -22,13 +22,4 @@ class MultiImagePart < Part
     GalleryProxy.new(self, edit)
   end
   
-  # validate :unique_name
-  # 
-  # def unique_name 
-  #   exisiting_names = self.parts.collect{ |p| p.name }
-  #   if exisiting_names.include(self.name)
-  #     errors.add( :name, "Name must be unique")
-  #   end
-  # end
-  
 end

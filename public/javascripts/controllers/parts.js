@@ -1,4 +1,4 @@
-Pages = Sammy(function (app) {   
+var Assets = Sammy(function (app) {   
   
   var context = this;  
    
@@ -16,12 +16,16 @@ Pages = Sammy(function (app) {
   app.helpers({  
     // Render Part
     render_part: function(part, page, template){
-      var application = this;   
+      var application = this;  
+      // var template = "<div>{{name}}</div>"
+      // var test_template = application.render(template, { name: 'test' });
       var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
       }); 
+      // var edit_part = Mustache.to_html('<h1>{{name}}</h1>', { name: 'fred'})
+   
       edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
         var iframe_content = $('iframe').contents();  
@@ -31,7 +35,7 @@ Pages = Sammy(function (app) {
           'left':  part_editor.offset().left + 400 + 'px'
         });
         application.set_asset_links(part, page);
-
+      
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
@@ -76,22 +80,34 @@ Pages = Sammy(function (app) {
   // Edit Parts
   // ---------------------------------------------
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
-    var application = this;
     jQuery('.modal-editor').remove();
+    var iframe = $('iframe');
+    var template = 'parts';
     
-    this.loadPages(function(){     
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(request.params['id']);
-      var iframe = $('iframe');
-      var template = 'parts';
-      
-      if(iframe.length){
-        application.render_part(part, page, template);
-      }else{
-        request.renderPagePreview(page, function(){
-          application.render_part(part, page, template);
-        }); 
-      }
+    this.loadPages(function(){ 
+      Page.load_by_id(request.params['page_id'], function(){
+        var page = Page.find(request.params['page_id']);
+        var part = page.parts().find(request.params['id']);
+        var timestamp = jQuery('#page-updated_at').attr('value');
+
+        // Checks to see if part is current...
+        if(iframe.length){
+          if(timestamp != page.attr('updated_at')){
+            var preview = jQuery('.preview iframe');
+            preview.hide().attr('src', preview.attr('src'));
+            preview.load(function(){
+              preview.fadeIn('fast');
+              request.render_part(part, page, template);
+            });
+          }else{
+            request.render_part(part, page, template);
+          }
+        }else{
+          request.renderPagePreview(page, function(){
+            request.render_part(part, page, template);
+          }); 
+        }
+      });    
     }); 
     // context.modal = true;
   });
@@ -108,7 +124,7 @@ Pages = Sammy(function (app) {
       var template = 'image_parts';
       var iframe = $('iframe');
       
-      Asset.searchAdmin({ 'limit': '12' }, function(){ 
+      Asset.searchAdmin({ 'limit': '8' }, function(){ 
         if(iframe.length){
           application.render_part(part, page, template);
         }else{

@@ -34,7 +34,7 @@ var Page = Model('page', function() {
       var self = this;
       var parts = self.attr('parts'); 
       var length = parts.length;                                 
-      // Part.each(function(){ Part.remove(this); });
+      Part.each(function(){ Part.remove(this); });
       
       for (var i=0, l=length; i<l; ++i ){
         var part_data = parts[i];
@@ -124,6 +124,26 @@ var Page = Model('page', function() {
     find_by_path: function(path){
       return this.detect(function(){
         return this.attr('path') == path
+      });
+    },
+    
+    load_by_id: function(id, callback){
+      var url = '/admin/pages/' + id  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          var page = Page.find(results.id);
+          if(!page){
+            var page = new Page({ id: results.id });
+          }
+          page.merge(results);
+          Page.add(page); 
+          if(callback){ callback.call(this, results); }    
+        }
       });
     },
     

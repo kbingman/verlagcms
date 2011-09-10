@@ -1,4 +1,4 @@
-Sites = Sammy(function (app) {
+var Sites = Sammy(function (app) {
   
   var context = this; 
   

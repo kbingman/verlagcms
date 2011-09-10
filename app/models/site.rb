@@ -16,6 +16,10 @@ class Site
     User.by_site(self).all
   end
   
+  def published?
+    false
+  end
+  
   # Need to rename this... used in the REST controllers
   def self.by_site(site, admin = false)
     Site

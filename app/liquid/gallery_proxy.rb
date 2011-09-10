@@ -14,6 +14,10 @@ class GalleryProxy
     @part.assets
   end
   
+  def name
+    @part.name
+  end
+  
   def each
     '@part.assets'
   end
@@ -27,8 +31,7 @@ class GalleryProxy
   end
   
   def method_missing(meth) 
-    part = @page.parts.detect { |p| p.name == meth.to_s } 
-    part ? part.render : ''
+
   end
 
 end

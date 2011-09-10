@@ -53,6 +53,10 @@ class ImageDrop < Liquid::Drop
   def id
     @part.id
   end
+  
+  def edit
+    @edit
+  end
    
   def before_method(method) 
     puts method

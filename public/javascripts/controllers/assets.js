@@ -1,4 +1,4 @@
-Assets = Sammy(function (app) {
+var Assets = Sammy(function (app) {
   
   var application = this; 
   
@@ -161,9 +161,6 @@ Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : null; 
     
     jQuery('.modal-strip').remove();
-                          
-
-    Galerie.close();
     
     this.loadAssets(params, function(){ 
       var asset = Asset.find(request.params['id']);  
@@ -175,6 +172,7 @@ Assets = Sammy(function (app) {
           var asset_node = jQuery('#asset-' + asset.id());
           removeAsset.appendTo(asset_node).then(function(){
             var modal_strip = jQuery('.modal-strip');
+            // event
             modal_strip.fadeIn('fast').css({
               // 'top' :  + 'px',
               // 'left':  'px'

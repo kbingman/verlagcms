@@ -4,6 +4,7 @@
   <form action="#/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
+      <input type="hidden" id="page-updated_at" name="page[updated_at]" value="{{updated_at}}" /> 
     </div> 
     <div id="title-wrapper">
       <div class="field" id="page-title-field">   

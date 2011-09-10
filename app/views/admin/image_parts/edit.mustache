@@ -23,13 +23,13 @@
   {{/part}}
   
   <div class="progress"></div> 
-  <div id="search-results-container"> 
+  <div id="search-results-container" class="assets-container"> 
     <h1>Recent Assets</h1>
     <ul id="part-assets">
       {{#assets}}
         <li id="asset-{{id}}" class="asset">
           <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
-            <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+            <img src="/images/icon/{{id}}/{{file_name}}" alt="{{title}}" />
           </a>  
         </li>
       {{/assets}}
@@ -37,13 +37,14 @@
   </div> 
   
   {{#part}}  
-  <div id="selected-assets" class="clear-both">
+  <div id="selected-assets"  class="assets-container">
     <h1>Selected Asset</h1>
     <ul>
       <li id="asset-{{asset_id}}" class="asset">
-        <img src="/images/icons/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
+        <img src="/images/icon/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
       </li>
     </ul>
+    last updated: 
   </div>
   <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
   {{/part}} 

@@ -46,13 +46,12 @@ module Sinatra
       
       app.post '/login' do 
         warden.custom_failure!       
-        puts params.inspect
         warden.authenticate(:password)
-        puts current_user
         @email = params['username']
         
         if warden.authenticated?
-          redirect '/admin/'
+          redirect_path = session[:return_to] || '/admin/'
+          redirect redirect_path
         else
           admin_haml :'site/login'
         end

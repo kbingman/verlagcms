@@ -3,15 +3,18 @@ var assert = require("assert");
 
 
 // Welcome page
-// zombie.visit("localhost:4567/search", function(err, browser, status){
-//   
-//   console.log(browser.html());
-//   
-// });
+// Load the page from localhost
+zombie.visit("http://localhost:4567/", function (err, browser, status) {
+  // Browser Title
+  assert.equal(browser.text("title"), "The Daily Scan – Home");
+  
+  // Make sure we have an element with the ID brains.
+  assert.ok(browser.querySelector("#container"));
+});
 
 // Main Search
-zombie.visit("localhost:4567/search", function (err, browser, status) {
-  console.log(browser.html());  
+// zombie.visit("localhost:4567/search", function (err, browser, status) {
+//   console.log(browser.html());  
   // browser.fill("search-query", "smut").pressButton("Search", function(err, browser, status) {
   //   setTimeout(function(){
   //     console.log('ASSETS: waited 13 ms');
@@ -24,7 +27,7 @@ zombie.visit("localhost:4567/search", function (err, browser, status) {
   //   }, 13);   
   // });
 
-});
+// });
 
 // zombie.visit("http://davisapp.dev/", function(err, browser, status){
 //   

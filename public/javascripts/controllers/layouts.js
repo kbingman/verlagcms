@@ -1,4 +1,4 @@
-Layouts = Sammy(function (app) {   
+var Layouts = Sammy(function (app) {   
   
   var context = this;  
                     
@@ -129,6 +129,17 @@ Layouts = Sammy(function (app) {
       var layout = Layout.find(request.params['id']);   
       request.renderLayout(layout);   
       request.renderLayoutIndex(Layout.all()); 
+      setInterval(function(){
+        layout.load(function(results){
+          var timestamp = jQuery('#layout-updated_at').attr('value');
+          if(timestamp != results.updated_at){
+            logger.info('not up to date');
+          }else {
+            logger.info('up to date');
+          }
+          
+        });
+      }, 30000)
     });
   });   
   
@@ -136,8 +147,6 @@ Layouts = Sammy(function (app) {
   // ---------------------------------------------
   this.put('#/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
-    
-    console.log(request.params['layout'])
       
     template.attr(request.params['layout']); 
     template.save(function(success, results){

@@ -191,7 +191,6 @@ var TabControl = {
     element.click(function(){  
       var partId = $(this).find('label').attr('for').split('-')[1];
       var tabId = 'tab-' + partId;   
-      console.log(tabId)
       
       jQuery('.tab').hide(); 
       jQuery('#' + tabId).show();

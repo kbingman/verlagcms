@@ -3,7 +3,8 @@ require 'spec_helper'
 describe "lib/images" do
   
   before(:all) do 
-    @site = Factory(:site)
+    @group =  Factory(:group)
+    @site = Factory(:site, :group => @group)
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
     @asset = Factory.build(:asset, :site => @site, :file => @file) 
     @asset.save
@@ -30,12 +31,12 @@ describe "lib/images" do
     end
     
     it "should respond to /thumbnails" do
-      get "/images/thumbnails/#{@asset.id}/#{@asset.file_name}"
+      get "/images/thumbnail/#{@asset.id}/#{@asset.file_name}"
       last_response.should be_ok
     end
     
     it "should respond to /icons" do
-      get "/images/icons/#{@asset.id}/#{@asset.file_name}"
+      get "/images/icon/#{@asset.id}/#{@asset.file_name}"
       last_response.should be_ok
     end
   end

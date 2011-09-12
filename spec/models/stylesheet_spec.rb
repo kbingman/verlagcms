@@ -2,7 +2,8 @@ require 'spec_helper'
  
 describe Stylesheet do  
   before(:all) do  
-    @site = Factory(:site)
+    @group = Factory(:group)
+    @site = Factory(:site, :group => @group)
   end  
   
   after(:all) do

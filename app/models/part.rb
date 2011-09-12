@@ -2,7 +2,7 @@ class Part
   include MongoMapper::EmbeddedDocument
   
   # TODO add custom validation
-  key :name, String, :required => true, :unique => true 
+  key :name, String, :required => true #, :unique => true 
   key :content, String
   
   key :page_id, ObjectId

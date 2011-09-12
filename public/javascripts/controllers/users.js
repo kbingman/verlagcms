@@ -28,7 +28,7 @@ var Users = Sammy(function (app) {
     
     renderUserIndex: function(callback){  
       var application = this;    
-      var userIndex = application.render('/templates/admin/users/index.mustache', User.toMustache());
+      var userIndex = application.load(jQuery('#admin-users-index')).interpolate(User.toMustache(), 'mustache');
       userIndex.replace('#editor').then(function(){
         if(callback){ callback.call(this); }  
       });
@@ -56,7 +56,7 @@ var Users = Sammy(function (app) {
   this.get('#/users/new', function(request){   
     request.loadUsers(function(){    
       if (!jQuery('#modal').length){ Galerie.open(); }  
-      var new_user = request.render('/templates/admin/users/new.mustache');
+      var new_user = request.load(jQuery('#admin-users-new')).interpolate({}, 'mustache');
       new_user.replace('#modal');  
       request.renderUserIndex();
     });
@@ -87,12 +87,12 @@ var Users = Sammy(function (app) {
       if(!users_list.length){
         request.renderUserIndex(function(){
           jQuery('.user-form').html('');
-          var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+          var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
           editUser.replace('#user-form-' + user.id());
         });
       } else {
         jQuery('.user-form').html('');
-        var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+        var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
         editUser.replace('#user-form-' + user.id());
       } 
     });

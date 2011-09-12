@@ -38,7 +38,7 @@ describe "routes/admin/assets" do
       end 
       
       it 'should not include assets from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien', :group => @group)
         @alien_asset = Factory(:asset, 
           :site => @alien_site,
           :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),

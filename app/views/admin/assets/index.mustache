@@ -1,22 +1,22 @@
 <div id="assets-editor">
   <div id="title-wrapper">  
     <h1>Assets {{query}}</h1> 
-    <form action='#/assets' id='search' method='get'>
-      <div class='field'>
-        <input id='search-query' name='query' type='text' value="{{query}}"/>
-        <input type='submit' value='Search'>
+    <form action="#/assets" id="search" method="get">
+      <div class="field">
+        <input id="search-query" name="query" type="text" value="{{query}}"/>
+        <input type="submit" value="Search">
       </div>
     </form>    
   </div>
   
-  <div class='buttons'>
-    <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-      <div class='field'>
-        <label for='ajax_uploader'></label>
-        <input id='ajax_uploader' name='file' type='file' />
+  <div class="buttons">
+    <form action="/admin/assets" enctype="multipart/form-data" id="new_asset" method="post">
+      <div class="field">
+        <label for="ajax_uploader"></label>
+        <input id="ajax_uploader" name="file" type="file" />
       </div>
       <div>
-        <input type='submit'>
+        <input type="submit">
       </div>
     </form> 
     <div class="progress"></div>

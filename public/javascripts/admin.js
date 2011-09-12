@@ -564,342 +564,342 @@ shift(),i.sort());if(!!e&&!f.event.customEvent[h]||!!f.event.global[h]){c=typeof
 
 })(jQuery);
 
-(function($) {
+/*
+  mustache.js — Logic-less templates in JavaScript
 
-if (!window.Mustache) {
+  See http://mustache.github.com/ for more info.
+*/
 
-  /*
-    mustache.js — Logic-less templates in JavaScript
+var Mustache = function() {
+  var Renderer = function() {};
 
-    See http://mustache.github.com/ for more info.
-  */
+  Renderer.prototype = {
+    otag: "{{",
+    ctag: "}}",
+    pragmas: {},
+    buffer: [],
+    pragmas_implemented: {
+      "IMPLICIT-ITERATOR": true
+    },
+    context: {},
 
-  var Mustache = function() {
-    var Renderer = function() {};
+    render: function(template, context, partials, in_recursion) {
+      // reset buffer & set context
+      if(!in_recursion) {
+        this.context = context;
+        this.buffer = []; // TODO: make this non-lazy
+      }
 
-    Renderer.prototype = {
-      otag: "{{",
-      ctag: "}}",
-      pragmas: {},
-      buffer: [],
-      pragmas_implemented: {
-        "IMPLICIT-ITERATOR": true
-      },
-      context: {},
-
-      render: function(template, context, partials, in_recursion) {
-        // reset buffer & set context
-        if(!in_recursion) {
-          this.context = context;
-          this.buffer = []; // TODO: make this non-lazy
-        }
-
-        // fail fast
-        if(!this.includes("", template)) {
-          if(in_recursion) {
-            return template;
-          } else {
-            this.send(template);
-            return;
-          }
-        }
-
-        template = this.render_pragmas(template);
-        var html = this.render_section(template, context, partials);
+      // fail fast
+      if(!this.includes("", template)) {
         if(in_recursion) {
-          return this.render_tags(html, context, partials, in_recursion);
-        }
-
-        this.render_tags(html, context, partials, in_recursion);
-      },
-
-      /*
-        Sends parsed lines
-      */
-      send: function(line) {
-        if(line != "") {
-          this.buffer.push(line);
-        }
-      },
-
-      /*
-        Looks for %PRAGMAS
-      */
-      render_pragmas: function(template) {
-        // no pragmas
-        if(!this.includes("%", template)) {
           return template;
+        } else {
+          this.send(template);
+          return;
         }
+      }
 
-        var that = this;
-        var regex = new RegExp(this.otag + "%([\\w-]+) ?([\\w]+=[\\w]+)?" +
-              this.ctag);
-        return template.replace(regex, function(match, pragma, options) {
-          if(!that.pragmas_implemented[pragma]) {
-            throw({message:
-              "This implementation of mustache doesn't understand the '" +
-              pragma + "' pragma"});
-          }
-          that.pragmas[pragma] = {};
-          if(options) {
-            var opts = options.split("=");
-            that.pragmas[pragma][opts[0]] = opts[1];
-          }
-          return "";
-          // ignore unknown pragmas silently
-        });
-      },
+      template = this.render_pragmas(template);
+      var html = this.render_section(template, context, partials);
+      if(in_recursion) {
+        return this.render_tags(html, context, partials, in_recursion);
+      }
 
-      /*
-        Tries to find a partial in the curent scope and render it
-      */
-      render_partial: function(name, context, partials) {
-        name = this.trim(name);
-        if(!partials || partials[name] === undefined) {
-          throw({message: "unknown_partial '" + name + "'"});
+      this.render_tags(html, context, partials, in_recursion);
+    },
+
+    /*
+      Sends parsed lines
+    */
+    send: function(line) {
+      if(line !== "") {
+        this.buffer.push(line);
+      }
+    },
+
+    /*
+      Looks for %PRAGMAS
+    */
+    render_pragmas: function(template) {
+      // no pragmas
+      if(!this.includes("%", template)) {
+        return template;
+      }
+
+      var that = this;
+      var regex = new RegExp(this.otag + "%([\\w-]+) ?([\\w]+=[\\w]+)?" +
+            this.ctag, "g");
+      return template.replace(regex, function(match, pragma, options) {
+        if(!that.pragmas_implemented[pragma]) {
+          throw({message: 
+            "This implementation of mustache doesn't understand the '" +
+            pragma + "' pragma"});
         }
-        if(typeof(context[name]) != "object") {
-          return this.render(partials[name], context, partials, true);
+        that.pragmas[pragma] = {};
+        if(options) {
+          var opts = options.split("=");
+          that.pragmas[pragma][opts[0]] = opts[1];
         }
-        return this.render(partials[name], context[name], partials, true);
-      },
-
-      /*
-        Renders inverted (^) and normal (#) sections
-      */
-      render_section: function(template, context, partials) {
-        if(!this.includes("#", template) && !this.includes("^", template)) {
-          return template;
-        }
-
-        var that = this;
-        // CSW - Added "+?" so it finds the tighest bound, not the widest
-        var regex = new RegExp(this.otag + "(\\^|\\#)\\s*(.+)\\s*" + this.ctag +
-                "\n*([\\s\\S]+?)" + this.otag + "\\/\\s*\\2\\s*" + this.ctag +
-                "\\s*", "mg");
-
-        // for each {{#foo}}{{/foo}} section do...
-        return template.replace(regex, function(match, type, name, content) {
-          var value = that.find(name, context);
-          if(type == "^") { // inverted section
-            if(!value || that.is_array(value) && value.length === 0) {
-              // false or empty list, render it
-              return that.render(content, context, partials, true);
-            } else {
-              return "";
-            }
-          } else if(type == "#") { // normal section
-            if(that.is_array(value)) { // Enumerable, Let's loop!
-              return that.map(value, function(row) {
-                return that.render(content, that.create_context(row),
-                  partials, true);
-              }).join("");
-            } else if(that.is_object(value)) { // Object, Use it as subcontext!
-              return that.render(content, that.create_context(value),
-                partials, true);
-            } else if(typeof value === "function") {
-              // higher order section
-              return value.call(context, content, function(text) {
-                return that.render(text, context, partials, true);
-              });
-            } else if(value) { // boolean section
-              return that.render(content, context, partials, true);
-            } else {
-              return "";
-            }
-          }
-        });
-      },
-
-      /*
-        Replace {{foo}} and friends with values from our view
-      */
-      render_tags: function(template, context, partials, in_recursion) {
-        // tit for tat
-        var that = this;
-
-        var new_regex = function() {
-          return new RegExp(that.otag + "(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?" +
-            that.ctag + "+", "g");
-        };
-
-        var regex = new_regex();
-        var tag_replace_callback = function(match, operator, name) {
-          switch(operator) {
-          case "!": // ignore comments
-            return "";
-          case "=": // set new delimiters, rebuild the replace regexp
-            that.set_delimiters(name);
-            regex = new_regex();
-            return "";
-          case ">": // render partial
-            return that.render_partial(name, context, partials);
-          case "{": // the triple mustache is unescaped
-            return that.find(name, context);
-          default: // escape the value
-            return that.escape(that.find(name, context));
-          }
-        };
-        var lines = template.split("\n");
-        for(var i = 0; i < lines.length; i++) {
-          lines[i] = lines[i].replace(regex, tag_replace_callback, this);
-          if(!in_recursion) {
-            this.send(lines[i]);
-          }
-        }
-
-        if(in_recursion) {
-          return lines.join("\n");
-        }
-      },
-
-      set_delimiters: function(delimiters) {
-        var dels = delimiters.split(" ");
-        this.otag = this.escape_regex(dels[0]);
-        this.ctag = this.escape_regex(dels[1]);
-      },
-
-      escape_regex: function(text) {
-        // thank you Simon Willison
-        if(!arguments.callee.sRE) {
-          var specials = [
-            '/', '.', '*', '+', '?', '|',
-            '(', ')', '[', ']', '{', '}', '\\'
-          ];
-          arguments.callee.sRE = new RegExp(
-            '(\\' + specials.join('|\\') + ')', 'g'
-          );
-        }
-        return text.replace(arguments.callee.sRE, '\\$1');
-      },
-
-      /*
-        find `name` in current `context`. That is find me a value
-        from the view object
-      */
-      find: function(name, context) {
-        name = this.trim(name);
-
-        // Checks whether a value is thruthy or false or 0
-        function is_kinda_truthy(bool) {
-          return bool === false || bool === 0 || bool;
-        }
-
-        var value;
-        if(is_kinda_truthy(context[name])) {
-          value = context[name];
-        } else if(is_kinda_truthy(this.context[name])) {
-          value = this.context[name];
-        }
-
-        if(typeof value === "function") {
-          return value.apply(context);
-        }
-        if(value !== undefined) {
-          return value;
-        }
-        // silently ignore unkown variables
         return "";
-      },
+        // ignore unknown pragmas silently
+      });
+    },
 
-      // Utility methods
+    /*
+      Tries to find a partial in the curent scope and render it
+    */
+    render_partial: function(name, context, partials) {
+      name = this.trim(name);
+      if(!partials || partials[name] === undefined) {
+        throw({message: "unknown_partial '" + name + "'"});
+      }
+      if(typeof(context[name]) != "object") {
+        return this.render(partials[name], context, partials, true);
+      }
+      return this.render(partials[name], context[name], partials, true);
+    },
 
-      /* includes tag */
-      includes: function(needle, haystack) {
-        return haystack.indexOf(this.otag + needle) != -1;
-      },
+    /*
+      Renders inverted (^) and normal (#) sections
+    */
+    render_section: function(template, context, partials) {
+      if(!this.includes("#", template) && !this.includes("^", template)) {
+        return template;
+      }
 
-      /*
-        Does away with nasty characters
-      */
-      escape: function(s) {
-        s = String(s === null ? "" : s);
-        return s.replace(/&(?!\w+;)|["<>\\]/g, function(s) {
-          switch(s) {
-          case "&": return "&amp;";
-          case "\\": return "\\\\";
-          case '"': return '\"';
-          case "<": return "&lt;";
-          case ">": return "&gt;";
-          default: return s;
+      var that = this;
+      // CSW - Added "+?" so it finds the tighest bound, not the widest
+      var regex = new RegExp(this.otag + "(\\^|\\#)\\s*(.+)\\s*" + this.ctag +
+              "\n*([\\s\\S]+?)" + this.otag + "\\/\\s*\\2\\s*" + this.ctag +
+              "\\s*", "mg");
+
+      // for each {{#foo}}{{/foo}} section do...
+      return template.replace(regex, function(match, type, name, content) {
+        var value = that.find(name, context);
+        if(type == "^") { // inverted section
+          if(!value || that.is_array(value) && value.length === 0) {
+            // false or empty list, render it
+            return that.render(content, context, partials, true);
+          } else {
+            return "";
           }
-        });
-      },
-
-      // by @langalex, support for arrays of strings
-      create_context: function(_context) {
-        if(this.is_object(_context)) {
-          return _context;
-        } else {
-          var iterator = ".";
-          if(this.pragmas["IMPLICIT-ITERATOR"]) {
-            iterator = this.pragmas["IMPLICIT-ITERATOR"].iterator;
+        } else if(type == "#") { // normal section
+          if(that.is_array(value)) { // Enumerable, Let's loop!
+            return that.map(value, function(row) {
+              return that.render(content, that.create_context(row),
+                partials, true);
+            }).join("");
+          } else if(that.is_object(value)) { // Object, Use it as subcontext!
+            return that.render(content, that.create_context(value),
+              partials, true);
+          } else if(typeof value === "function") {
+            // higher order section
+            return value.call(context, content, function(text) {
+              return that.render(text, context, partials, true);
+            });
+          } else if(value) { // boolean section
+            return that.render(content, context, partials, true);
+          } else {
+            return "";
           }
-          var ctx = {};
-          ctx[iterator] = _context;
-          return ctx;
         }
-      },
+      });
+    },
 
-      is_object: function(a) {
-        return a && typeof a == "object";
-      },
+    /*
+      Replace {{foo}} and friends with values from our view
+    */
+    render_tags: function(template, context, partials, in_recursion) {
+      // tit for tat
+      var that = this;
 
-      is_array: function(a) {
-        return Object.prototype.toString.call(a) === '[object Array]';
-      },
+      var new_regex = function() {
+        return new RegExp(that.otag + "(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?" +
+          that.ctag + "+", "g");
+      };
 
-      /*
-        Gets rid of leading and trailing whitespace
-      */
-      trim: function(s) {
-        return s.replace(/^\s*|\s*$/g, "");
-      },
-
-      /*
-        Why, why, why? Because IE. Cry, cry cry.
-      */
-      map: function(array, fn) {
-        if (typeof array.map == "function") {
-          return array.map(fn);
-        } else {
-          var r = [];
-          var l = array.length;
-          for(var i = 0; i < l; i++) {
-            r.push(fn(array[i]));
-          }
-          return r;
+      var regex = new_regex();
+      var tag_replace_callback = function(match, operator, name) {
+        switch(operator) {
+        case "!": // ignore comments
+          return "";
+        case "=": // set new delimiters, rebuild the replace regexp
+          that.set_delimiters(name);
+          regex = new_regex();
+          return "";
+        case ">": // render partial
+          return that.render_partial(name, context, partials);
+        case "{": // the triple mustache is unescaped
+          return that.find(name, context);
+        default: // escape the value
+          return that.escape(that.find(name, context));
+        }
+      };
+      var lines = template.split("\n");
+      for(var i = 0; i < lines.length; i++) {
+        lines[i] = lines[i].replace(regex, tag_replace_callback, this);
+        if(!in_recursion) {
+          this.send(lines[i]);
         }
       }
-    };
 
-    return({
-      name: "mustache.js",
-      version: "0.3.1-dev",
-
-      /*
-        Turns a template and view into HTML
-      */
-      to_html: function(template, view, partials, send_fun) {
-        var renderer = new Renderer();
-        if(send_fun) {
-          renderer.send = send_fun;
-        }
-        renderer.render(template, view, partials);
-        if(!send_fun) {
-          return renderer.buffer.join("\n");
-        }
+      if(in_recursion) {
+        return lines.join("\n");
       }
-    });
-  }();
+    },
 
-} // Ensure Mustache
+    set_delimiters: function(delimiters) {
+      var dels = delimiters.split(" ");
+      this.otag = this.escape_regex(dels[0]);
+      this.ctag = this.escape_regex(dels[1]);
+    },
+
+    escape_regex: function(text) {
+      // thank you Simon Willison
+      if(!arguments.callee.sRE) {
+        var specials = [
+          '/', '.', '*', '+', '?', '|',
+          '(', ')', '[', ']', '{', '}', '\\'
+        ];
+        arguments.callee.sRE = new RegExp(
+          '(\\' + specials.join('|\\') + ')', 'g'
+        );
+      }
+      return text.replace(arguments.callee.sRE, '\\$1');
+    },
+
+    /*
+      find `name` in current `context`. That is find me a value
+      from the view object
+    */
+    find: function(name, context) {
+      name = this.trim(name);
+
+      // Checks whether a value is thruthy or false or 0
+      function is_kinda_truthy(bool) {
+        return bool === false || bool === 0 || bool;
+      }
+
+      var value;
+      if(is_kinda_truthy(context[name])) {
+        value = context[name];
+      } else if(is_kinda_truthy(this.context[name])) {
+        value = this.context[name];
+      }
+
+      if(typeof value === "function") {
+        return value.apply(context);
+      }
+      if(value !== undefined) {
+        return value;
+      }
+      // silently ignore unkown variables
+      return "";
+    },
+
+    // Utility methods
+
+    /* includes tag */
+    includes: function(needle, haystack) {
+      return haystack.indexOf(this.otag + needle) != -1;
+    },
+
+    /*
+      Does away with nasty characters
+    */
+    escape: function(s) {
+      s = String(s === null ? "" : s);
+      return s.replace(/&(?!\w+;)|["'<>\\]/g, function(s) {
+        switch(s) {
+        case "&": return "&amp;";
+        case "\\": return "\\\\";
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        case "<": return "&lt;";
+        case ">": return "&gt;";
+        default: return s;
+        }
+      });
+    },
+
+    // by @langalex, support for arrays of strings
+    create_context: function(_context) {
+      if(this.is_object(_context)) {
+        return _context;
+      } else {
+        var iterator = ".";
+        if(this.pragmas["IMPLICIT-ITERATOR"]) {
+          iterator = this.pragmas["IMPLICIT-ITERATOR"].iterator;
+        }
+        var ctx = {};
+        ctx[iterator] = _context;
+        return ctx;
+      }
+    },
+
+    is_object: function(a) {
+      return a && typeof a == "object";
+    },
+
+    is_array: function(a) {
+      return Object.prototype.toString.call(a) === '[object Array]';
+    },
+
+    /*
+      Gets rid of leading and trailing whitespace
+    */
+    trim: function(s) {
+      return s.replace(/^\s*|\s*$/g, "");
+    },
+
+    /*
+      Why, why, why? Because IE. Cry, cry cry.
+    */
+    map: function(array, fn) {
+      if (typeof array.map == "function") {
+        return array.map(fn);
+      } else {
+        var r = [];
+        var l = array.length;
+        for(var i = 0; i < l; i++) {
+          r.push(fn(array[i]));
+        }
+        return r;
+      }
+    }
+  };
+
+  return({
+    name: "mustache.js",
+    version: "0.3.1-dev",
+
+    /*
+      Turns a template and view into HTML
+    */
+    to_html: function(template, view, partials, send_fun) {
+      var renderer = new Renderer();
+      if(send_fun) {
+        renderer.send = send_fun;
+      }
+      renderer.render(template, view, partials);
+      if(!send_fun) {
+        return renderer.buffer.join("\n");
+      }
+    }
+  });
+}();
+
+(function($) {
 
   Sammy = Sammy || {};
 
   // <tt>Sammy.Mustache</tt> provides a quick way of using mustache style templates in your app.
-  // The plugin itself includes the awesome mustache.js lib created and maintained by Jan Lehnardt
+  // The plugin wraps the awesome mustache.js lib created and maintained by Jan Lehnardt
   // at http://github.com/janl/mustache.js
+  //
+  // Note: As of Sammy 0.7 the Mustache lib is not included in the templates source. Please download
+  // mustache.js and include it before Sammy.Mustache.
   //
   // Mustache is a clever templating system that relys on double brackets {{}} for interpolation.
   // For full details on syntax check out the original Ruby implementation created by Chris Wanstrath at
@@ -922,7 +922,7 @@ if (!window.Mustache) {
   //
   //       var $.app = $.sammy(function() {
   //         // include the plugin and alias mustache() to ms()
-  //         this.use(Sammy.Mustache, 'ms');
+  //         this.use('Mustache', 'ms');
   //
   //         this.get('#/hello/:name', function() {
   //           // set local vars
@@ -956,7 +956,7 @@ if (!window.Mustache) {
   //
   //       var $.app = $.sammy(function() {
   //         // include the plugin and alias mustache() to ms()
-  //         this.use(Sammy.Mustache, 'ms');
+  //         this.use('Mustache', 'ms');
   //
   //         this.get('#/hello/:name/to/:friend', function() {
   //           var context = this;
@@ -1002,9 +1002,8 @@ if (!window.Mustache) {
     };
 
     // set the default method name/extension
-    if (!method_alias) method_alias = 'mustache';
+    if (!method_alias) { method_alias = 'mustache'; }
     app.helper(method_alias, mustache);
-
   };
 
 })(jQuery);
@@ -5213,6 +5212,16 @@ var Asset = Model('asset', function() {
   
   this.include({
     
+    // image_path: function(size){
+    //   var self = this;
+    //   return '/images/' + size + '/' + self.id() + '/' + self.attr('file_name');
+    // },
+    // 
+    // thumbnail_path: function(){
+    //   var self = this;
+    //   return '/images/thumbnail/' + self.id() + '/' + self.attr('file_name');
+    // },
+    
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
       var asset = this; 
@@ -5321,42 +5330,37 @@ var Asset = Model('asset', function() {
       var url = '/admin/assets.json';
       Asset.callback = callback;
       
+      var xhr = new XMLHttpRequest();
       var uuid = Asset.generate_uuid(); 
-      jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
       
-      
-      this.xhr = new XMLHttpRequest();
-      this.xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
-      this.xhr.upload.addEventListener('progress', Asset.onprogressHandler);
-      this.xhr.upload.addEventListener('load', Asset.onloadHandler, false);
-      this.xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
-      
-      this.xhr.upload.uuid = uuid;
-      this.xhr.upload.filename = file.name
+      xhr.upload.uuid = uuid;
+      xhr.upload.filename = file.name
 
+      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      xhr.upload.addEventListener('progress', Asset.onprogressHandler);
+      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
+      
       // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-      this.xhr.open('POST', url, true);
-      this.xhr.setRequestHeader("Content-Type", "application/octet-stream");
-      this.xhr.setRequestHeader("X-File-Name", file.name);
-      this.xhr.setRequestHeader("X-File-Upload", "true");
-      this.xhr.send(file); 
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.setRequestHeader("X-File-Upload", "true");
+      xhr.send(file);   
+      if(callback['before']){ callback['before'].call(this, uuid); } 
     },  
     
     onloadstartHandler: function(evt) {
-      console.log('started')
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
 
     onloadHandler: function(evt) { 
-      console.log('success');   
       // $('#ajax_uploader').attr('value', '');
     },
 
     onprogressHandler: function(evt) {
-      var percent = evt.loaded / evt.total * 100; 
-      var uuid = evt.target.uuid;
-      jQuery('#progress-' + uuid + ' .percentage').text(percent + '%');
-      // if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target, percent); }  
+      var percent = Math.round(evt.loaded / evt.total * 100); 
+      if(Asset.callback['progress']){ Asset.callback['progress'].call(this, evt.target.uuid, percent); }  
     },
     
     onreadystatechangeHandler: function(evt){
@@ -5371,8 +5375,8 @@ var Asset = Model('asset', function() {
         var asset = new Asset({ id: response.id }); 
         asset.merge(response);
         Asset.add(asset); 
-        
-        if(Asset.callback['success']){ Asset.callback['success'].call(this); }   
+
+        if(Asset.callback['success']){ Asset.callback['success'].call(this, asset); }   
       }
     },
     
@@ -5427,7 +5431,7 @@ var Page = Model('page', function() {
       var self = this;
       var parts = self.attr('parts'); 
       var length = parts.length;                                 
-      // Part.each(function(){ Part.remove(this); });
+      Part.each(function(){ Part.remove(this); });
       
       for (var i=0, l=length; i<l; ++i ){
         var part_data = parts[i];
@@ -5455,6 +5459,7 @@ var Page = Model('page', function() {
       });
     }, 
     
+    // TODO remove
     // exatract this for general use...
     saveRemote: function(params, callback){ 
       var self = this;  
@@ -5513,6 +5518,32 @@ var Page = Model('page', function() {
       });
     },
     
+    find_by_path: function(path){
+      return this.detect(function(){
+        return this.attr('path') == path
+      });
+    },
+    
+    load_by_id: function(id, callback){
+      var url = '/admin/pages/' + id  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          var page = Page.find(results.id);
+          if(!page){
+            var page = new Page({ id: results.id });
+          }
+          page.merge(results);
+          Page.add(page); 
+          if(callback){ callback.call(this, results); }    
+        }
+      });
+    },
+    
     create: function(attributes, callback){
       var url = '/admin/pages.json';
       jQuery.ajax({
@@ -5538,6 +5569,22 @@ var Layout = Model('template', function() {
    
   // Instance methods
   this.include({  
+    
+    load: function(callback){
+      var self = this;
+      var url = '/admin/templates/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          self.merge(results);    
+          callback.call(this, results);    
+        }
+      });
+    }
 
   }), 
   
@@ -5823,16 +5870,26 @@ var iFramer = {
     var self = this;
     if(!trigger.length) return;
     trigger.load(function(){   
-      var iFrameContent = $(this).contents();  
+      var iframe = $(this);
+
+      var iFrameContent = iframe.contents();  
       var editor = iFrameContent.find('span.part-editor');
-      var flags = editor.find('a');   
-      logger.info('load')
-      $(this).fadeIn('fast');
-      // setTimeout(function(){
-      //   
-      // }, 13);
-      // change to plugin ?
+      var flags = editor.find('a');  
       self.setEditFlags(editor); 
+      iframe.fadeIn('fast');
+      
+      // Sets preview links to change the sammy.js routes instead of the usual route
+      var internal_links = iFrameContent.find('a[href^="/preview"]');
+      internal_links.click(function(e){
+        var link_path = $(this).attr('href').split('?')[0].replace('/preview','');
+        var page = Page.find_by_path(link_path);
+        if (page){
+          e.preventDefault();
+          var page_id = page.id();
+          document.location.hash = page.attr('admin_path');
+        }
+      });
+      
       flags.click(function(){  
         window.top.trigger = $(this);
         window.top.location.hash = $(this).attr('href');  
@@ -5877,7 +5934,6 @@ var TabControl = {
     element.click(function(){  
       var partId = $(this).find('label').attr('for').split('-')[1];
       var tabId = 'tab-' + partId;   
-      console.log(tabId)
       
       jQuery('.tab').hide(); 
       jQuery('#' + tabId).show();
@@ -5893,7 +5949,7 @@ var delay = (function(){
   };
 })();
 
-Sites = Sammy(function (app) {
+var Sites = Sammy(function (app) {
   
   var context = this; 
   
@@ -5923,7 +5979,7 @@ Sites = Sammy(function (app) {
     
     renderSiteIndex: function(){  
       var application = this;    
-      var siteIndex = application.render('/templates/admin/sites/index.mustache', Site.toMustache());
+      var siteIndex = application.load(jQuery('#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
       siteIndex.replace('#sidebar');
     }
   });
@@ -5959,7 +6015,7 @@ Sites = Sammy(function (app) {
   this.get('#/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
-      var newSite = request.render('/templates/admin/sites/new.mustache');
+      var newSite = request.load(jQuery('#admin-sites-new')).interpolate({}, 'mustache');
       newSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });
@@ -5987,7 +6043,7 @@ Sites = Sammy(function (app) {
     Galerie.close();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var editSite = request.render('/templates/admin/sites/edit.mustache', { site: site.asJSON() });
+      var editSite = request.load(jQuery('#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
       editSite.replace('#editor');  
       request.renderSiteIndex(Site.all());
     });
@@ -6016,7 +6072,7 @@ Sites = Sammy(function (app) {
     Galerie.open();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var removeSite = request.render('/templates/admin/sites/remove.mustache', { site: site.asJSON() });
+      var removeSite = request.load(jQuery('#admin-sites-remove')).interpolate({ site: site.asJSON() }, 'mustache');
       removeSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });
@@ -6037,7 +6093,7 @@ Sites = Sammy(function (app) {
   });
   
 });
-Layouts = Sammy(function (app) {   
+var Layouts = Sammy(function (app) {   
   
   var context = this;  
                     
@@ -6069,27 +6125,25 @@ Layouts = Sammy(function (app) {
     // Renders the Page tree
     renderLayoutIndex: function(){   
       var application = this;
-       
-      var layoutIndex = application.render('/templates/admin/templates/index.mustache', {
+      var layoutIndex = application.load(jQuery('#admin-templates-index')).interpolate({
         layouts: Layout.find_all_by_class('Layout').map(function(item){ return item.attributes }), 
         partials: Layout.find_all_by_class('Partial').map(function(item){ return item.attributes }), 
         javascripts: Layout.find_all_by_class('Javascript').map(function(item){ return item.attributes }),
         stylesheets: Layout.find_all_by_class('Stylesheet').map(function(item){ return item.attributes }) 
-      });
+      }, 'mustache');
       layoutIndex.replace('#sidebar');
     },  
     
     renderLayout: function(layout){ 
       var application = this;     
-      console.log((layout.attr('filter') == 'css') ? 'selected' : '')
-      var editLayout = application.render('/templates/admin/templates/edit.mustache', { 
+      var editLayout = application.load(jQuery('#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
           { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
           { name: 'Sass', value: 'sass', selected: ((layout.attr('filter') == 'sass') ? 'selected="selected"' : '') }, 
           { name: 'Scss', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') }
         ]
-      });    
+      }, 'mustache');    
       editLayout.replace('#editor').then(function(){
         // Because liquid templates use a syntax that is very similar to 
         // Mustache, this manually sets the content. A bit of a hack, but hey, sue me. 
@@ -6136,7 +6190,7 @@ Layouts = Sammy(function (app) {
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
  
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      var newLayout = request.render('/templates/admin/templates/new.mustache', { klass: request.params['klass']}); 
+      var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
       newLayout.replace('#new-page-container');       
       request.renderLayoutIndex(Layout.all()); 
     }); 
@@ -6168,6 +6222,17 @@ Layouts = Sammy(function (app) {
       var layout = Layout.find(request.params['id']);   
       request.renderLayout(layout);   
       request.renderLayoutIndex(Layout.all()); 
+      // setInterval(function(){
+      //   layout.load(function(results){
+      //     var timestamp = jQuery('#layout-updated_at').attr('value');
+      //     if(timestamp != results.updated_at){
+      //       logger.info('not up to date');
+      //     }else {
+      //       logger.info('up to date');
+      //     }
+      //     
+      //   });
+      // }, 30000)
     });
   });   
   
@@ -6175,8 +6240,6 @@ Layouts = Sammy(function (app) {
   // ---------------------------------------------
   this.put('#/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
-    
-    console.log(request.params['layout'])
       
     template.attr(request.params['layout']); 
     template.save(function(success, results){
@@ -6194,7 +6257,7 @@ Layouts = Sammy(function (app) {
       var layout = Layout.find(request.params['id']); 
       Galerie.open();   
       
-      var removeTemplate = request.render('/templates/admin/templates/remove.mustache', { layout: layout.asJSON() });    
+      var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
       removeTemplate.replace('#modal');
       
       request.renderLayoutIndex(Layout.all()); 
@@ -6236,7 +6299,6 @@ Layouts = Sammy(function (app) {
     this.loadLayouts(function(){ 
       var template_id = request.params['id'];    
       var attributes = request.params['part']; 
-      alert(JSON.stringify(request.params['part'])) 
       Part.create(attributes, function(){
         request.redirect('#/templates/' + template_id + '/edit');
       });
@@ -6268,7 +6330,7 @@ Layouts = Sammy(function (app) {
   // });    
 
 });
-Assets = Sammy(function (app) {
+var Assets = Sammy(function (app) {
   
   var application = this; 
   
@@ -6304,28 +6366,25 @@ Assets = Sammy(function (app) {
       var application = this;
       var counter = 0;
       for(var i = 0; i < files.length; i++) {   
-        // var uuid = Asset.generate_uuid();
-        
         var file = files[i];
-        var name = file.name
-
         Asset.create(file, {
-          progress: function(upload, percent){
-            console.log(upload.filename + ': ' + percent)
+          before: function(uuid){
+            jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
           },
-          success: function(){  
-            // Total Progress bar goes here
-            counter = counter + 1;
-            console.log(counter)
-            // logger.info('asset ' + (counter / files.length * 100) + '%');
-            // jQuery('.progress').text((counter / files.length * 100) + '%');
-
+          progress: function(uuid, percent){
+            jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
+          },
+          success: function(asset){ 
+            // var assetItem = application.render('/templates/admin/assets/asset.mustache', { asset: asset.attr() });
+            // assetItem.prependTo('#assets');
+            counter = counter + 1;    
             if(counter == files.length){
-              // This needs to be fixed, as it sends another request to the server that isn't really needed...
-              // I could simply fix the ordering or something...
-              Asset.searchAdmin(params, function(){ 
-                if(callback){ callback.call(this); }  
-              });
+             // This needs to be fixed, as it sends another request to the server that isn't really needed...
+             // I could simply fix the ordering or something...
+             
+             Asset.searchAdmin(params, function(){ 
+               if(callback){ callback.call(this); }  
+             });
             }
           }
         });     
@@ -6349,7 +6408,7 @@ Assets = Sammy(function (app) {
     Galerie.close();
     if(!application.modal){
       Asset.searchAdmin(params, function(){  
-        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+        var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
         assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
         });
@@ -6362,7 +6421,8 @@ Assets = Sammy(function (app) {
   // New Assets
   // ---------------------------------------------
   this.get('#/assets/new', function(request){ 
-    var newAsset = request.render('/templates/admin/assets/new.mustache');
+    // var newAsset = request.render('/templates/admin/assets/new.mustache');
+    var newAsset = request.load(jQuery('#admin-assets-new')).interpolate({}, 'mustache');
     newAsset.replace('#editor').then(function(){
       jQuery('#ajax_uploader').attr('multiple','multiple'); 
     });
@@ -6400,8 +6460,8 @@ Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     
     this.loadAssets(params, function(){
-      var asset = Asset.find(request.params['id']); 
-      var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
+      var asset = Asset.find(request.params['id']);
+      var editAsset = request.load(jQuery('#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
       editAsset.replace('#editor').then(function(results){  
         setTimeout(function(){
           $('img.fade-in').fadeIn('slow'); 
@@ -6431,20 +6491,36 @@ Assets = Sammy(function (app) {
   // ---------------------------------------------  
   this.get('#/assets/:id/remove', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
-    var params = query ? { 'query': request.params['query']} : null;                             
-
-    Galerie.close();
-    Galerie.open(jQuery('<div />').attr({'id': 'remove-asset-container', 'class': 'wide-modal'})); 
+    var params = query ? { 'query': request.params['query']} : null; 
+    
+    jQuery('.modal-strip').remove();
     
     this.loadAssets(params, function(){ 
       var asset = Asset.find(request.params['id']);  
-      
-      var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
-      removeAsset.replace('#remove-asset-container'); 
- 
+
       if(application.first_run){
-        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        assetIndex.replace('#editor'); 
+        var assetIndex = request.load(jQuery('#admin-assets-edit')).interpolate(Asset.toMustache(query), 'mustache');
+        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
+        assetIndex.replace('#editor').then(function(){
+          var asset_node = jQuery('#asset-' + asset.id());
+          removeAsset.appendTo(asset_node).then(function(){
+            var modal_strip = jQuery('.modal-strip');
+            modal_strip.fadeIn('fast').css({
+              // 'top' :  + 'px',
+              // 'left':  'px'
+            });
+          });
+        }); 
+      } else {
+        var asset_node = jQuery('#asset-' + asset.id());
+        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
+        removeAsset.appendTo(asset_node).then(function(){
+          var modal_strip = jQuery('.modal-strip');
+          modal_strip.fadeIn('fast').css({
+            // 'top' :  + 'px',
+            // 'left':  'px'
+          });
+        });
       }
     }); 
   });
@@ -6467,7 +6543,7 @@ Assets = Sammy(function (app) {
   });    
 
 });
-Pages = Sammy(function (app) {   
+var Pages = Sammy(function (app) {   
   
   var context = this;  
    
@@ -6502,17 +6578,22 @@ Pages = Sammy(function (app) {
     // Renders the Page tree
     renderTree: function(page, active_page){ 
       var application = this;
-      var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
+      var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
         application.renderNode(page, active_page); 
+        if(page.id() == active_page.id()){
+          jQuery('li#page-' + page.id()).addClass('active');
+        }
       });
     },
     
+    
+    // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
-      pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
+      var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
 
         page.children().each(function(child){  
@@ -6530,11 +6611,11 @@ Pages = Sammy(function (app) {
     renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
-        var showPage = application.render('/templates/admin/pages/show.mustache', { 
+        var showPage = application.load(jQuery('#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
-        });  
+        }, 'mustache');  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
@@ -6560,6 +6641,16 @@ Pages = Sammy(function (app) {
     }
     
   });
+  
+  // renders the page index, only if that element is not found
+  this.bind('page-index', function(){
+    var application = this; 
+    if(!jQuery('.page-children').length){
+      application.loadPages(function(){
+        application.renderTree(Page.root(), Page.root());  
+      });
+    } 
+  }); 
 
   this.bind('run', function () {   
     
@@ -6612,7 +6703,7 @@ Pages = Sammy(function (app) {
         //   }
         // });   
         // Loads all open pages...  
-        // Should really only load the relavent ones...
+        // Should really only load the relevent ones...
         Page.load(function(){  
           context.application.renderNode(page);
           // Hide spinner    
@@ -6641,15 +6732,9 @@ Pages = Sammy(function (app) {
   
     Galerie.close();    
     // context.refresh_pages = true; 
-
-    if(context.refresh_pages){
-      request.loadPages(function(){
-        request.renderTree(Page.root(), Page.root());  
-        logger.info('pages')
-      });   
-    } 
+    request.trigger('page-index');
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
-    context.refresh_pages = true; 
+
     context.do_not_refresh = false;              
   });
   
@@ -6661,18 +6746,14 @@ Pages = Sammy(function (app) {
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), page); 
-        context.refresh_pages = true;
-      }
+      request.trigger('page-index');
 
-      var newPage = request.render('/templates/admin/pages/new.mustache', { 
+      var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
         parent: page.asJSON(),
         layouts: Layout.asLayoutJSON(page.attr('layout_id'))
-      }); 
+      }, 'mustache'); 
       newPage.replace('#new-page-container');
     }); 
   }); 
@@ -6719,10 +6800,7 @@ Pages = Sammy(function (app) {
         } 
         context.modal = false;
         context.do_not_refresh = false;
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        } 
+        request.trigger('page-index');
       }else{
         application.close_page_editor();
       }
@@ -6745,10 +6823,7 @@ Pages = Sammy(function (app) {
         request.renderPagePreview(page, function(){
           application.open_page_editor();
         }); 
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        }
+        request.trigger('page-index');
       }
     }); 
     context.do_not_refresh = true;       
@@ -6784,11 +6859,9 @@ Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), Page.root()); 
-      }
+      request.trigger('page-index');
       
-      var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
+      var removePage = request.load(jQuery('#admin-pages-remove')).interpolate({ page: page.asJSON() }, 'mustache');    
       removePage.replace('#remove-page-container');
     });  
   }); 
@@ -6811,98 +6884,98 @@ Pages = Sammy(function (app) {
   
   // Asset Search Results
   // ---------------------------------------------
-  this.get('/pages/:id/results', function(request){ 
-    this.loadPages(function(){
-      var page_id = request.params['id'];  
-      var page = Page.find(page_id);  
-      
-      var query = request.params['query'] ? request.params['query'] : null; 
-      var params = query ? { 'query': query } : {};
-      
-      Asset.searchAdmin(params, function(){  
-        Asset.each(function(asset){
-          asset.attr('current_page_id', page.id());
-          asset.save();
-        });  
-         
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container');
-      });
-    });
-  });   
-
-  
-  // Add Page Asset
-  // ---------------------------------------------  
-  this.get('#/pages/:page_id/assets/:id/add', function(request){ 
-    this.loadPages(function(){   
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);  
-      var asset = Asset.find(request.params['id']);  
-      var page_asset_input = jQuery('#page-asset-ids');
-      var asset_ids_list = page_asset_input.attr('value'); 
-      var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
-      
-      page_asset_input.attr('value', new_asset_ids_list);
-      // page.attr('assets_list', new_asset_ids_list);
-      
-      page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
-        success: function(){ 
-          // think of a better way to render these links 
-          var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
-          var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
-          var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
-          image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
-          image_div.html(image_link);
-          image_div.append(remove_link);
-          
-          jQuery('#page-assets').append(image_div); 
-          var preview = jQuery('.preview iframe');
-          preview.hide().attr('src', preview.attr('src'));
-          preview.load(function(){
-            preview.fadeIn('fast')
-          })
-          context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id);  
-        }
-      });
-    });  
-  }); 
-  
-  
-  // Remove Page Asset
-  // ---------------------------------------------   
-  this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
-    this.loadPages(function(){     
-      var id = request.params['id']; 
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);
-      var page_asset_input = jQuery('#page-asset-ids');   
-  
-      var asset_ids_list = page_asset_input.attr('value').split(','); 
-      var idx = asset_ids_list.indexOf(id);    
-      if(idx!=-1) asset_ids_list.splice(idx, 1);  
-
-      page_asset_input.attr('value', asset_ids_list);  
-      page.attr('assets_list', asset_ids_list.join(','));
-      page.save(function(){
-        jQuery('#page-asset-' + id).fadeOut('fast', function(){
-          $(this).remove();
-        }); 
-        var preview = jQuery('.preview iframe');
-        preview.hide().attr('src', preview.attr('src'));
-        preview.load(function(){
-          preview.fadeIn('fast')
-        })
-        context.do_not_refresh = true;
-        request.redirect('#/pages/' + page_id);
-      })
-    }); 
-  });
+  // this.get('/pages/:id/results', function(request){ 
+  //   this.loadPages(function(){
+  //     var page_id = request.params['id'];  
+  //     var page = Page.find(page_id);  
+  //     
+  //     var query = request.params['query'] ? request.params['query'] : null; 
+  //     var params = query ? { 'query': query } : {};
+  //     
+  //     Asset.searchAdmin(params, function(){  
+  //       Asset.each(function(asset){
+  //         asset.attr('current_page_id', page.id());
+  //         asset.save();
+  //       });  
+  //        
+  //       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+  //       searchResults.replace('#search-results-container');
+  //     });
+  //   });
+  // });   
+  // 
+  // 
+  // // Add Page Asset
+  // // ---------------------------------------------  
+  // this.get('#/pages/:page_id/assets/:id/add', function(request){ 
+  //   this.loadPages(function(){   
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);  
+  //     var asset = Asset.find(request.params['id']);  
+  //     var page_asset_input = jQuery('#page-asset-ids');
+  //     var asset_ids_list = page_asset_input.attr('value'); 
+  //     var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
+  //     
+  //     page_asset_input.attr('value', new_asset_ids_list);
+  //     // page.attr('assets_list', new_asset_ids_list);
+  //     
+  //     page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
+  //       success: function(){ 
+  //         // think of a better way to render these links 
+  //         var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
+  //         var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
+  //         var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
+  //         image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
+  //         image_div.html(image_link);
+  //         image_div.append(remove_link);
+  //         
+  //         jQuery('#page-assets').append(image_div); 
+  //         var preview = jQuery('.preview iframe');
+  //         preview.hide().attr('src', preview.attr('src'));
+  //         preview.load(function(){
+  //           preview.fadeIn('fast')
+  //         })
+  //         context.do_not_refresh = true;
+  //         request.redirect('#/pages/' + page_id);  
+  //       }
+  //     });
+  //   });  
+  // }); 
+  // 
+  // 
+  // // Remove Page Asset
+  // // ---------------------------------------------   
+  // this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
+  //   this.loadPages(function(){     
+  //     var id = request.params['id']; 
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);
+  //     var page_asset_input = jQuery('#page-asset-ids');   
+  // 
+  //     var asset_ids_list = page_asset_input.attr('value').split(','); 
+  //     var idx = asset_ids_list.indexOf(id);    
+  //     if(idx!=-1) asset_ids_list.splice(idx, 1);  
+  // 
+  //     page_asset_input.attr('value', asset_ids_list);  
+  //     page.attr('assets_list', asset_ids_list.join(','));
+  //     page.save(function(){
+  //       jQuery('#page-asset-' + id).fadeOut('fast', function(){
+  //         $(this).remove();
+  //       }); 
+  //       var preview = jQuery('.preview iframe');
+  //       preview.hide().attr('src', preview.attr('src'));
+  //       preview.load(function(){
+  //         preview.fadeIn('fast')
+  //       })
+  //       context.do_not_refresh = true;
+  //       request.redirect('#/pages/' + page_id);
+  //     })
+  //   }); 
+  // });
 
 
 });
-Pages = Sammy(function (app) {   
+var Parts = Sammy(function (app) {   
   
   var context = this;  
    
@@ -6920,12 +6993,12 @@ Pages = Sammy(function (app) {
   app.helpers({  
     // Render Part
     render_part: function(part, page, template){
-      var application = this;   
-      var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
+      var application = this;  
+      var edit_part = application.load(jQuery('#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
-      }); 
+      }, 'mustache');
       edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
         var iframe_content = $('iframe').contents();  
@@ -6934,8 +7007,17 @@ Pages = Sammy(function (app) {
           'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
           'left':  part_editor.offset().left + 400 + 'px'
         });
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
         application.set_asset_links(part, page);
+      
+        jQuery('#ajax_uploader')
+          .attr('multiple','multiple')
+          .change(function(e){
+            var form = jQuery(this).parents('form:first');
+            jQuery('.progress').slideDown('slow',function(){
+              form.submit();
+            });
+          });
+        application.trigger('page-index');
         context.modal = true;
       });
     },
@@ -6960,9 +7042,9 @@ Pages = Sammy(function (app) {
           }
           page.save(function(success){
             jQuery('.modal-editor').remove();
-            // Change to sammy method
+            // TODO Change to sammy method
             context.modal = false;
-            document.location.hash = '#/pages/' + page.id();
+            document.location.hash = '#' + page.attr('admin_path');
           });
         });
       });
@@ -6973,22 +7055,34 @@ Pages = Sammy(function (app) {
   // Edit Parts
   // ---------------------------------------------
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
-    var application = this;
     jQuery('.modal-editor').remove();
+    var iframe = $('iframe');
+    var template = 'parts';
     
-    this.loadPages(function(){     
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(request.params['id']);
-      var iframe = $('iframe');
-      var template = 'parts';
-      
-      if(iframe.length){
-        application.render_part(part, page, template);
-      }else{
-        request.renderPagePreview(page, function(){
-          application.render_part(part, page, template);
-        }); 
-      }
+    this.loadPages(function(){ 
+      Page.load_by_id(request.params['page_id'], function(){
+        var page = Page.find(request.params['page_id']);
+        var part = page.parts().find(request.params['id']);
+        var timestamp = jQuery('#page-updated_at').attr('value');
+
+        // Checks to see if part is current...
+        if(iframe.length){
+          if(timestamp != page.attr('updated_at')){
+            var preview = jQuery('.preview iframe');
+            preview.hide().attr('src', preview.attr('src'));
+            preview.load(function(){
+              preview.fadeIn('fast');
+              request.render_part(part, page, template);
+            });
+          }else{
+            request.render_part(part, page, template);
+          }
+        }else{
+          request.renderPagePreview(page, function(){
+            request.render_part(part, page, template);
+          }); 
+        }
+      });    
     }); 
     // context.modal = true;
   });
@@ -6999,13 +7093,13 @@ Pages = Sammy(function (app) {
     var application = this;
     jQuery('.modal-editor').remove(); 
     
-    this.loadPages(function(){     
+    application.loadPages(function(){     
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(request.params['id']);
       var template = 'image_parts';
       var iframe = $('iframe');
       
-      Asset.searchAdmin({ 'limit': '12' }, function(){ 
+      Asset.searchAdmin({ 'limit': '8' }, function(){ 
         if(iframe.length){
           application.render_part(part, page, template);
         }else{
@@ -7076,7 +7170,11 @@ Pages = Sammy(function (app) {
   
   // Upload Assets to Part (Create)
   // ---------------------------------------------  
-  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){   
+  this.post('#/pages/:page_id/image_parts/:id/assets', function(request){  
+    var application = this; 
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
+    
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
@@ -7091,6 +7189,9 @@ Pages = Sammy(function (app) {
       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
         jQuery('#ajax_uploader').attr('files', null); 
+        jQuery('.progress').slideUp('slow', function(){
+          jQuery(this).html('');
+        });
         application.set_asset_links(part, page);
       });
     });
@@ -7098,7 +7199,7 @@ Pages = Sammy(function (app) {
   });
 
 });
-Sites = Sammy(function (app) {
+var Users = Sammy(function (app) {
   
   var context = this; 
   
@@ -7128,7 +7229,7 @@ Sites = Sammy(function (app) {
     
     renderUserIndex: function(callback){  
       var application = this;    
-      var userIndex = application.render('/templates/admin/users/index.mustache', User.toMustache());
+      var userIndex = application.load(jQuery('#admin-users-index')).interpolate(User.toMustache(), 'mustache');
       userIndex.replace('#editor').then(function(){
         if(callback){ callback.call(this); }  
       });
@@ -7156,7 +7257,7 @@ Sites = Sammy(function (app) {
   this.get('#/users/new', function(request){   
     request.loadUsers(function(){    
       if (!jQuery('#modal').length){ Galerie.open(); }  
-      var new_user = request.render('/templates/admin/users/new.mustache');
+      var new_user = request.load(jQuery('#admin-users-new')).interpolate({}, 'mustache');
       new_user.replace('#modal');  
       request.renderUserIndex();
     });
@@ -7187,12 +7288,12 @@ Sites = Sammy(function (app) {
       if(!users_list.length){
         request.renderUserIndex(function(){
           jQuery('.user-form').html('');
-          var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+          var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
           editUser.replace('#user-form-' + user.id());
         });
       } else {
         jQuery('.user-form').html('');
-        var editUser = request.render('/templates/admin/users/edit.mustache', { user: user.asJSON() });
+        var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
         editUser.replace('#user-form-' + user.id());
       } 
     });
@@ -7232,8 +7333,16 @@ jQuery(document).ready(function () {
   
   var login = jQuery('#login');   
   if(!login.length){
-    Pages.run('#/pages');
+    // loads mustache templates
+    jQuery.ajax({
+      url: '/templates',
+      success: function(results){
+        jQuery('head').append(results);
+        Pages.run('#/pages');
+      }
+    });
   }
+
 
   // AjaxUploader.initialize('#ajax_uploader');
   // jQuery('#ajax_uploader').attr('multiple','multiple');

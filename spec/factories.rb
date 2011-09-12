@@ -10,6 +10,10 @@ Factory.define :asset do |f|
   # f.association :site
 end 
 
+Factory.define :group do |f|
+  f.name { Faker::Name.first_name } 
+end
+
 Factory.define :javascript do |f|
   f.name 'Javascript'
   f.content '$(document).load(function(){});' 

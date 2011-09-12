@@ -4,7 +4,7 @@ describe Page do
   before(:all) do  
     teardown
     build_complete_site
-    @second_site = Factory(:site, :name => 'second', :subdomain => 'second') 
+    @second_site = Factory(:site, :name => 'second', :subdomain => 'second', :group => @group) 
   end  
   
   after(:all) do

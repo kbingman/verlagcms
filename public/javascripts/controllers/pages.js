@@ -33,7 +33,7 @@ var Pages = Sammy(function (app) {
     // Renders the Page tree
     renderTree: function(page, active_page){ 
       var application = this;
-      var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
+      var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){    
         application.renderNode(page, active_page); 
@@ -43,10 +43,12 @@ var Pages = Sammy(function (app) {
       });
     },
     
+    
+    // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
-      pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
+      var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
 
         page.children().each(function(child){  
@@ -64,11 +66,11 @@ var Pages = Sammy(function (app) {
     renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
-        var showPage = application.render('/templates/admin/pages/show.mustache', { 
+        var showPage = application.load(jQuery('#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
-        });  
+        }, 'mustache');  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
@@ -94,6 +96,16 @@ var Pages = Sammy(function (app) {
     }
     
   });
+  
+  // renders the page index, only if that element is not found
+  this.bind('page-index', function(){
+    var application = this; 
+    if(!jQuery('.page-children').length){
+      application.loadPages(function(){
+        application.renderTree(Page.root(), Page.root());  
+      });
+    } 
+  }); 
 
   this.bind('run', function () {   
     
@@ -146,7 +158,7 @@ var Pages = Sammy(function (app) {
         //   }
         // });   
         // Loads all open pages...  
-        // Should really only load the relavent ones...
+        // Should really only load the relevent ones...
         Page.load(function(){  
           context.application.renderNode(page);
           // Hide spinner    
@@ -175,15 +187,9 @@ var Pages = Sammy(function (app) {
   
     Galerie.close();    
     // context.refresh_pages = true; 
-
-    if(context.refresh_pages){
-      request.loadPages(function(){
-        request.renderTree(Page.root(), Page.root());  
-        logger.info('pages')
-      });   
-    } 
+    request.trigger('page-index');
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
-    context.refresh_pages = true; 
+
     context.do_not_refresh = false;              
   });
   
@@ -195,18 +201,14 @@ var Pages = Sammy(function (app) {
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), page); 
-        context.refresh_pages = true;
-      }
+      request.trigger('page-index');
 
-      var newPage = request.render('/templates/admin/pages/new.mustache', { 
+      var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
         parent: page.asJSON(),
         layouts: Layout.asLayoutJSON(page.attr('layout_id'))
-      }); 
+      }, 'mustache'); 
       newPage.replace('#new-page-container');
     }); 
   }); 
@@ -253,10 +255,7 @@ var Pages = Sammy(function (app) {
         } 
         context.modal = false;
         context.do_not_refresh = false;
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        } 
+        request.trigger('page-index');
       }else{
         application.close_page_editor();
       }
@@ -279,10 +278,7 @@ var Pages = Sammy(function (app) {
         request.renderPagePreview(page, function(){
           application.open_page_editor();
         }); 
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        }
+        request.trigger('page-index');
       }
     }); 
     context.do_not_refresh = true;       
@@ -318,11 +314,9 @@ var Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), Page.root()); 
-      }
+      request.trigger('page-index');
       
-      var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
+      var removePage = request.load(jQuery('#admin-pages-remove')).interpolate({ page: page.asJSON() }, 'mustache');    
       removePage.replace('#remove-page-container');
     });  
   }); 
@@ -345,94 +339,94 @@ var Pages = Sammy(function (app) {
   
   // Asset Search Results
   // ---------------------------------------------
-  this.get('/pages/:id/results', function(request){ 
-    this.loadPages(function(){
-      var page_id = request.params['id'];  
-      var page = Page.find(page_id);  
-      
-      var query = request.params['query'] ? request.params['query'] : null; 
-      var params = query ? { 'query': query } : {};
-      
-      Asset.searchAdmin(params, function(){  
-        Asset.each(function(asset){
-          asset.attr('current_page_id', page.id());
-          asset.save();
-        });  
-         
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container');
-      });
-    });
-  });   
-
-  
-  // Add Page Asset
-  // ---------------------------------------------  
-  this.get('#/pages/:page_id/assets/:id/add', function(request){ 
-    this.loadPages(function(){   
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);  
-      var asset = Asset.find(request.params['id']);  
-      var page_asset_input = jQuery('#page-asset-ids');
-      var asset_ids_list = page_asset_input.attr('value'); 
-      var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
-      
-      page_asset_input.attr('value', new_asset_ids_list);
-      // page.attr('assets_list', new_asset_ids_list);
-      
-      page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
-        success: function(){ 
-          // think of a better way to render these links 
-          var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
-          var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
-          var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
-          image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
-          image_div.html(image_link);
-          image_div.append(remove_link);
-          
-          jQuery('#page-assets').append(image_div); 
-          var preview = jQuery('.preview iframe');
-          preview.hide().attr('src', preview.attr('src'));
-          preview.load(function(){
-            preview.fadeIn('fast')
-          })
-          context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id);  
-        }
-      });
-    });  
-  }); 
-  
-  
-  // Remove Page Asset
-  // ---------------------------------------------   
-  this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
-    this.loadPages(function(){     
-      var id = request.params['id']; 
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);
-      var page_asset_input = jQuery('#page-asset-ids');   
-  
-      var asset_ids_list = page_asset_input.attr('value').split(','); 
-      var idx = asset_ids_list.indexOf(id);    
-      if(idx!=-1) asset_ids_list.splice(idx, 1);  
-
-      page_asset_input.attr('value', asset_ids_list);  
-      page.attr('assets_list', asset_ids_list.join(','));
-      page.save(function(){
-        jQuery('#page-asset-' + id).fadeOut('fast', function(){
-          $(this).remove();
-        }); 
-        var preview = jQuery('.preview iframe');
-        preview.hide().attr('src', preview.attr('src'));
-        preview.load(function(){
-          preview.fadeIn('fast')
-        })
-        context.do_not_refresh = true;
-        request.redirect('#/pages/' + page_id);
-      })
-    }); 
-  });
+  // this.get('/pages/:id/results', function(request){ 
+  //   this.loadPages(function(){
+  //     var page_id = request.params['id'];  
+  //     var page = Page.find(page_id);  
+  //     
+  //     var query = request.params['query'] ? request.params['query'] : null; 
+  //     var params = query ? { 'query': query } : {};
+  //     
+  //     Asset.searchAdmin(params, function(){  
+  //       Asset.each(function(asset){
+  //         asset.attr('current_page_id', page.id());
+  //         asset.save();
+  //       });  
+  //        
+  //       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+  //       searchResults.replace('#search-results-container');
+  //     });
+  //   });
+  // });   
+  // 
+  // 
+  // // Add Page Asset
+  // // ---------------------------------------------  
+  // this.get('#/pages/:page_id/assets/:id/add', function(request){ 
+  //   this.loadPages(function(){   
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);  
+  //     var asset = Asset.find(request.params['id']);  
+  //     var page_asset_input = jQuery('#page-asset-ids');
+  //     var asset_ids_list = page_asset_input.attr('value'); 
+  //     var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
+  //     
+  //     page_asset_input.attr('value', new_asset_ids_list);
+  //     // page.attr('assets_list', new_asset_ids_list);
+  //     
+  //     page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
+  //       success: function(){ 
+  //         // think of a better way to render these links 
+  //         var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
+  //         var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
+  //         var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
+  //         image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
+  //         image_div.html(image_link);
+  //         image_div.append(remove_link);
+  //         
+  //         jQuery('#page-assets').append(image_div); 
+  //         var preview = jQuery('.preview iframe');
+  //         preview.hide().attr('src', preview.attr('src'));
+  //         preview.load(function(){
+  //           preview.fadeIn('fast')
+  //         })
+  //         context.do_not_refresh = true;
+  //         request.redirect('#/pages/' + page_id);  
+  //       }
+  //     });
+  //   });  
+  // }); 
+  // 
+  // 
+  // // Remove Page Asset
+  // // ---------------------------------------------   
+  // this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
+  //   this.loadPages(function(){     
+  //     var id = request.params['id']; 
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);
+  //     var page_asset_input = jQuery('#page-asset-ids');   
+  // 
+  //     var asset_ids_list = page_asset_input.attr('value').split(','); 
+  //     var idx = asset_ids_list.indexOf(id);    
+  //     if(idx!=-1) asset_ids_list.splice(idx, 1);  
+  // 
+  //     page_asset_input.attr('value', asset_ids_list);  
+  //     page.attr('assets_list', asset_ids_list.join(','));
+  //     page.save(function(){
+  //       jQuery('#page-asset-' + id).fadeOut('fast', function(){
+  //         $(this).remove();
+  //       }); 
+  //       var preview = jQuery('.preview iframe');
+  //       preview.hide().attr('src', preview.attr('src'));
+  //       preview.load(function(){
+  //         preview.fadeIn('fast')
+  //       })
+  //       context.do_not_refresh = true;
+  //       request.redirect('#/pages/' + page_id);
+  //     })
+  //   }); 
+  // });
 
 
 });

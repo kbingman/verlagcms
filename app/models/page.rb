@@ -48,7 +48,7 @@ class Page
   
   # Validations
   # ----------------------------------------
-  validates_presence_of :title 
+  validates :title, :presence => true
   validates :slug, :uniqueness => { :scope => [:site_id, :parent_id] }
   
   # Accessible attributes

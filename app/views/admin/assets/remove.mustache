@@ -4,16 +4,16 @@
     <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
   </div>
   <div class="image-info" id="image-info-{{id}}">
-    <form method='post' action="#/assets/{{id}}" enctype='multipart/form-data' id='delete-asset'>
+    <form method="post" action="#/assets/{{id}}" enctype="multipart/form-data" id="delete-asset">
       <div class="hidden">
-        <input type='hidden' name='_method' value='delete' />  
-        <input type='hidden' name='query' value='{{query}}' />  
+        <input type="hidden" name="_method" value="delete" />  
+        <input type="hidden" name="query" value="{{query}}" />  
       </div>  
       <div class="">
         <label>Are you sure you want to delete this item?</label>
         <a href="#/assets{{query_path}}" class="cancel">Cancel</a> 
         or
-        <input type='submit' value="Delete" class='button' />  
+        <input type="submit" value="Delete" class="button" />  
             
       </div>
     </form>   

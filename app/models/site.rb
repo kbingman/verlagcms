@@ -9,6 +9,9 @@ class Site
   many :assets
   many :templates   
   
+  key :group_id, ObjectId, :required => true
+  belongs_to :group, :foreign_key => :group_id
+  
   # key :user_ids, Array
   # many :users, :in => :user_ids
   

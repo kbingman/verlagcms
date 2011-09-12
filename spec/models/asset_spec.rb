@@ -4,7 +4,8 @@ describe Asset do
   
   before(:all) do  
     teardown      
-    @site = Factory(:site)
+    @group = Factory(:group)
+    @site = Factory(:site, :group => @group)
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
     @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id) 
     @asset.save  
@@ -109,15 +110,15 @@ describe Asset do
     end
     
     it 'should have an image path' do
-      @asset.image_path.should == "/images/originals/#{@asset.id}/#{@asset.file_name}"
+      @asset.image_path.should == "/images/original/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should have a thumbnail path' do
-      @asset.thumb_path.should == "/images/thumbnails/#{@asset.id}/#{@asset.file_name}"
+      @asset.thumb_path.should == "/images/thumbnail/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should have a icon path' do
-      @asset.icon_path.should == "/images/icons/#{@asset.id}/#{@asset.file_name}"
+      @asset.icon_path.should == "/images/icon/#{@asset.id}/#{@asset.file_name}"
     end
     
     it 'should respond_to render_image' do

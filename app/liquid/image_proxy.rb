@@ -59,7 +59,6 @@ class ImageDrop < Liquid::Drop
   end
    
   def before_method(method) 
-    puts method
     @part[method].to_s
   end
 

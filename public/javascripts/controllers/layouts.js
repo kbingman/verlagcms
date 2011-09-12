@@ -30,27 +30,25 @@ var Layouts = Sammy(function (app) {
     // Renders the Page tree
     renderLayoutIndex: function(){   
       var application = this;
-       
-      var layoutIndex = application.render('/templates/admin/templates/index.mustache', {
+      var layoutIndex = application.load(jQuery('#admin-templates-index')).interpolate({
         layouts: Layout.find_all_by_class('Layout').map(function(item){ return item.attributes }), 
         partials: Layout.find_all_by_class('Partial').map(function(item){ return item.attributes }), 
         javascripts: Layout.find_all_by_class('Javascript').map(function(item){ return item.attributes }),
         stylesheets: Layout.find_all_by_class('Stylesheet').map(function(item){ return item.attributes }) 
-      });
+      }, 'mustache');
       layoutIndex.replace('#sidebar');
     },  
     
     renderLayout: function(layout){ 
       var application = this;     
-      console.log((layout.attr('filter') == 'css') ? 'selected' : '')
-      var editLayout = application.render('/templates/admin/templates/edit.mustache', { 
+      var editLayout = application.load(jQuery('#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
           { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
           { name: 'Sass', value: 'sass', selected: ((layout.attr('filter') == 'sass') ? 'selected="selected"' : '') }, 
           { name: 'Scss', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') }
         ]
-      });    
+      }, 'mustache');    
       editLayout.replace('#editor').then(function(){
         // Because liquid templates use a syntax that is very similar to 
         // Mustache, this manually sets the content. A bit of a hack, but hey, sue me. 
@@ -97,7 +95,7 @@ var Layouts = Sammy(function (app) {
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
  
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      var newLayout = request.render('/templates/admin/templates/new.mustache', { klass: request.params['klass']}); 
+      var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
       newLayout.replace('#new-page-container');       
       request.renderLayoutIndex(Layout.all()); 
     }); 
@@ -129,17 +127,17 @@ var Layouts = Sammy(function (app) {
       var layout = Layout.find(request.params['id']);   
       request.renderLayout(layout);   
       request.renderLayoutIndex(Layout.all()); 
-      setInterval(function(){
-        layout.load(function(results){
-          var timestamp = jQuery('#layout-updated_at').attr('value');
-          if(timestamp != results.updated_at){
-            logger.info('not up to date');
-          }else {
-            logger.info('up to date');
-          }
-          
-        });
-      }, 30000)
+      // setInterval(function(){
+      //   layout.load(function(results){
+      //     var timestamp = jQuery('#layout-updated_at').attr('value');
+      //     if(timestamp != results.updated_at){
+      //       logger.info('not up to date');
+      //     }else {
+      //       logger.info('up to date');
+      //     }
+      //     
+      //   });
+      // }, 30000)
     });
   });   
   
@@ -164,7 +162,7 @@ var Layouts = Sammy(function (app) {
       var layout = Layout.find(request.params['id']); 
       Galerie.open();   
       
-      var removeTemplate = request.render('/templates/admin/templates/remove.mustache', { layout: layout.asJSON() });    
+      var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
       removeTemplate.replace('#modal');
       
       request.renderLayoutIndex(Layout.all()); 
@@ -206,7 +204,6 @@ var Layouts = Sammy(function (app) {
     this.loadLayouts(function(){ 
       var template_id = request.params['id'];    
       var attributes = request.params['part']; 
-      alert(JSON.stringify(request.params['part'])) 
       Part.create(attributes, function(){
         request.redirect('#/templates/' + template_id + '/edit');
       });

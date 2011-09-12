@@ -76,7 +76,7 @@ var Assets = Sammy(function (app) {
     Galerie.close();
     if(!application.modal){
       Asset.searchAdmin(params, function(){  
-        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
+        var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
         assetIndex.replace('#editor').then(function(){
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
         });
@@ -89,7 +89,8 @@ var Assets = Sammy(function (app) {
   // New Assets
   // ---------------------------------------------
   this.get('#/assets/new', function(request){ 
-    var newAsset = request.render('/templates/admin/assets/new.mustache');
+    // var newAsset = request.render('/templates/admin/assets/new.mustache');
+    var newAsset = request.load(jQuery('#admin-assets-new')).interpolate({}, 'mustache');
     newAsset.replace('#editor').then(function(){
       jQuery('#ajax_uploader').attr('multiple','multiple'); 
     });
@@ -127,8 +128,8 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     
     this.loadAssets(params, function(){
-      var asset = Asset.find(request.params['id']); 
-      var editAsset = request.render('/templates/admin/assets/edit.mustache', asset.toMustacheWithNeighbors(query));
+      var asset = Asset.find(request.params['id']);
+      var editAsset = request.load(jQuery('#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
       editAsset.replace('#editor').then(function(results){  
         setTimeout(function(){
           $('img.fade-in').fadeIn('slow'); 
@@ -166,13 +167,12 @@ var Assets = Sammy(function (app) {
       var asset = Asset.find(request.params['id']);  
 
       if(application.first_run){
-        var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(query));
-        var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
+        var assetIndex = request.load(jQuery('#admin-assets-edit')).interpolate(Asset.toMustache(query), 'mustache');
+        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
         assetIndex.replace('#editor').then(function(){
           var asset_node = jQuery('#asset-' + asset.id());
           removeAsset.appendTo(asset_node).then(function(){
             var modal_strip = jQuery('.modal-strip');
-            // event
             modal_strip.fadeIn('fast').css({
               // 'top' :  + 'px',
               // 'left':  'px'
@@ -181,7 +181,7 @@ var Assets = Sammy(function (app) {
         }); 
       } else {
         var asset_node = jQuery('#asset-' + asset.id());
-        var removeAsset = request.render('/templates/admin/assets/remove.mustache', { asset: asset.toMustache(query) }); 
+        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
         removeAsset.appendTo(asset_node).then(function(){
           var modal_strip = jQuery('.modal-strip');
           modal_strip.fadeIn('fast').css({

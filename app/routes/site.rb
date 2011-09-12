@@ -2,12 +2,22 @@ class Main
   include Canable::Enforcers 
   
   # Admin Mustache Templates 
-  # -------------------------------------------  
-  template_route = get '/templates/*' do  
+  # -------------------------------------------
+  template_route = get '/templates' do  
+    authenticate!
     cache_request  
-    name =  params[:splat][0]
-    partial :'layouts/template', :locals => { :template => "/#{name}" }
-  end   
+    @files = Dir[root_path('app/views/admin/**/*.mustache')]
+    partial :'layouts/js_templates' 
+    # partial :'layouts/template', :locals => { :template => "/admin/assets/index" }
+  end
+  
+  # Admin Mustache Templates
+  # -------------------------------------------  
+  # template_route = get '/templates/*' do  
+  #   cache_request  
+  #   name =  params[:splat][0]
+  #   partial :'layouts/template', :locals => { :template => "/#{name}" }
+  # end   
 
   # Site admin interface  
   # -------------------------------------------  
@@ -29,6 +39,8 @@ class Main
     admin_route = get '/' do   
       admin_haml :'admin/index'  
     end  
+    
+
   end
   
   # CSS Templates 

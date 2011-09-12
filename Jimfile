@@ -8,6 +8,7 @@
       "vendor/sammy.title",
       "vendor/sammy.nested_params", 
       "vendor/sammy.json",  
+      "vendor/mustache",
       "vendor/sammy.mustache",
       "vendor/modernizr-1.7.min", 
       "vendor/js-model-0.10.1", 

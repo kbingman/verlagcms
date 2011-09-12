@@ -12,12 +12,15 @@ jQuery(document).ready(function () {
   
   var login = jQuery('#login');   
   if(!login.length){
-    Pages.run('#/pages');
+    // loads mustache templates
+    jQuery.ajax({
+      url: '/templates',
+      success: function(results){
+        jQuery('head').append(results);
+        Pages.run('#/pages');
+      }
+    });
   }
-  
-  window.focus(function(){
-    logger.info('focus');
-  })
 
 
   // AjaxUploader.initialize('#ajax_uploader');

@@ -28,6 +28,9 @@ class Asset
   # key :story_id, ObjectId
   # belongs_to :story, :foreign_key => :story_id
   
+  key :folder_id, ObjectId
+  belongs_to :folder, :foreign_key => :folder_id
+  
   key :artist_id, ObjectId
   belongs_to :artist, :foreign_key => :artist_id  
   

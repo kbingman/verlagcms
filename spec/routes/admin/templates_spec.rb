@@ -36,7 +36,7 @@ describe "routes/templates" do
       end   
       
       it 'should not include layouts from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien', :group => @group)
         @alien_layout = Factory(:layout, :site => @alien_site, :name => 'Alien Layout') 
         do_get 
         last_response.body.should_not include(@alien_layout.name)  

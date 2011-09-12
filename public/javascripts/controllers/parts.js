@@ -1,4 +1,4 @@
-var Assets = Sammy(function (app) {   
+var Parts = Sammy(function (app) {   
   
   var context = this;  
    
@@ -17,15 +17,11 @@ var Assets = Sammy(function (app) {
     // Render Part
     render_part: function(part, page, template){
       var application = this;  
-      // var template = "<div>{{name}}</div>"
-      // var test_template = application.render(template, { name: 'test' });
-      var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
+      var edit_part = application.load(jQuery('#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
-      }); 
-      // var edit_part = Mustache.to_html('<h1>{{name}}</h1>', { name: 'fred'})
-   
+      }, 'mustache');
       edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
         var iframe_content = $('iframe').contents();  
@@ -40,9 +36,11 @@ var Assets = Sammy(function (app) {
           .attr('multiple','multiple')
           .change(function(e){
             var form = jQuery(this).parents('form:first');
-            jQuery('.progress').slideDown('slow');
-            form.submit();
+            jQuery('.progress').slideDown('slow',function(){
+              form.submit();
+            });
           });
+        application.trigger('page-index');
         context.modal = true;
       });
     },
@@ -118,7 +116,7 @@ var Assets = Sammy(function (app) {
     var application = this;
     jQuery('.modal-editor').remove(); 
     
-    this.loadPages(function(){     
+    application.loadPages(function(){     
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(request.params['id']);
       var template = 'image_parts';

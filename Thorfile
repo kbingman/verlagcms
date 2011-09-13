@@ -13,7 +13,7 @@ class Monk < Thor
 
   # Runs acceptance scenerios
   # monk acceptance
-  desc "acceptance", "Run all Steak features"
+  desc "features", "Run all Steak features"
   def features
     acceptance_root = File.join(File.dirname(__FILE__), 'acceptance')
     spec_files = Dir[File.join(acceptance_root, '**', '*feature.rb')].map{ |f| File.expand_path(f) }.join(' ')

@@ -153,7 +153,7 @@ Dir[root_path('app/views/**/*.rb')].each do |file|
 end
 
 # Load all lib liquid files.
-Dir[root_path('app/liquid/*.rb')].each do |file|
+Dir[root_path('app/liquid/**/*.rb')].each do |file|
   require file
 end  
 

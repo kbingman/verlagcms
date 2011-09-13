@@ -9,6 +9,4 @@ class CollectionProxy
     GalleryDrop.new(@part, @edit)
   end
   
-
-
 end

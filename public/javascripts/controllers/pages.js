@@ -124,7 +124,8 @@ var Pages = Sammy(function (app) {
       var Now = new Date()
       var start = Now.getTime();  
       var toggle = $(this);  
-      var parent = toggle.parents('li:first'); 
+      var parent_node = toggle.parents('li:first'); 
+      console.log(parent_node)
       
       var page_id = this.id.split('-')[2];  
       var page = Page.find(page_id)  
@@ -132,9 +133,9 @@ var Pages = Sammy(function (app) {
       var active_page_cookie = jQuery.cookie('active_page_ids');
       var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
 
-      if(!parent.hasClass('open')){
+      if(!parent_node.hasClass('open')){
         active_page_ids.push(page_id);
-        parent.toggleClass('open');  
+        parent_node.toggleClass('open');  
         var now = new Date();
         var start = now.getTime();  
         jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
@@ -160,11 +161,11 @@ var Pages = Sammy(function (app) {
         // Loads all open pages...  
         // Should really only load the relevent ones...
         Page.load(function(){  
-          context.application.renderNode(page);
+          context.application.renderNode(page, page);
           // Hide spinner    
         });
       } else {    
-        parent.toggleClass('open'); 
+        parent_node.toggleClass('open'); 
         var arr = new Array();
         active_page_ids = jQuery.grep(active_page_ids, function(value) {
           return value != page_id;

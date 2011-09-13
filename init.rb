@@ -116,7 +116,7 @@ require root_path('app/models/asset.rb')
 require root_path('app/models/part.rb')  
 
 # Load all models.
-Dir[root_path('app/models/*.rb')].each do |file|
+Dir[root_path('app/models/**/*.rb')].each do |file|
   require file
 end   
 

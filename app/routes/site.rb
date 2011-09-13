@@ -95,10 +95,7 @@ class Main
     else   
       raise Sinatra::NotFound   
     end
-    # if current_site 
-    # else
-    #   haml :'pages/welcome'   
-    # end
+    # page.template.content
   end    
   
   error 404 do   

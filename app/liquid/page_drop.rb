@@ -54,22 +54,25 @@ class PageDrop < Liquid::Drop
   
 end  
 
-class RenderCss < Liquid::Tag                                             
+class Include < Liquid::Tag 
+  # Load all models.
+  Dir[root_path('app/models/*.rb')].each do |file|
+    require file
+  end
+                                              
   def initialize(name, params, tokens)
     super 
-    @name = name
     @params = params
   end
 
   def render(context)  
-    puts @name
-    @params
-    # "This renders the #{@name} part"  
-    # page.parts.first{|p| p.name == @name}
+    puts context['registers']['site_id']
+    template = ::Template.find_by_name @params.strip
+    template.render
   end    
 end
 
-Liquid::Template.register_tag('render_css', RenderCss) 
+Liquid::Template.register_tag('include', Include) 
  
 # 
 # class PageDrop < Liquid::Block                                             

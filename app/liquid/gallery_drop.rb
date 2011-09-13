@@ -83,7 +83,7 @@ module CollectionFilter
     
     size = options.delete('size') || 'thumbnail'
     link_size = options.delete('link_size') || 'original'
-    wrap_tag = otption.delete('wrap_tag') || 'li'
+    wrap_tag = options.delete('wrap_tag') || 'li'
     list = options.delete('list') || 'false'
     link = options.delete('link') || 'true'
     dom_id = options['id'] || part.name
@@ -112,10 +112,15 @@ module CollectionFilter
     end
   end
   
-  def find_page(path)
+  def find_item(path)
     current_site = Site.find @context['registers']['site_id']
-    page = Page.find_by_path(path, site)
-    page.title
+    page = Page.find_by_path(path, current_site)
+    page
+  end
+  
+  def assign_to(value, name)
+    @context[name] = value
+    nil
   end
   
   protected

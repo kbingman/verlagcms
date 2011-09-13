@@ -33,5 +33,13 @@ class Template
   def mode
     'liquid'
   end
+  
+  def render
+    template = Liquid::Template.parse(self.content)
+    template.render({
+      'site' => SiteDrop.new(self.site, nil), 
+      'registers' => { 'site_id' => self.site_id.to_s }
+    })
+  end
 
 end

@@ -2,12 +2,15 @@ jQuery(document).ready(function () {
 
   // logger.info('Starting!!!')
   
+  var loader = jQuery('#loader');
   jQuery('body').ajaxStart(function() {
-    logger.info('starting');
+    // logger.info('starting');
+    loader.show();
   });
   
   jQuery('body').ajaxSuccess(function() {
-    logger.info('success!');
+    // logger.info('success!');
+    loader.hide();
   });
   
   var login = jQuery('#login');   

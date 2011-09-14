@@ -1,3 +1,5 @@
+require root_path('app/liquid/drops/recent_drop')
+
 class PageDrop < Liquid::Drop 
     
   def initialize page, request=nil
@@ -30,6 +32,11 @@ class PageDrop < Liquid::Drop
   def child_count
     @page.children.count
   end
+  
+  def recent
+    @page.recent
+  end
+    
   
   def assets
     @page.assets
@@ -73,20 +80,3 @@ class Include < Liquid::Tag
 end
 
 Liquid::Template.register_tag('include', Include) 
- 
-# 
-# class PageDrop < Liquid::Block                                             
-#   def initialize(tag_name, path, tokens)
-#      super 
-#      logger.debug('Path: ' + path)
-#      @page = Page.find_by_path path, Site.first  
-#   end
-# 
-#   def render(context) 
-#     @page.title
-#     super
-#   end    
-# end
-# 
-# 
-# Liquid::Template.register_tag('page', PageDrop)  

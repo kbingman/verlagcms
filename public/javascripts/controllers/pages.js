@@ -35,7 +35,8 @@ var Pages = Sammy(function (app) {
       var application = this;
       var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
-      pageIndex.replace('#sidebar').then(function(){    
+      pageIndex.replace('#sidebar').then(function(){   
+        jQuery('ul.page-children:first').attr('id', 'pages'); 
         application.renderNode(page, active_page); 
         if(page.id() == active_page.id()){
           jQuery('li#page-' + page.id()).addClass('active');
@@ -46,11 +47,13 @@ var Pages = Sammy(function (app) {
     
     // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
+      
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
-
+        logger.info(page.id())
+        $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
         page.children().each(function(child){  
           if(child.id() == active_page.id()){
             jQuery('li#page-' + child.id()).addClass('active');
@@ -58,6 +61,8 @@ var Pages = Sammy(function (app) {
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
             application.renderNode(child, active_page);  
+          }else{
+            // 
           }
         });
       });       

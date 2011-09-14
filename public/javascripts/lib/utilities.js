@@ -50,13 +50,13 @@ var logger = {
 var Utilities = { 
   
   notice: function(message){
-    var notice = jQuery('.notice');
-    notice.text(message); 
-    notice.slideDown('slow', function(){
-      setTimeout(function(){
-        notice.slideUp('slow');
-      }, 1000);
-    });
+    // var notice = jQuery('.notice');
+    // notice.text(message); 
+    // notice.slideDown('slow', function(){
+    //   setTimeout(function(){
+    //     notice.slideUp('slow');
+    //   }, 1000);
+    // });
 
   },     
   

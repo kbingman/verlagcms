@@ -65,7 +65,7 @@ module CollectionFilter
     
     # This is used for the inline editor, setting a small flag with the edit page / part path
     def setup_editor(part)
-      r =  "<span class='part-editor' id='editor-#{part.id}'>"
+      r =  "<span class='part-editor' id='editor-#{part.id}' style='display:none;'>"
       r += "<a class='verlag-editor' href='##{part.path}/edit'>"
       r += "<span>Edit #{part.name}</span></a></span>"
       r

@@ -67,6 +67,10 @@ class Page
     DataProxy.new self, request
   end
   
+  def recent request = nil 
+    RecentProxy.new self
+  end
+  
   def to_liquid
     PageDrop.new(self)
   end

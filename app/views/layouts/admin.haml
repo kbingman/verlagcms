@@ -10,7 +10,7 @@
       -# %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' } 
       
       %script{ :src => '/javascripts/vendor/jquery-1.6.2.min.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      // %script{ :src => '/javascripts/vendor/jquery-ui-1.8.14.custom.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/jquery-ui-1.8.16.custom.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/modernizr-1.7.min.js', :type => 'text/javascript', :charset => 'utf-8' }   
       %script{ :src => '/javascripts/vendor/sammy.min.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -63,12 +63,12 @@
           %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
         - if authenticated?
           #tabs        
-            %a{ :href => '#/sites' } Sites
-            %a{ :href => '#/pages' } Pages 
-            %a{ :href => '#/templates' } Templates
-            %a{ :href => '#/assets' } Images 
-            %a{ :href => '#/assets' } Files 
-            %a{ :href => '#/users' } Users 
+            %a.tab{ :href => '#/sites' } Sites
+            %a.tab{ :href => '#/pages' } Pages 
+            %a.tab{ :href => '#/templates' } Templates
+            %a.tab{ :href => '#/assets' } Images 
+            %a.tab{ :href => '#/assets' } Files 
+            %a.tab{ :href => '#/users' } Users 
         = content :header
       #content 
         %noscript
@@ -86,5 +86,8 @@
               Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
           
         = yield  
+        
+    #loader
+      %h1 LOADER
 
 

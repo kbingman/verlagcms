@@ -3,37 +3,55 @@
   :top 0
   :left 0
   :bottom 0 
-  :padding 10px 20px
-  :width 260px     
+  :padding 0
+  :width 300px     
   :overflow-y auto
   :overflow-x hidden
   :background white 
   
-  ul
-    :width 250px
+  #layouts
+    :width 260px
+    :margin 20px
+    h2
+      :margin 18px 0 4px 0
   
-  .item   
-    :position relative
-    :border
-      :top 1px solid #ccc
-    .opener
-      :position absolute
-      :height 16px
-      :width 16px
-      :top 2px
-      :left 0
-      :cursor pointer
-    .title
-      a
+  ul#pages
+    :width 260px
+    :margin 20px
+  li
+    .item   
+      +border-radius(3px)
+      +box-shadow(0, 0, 2px, #aaa)
+      :position relative
+      :margin 0 0 4px 0
+      :padding 0 4px
+      :border 1px solid #ccc
+      .opener
+        :position absolute
+        :height 16px
+        :width 16px
+        :top 4px
+        :left 3px
+        :cursor pointer
+      .title
+        a
+          :display inline-block
+          :padding 6px 0 
+          :text-decoration none
+      .modify
         :display inline-block
-        :padding 4px 0 
-        :text-decoration none
-    .modify
-      :display inline-block
-      :float right
-      :width 3em
-      :text-align right
-  li.active 
-    :background #eee
+        :float right
+        :margin 6px 6px 0 0
+        :width 3em
+        :text-align right
+    .item:hover
+      :background #eee
+  li.active
+    .item
+      :background #eee
     li
-      :background white
+      .item
+        :background white
+      .item:hover
+        :background #eee
+        

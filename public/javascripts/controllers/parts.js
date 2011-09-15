@@ -145,8 +145,9 @@ var Parts = Sammy(function (app) {
       var query = request.params['query'] ? request.params['query'] : null; 
       var params = query ? { 'query': query } : {};
 
-      Asset.searchAdmin(params, function(){           
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      Asset.searchAdmin(params, function(){    
+        var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
+        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
         
           application.set_asset_links(part, page);
@@ -209,7 +210,8 @@ var Parts = Sammy(function (app) {
     //  files = fileInput.attr('files');
     
     this.send_files(files, params, function(){
-      var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');
+      // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
         jQuery('#ajax_uploader').attr('files', null); 
         jQuery('.progress').slideUp('slow', function(){

@@ -103,7 +103,7 @@ var Pages = Sammy(function (app) {
   });
   
   // renders the page index, only if that element is not found
-  this.bind('page-index', function(){
+  app.bind('page-index', function(){
     var application = this; 
     if(!jQuery('.page-children').length){
       application.loadPages(function(){
@@ -111,8 +111,23 @@ var Pages = Sammy(function (app) {
       });
     } 
   }); 
+  
+  app.bind('set-active-tab', function(request){
+    
+  });
+  
+  // Sets active tab
+  app.before(function(request) {
+    var tabs = jQuery('div#tabs a.tab');
+    // TODO make this a decent regex
+    var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
+    var active_tab = jQuery('#' + name);
+    
+    tabs.removeClass('active');
+    active_tab.addClass('active');
+  });
 
-  this.bind('run', function () {   
+  app.bind('run', function () {   
     
     context.application = this;
     context.refresh_pages = true;

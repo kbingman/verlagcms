@@ -30,6 +30,7 @@ feature "Assets", %q{
     page.should have_content('Assets')
     page.should have_css('h1')
     page.should have_css('#editor')
+    page.should have_css('a#assets.active')
   end
   
   scenario "view an image" do 

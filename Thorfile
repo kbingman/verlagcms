@@ -46,6 +46,7 @@ class Monk < Thor
     puts 'jim compress'
     puts `git add .`
     puts `git commit -m "compressed js"`
+    puts `git push heroku master"`
   end
   
   # Bootstraps a new site and user 

@@ -4,7 +4,7 @@
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
     %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }     
   
-    - if RACK_ENV == 'production'
+    - if RACK_ENV != 'development'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else   
       -# %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' } 
@@ -63,12 +63,12 @@
           %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
         - if authenticated?
           #tabs        
-            %a.tab{ :href => '#/sites' } Sites
-            %a.tab{ :href => '#/pages' } Pages 
-            %a.tab{ :href => '#/templates' } Templates
-            %a.tab{ :href => '#/assets' } Images 
-            %a.tab{ :href => '#/assets' } Files 
-            %a.tab{ :href => '#/users' } Users 
+            %a.tab{ :id => 'sites', :href => '#/sites' } Sites
+            %a.tab{ :id => 'pages', :href => '#/pages' } Pages 
+            %a.tab{ :id => 'templates', :href => '#/templates' } Templates
+            %a.tab{ :id => 'assets', :href => '#/assets' } Images 
+            %a.tab{ :id => 'files', :href => '#/assets' } Files 
+            %a.tab{ :id => 'users', :href => '#/users' } Users 
         = content :header
       #content 
         %noscript

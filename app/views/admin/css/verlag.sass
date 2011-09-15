@@ -25,6 +25,11 @@
   :bottom 0
   :left 0
   :right 0
+  
+=gradient($from, $to)
+  :background-image -webkit-gradient(linear, left top, left bottom, from($from), to($to))
+  :background-image -moz-linear-gradient(top, $from, $to)
+  :background-image gradient(linear, left top, left bottom, from($from), to($to))
 
 $steel: #252d3b
 $fonts: "Helvetica Neue", "Helvetica", sans-serif

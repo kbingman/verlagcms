@@ -7,51 +7,77 @@
   :width 300px     
   :overflow-y auto
   :overflow-x hidden
-  :background white 
+  :background #333 
+  a
+    :color #bbb
+    :text-decoration none
   
   #layouts
     :width 260px
     :margin 20px
     h2
       :margin 18px 0 4px 0
-  
-  ul#pages
-    :width 260px
-    :margin 20px
-  li
-    .item   
+    ul
       +border-radius(3px)
-      +box-shadow(0, 0, 2px, #aaa)
-      :position relative
-      :margin 0 0 4px 0
-      :padding 0 4px
-      :border 1px solid #ccc
-      .opener
-        :position absolute
-        :height 16px
-        :width 16px
-        :top 4px
-        :left 3px
-        :cursor pointer
-      .title
-        a
-          :display inline-block
-          :padding 6px 0 
-          :text-decoration none
-      .modify
-        :display inline-block
-        :float right
-        :margin 6px 6px 0 0
-        :width 3em
-        :text-align right
-    .item:hover
-      :background #eee
-  li.active
-    .item
-      :background #eee
+      +box-shadow(0, 0, 4px, #444)
+      li
+        :padding 4px
+  ul#pages
+    :width 300px
+    :margin 0
     li
-      .item
-        :background white
+      .item   
+        // +border-radius(3px)
+        // +box-shadow(0, 0, 4px, #000)
+        :position relative
+        :margin 0 0
+        :padding 9px 18px
+        :border solid #222
+        :border-width 0 0 1px 0
+        // :background #333
+        +gradient(#383838, #333)
+        .opener
+          :position absolute
+          :color #bbb
+          :height 16px
+          :width 16px
+          :top 4px
+          :left 3px
+          :cursor pointer
+        .title
+          a
+            :color #bbb
+            :display inline-block
+            :padding 6px 0 
+            :text-decoration none
+        .modify
+          :display inline-block
+          :float right
+          :margin 6px 6px 0 0
+          :width 3em
+          :text-align right
+          a
+            :color #bbb
+            :text-decoration none
       .item:hover
-        :background #eee
-        
+        :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+        :background #252525
+    li.active 
+      .item
+        :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+        :background #252525
+        a 
+          :color #eee
+      li
+        .item
+          :-webkit-box-shadow none
+          :background #333
+          +gradient(#383838, #333)
+          a 
+            :color #bbb
+        .item:hover
+          :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+          :background #252525
+          a 
+            :color #bbb
+          // +gradient(#333, #000)

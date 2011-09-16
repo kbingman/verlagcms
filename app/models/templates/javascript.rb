@@ -6,9 +6,5 @@ class Javascript < Template
   def mode
     'javascript'
   end  
-  
-  def render
-    self.content
-  end
 
 end

@@ -1,37 +1,51 @@
 <div class="modal-editor">
   {{#part}} 
-  <form action='#/pages/{{page_id}}/parts/{{id}}/results' id='search-form' method='get'>
-    <div class='field'>
-      <input class='textfield' id='search-query' name='query' type='text'>
-      <input class='button' type='submit' value='Search'>
-    </div>
-  </form> 
-  
-  <form action='#/pages/{{page_id}}/image_parts/{{id}}/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-    <div class='hidden'>
-      <input name='limit' value='12' type='hidden' />
-    </div>
-    <div class='field'>
-      <label for='ajax_uploader'></label>
-      <input id='ajax_uploader' name='file' type='file' />
-    </div>
-    <div class="buttons">
-      <input type='submit' value="Save" class='button html-only' />
-      <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
-    </div>
-    <div class="progress"></div>
-  </form>  
+  <div class="toolbar">
+    <form action="#/pages/{{page_id}}/image_parts/{{id}}/assets" enctype="multipart/form-data" class="upload-asset" method="post">
+      <div class="hidden">
+        <input name="limit" value="12" type="hidden" />
+      </div>
+      <div class="filefield">
+        <div class="uploader">
+          <input id="ajax_uploader" name="file" type="file" />
+        </div>
+        <label for="ajax_uploader">Upload Images</label>
+        <!--input type="submit" value="Save" class="button html-only" /-->
+      </div>
+    </form>
+    <form action="#/pages/{{page_id}}/parts/{{id}}/results" class="search-form" method="get">
+      <div class="field">
+        <input class="textfield" id="search-query" name="query" type="text">
+        <input class="button search" type="submit" value="Search">
+      </div>
+    </form>
+  </div>
   {{/part}}
-  <div id="search-results-container"> 
+  
+  <div class="progress"></div> 
+  <div id="search-results-container" class="assets-container"> 
     <h1>Recent Assets</h1>
     <ul id="part-assets">
       {{#assets}}
         <li id="asset-{{id}}" class="asset">
           <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
-            <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
+            <img src="/images/icon/{{id}}/{{file_name}}" alt="{{title}}" />
           </a>  
         </li>
       {{/assets}}
     </ul>
-  <div>  
+  </div> 
+  
+  {{#part}}  
+  <div id="selected-assets"  class="assets-container">
+    <h1>Selected Asset</h1>
+    <ul>
+      <li id="asset-{{asset_id}}" class="asset">
+        <img src="/images/icon/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
+      </li>
+    </ul>
+    last updated: 
+  </div>
+  <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
+  {{/part}} 
 </div>

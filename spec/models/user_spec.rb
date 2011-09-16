@@ -3,8 +3,9 @@ require 'spec_helper'
 describe User do
   
   before(:all) do
-    @site = Factory(:site) 
-    @second_site = Factory(:site, :name => 'second', :subdomain => 'second')
+    @group = Factory(:group) 
+    @site = Factory(:site, :group => @group) 
+    @second_site = Factory(:site, :name => 'second', :subdomain => 'second', :group => @group)
     @user = Factory.build(:user, :password => 'secret')
     @user.sites << @site
     @user.save

@@ -1,23 +1,22 @@
 <div id="assets-editor">
   <div id="title-wrapper">  
     <h1>Assets {{query}}</h1> 
-    <form action='#/assets' id='search' method='get'>
-      <div class='field'>
-        <label for='ajax_uploader'></label>
-        <input id='search-query' name='query' type='text' value="{{query}}"/>
-        <input type='submit' value='Search'>
+    <form action="#/assets" id="search" method="get">
+      <div class="field">
+        <input id="search-query" name="query" type="text" value="{{query}}"/>
+        <input type="submit" value="Search">
       </div>
     </form>    
   </div>
   
-  <div class='buttons'>
-    <form action='/admin/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-      <div class='field'>
-        <label for='ajax_uploader'></label>
-        <input id='ajax_uploader' name='file' type='file' />
+  <div class="buttons">
+    <form action="/admin/assets" enctype="multipart/form-data" id="new_asset" method="post">
+      <div class="field">
+        <label for="ajax_uploader"></label>
+        <input id="ajax_uploader" name="file" type="file" />
       </div>
       <div>
-        <input type='submit'>
+        <input type="submit">
       </div>
     </form> 
     <div class="progress"></div>
@@ -27,7 +26,7 @@
     {{#assets}}
       <li id="asset-{{id}}">
         <a href="#/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
-          <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
+          <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
         </a>  
         <a href="#/assets/{{id}}/remove{{query_path}}" id="remove-asset-{{id}}">Remove</a>
       </li>

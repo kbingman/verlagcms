@@ -1,6 +1,6 @@
 #page-editor   
   +positionable 
-  +box-shadow(7px, #555)
+  +box-shadow(0, 0, 7px, #555)
   :bottom auto
   :padding 0 4px 0 4px
   :height 200px
@@ -11,64 +11,64 @@
     
   h1.title
     :height 42px
-    :line-height 42px
+    :background 
+      :color hsla(0,0,90, 1)
+    .toggle-page-editor
+      :position absolute
+      :top 12px
+      :right 8px
+      :font-size 0.75em
+    input
+      +positionable 
+      :height 34px
+      :top 4px
+      :left 70px
+      :width 400px
+      :padding 0
+      :background 
+        :color hsla(0,0,90, 1)
+    input:focus
+      :background 
+        :color #fff
+    label
+      :position absolute
+      :left 4px
+      :top 12px
+      :display block
+      :text-align right
+      :padding-right 8px
+      :width 54px
+      
+  #extra-info
+    :padding 4px 0    
+    label
+      :display inline-block
+      :text-align right
+      :padding-right 8px
+      :width 54px
     
-//   #page-title-field
-//     +positionable 
-//     :bottom auto
-//     :height 42px
-//     :background 
-//       :color hsla(0,0,90, 1)
-//     .toggle-page-editor
-//       :position absolute
-//       :top 12px
-//       :right 8px
-//       :font-size 0.75em
-//     input
-//       +positionable 
-//       :height 34px
-//       :top 4px
-//       :left 70px
-//       :width 400px
-//       :padding 0
-//     label
-//       :position absolute
-//       :left 4px
-//       :top 12px
-//       :display block
-//       :text-align right
-//       :padding-right 8px
-//       :width 54px
-//       
-//   #extra-info
-//     :padding 4px 0    
-//     label
-//       :display inline-block
-//       :text-align right
-//       :padding-right 8px
-//       :width 54px
-//     
-//   input[type=text]   
-//     +border-radius(0) 
-//     :border none  
-//     :width 80%
-//     :background 
-//       :color #fff
-//     :font-size 1.4em 
-//     :line-height 1 
-//   input:focus
-//     :background 
-//       :color #f1f1f1
-//       
-//   #page-parts
-//     +positionable
-//     :top 220px  
-//     :bottom 80px
-//     :padding 20px  
-//     :z-index 10     
-//     .textarea 
-//       :margin-top 0.5em 
-//       :width 100%
-//       :height 300px 
-//       :font-size 1em 
-//       :border none
+  input[type=text]   
+    +border-radius(0) 
+    :border none  
+    :width 80%
+    :background 
+      :color #fff
+    :font-size 1.4em 
+    :line-height 1 
+  input:focus
+    :background 
+      :color #fff
+      
+  #page-parts
+    +positionable
+    :top 220px  
+    :bottom 80px
+    :padding 20px  
+    :z-index 10     
+    .textarea 
+      :margin-top 0.5em 
+      :width 100%
+      :height 300px 
+      :font-size 1em 
+      :border none
+

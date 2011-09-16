@@ -116,7 +116,7 @@ require root_path('app/models/asset.rb')
 require root_path('app/models/part.rb')  
 
 # Load all models.
-Dir[root_path('app/models/*.rb')].each do |file|
+Dir[root_path('app/models/**/*.rb')].each do |file|
   require file
 end   
 
@@ -126,17 +126,17 @@ Dir[root_path('app/helpers/*.rb')].each do |file|
 end
 
 # Load all admin routes.
-Dir[root_path('app/routes/admin/*.rb')].each do |file|
-  require file
-end
-# require root_path('app/routes/admin/css')
-# require root_path('app/routes/admin/assets')
-# require root_path('app/routes/admin/pages')
-# require root_path('app/routes/admin/part_types')
-# require root_path('app/routes/admin/sites')
-# require root_path('app/routes/admin/templates')
-# require root_path('app/routes/admin/users')
-# require root_path('app/routes/admin/rest_controller') 
+# Dir[root_path('app/routes/admin/*.rb')].each do |file|
+#   require file
+# end
+require root_path('app/routes/admin/css')
+require root_path('app/routes/admin/assets')
+require root_path('app/routes/admin/pages')
+require root_path('app/routes/admin/part_types')
+require root_path('app/routes/admin/sites')
+require root_path('app/routes/admin/templates')
+require root_path('app/routes/admin/users')
+require root_path('app/routes/admin/rest_controller') 
 
 # Load api routes
 Dir[root_path('app/routes/api/*.rb')].each do |file|
@@ -153,7 +153,7 @@ Dir[root_path('app/views/**/*.rb')].each do |file|
 end
 
 # Load all lib liquid files.
-Dir[root_path('app/liquid/*.rb')].each do |file|
+Dir[root_path('app/liquid/**/*.rb')].each do |file|
   require file
 end  
 

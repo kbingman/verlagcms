@@ -46,7 +46,7 @@ describe "routes/admin/sites" do
     context 'json' do   
       def do_post
         @site_name = Faker::Name.first_name
-        post '/admin/sites.json', :site => { :name => @site_name }
+        post '/admin/sites.json', :site => { :name => @site_name, :group_id => @group.id }
       end
     
       it 'should be successful' do
@@ -99,7 +99,7 @@ describe "routes/admin/sites" do
   context 'DELETE destroy' do  
     
     before(:each) do 
-      @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome')    
+      @site = Factory(:site, :name => "Awesome Site", :subdomain => 'awesome', :group => @group)    
       @current_user.sites << @site
       @current_user.save
     end

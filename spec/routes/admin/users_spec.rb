@@ -39,7 +39,7 @@ describe "routes/users" do
       end   
       
       it 'should not include users from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien', :group => @group)
         @alien_user = Factory.build(:user, :name => 'Alien user') 
         @alien_user.sites << @alien_site
         @alien_site.save

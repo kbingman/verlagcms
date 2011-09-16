@@ -25,7 +25,7 @@ RSpec.configure do |conf|
   end 
   
   conf.before(:all) do
-    teardown 
+    # teardown 
     # @site = Factory(:site)
     # @current_user = Factory.build(:user)
     # @current_user.sites << @site
@@ -48,7 +48,8 @@ RSpec.configure do |conf|
   end  
   
   def build_complete_site
-    @site = Factory(:site)
+    @group = Factory(:group)
+    @site = Factory(:site, :group => @group)
     @current_user = Factory.build(:user)
     @current_user.sites << @site
     @current_user.save

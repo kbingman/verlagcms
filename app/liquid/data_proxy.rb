@@ -15,7 +15,7 @@ class DataProxy
   
   def slug
     @page.slug
-  end 
+  end
   
   def method_missing(meth) 
     part = @page.parts.detect { |p| p.name == meth.to_s } 

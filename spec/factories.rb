@@ -6,9 +6,13 @@ end
 Factory.define :asset do |f|
   f.title { Faker::Name.first_name }
   f.tag_list  'tag1, tag2'
-  f.file File.open root_path('/spec/data/830px-Tieboardingcraft.jpg') 
+  f.file File.open root_path('spec/data/830px-Tieboardingcraft.jpg') 
   # f.association :site
 end 
+
+Factory.define :group do |f|
+  f.name { Faker::Name.first_name } 
+end
 
 Factory.define :javascript do |f|
   f.name 'Javascript'

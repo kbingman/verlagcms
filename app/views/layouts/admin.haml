@@ -4,18 +4,19 @@
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
     %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }     
   
-    - if RACK_ENV == 'production'
+    - if RACK_ENV != 'development'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else   
       -# %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' } 
       
       %script{ :src => '/javascripts/vendor/jquery-1.6.2.min.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      // %script{ :src => '/javascripts/vendor/jquery-ui-1.8.14.custom.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/jquery-ui-1.8.16.custom.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/modernizr-1.7.min.js', :type => 'text/javascript', :charset => 'utf-8' }   
       %script{ :src => '/javascripts/vendor/sammy.min.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/vendor/sammy.nested_params.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/sammy.json.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/mustache.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/sammy.mustache.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }  
       %script{ :src => '/javascripts/vendor/sinatra-rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
@@ -44,10 +45,12 @@
       %script{ :src => '/javascripts/controllers/sites.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/controllers/users.js', :type => 'text/javascript', :charset => 'utf-8' } 
       
-      %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }    
+      %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }  
+        
       
     -# This is where the mustache templates are rendered  
     = content :head
+
 
   %body
     .wrapper
@@ -60,15 +63,31 @@
           %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
         - if authenticated?
           #tabs        
-            %a{ :href => '#/sites' } Sites
-            %a{ :href => '#/pages' } Pages 
-            %a{ :href => '#/templates' } Templates
-            %a{ :href => '#/assets' } Images 
-            %a{ :href => '#/assets' } Files 
-            %a{ :href => '#/users' } Users 
+            %a.tab{ :id => 'sites', :href => '#/sites' } Sites
+            %a.tab{ :id => 'pages', :href => '#/pages' } Pages 
+            %a.tab{ :id => 'templates', :href => '#/templates' } Templates
+            %a.tab{ :id => 'assets', :href => '#/assets' } Images 
+            %a.tab{ :id => 'files', :href => '#/assets' } Files 
+            %a.tab{ :id => 'users', :href => '#/users' } Users 
         = content :header
-      #content  
-        
+      #content 
+        %noscript
+          #editor 
+            %h1 You need to change a setting in your web browser</h1> 
+            %p 
+              This application requires a browser feature called <strong>JavaScript</strong>. All modern browsers support JavaScript. 
+              You probably just need to change a setting in order to turn it on.
+              
+            %p 
+              Please see: <a href="http://www.google.com/support/bin/answer.py?answer=23852">How to enable JavaScript in your browser</a>.
+            -# %p  
+            -#   If you use ad-blocking software, it may require you to allow JavaScript from basecamphq.com.
+            %p  
+              Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
+          
         = yield  
+        
+    #loader
+      %h1 LOADER
 
 

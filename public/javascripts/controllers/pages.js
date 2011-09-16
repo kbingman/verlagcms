@@ -1,4 +1,4 @@
-Pages = Sammy(function (app) {   
+var Pages = Sammy(function (app) {   
   
   var context = this;  
    
@@ -33,9 +33,10 @@ Pages = Sammy(function (app) {
     // Renders the Page tree
     renderTree: function(page, active_page){ 
       var application = this;
-      var pageIndex = application.render('/templates/admin/pages/node.mustache', { pages: [page.asJSON()] });
+      var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
-      pageIndex.replace('#sidebar').then(function(){    
+      pageIndex.replace('#sidebar').then(function(){   
+        jQuery('ul.page-children:first').attr('id', 'pages'); 
         application.renderNode(page, active_page); 
         if(page.id() == active_page.id()){
           jQuery('li#page-' + page.id()).addClass('active');
@@ -43,12 +44,16 @@ Pages = Sammy(function (app) {
       });
     },
     
+    
+    // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
+      
       var application = this;
       // This is a little slow, as it renders the children for each page. 
-      pageNode = application.render('/templates/admin/pages/node.mustache', page.children().toMustache() );
+      var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
-
+        logger.info(page.id())
+        $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
         page.children().each(function(child){  
           if(child.id() == active_page.id()){
             jQuery('li#page-' + child.id()).addClass('active');
@@ -56,6 +61,8 @@ Pages = Sammy(function (app) {
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
             application.renderNode(child, active_page);  
+          }else{
+            // 
           }
         });
       });       
@@ -64,11 +71,11 @@ Pages = Sammy(function (app) {
     renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
-        var showPage = application.render('/templates/admin/pages/show.mustache', { 
+        var showPage = application.load(jQuery('#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
-        });  
+        }, 'mustache');  
         showPage.replace('#editor').then(function(){  
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
@@ -94,8 +101,33 @@ Pages = Sammy(function (app) {
     }
     
   });
+  
+  // renders the page index, only if that element is not found
+  app.bind('page-index', function(){
+    var application = this; 
+    if(!jQuery('.page-children').length){
+      application.loadPages(function(){
+        application.renderTree(Page.root(), Page.root());  
+      });
+    } 
+  }); 
+  
+  app.bind('set-active-tab', function(request){
+    
+  });
+  
+  // Sets active tab
+  app.before(function(request) {
+    // var tabs = jQuery('div#tabs a.tab');
+    // // TODO make this a decent regex
+    // var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
+    // var active_tab = jQuery('#' + name);
+    // 
+    // tabs.removeClass('active');
+    // active_tab.addClass('active');
+  });
 
-  this.bind('run', function () {   
+  app.bind('run', function () {   
     
     context.application = this;
     context.refresh_pages = true;
@@ -112,7 +144,8 @@ Pages = Sammy(function (app) {
       var Now = new Date()
       var start = Now.getTime();  
       var toggle = $(this);  
-      var parent = toggle.parents('li:first'); 
+      var parent_node = toggle.parents('li:first'); 
+      console.log(parent_node)
       
       var page_id = this.id.split('-')[2];  
       var page = Page.find(page_id)  
@@ -120,9 +153,9 @@ Pages = Sammy(function (app) {
       var active_page_cookie = jQuery.cookie('active_page_ids');
       var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
 
-      if(!parent.hasClass('open')){
+      if(!parent_node.hasClass('open')){
         active_page_ids.push(page_id);
-        parent.toggleClass('open');  
+        parent_node.toggleClass('open');  
         var now = new Date();
         var start = now.getTime();  
         jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
@@ -146,13 +179,13 @@ Pages = Sammy(function (app) {
         //   }
         // });   
         // Loads all open pages...  
-        // Should really only load the relavent ones...
+        // Should really only load the relevent ones...
         Page.load(function(){  
-          context.application.renderNode(page);
+          context.application.renderNode(page, page);
           // Hide spinner    
         });
       } else {    
-        parent.toggleClass('open'); 
+        parent_node.toggleClass('open'); 
         var arr = new Array();
         active_page_ids = jQuery.grep(active_page_ids, function(value) {
           return value != page_id;
@@ -175,15 +208,9 @@ Pages = Sammy(function (app) {
   
     Galerie.close();    
     // context.refresh_pages = true; 
-
-    if(context.refresh_pages){
-      request.loadPages(function(){
-        request.renderTree(Page.root(), Page.root());  
-        logger.info('pages')
-      });   
-    } 
+    request.trigger('page-index');
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
-    context.refresh_pages = true; 
+
     context.do_not_refresh = false;              
   });
   
@@ -195,18 +222,14 @@ Pages = Sammy(function (app) {
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-
       if ($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), page); 
-        context.refresh_pages = true;
-      }
+      request.trigger('page-index');
 
-      var newPage = request.render('/templates/admin/pages/new.mustache', { 
+      var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
         parent: page.asJSON(),
         layouts: Layout.asLayoutJSON(page.attr('layout_id'))
-      }); 
+      }, 'mustache'); 
       newPage.replace('#new-page-container');
     }); 
   }); 
@@ -253,10 +276,7 @@ Pages = Sammy(function (app) {
         } 
         context.modal = false;
         context.do_not_refresh = false;
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        } 
+        request.trigger('page-index');
       }else{
         application.close_page_editor();
       }
@@ -279,10 +299,7 @@ Pages = Sammy(function (app) {
         request.renderPagePreview(page, function(){
           application.open_page_editor();
         }); 
-        if(context.refresh_pages){
-          request.renderTree(Page.root(), page);
-          context.refresh_pages = false;  
-        }
+        request.trigger('page-index');
       }
     }); 
     context.do_not_refresh = true;       
@@ -318,11 +335,9 @@ Pages = Sammy(function (app) {
       
       if($('#modal').length == 0){ Galerie.open(displayContents); } 
       
-      if(context.refresh_pages){
-        request.renderTree(Page.root(), Page.root()); 
-      }
+      request.trigger('page-index');
       
-      var removePage = request.render('/templates/admin/pages/remove.mustache', { page: page.asJSON() });    
+      var removePage = request.load(jQuery('#admin-pages-remove')).interpolate({ page: page.asJSON() }, 'mustache');    
       removePage.replace('#remove-page-container');
     });  
   }); 
@@ -345,94 +360,94 @@ Pages = Sammy(function (app) {
   
   // Asset Search Results
   // ---------------------------------------------
-  this.get('/pages/:id/results', function(request){ 
-    this.loadPages(function(){
-      var page_id = request.params['id'];  
-      var page = Page.find(page_id);  
-      
-      var query = request.params['query'] ? request.params['query'] : null; 
-      var params = query ? { 'query': query } : {};
-      
-      Asset.searchAdmin(params, function(){  
-        Asset.each(function(asset){
-          asset.attr('current_page_id', page.id());
-          asset.save();
-        });  
-         
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container');
-      });
-    });
-  });   
-
-  
-  // Add Page Asset
-  // ---------------------------------------------  
-  this.get('#/pages/:page_id/assets/:id/add', function(request){ 
-    this.loadPages(function(){   
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);  
-      var asset = Asset.find(request.params['id']);  
-      var page_asset_input = jQuery('#page-asset-ids');
-      var asset_ids_list = page_asset_input.attr('value'); 
-      var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
-      
-      page_asset_input.attr('value', new_asset_ids_list);
-      // page.attr('assets_list', new_asset_ids_list);
-      
-      page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
-        success: function(){ 
-          // think of a better way to render these links 
-          var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
-          var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
-          var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
-          image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
-          image_div.html(image_link);
-          image_div.append(remove_link);
-          
-          jQuery('#page-assets').append(image_div); 
-          var preview = jQuery('.preview iframe');
-          preview.hide().attr('src', preview.attr('src'));
-          preview.load(function(){
-            preview.fadeIn('fast')
-          })
-          context.do_not_refresh = true;
-          request.redirect('#/pages/' + page_id);  
-        }
-      });
-    });  
-  }); 
-  
-  
-  // Remove Page Asset
-  // ---------------------------------------------   
-  this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
-    this.loadPages(function(){     
-      var id = request.params['id']; 
-      var page_id = request.params['page_id'];  
-      var page = Page.find(page_id);
-      var page_asset_input = jQuery('#page-asset-ids');   
-  
-      var asset_ids_list = page_asset_input.attr('value').split(','); 
-      var idx = asset_ids_list.indexOf(id);    
-      if(idx!=-1) asset_ids_list.splice(idx, 1);  
-
-      page_asset_input.attr('value', asset_ids_list);  
-      page.attr('assets_list', asset_ids_list.join(','));
-      page.save(function(){
-        jQuery('#page-asset-' + id).fadeOut('fast', function(){
-          $(this).remove();
-        }); 
-        var preview = jQuery('.preview iframe');
-        preview.hide().attr('src', preview.attr('src'));
-        preview.load(function(){
-          preview.fadeIn('fast')
-        })
-        context.do_not_refresh = true;
-        request.redirect('#/pages/' + page_id);
-      })
-    }); 
-  });
+  // this.get('/pages/:id/results', function(request){ 
+  //   this.loadPages(function(){
+  //     var page_id = request.params['id'];  
+  //     var page = Page.find(page_id);  
+  //     
+  //     var query = request.params['query'] ? request.params['query'] : null; 
+  //     var params = query ? { 'query': query } : {};
+  //     
+  //     Asset.searchAdmin(params, function(){  
+  //       Asset.each(function(asset){
+  //         asset.attr('current_page_id', page.id());
+  //         asset.save();
+  //       });  
+  //        
+  //       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+  //       searchResults.replace('#search-results-container');
+  //     });
+  //   });
+  // });   
+  // 
+  // 
+  // // Add Page Asset
+  // // ---------------------------------------------  
+  // this.get('#/pages/:page_id/assets/:id/add', function(request){ 
+  //   this.loadPages(function(){   
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);  
+  //     var asset = Asset.find(request.params['id']);  
+  //     var page_asset_input = jQuery('#page-asset-ids');
+  //     var asset_ids_list = page_asset_input.attr('value'); 
+  //     var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
+  //     
+  //     page_asset_input.attr('value', new_asset_ids_list);
+  //     // page.attr('assets_list', new_asset_ids_list);
+  //     
+  //     page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
+  //       success: function(){ 
+  //         // think of a better way to render these links 
+  //         var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
+  //         var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
+  //         var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
+  //         image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
+  //         image_div.html(image_link);
+  //         image_div.append(remove_link);
+  //         
+  //         jQuery('#page-assets').append(image_div); 
+  //         var preview = jQuery('.preview iframe');
+  //         preview.hide().attr('src', preview.attr('src'));
+  //         preview.load(function(){
+  //           preview.fadeIn('fast')
+  //         })
+  //         context.do_not_refresh = true;
+  //         request.redirect('#/pages/' + page_id);  
+  //       }
+  //     });
+  //   });  
+  // }); 
+  // 
+  // 
+  // // Remove Page Asset
+  // // ---------------------------------------------   
+  // this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
+  //   this.loadPages(function(){     
+  //     var id = request.params['id']; 
+  //     var page_id = request.params['page_id'];  
+  //     var page = Page.find(page_id);
+  //     var page_asset_input = jQuery('#page-asset-ids');   
+  // 
+  //     var asset_ids_list = page_asset_input.attr('value').split(','); 
+  //     var idx = asset_ids_list.indexOf(id);    
+  //     if(idx!=-1) asset_ids_list.splice(idx, 1);  
+  // 
+  //     page_asset_input.attr('value', asset_ids_list);  
+  //     page.attr('assets_list', asset_ids_list.join(','));
+  //     page.save(function(){
+  //       jQuery('#page-asset-' + id).fadeOut('fast', function(){
+  //         $(this).remove();
+  //       }); 
+  //       var preview = jQuery('.preview iframe');
+  //       preview.hide().attr('src', preview.attr('src'));
+  //       preview.load(function(){
+  //         preview.fadeIn('fast')
+  //       })
+  //       context.do_not_refresh = true;
+  //       request.redirect('#/pages/' + page_id);
+  //     })
+  //   }); 
+  // });
 
 
 });

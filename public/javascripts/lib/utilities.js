@@ -50,13 +50,13 @@ var logger = {
 var Utilities = { 
   
   notice: function(message){
-    var notice = jQuery('.notice');
-    notice.text(message); 
-    notice.slideDown('slow', function(){
-      setTimeout(function(){
-        notice.slideUp('slow');
-      }, 1000);
-    });
+    // var notice = jQuery('.notice');
+    // notice.text(message); 
+    // notice.slideDown('slow', function(){
+    //   setTimeout(function(){
+    //     notice.slideUp('slow');
+    //   }, 1000);
+    // });
 
   },     
   
@@ -127,16 +127,26 @@ var iFramer = {
     var self = this;
     if(!trigger.length) return;
     trigger.load(function(){   
-      var iFrameContent = $(this).contents();  
+      var iframe = $(this);
+
+      var iFrameContent = iframe.contents();  
       var editor = iFrameContent.find('span.part-editor');
-      var flags = editor.find('a');   
-      logger.info('load')
-      $(this).fadeIn('fast');
-      // setTimeout(function(){
-      //   
-      // }, 13);
-      // change to plugin ?
+      var flags = editor.find('a');  
       self.setEditFlags(editor); 
+      iframe.fadeIn('fast');
+      
+      // Sets preview links to change the sammy.js routes instead of the usual route
+      var internal_links = iFrameContent.find('a[href^="/preview"]');
+      internal_links.click(function(e){
+        var link_path = $(this).attr('href').split('?')[0].replace('/preview','');
+        var page = Page.find_by_path(link_path);
+        if (page){
+          e.preventDefault();
+          var page_id = page.id();
+          document.location.hash = page.attr('admin_path');
+        }
+      });
+      
       flags.click(function(){  
         window.top.trigger = $(this);
         window.top.location.hash = $(this).attr('href');  
@@ -181,7 +191,6 @@ var TabControl = {
     element.click(function(){  
       var partId = $(this).find('label').attr('for').split('-')[1];
       var tabId = 'tab-' + partId;   
-      console.log(tabId)
       
       jQuery('.tab').hide(); 
       jQuery('#' + tabId).show();

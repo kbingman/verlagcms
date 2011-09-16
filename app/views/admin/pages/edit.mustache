@@ -4,6 +4,7 @@
   <form action="#/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
+      <input type="hidden" id="page-updated_at" name="page[updated_at]" value="{{updated_at}}" /> 
     </div> 
     <div id="title-wrapper">
       <div class="field" id="page-title-field">   
@@ -16,12 +17,12 @@
           <input type="text" id="page-slug" name="page[slug]" value="{{slug}}" class="textfield" />  
         </div>   
         <div class="field">
-          <label for='asset_tags'>Tags</label> 
-          <input type='text' name='page[tag_list]' id='page-tag-list' value="{{tag_list}}" class='textfield' /> 
+          <label for="asset_tags">Tags</label> 
+          <input type="text" name="page[tag_list]" id="page-tag-list" value="{{tag_list}}" class="textfield" /> 
         </div>
       </div> 
       <div class="hidden">                  
-        <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+        <input type="hidden" name="page[assets_list]" id="page-asset-ids" value="{{assets_list}}" class="hidden" />
       </div>
     </div>
   
@@ -30,15 +31,15 @@
       {{#parts}}  
         <div class="part tab" id="tab-{{id}}">
           <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a--> 
-          <label for='part-{{id}}-content'>{{name}}</label>
+          <label for="part-{{id}}-content">{{name}}</label>
           <div class="hidden">                  
-            <input type='hidden' name='page[parts][][id]' id='part-{{id}}-id' value="{{id}}" class='hidden' />
-            <input type='hidden' name='page[parts][][name]' id='part-{{id}}-name' value="{{name}}" class='hidden' />
+            <input type="hidden" name="page[parts][][id]" id="part-{{id}}-id" value="{{id}}" class="hidden" />
+            <input type="hidden" name="page[parts][][name]" id="part-{{id}}-name" value="{{name}}" class="hidden" />
           </div>  
           
           <div class="field part-content"> 
                       
-            <textarea type='text' name='page[parts][][content]' id='part-{{id}}-content' class='textarea'>{{content}}</textarea>
+            <textarea type="text" name="page[parts][][content]" id="part-{{id}}-content" class="textarea">{{content}}</textarea>
     
             {{#image_path}} 
             <img src="{{image_path}}" alt="{{name}}" />
@@ -91,24 +92,24 @@
   <form action="#/pages/{{id}}" method="post" id="edit-page">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" />            
-      <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
+      <input type="hidden" name="page[assets_list]" id="page-asset-ids" value="{{assets_list}}" class="hidden" />
     </div>
   </form>
        
-  <form action='#/pages/{{id}}/results' id='search-form' method='get'>
-    <div class='field'>
-      <input class='textfield' id='search-query' name='query' type='text'>
-      <input class='button' type='submit' value='Search'>
+  <form action="#/pages/{{id}}/results" id="search-form" method="get">
+    <div class="field">
+      <input class="textfield" id="search-query" name="query" type="text">
+      <input class="button" type="submit" value="Search">
     </div>
   </form> 
      
-  <form action='#/assets' enctype='multipart/form-data' id='new_asset' method='post'>
-    <div class='field'>
-      <label for='ajax_uploader'></label>
-      <input id='ajax_uploader' name='file' type='file'>
+  <form action="#/assets" enctype="multipart/form-data" id="new_asset" method="post">
+    <div class="field">
+      <label for="ajax_uploader"></label>
+      <input id="ajax_uploader" name="file" type="file">
     </div>
-    <div class='buttons_'>
-      <input type='submit'>
+    <div class="buttons_">
+      <input type="submit">
     </div>
   </form>  
            

@@ -9,11 +9,18 @@ class Site
   many :assets
   many :templates   
   
+  key :group_id, ObjectId, :required => true
+  belongs_to :group, :foreign_key => :group_id
+  
   # key :user_ids, Array
   # many :users, :in => :user_ids
   
   def users
     User.by_site(self).all
+  end
+  
+  def published?
+    false
   end
   
   # Need to rename this... used in the REST controllers

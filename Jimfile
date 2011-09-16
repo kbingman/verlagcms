@@ -4,10 +4,12 @@
   "bundles": { 
     "admin": [
       "vendor/jquery-1.6.2.min", 
+      "vendor/jquery-ui-1.8.16.custom",
       "vendor/sammy.min", 
       "vendor/sammy.title",
       "vendor/sammy.nested_params", 
       "vendor/sammy.json",  
+      "vendor/mustache",
       "vendor/sammy.mustache",
       "vendor/modernizr-1.7.min", 
       "vendor/js-model-0.10.1", 

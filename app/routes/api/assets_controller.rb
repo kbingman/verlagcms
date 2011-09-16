@@ -22,9 +22,9 @@ class Main
       else
         Asset.by_site(current_site)
       end
-      @assets = plucky_query.paginate(options)
       
-      @assets.to_json 
+      assets = plucky_query.paginate(options)
+      assets.to_json 
     end
     
     # Show Asset

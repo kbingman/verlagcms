@@ -1,4 +1,4 @@
-Pages = Sammy(function (app) {   
+var Parts = Sammy(function (app) {   
   
   var context = this;  
    
@@ -16,18 +16,31 @@ Pages = Sammy(function (app) {
   app.helpers({  
     // Render Part
     render_part: function(part, page, template){
-      var application = this;   
-      
-      var edit_part = application.render('/templates/admin/' + template + '/edit.mustache', { 
+      var application = this;  
+      var edit_part = application.load(jQuery('#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
-      }); 
-      edit_part.replace(jQuery('#extra-info')).then(function(){
-        application.open_page_editor();
-        // TODO Set conditional here (Modernizr)
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
+      }, 'mustache');
+      edit_part.appendTo(jQuery('body')).then(function(){
+        var modal_editor = jQuery('.modal-editor');
+        var iframe_content = $('iframe').contents();  
+        var part_editor = iframe_content.find('#editor-' + part.id());
+        modal_editor.fadeIn('fast').css({
+          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
+          'left':  part_editor.offset().left + 400 + 'px'
+        });
         application.set_asset_links(part, page);
+      
+        jQuery('#ajax_uploader')
+          .attr('multiple','multiple')
+          .change(function(e){
+            var form = jQuery(this).parents('form:first');
+            jQuery('.progress').slideDown('slow',function(){
+              form.submit();
+            });
+          });
+        application.trigger('page-index');
         context.modal = true;
       });
     },
@@ -54,7 +67,7 @@ Pages = Sammy(function (app) {
             jQuery('.modal-editor').remove();
             // TODO Change to sammy method
             context.modal = false;
-            document.location.hash = '#/pages/' + page.id();
+            document.location.hash = '#' + page.attr('admin_path');
           });
         });
       });
@@ -65,22 +78,34 @@ Pages = Sammy(function (app) {
   // Edit Parts
   // ---------------------------------------------
   this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
-    var application = this;
     jQuery('.modal-editor').remove();
+    var iframe = $('iframe');
+    var template = 'parts';
     
-    this.loadPages(function(){     
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(request.params['id']);
-      var iframe = $('iframe');
-      var template = 'parts';
-      
-      if(iframe.length){
-        application.render_part(part, page, template);
-      }else{
-        request.renderPagePreview(page, function(){
-          application.render_part(part, page, template);
-        }); 
-      }
+    this.loadPages(function(){ 
+      Page.load_by_id(request.params['page_id'], function(){
+        var page = Page.find(request.params['page_id']);
+        var part = page.parts().find(request.params['id']);
+        var timestamp = jQuery('#page-updated_at').attr('value');
+
+        // Checks to see if part is current...
+        if(iframe.length){
+          if(timestamp != page.attr('updated_at')){
+            var preview = jQuery('.preview iframe');
+            preview.hide().attr('src', preview.attr('src'));
+            preview.load(function(){
+              preview.fadeIn('fast');
+              request.render_part(part, page, template);
+            });
+          }else{
+            request.render_part(part, page, template);
+          }
+        }else{
+          request.renderPagePreview(page, function(){
+            request.render_part(part, page, template);
+          }); 
+        }
+      });    
     }); 
     // context.modal = true;
   });
@@ -91,13 +116,13 @@ Pages = Sammy(function (app) {
     var application = this;
     jQuery('.modal-editor').remove(); 
     
-    this.loadPages(function(){     
+    application.loadPages(function(){     
       var page = Page.find(request.params['page_id']);
       var part = page.parts().find(request.params['id']);
       var template = 'image_parts';
       var iframe = $('iframe');
       
-      Asset.searchAdmin({ 'limit': '12' }, function(){ 
+      Asset.searchAdmin({ 'limit': '8' }, function(){ 
         if(iframe.length){
           application.render_part(part, page, template);
         }else{
@@ -120,8 +145,9 @@ Pages = Sammy(function (app) {
       var query = request.params['query'] ? request.params['query'] : null; 
       var params = query ? { 'query': query } : {};
 
-      Asset.searchAdmin(params, function(){           
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      Asset.searchAdmin(params, function(){    
+        var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
+        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
         
           application.set_asset_links(part, page);
@@ -184,9 +210,13 @@ Pages = Sammy(function (app) {
     //  files = fileInput.attr('files');
     
     this.send_files(files, params, function(){
-      var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');
+      // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
         jQuery('#ajax_uploader').attr('files', null); 
+        jQuery('.progress').slideUp('slow', function(){
+          jQuery(this).html('');
+        });
         application.set_asset_links(part, page);
       });
     });

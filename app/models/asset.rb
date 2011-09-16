@@ -5,6 +5,8 @@ class Asset
   include MongoMapper::Document
   include Canable::Ables
   
+  # Plugins
+  # ----------------------------------------
   plugin Joint # add the plugin
   attachment :file # declare an attachment named file
   
@@ -12,8 +14,9 @@ class Asset
   searches :title, :tags  
   before_save :index_search_terms 
   
-  # before_save :set_title
   
+  # Attributes
+  # ----------------------------------------
   key :title, String, :required => { :message => :required }
   key :description, String 
   key :tags, Array, :index => true      
@@ -25,19 +28,24 @@ class Asset
   # key :story_id, ObjectId
   # belongs_to :story, :foreign_key => :story_id
   
+  key :folder_id, ObjectId
+  belongs_to :folder, :foreign_key => :folder_id
+  
   key :artist_id, ObjectId
   belongs_to :artist, :foreign_key => :artist_id  
   
   # key :page_id, ObjectId
   # belongs_to :page, :foreign_key => :artist_id  
   
-  has_one :image_part
+  # has_one :image_part
   
   timestamps!   
   
   liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
   
-  validates :title, :uniqueness => { :scope => :site_id }
+  # Valiations
+  # ----------------------------------------
+  # validates :title, :uniqueness => { :scope => :site_id }
   # validates_presence_of :artist_id # :story_id
   # validate :ensure_proper_file_size 
   # def ensure_proper_file_size 
@@ -46,6 +54,8 @@ class Asset
   #   end 
   # end
   
+  # Scopes
+  # ----------------------------------------
   scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
   scope :by_title, lambda { |title| where(:title => /#{title}/i) }
@@ -54,10 +64,9 @@ class Asset
   #                                                               {:description=>/#{query}/i}, 
   #                                                               {:tags => /#{query}/i}] }) }                                                        
   
-  def self.per_page
-    24
-  end
   
+  # Search
+  # ----------------------------------------
   def self.search_all_with_title(term)
     where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :title => /#{term}/i }])
   end
@@ -83,7 +92,15 @@ class Asset
       self.search_all(new_query).by_artist_ids(artist_ids)
     end   
   end
-    
+  
+  # Pagination
+  # ----------------------------------------
+  def self.per_page
+    24
+  end
+   
+  # Images
+  # ---------------------------------------- 
   def render_image(width=nil, height=nil, options={})
     file = self.file.read
     image = MiniMagick::Image.read(file)
@@ -100,26 +117,30 @@ class Asset
     return image
   end
   
-  def image_path(name='originals')
+  def image_path(name='original')
     "/images/#{name}/#{self.id}/#{self.file_name}" 
   end
   
   def thumb_path
-    image_path('thumbnails')
+    image_path('thumbnail')
   end
   
   def icon_path
-    image_path('icons')
+    image_path('icon')
   end   
   
   def id_string
     self.id.to_s
   end
   
+  # JSON API
+  # ----------------------------------------
   def as_json(options)
     super(:only => [:id, :file_name, :created_at, :title, :tags], :methods => [:tag_list]) #:artist_id, 
   end
   
+  # Tags
+  # ----------------------------------------
   def tag_list
     self.tags.join(', ')
   end

@@ -9,6 +9,16 @@ var Asset = Model('asset', function() {
   
   this.include({
     
+    // image_path: function(size){
+    //   var self = this;
+    //   return '/images/' + size + '/' + self.id() + '/' + self.attr('file_name');
+    // },
+    // 
+    // thumbnail_path: function(){
+    //   var self = this;
+    //   return '/images/thumbnail/' + self.id() + '/' + self.attr('file_name');
+    // },
+    
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
       var asset = this; 

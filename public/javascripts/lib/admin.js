@@ -2,18 +2,29 @@ jQuery(document).ready(function () {
 
   // logger.info('Starting!!!')
   
+  var loader = jQuery('#loader');
   jQuery('body').ajaxStart(function() {
-    logger.info('starting');
+    // logger.info('starting');
+    loader.show();
   });
   
   jQuery('body').ajaxSuccess(function() {
-    logger.info('success!');
+    // logger.info('success!');
+    loader.hide();
   });
   
   var login = jQuery('#login');   
   if(!login.length){
-    Pages.run('#/pages');
+    // loads mustache templates
+    jQuery.ajax({
+      url: '/templates',
+      success: function(results){
+        jQuery('head').append(results);
+        Pages.run('#/pages');
+      }
+    });
   }
+
 
   // AjaxUploader.initialize('#ajax_uploader');
   // jQuery('#ajax_uploader').attr('multiple','multiple');

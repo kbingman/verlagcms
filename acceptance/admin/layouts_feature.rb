@@ -26,6 +26,7 @@ feature "Layouts", %q{
     page.should have_content(@layout.name) 
     page.should have_content('x') 
     page.should have_css("#remove-layout-#{@layout.id}") 
+    page.should have_css('a#templates.active')
   end     
   
   scenario "edit a layout" do 
@@ -38,5 +39,6 @@ feature "Layouts", %q{
     click_button 'Save'
 
     page.should have_content('layout.html')
+    page.should have_css('a#templates.active')
   end
 end

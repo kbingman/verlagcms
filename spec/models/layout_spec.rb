@@ -3,9 +3,10 @@ require 'spec_helper'
 describe Layout do  
   before(:all) do  
     teardown
-    @site = Factory(:site)
+    @group = Factory(:group)
+    @site = Factory(:site, :group => @group)
     @layout = Factory(:layout, :name => 'first layout', :site => @site)
-    @second_site = Factory(:site)
+    @second_site = Factory(:site, :group => @group)
   end  
   
   after(:all) do

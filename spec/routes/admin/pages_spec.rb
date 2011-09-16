@@ -56,7 +56,7 @@ describe "routes/admin/pages" do
       end   
       
       it 'should not include pages from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien')  
+        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien', :group => @group)  
         @alien_layout = Factory(:layout, :site_id => @alien_site.id, :name => 'alien')
         @alien_page = Factory(:page, :title => 'alien page', :parent => @alien_site.root, :site_id => @alien_site.id, :layout_id => @alien_layout.id) 
         do_get 

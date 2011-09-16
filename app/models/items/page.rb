@@ -164,6 +164,10 @@ class Page
     "/edit#{self.path}"
   end
   
+  def admin_path
+    "/pages/#{self.id}"
+  end
+  
   def child_path(child)
     clean_path(path + '/' + child.slug)
   end

@@ -39,6 +39,7 @@ feature "Pages", %q{
     # 
     page.should have_css("#add-child-#{@root.id}") 
     page.should have_css("#remove-page-#{@root.id}")
+    page.should have_css('a#pages.active')
   end
   
   scenario "edit the root page" do 
@@ -51,6 +52,7 @@ feature "Pages", %q{
     page.should have_css('iframe')
     # click_link("edit-#{@root.id}")   
     # page.should have_content('Title')
+    page.should have_css('a#pages.active')
     sleep(0.1)
     screen_shot_and_save_page('pages-show')
     

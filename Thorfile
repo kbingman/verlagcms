@@ -18,6 +18,7 @@ class Monk < Thor
     acceptance_root = File.join(File.dirname(__FILE__), 'acceptance')
     spec_files = Dir[File.join(acceptance_root, '**', '*feature.rb')].map{ |f| File.expand_path(f) }.join(' ')
     spec_opts = "-f p -c -b -p"  
+    puts 'jim compress'
     puts `bundle exec rspec #{spec_files}`
   end
   
@@ -36,6 +37,16 @@ class Monk < Thor
   def console(env = ENV["RACK_ENV"] || "development")
     verify_config(env)
     exec "bundle exec env RACK_ENV=#{env} irb -r #{File.dirname(__FILE__) + '/init.rb'} "
+  end
+  
+  # Deploys (pushes) to Heroku
+  # monk deploy
+  desc "deploy ENV", "Push to the heroku server, but first builds the Jim files and compresses the js"
+  def deploy(env = ENV["RACK_ENV"] || "development")
+    puts 'jim compress'
+    puts `git add .`
+    puts `git commit -m "compressed js"`
+    puts `git push heroku master`
   end
   
   # Bootstraps a new site and user 

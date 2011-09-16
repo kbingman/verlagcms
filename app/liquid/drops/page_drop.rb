@@ -73,7 +73,8 @@ class Include < Liquid::Tag
   end
 
   def render(context)  
-    puts context['registers']['site_id']
+    logger.info context['registers']['site_id']
+    logger.info @params.strip.inspect
     template = ::Template.find_by_name @params.strip
     template.render
   end    

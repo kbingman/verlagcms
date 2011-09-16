@@ -118,13 +118,13 @@ var Pages = Sammy(function (app) {
   
   // Sets active tab
   app.before(function(request) {
-    var tabs = jQuery('div#tabs a.tab');
-    // TODO make this a decent regex
-    var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
-    var active_tab = jQuery('#' + name);
-    
-    tabs.removeClass('active');
-    active_tab.addClass('active');
+    // var tabs = jQuery('div#tabs a.tab');
+    // // TODO make this a decent regex
+    // var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
+    // var active_tab = jQuery('#' + name);
+    // 
+    // tabs.removeClass('active');
+    // active_tab.addClass('active');
   });
 
   app.bind('run', function () {   

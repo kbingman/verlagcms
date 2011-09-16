@@ -50,6 +50,7 @@ feature "Assets", %q{
     
     sleep(0.5)
     screen_shot_and_save_page('assets-edit')   
+    page.should have_css('a#assets.active')
   end
   
   scenario "close an image" do    
@@ -59,6 +60,7 @@ feature "Assets", %q{
     
     click_link "Cancel"
     current_url.should match(%r(/#/assets$))
+    page.should have_css('a#assets.active')
   end
   
   scenario "enter a search term" do 
@@ -72,6 +74,7 @@ feature "Assets", %q{
     
     page.should have_css('#assets') 
     page.should have_css("li#asset-#{@asset.id}")
+    page.should have_css('a#assets.active')
   end  
   
   scenario "view an image" do 
@@ -83,6 +86,7 @@ feature "Assets", %q{
     click_link @asset.title  
     page.should have_css("#image-display-#{@asset.id}")
     page.should have_css("#image-info-#{@asset.id}")
+    page.should have_css('a#assets.active')
   end 
   
   scenario "return to a saved search" do  
@@ -91,6 +95,7 @@ feature "Assets", %q{
     
     page.should have_css("li#asset-#{@asset.id}")
     page.should have_content('TIE')
+    page.should have_css('a#assets.active')
   end
   
   scenario "remove an image" do 
@@ -109,6 +114,7 @@ feature "Assets", %q{
     click_button('Delete')
     page.should_not have_css('#modal') 
     page.should_not have_css("li#asset-#{@asset.id}")   
+    page.should have_css('a#assets.active')
   end  
   
 end

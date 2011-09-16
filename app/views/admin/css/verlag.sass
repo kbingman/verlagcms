@@ -12,10 +12,10 @@
   :-moz-border-radius $radius
   :border-radius $radius   
   
-=box-shadow($radius: 15px, $color: #888)
-  :-webkit-box-shadow 0 0 $radius $color
-  :-moz-box-shadow 0 0 $radius $color
-  :box-shadow 0 0 $radius $color
+=box-shadow($x: 0, $y: 0, $radius: 15px, $color: #888)
+  :-webkit-box-shadow $x $y $radius $color
+  :-moz-box-shadow $x $y $radius $color
+  :box-shadow $x $y $radius $color
   
 =positionable
   :position absolute
@@ -28,6 +28,7 @@
 
 $steel: #252d3b
 $fonts: "Helvetica Neue", "Helvetica", sans-serif
+$headline-fonts: 'League Gothic', 'Futura-CondensedMedium', 'Gill Sans MT Condensed', 'Arial Narrow', sans-serif
 
 @import '_reset.sass'    
 @import '_layout.sass'

@@ -121,17 +121,38 @@ var Utilities = {
   
 } 
 
+var Loader = {
+  start: function(element){
+    element.show();
+    Loader.timer = setInterval(function(){
+      var y = element.css('background-position-y').replace('px','');
+      element.css({'background-position-y':  (y - 40) + 'px'});
+    }, 67);
+  },
+  
+  stop: function(element){
+    element.hide();
+    clearInterval(Loader.timer);
+  }
+}
+
 var iFramer = {       
   initialize: function(element, callback){   
     var trigger = jQuery(element);  
+    var loader_el = jQuery('#loader');
     var self = this;
     if(!trigger.length) return;
+    
+    Loader.start(loader_el);
+ 
     trigger.load(function(){   
       var iframe = $(this);
 
       var iFrameContent = iframe.contents();  
       var editor = iFrameContent.find('span.part-editor');
-      var flags = editor.find('a');  
+      var flags = editor.find('a'); 
+      
+      Loader.stop(loader_el); 
       self.setEditFlags(editor); 
       iframe.fadeIn('fast');
       

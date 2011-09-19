@@ -1,21 +1,8 @@
 jQuery(document).ready(function () {
 
-  // logger.info('Starting!!!')
-  
-  var loader = jQuery('#loader');
-  jQuery('body').ajaxStart(function() {
-    // logger.info('starting');
-    loader.show();
-  });
-  
-  jQuery('body').ajaxSuccess(function() {
-    // logger.info('success!');
-    loader.hide();
-  });
-  
+  // Loads mustache templates and runs sammy app
   var login = jQuery('#login');   
   if(!login.length){
-    // loads mustache templates
     jQuery.ajax({
       url: '/templates',
       success: function(results){
@@ -24,22 +11,21 @@ jQuery(document).ready(function () {
       }
     });
   }
-
-
-  // AjaxUploader.initialize('#ajax_uploader');
-  // jQuery('#ajax_uploader').attr('multiple','multiple');
-  // jQuery('.js-only').show();  
   
+  // Global ajax indicator
+  var loader_el = jQuery('#loader');
+  jQuery('body')
+    .ajaxStart(function() {
+      if(!window.ninja){
+        Loader.start(loader_el);
+      }
+    }).ajaxSuccess(function() {
+      Loader.stop(loader_el);
+    });
+    
   // Grabs the keyboard shortcuts
   Utilities.keyboard_nav();  
   Utilities.check_browser_version();    
-   
-  // needs to fire on page load, too
-  // var tabs = jQuery('#tabs a'); 
-  // tabs.live('click', function(){   
-  //   tabs.removeClass('active');
-  //   $(this).addClass('active'); 
-  // });
   
 });
 

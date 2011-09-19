@@ -3,7 +3,7 @@ var Pages = Sammy(function (app) {
   var context = this;  
    
   this.debug = false;
-  this.disable_push_state = true;
+  // this.disable_push_state = true;
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -106,7 +106,7 @@ var Pages = Sammy(function (app) {
   app.bind('page-index', function(){
     var application = this; 
     if(!jQuery('.page-children').length){
-      application.loadPages(function(){
+      Page.load(function(){
         application.renderTree(Page.root(), Page.root());  
       });
     } 
@@ -117,15 +117,15 @@ var Pages = Sammy(function (app) {
   });
   
   // Sets active tab
-  app.before(function(request) {
-    // var tabs = jQuery('div#tabs a.tab');
-    // // TODO make this a decent regex
-    // var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
-    // var active_tab = jQuery('#' + name);
-    // 
-    // tabs.removeClass('active');
-    // active_tab.addClass('active');
-  });
+  // app.before(function(request) {
+  //   var tabs = jQuery('div#tabs a.tab');
+  //   // TODO make this a decent regex
+  //   var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
+  //   var active_tab = jQuery('#' + name);
+  //   
+  //   tabs.removeClass('active');
+  //   active_tab.addClass('active');
+  // });
 
   app.bind('run', function () {   
     
@@ -256,7 +256,7 @@ var Pages = Sammy(function (app) {
   
   // Show Page
   // ---------------------------------------------
-  this.get('#/pages/:id/?', function(request){ 
+  this.get('/admin/pages/:id/?', function(request){ 
     var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();

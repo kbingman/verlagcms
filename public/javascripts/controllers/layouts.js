@@ -3,7 +3,7 @@ var Layouts = Sammy(function (app) {
   var context = this;  
                     
   this.debug = false;
-  this.disable_push_state = true;  
+  // this.disable_push_state = true;  
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -82,7 +82,8 @@ var Layouts = Sammy(function (app) {
     context.refresh_pages = true;     
     
     jQuery('#editor').html('<h1 class="section">Templates</div>'); 
-    request.loadLayouts(function(){
+    // request.loadLayouts(function(){
+    Layout.load(function(){
       request.renderLayoutIndex(Layout.all());  
     });            
   });
@@ -124,20 +125,24 @@ var Layouts = Sammy(function (app) {
     Galerie.close(); 
     context.refresh_pages = true;       
     this.loadLayouts(function(){  
-      var layout = Layout.find(request.params['id']);   
-      request.renderLayout(layout);   
-      request.renderLayoutIndex(Layout.all()); 
-      // setInterval(function(){
-      //   layout.load(function(results){
-      //     var timestamp = jQuery('#layout-updated_at').attr('value');
-      //     if(timestamp != results.updated_at){
-      //       logger.info('not up to date');
-      //     }else {
-      //       logger.info('up to date');
-      //     }
-      //     
-      //   });
-      // }, 30000)
+      var layout = Layout.find(request.params['id']); 
+      window.ninja = true; 
+      layout.load(function(results){ 
+        request.renderLayout(layout);   
+        request.renderLayoutIndex(Layout.all()); 
+        // setInterval(function(){
+        //   layout.load(function(results){
+        //     var timestamp = jQuery('#layout-updated_at').attr('value');
+        //     if(timestamp != results.updated_at){
+        //       logger.info('not up to date');
+        //     }else {
+        //       logger.info('up to date');
+        //     }
+        //     
+        //   });
+        // }, 30000);
+        window.ninja = false; 
+      });
     });
   });   
   

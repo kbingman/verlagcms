@@ -8,10 +8,10 @@ class Main
     end
 
     # Set default mustache partials
-    def mustache(template, options = {}, locals = {})
-      options[:layout] = false unless options.include?(:layout)    
-      super(template, options, locals)
-    end
+    # def mustache(template, options = {}, locals = {})
+    #   options[:layout] = false unless options.include?(:layout)    
+    #   super(template, options, locals)
+    # end
     
     # Set default haml template
     def haml(template, options = {}, locals = {})

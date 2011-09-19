@@ -31,9 +31,12 @@ class Main
     # Show
     # -------------------------------------------
     get '/:model/:id/?' do
-      resource = klass.by_site(current_site).find params['id']
-      if resource
-        resource.to_json
+      @resource = klass.by_site(current_site).find params['id']
+      if @resource
+        respond_to do |format|
+          format.html { mustache(:"/admin/pages/show") }
+          format.json { resource.to_json }
+        end
       else
         raise Sinatra::NotFound
       end

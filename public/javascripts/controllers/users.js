@@ -3,7 +3,7 @@ var Users = Sammy(function (app) {
   var context = this; 
   
   this.debug = false;
-  this.disable_push_state = true;  
+  // this.disable_push_state = true;  
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 

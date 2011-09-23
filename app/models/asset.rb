@@ -98,6 +98,38 @@ class Asset
   def self.per_page
     24
   end
+  
+  # Import
+  # ----------------------------------------
+  def self.import(file)
+    # FileUtils.mkdir(root_path('tmp/import'))
+    counter = 0
+    errors = []
+    puts file.class
+
+    json = JSON.parse(file.read)
+    assets =  json['assets']
+    assets.each do |asset|
+      open(root_path("tmp/import/#{asset['filename']}"), 'w') do |f| 
+        f << ActiveSupport::Base64.decode64( asset['file'] )
+      end
+      a = Asset.new(
+        :id => BSON::ObjectId(asset['id']),
+        :title => asset['title'], 
+        :tag_list => asset['tags'],
+        :site_id => BSON::ObjectId(asset['site_id']),
+        :file => File.open(root_path("tmp/import/#{asset['filename']}"))
+      )
+      if a.save
+        counter += 1
+      else
+        errors << asset['title']
+      end
+      FileUtils.rm root_path("tmp/import/#{asset['filename']}")
+    end
+    
+    [counter, errors]
+  end
    
   # Images
   # ---------------------------------------- 

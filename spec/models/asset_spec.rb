@@ -33,12 +33,9 @@ describe Asset do
       asset.valid?
       asset.title.should == '830px-Tieboardingcraft'
     end  
-  
-    
   end
   
   describe 'valid Asset' do    
-    
     before(:all) do
       @json = JSON.parse({ 
         :title => "Image",
@@ -96,11 +93,9 @@ describe Asset do
     # it 'should exclude assets by this artist without tags' do
     #   Asset.search_with_artist('Egon tag5').all.should == []
     # end
-    
   end
   
   describe 'Asset attachments' do
-    
     it 'should set the file name' do
       @asset.file_name.should == '830px-Tieboardingcraft.jpg'
     end
@@ -125,4 +120,35 @@ describe Asset do
       @asset.should respond_to(:render_image)
     end
   end
+  
+ describe 'Asset Import' do
+   before(:all) do
+     file = File.open root_path('spec/data/assets.json')
+     @import = Asset.import(file)
+     @hash = JSON.parse File.open(root_path('spec/data/assets.json')).read
+     @asset = Asset.find(@hash['assets'][0]['id'])
+   end
+   
+   it 'should successfully import the files' do
+     counter = @import[0]
+     counter.should == 2
+   end
+   
+   it 'should successfully find the imported files' do
+     @asset.should_not be_nil
+   end
+   
+   it 'should set the title of the imported files' do
+     @asset.title.should == @hash['assets'][0]['title']
+   end
+   
+   # it 'should set the tag list the imported files' do
+   #   @asset.tag_list.should == @hash['assets'][0]['tag_list']
+   # end
+   
+   # it 'should set the site_id of the imported files' do
+   #   @asset.site_id.should == @site.id
+   # end
+   
+ end
 end

@@ -44,6 +44,14 @@ html
   :left 0
   :right 0 
   :bottom 0 
+  
+.symbol
+  :display block
+  :text-indent -10000px
+  :width 24px
+  :height 24px
+  :background
+    :color #222
     
 #assets
   :margin 0 
@@ -56,24 +64,63 @@ html
     :width 140px
     :text-align center
     :background
-      :color #eee  
+      :color #ddd  
     :-webkit-transition background-color .3s linear
-    :transition color .3s linear
+    :transition background-color .3s linear
+    .remove-icon
+      :position absolute
+      :bottom 4px
+      :left 4px
+    .info-icon
+      :position absolute
+      :bottom 4px
+      :left 32px
+    .image
+      // :position absolute
+      // :top 50%
+      // :height 1px
+      :width 100%
+      // :background red
+      a 
+        :display block
+        // :margin -50% auto 0
+        // :background red
+    .info
+      // :display none
+      :opacity 0
+      :position absolute
+      :z-index 0
+      :top 20px
+      :left 130px
+      :height 42px
+      :width 300px
+      :text-align left
+      :background 
+        :color white
+      h2
+
     &:hover
       :background-color #ccc
       :-webkit-transition background-color .3s linear
-      :transition color .3s linear
-    
+      :transition background-color .3s linear
+      .info 
+        :opacity 1
+        :z-index 10
+        :-webkit-transition opacity .3s linear
+        :transition opacity .3s linear
+
+      
     // 
 .js-only
   :display none 
+.clear-both
+  :clear both
+  
 #page-assets 
   +clearfix 
   .asset
     :float left  
-.clear-both
-  :clear both
-  
+
 #loader
   :position absolute
   :display none
@@ -89,6 +136,24 @@ html
   :z-index 10000
   h1
     :font-size 2em
+    
+#login
+  +border-radius(5px)
+  :margin 42px auto 0 auto
+  :border 7px solid #444
+  :width 420px
+  :padding 20px
+  :background #ddd
+  form
+    label
+      :display inline-block
+      :width 6em
+    input.textfield
+      :width 14em
+    .field
+      :margin 0 0 6px 0
+    .buttons
+      :padding-left 6.2em
 
 
 

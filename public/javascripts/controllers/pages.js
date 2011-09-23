@@ -3,7 +3,7 @@ var Pages = Sammy(function (app) {
   var context = this;  
    
   this.debug = false;
-  // this.disable_push_state = true;
+  this.disable_push_state = true;
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -256,7 +256,7 @@ var Pages = Sammy(function (app) {
   
   // Show Page
   // ---------------------------------------------
-  this.get('/admin/pages/:id/?', function(request){ 
+  this.get('#/pages/:id/?', function(request){ 
     var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();

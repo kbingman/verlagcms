@@ -1,5 +1,5 @@
-<div class="modal-strip fade-in">
-  {{#asset}}
+{{#asset}}
+<div class="modal-strip fade-in remove" id="remove-modal-{{id}}">
   <div class="icon" id="image-icon-{{id}}">
     <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
   </div>
@@ -19,6 +19,6 @@
     </form>   
     <div class="notice"></div>
   </div>                      
-  {{/asset}}
 </div>
+{{/asset}}
 

@@ -1,0 +1,14 @@
+#sidebar
+
+#editor
+  %form{ :action => '/admin/export/assets.json', :method => 'get' }
+    %p Export site assets
+    .field
+      %input{ :type => 'submit', :value => 'Export', :class => 'button' }
+      
+  %form{ :action => '/admin/export/assets.json', :method => 'post', :enctype => "multipart/form-data" }
+    %p Import site assets
+    .field
+      %input{ :type => 'file', :class => 'file', :name => 'file' }
+    .field
+      %input{ :type => 'submit', :value => 'Import', :class => 'button' }

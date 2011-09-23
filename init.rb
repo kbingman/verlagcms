@@ -39,6 +39,10 @@ require 'mustache/sinatra'
 require 'haml' 
 require 'liquid' 
 require 'RedCloth' 
+require 'rabl'
+require 'active_support/core_ext'
+require 'active_support/inflector'
+require 'builder'
 # require 'jim'
 
 # require './lib/rack/raw_upload'
@@ -85,6 +89,7 @@ class Main < Monk::Glue
   register Sinatra::Images 
   register Sinatra::GetSubdomain 
   register Sinatra::AdvancedRoutes 
+  register Rabl
   
   configure do
     mime_type :mustache, 'text/mustache' 
@@ -136,6 +141,7 @@ require root_path('app/routes/admin/part_types')
 require root_path('app/routes/admin/sites')
 require root_path('app/routes/admin/templates')
 require root_path('app/routes/admin/users')
+require root_path('app/routes/admin/export')
 require root_path('app/routes/admin/rest_controller') 
 
 # Load api routes

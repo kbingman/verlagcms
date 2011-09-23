@@ -5,7 +5,11 @@ class Main
     end
     
     def klass 
-      @klass ||= model.singularize.titlecase.constantize if model 
+      begin
+        @klass ||= model.singularize.titlecase.constantize if model 
+      rescue
+        nil
+      end
     end
     
   end

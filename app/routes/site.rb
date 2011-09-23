@@ -8,21 +8,13 @@ class Main
     cache_request  
     @files = Dir[root_path('app/views/admin/**/*.mustache')]
     partial :'layouts/js_templates' 
-    # partial :'layouts/template', :locals => { :template => "/admin/assets/index" }
   end
-  
-  # Admin Mustache Templates
-  # -------------------------------------------  
-  # template_route = get '/templates/*' do  
-  #   cache_request  
-  #   name =  params[:splat][0]
-  #   partial :'layouts/template', :locals => { :template => "/#{name}" }
-  # end   
 
   # Site admin interface  
   # -------------------------------------------  
   module Admin    
     before do
+      # TODO better way to override authorization
       authenticate! unless request.path.match(/^\/admin\/css\//)
   
       # Redirects if no site is found
@@ -74,7 +66,7 @@ class Main
     path = params[:splat].first   
     page = Page.find_by_path(path, current_site) 
     
-    unless page.nil? 
+    if page 
       page.render(format, request)
     else   
       raise Sinatra::NotFound   
@@ -99,6 +91,7 @@ class Main
   end    
   
   error 404 do   
+    # TODO Build custom pages
     haml :'errors/not_found'     
   end
   

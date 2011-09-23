@@ -59,11 +59,30 @@ var Assets = Sammy(function (app) {
       }
     }
   });
+  
+  // Asset Events
+  // ---------------------------------------------
 
   this.bind('run', function () {
     application.modal = false; 
     application.first_run = true;  
   }); 
+  
+  // Show Asset Info rollovers
+  this.bind('show_info', function(request){
+    var asset = Asset.find(application.current_asset_id); 
+    var asset_node = jQuery('#asset-' + asset.id());
+    var remove_modal = asset_node.find('.remove');
+    
+    jQuery('.modal-strip').remove();
+    if(!remove_modal.length){
+      var removeAsset = this.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
+      removeAsset.appendTo(asset_node).then(function(){
+        var modal_strip = jQuery('.modal-strip');
+        modal_strip.fadeIn('fast');
+      });
+    }
+  });
   
   // Asset Index
   // ---------------------------------------------
@@ -73,12 +92,19 @@ var Assets = Sammy(function (app) {
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
     
-    Galerie.close();
+    // Galerie.close();
     if(!application.modal){
       Asset.searchAdmin(params, function(){  
         var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
         assetIndex.replace('#editor').then(function(){
+          // Sets uploader to multiple if browser supports it
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
+          // Triggers info rollovers
+          jQuery('a.info-icon').click(function(e){
+            e.preventDefault();
+            application.current_asset_id = this.id.split('-')[2];
+            request.trigger('show_info');
+          });
         });
       });
     }

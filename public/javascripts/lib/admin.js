@@ -7,7 +7,7 @@ jQuery(document).ready(function () {
       url: '/templates',
       success: function(results){
         jQuery('head').append(results);
-        Pages.run('#/pages');
+        Pages.run();
       }
     });
   }

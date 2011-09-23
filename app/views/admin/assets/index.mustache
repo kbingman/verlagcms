@@ -1,34 +1,40 @@
 <div id="assets-editor">
-  <div id="title-wrapper">  
-    <h1>Assets {{query}}</h1> 
-    <form action="#/assets" id="search" method="get">
-      <div class="field">
-        <input id="search-query" name="query" type="text" value="{{query}}"/>
-        <input type="submit" value="Search">
-      </div>
-    </form>    
-  </div>
   
-  <div class="buttons">
-    <form action="/admin/assets" enctype="multipart/form-data" id="new_asset" method="post">
+  <div class="toolbar">
+    <form action="/admin/assets" enctype="multipart/form-data" class="upload-asset" method="post">
+      <div class="hidden">
+        <input name="limit" value="12" type="hidden" />
+      </div>
+      <div class="filefield">
+        <div class="uploader">
+          <input id="ajax_uploader" name="file" type="file" />
+        </div>
+        <label for="ajax_uploader">Upload Images</label>
+        <!--input type="submit" value="Save" class="button html-only" /-->
+      </div>
+    </form>
+    <form action="#/assets" class="search-form" method="get">
       <div class="field">
-        <label for="ajax_uploader"></label>
-        <input id="ajax_uploader" name="file" type="file" />
+        <input class="textfield" id="search-query" name="query" type="text">
+        <input class="button search" type="submit" value="Search">
       </div>
-      <div>
-        <input type="submit">
-      </div>
-    </form> 
-    <div class="progress"></div>
-  </div>
+    </form>
+  </div><!--toolbar -->
 
   <ul id="assets">
     {{#assets}}
       <li id="asset-{{id}}">
-        <a href="#/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
-          <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
-        </a>  
-        <a href="#/assets/{{id}}/remove{{query_path}}" id="remove-asset-{{id}}">Remove</a>
+        <div class="image">
+          <a href="#/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
+            <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
+          </a>  
+        </div>
+        <a href="#/assets/{{id}}/remove{{query_path}}" class="remove-icon symbol" id="remove-asset-{{id}}">
+          <span>Remove</span>
+        </a>
+        <a href="#/assets/{{id}}" class="info-icon symbol" title="{{title}}" id="asset-info-{{id}}">
+          {{title}}
+        </a>
       </li>
     {{/assets}}
   </ul>

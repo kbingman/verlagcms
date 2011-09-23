@@ -31,8 +31,8 @@ class Main
     # Show
     # -------------------------------------------
     get '/:model/:id/?' do
-      @resource = klass.by_site(current_site).find params['id']
-      if @resource
+      resource = klass.by_site(current_site).find params['id']
+      if resource
         respond_to do |format|
           format.html { mustache(:"/admin/pages/show") }
           format.json { resource.to_json }

@@ -15,9 +15,11 @@ class Main
         else
           Asset.by_site(current_site)
         end
-
         assets = plucky_query.paginate(options)
-        assets.to_json 
+
+        respond_to do |format|
+          format.json { assets.to_json  }
+        end
       end
       
       # Create Asset

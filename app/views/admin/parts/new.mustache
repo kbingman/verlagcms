@@ -1,7 +1,7 @@
 <div class="small-modal">
   {{#page}}   
     <h2>New Part</h2>
-    <form method="post" action="/pages/{{id}}/parts" enctype="multipart/form-data" id="create-part">
+    <form method="post" action="/admin/pages/{{id}}/parts" enctype="multipart/form-data" id="create-part">
       <div class="hidden">                   
         <input type="hidden" name="part[page_id]" id="part_page_id" value="{{id}}" class="textfield" />
       </div>

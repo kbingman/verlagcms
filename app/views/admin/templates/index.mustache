@@ -1,62 +1,62 @@
 <div id="layouts">
-  <h2>Layouts <span class="modify"><a href="#/templates/new/layout">+</a></span></h2> 
+  <h2>Layouts <span class="modify"><a href="/admin/templates/new/layout">+</a></span></h2> 
   <ul>
     {{#layouts}} 
       <li class="layout" id="layout-{{id}}"> 
         <div class="item"> 
           <span class="title"> 
-             <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+             <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
           </span> 
           <span class="modify">                 
-            <a class="remove-layout" id="remove-layout-{{id}}" href="#/templates/{{id}}/remove">x</a> 
+            <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
           </span>  
         </div>
       </li>  
     {{/layouts}}  
   </ul>   
 
-  <h2>Stylesheets <span class="modify"><a href="#/templates/new/stylesheet">+</a></span></h2>  
+  <h2>Stylesheets <span class="modify"><a href="/admin/templates/new/stylesheet">+</a></span></h2>  
   <ul>     
   {{#stylesheets}} 
     <li class="layout" id="layout-{{id}}">
       <div class="item"> 
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/templates/{{id}}/remove">x</a> 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
         </span> 
       </div>
     </li>
   {{/stylesheets}} 
   </ul>
 
-  <h2>Javascripts <span class="modify"><a href="#/templates/new/javascript">+</a></span></h2>
+  <h2>Javascripts <span class="modify"><a href="/admin/templates/new/javascript">+</a></span></h2>
   <ul>
   {{#javascripts}} 
     <li class="layout" id="layout-{{id}}">
       <div class="item">
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/templates/{{id}}/remove">x</a> 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
         </span> 
       </div>
     </li>
   {{/javascripts}}     
   </ul>
 
-  <h2>Partials <span class="modify"><a href="#/templates/new/partial">+</a></span></h2>
+  <h2>Partials <span class="modify"><a href="/admin/templates/new/partial">+</a></span></h2>
   <ul>
   {{#partials}} 
     <li class="layout" id="layout-{{id}}">
       <div class="item"> 
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="#/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="#/templates/{{id}}/remove">x</a> 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
         </span> 
       </div>
     </li>

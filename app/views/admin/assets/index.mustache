@@ -13,7 +13,7 @@
         <!--input type="submit" value="Save" class="button html-only" /-->
       </div>
     </form>
-    <form action="#/assets" class="search-form" method="get">
+    <form action="/admin/assets" class="search-form" method="get">
       <div class="field">
         <input class="textfield" id="search-query" name="query" type="text">
         <input class="button search" type="submit" value="Search">
@@ -25,14 +25,14 @@
     {{#assets}}
       <li id="asset-{{id}}">
         <div class="image">
-          <a href="#/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
+          <a href="/admin/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
             <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
           </a>  
         </div>
-        <a href="#/assets/{{id}}/remove{{query_path}}" class="remove-icon symbol" id="remove-asset-{{id}}">
+        <a href="/admin/assets/{{id}}/remove{{query_path}}" class="remove-icon symbol" id="remove-asset-{{id}}">
           <span>Remove</span>
         </a>
-        <a href="#/assets/{{id}}" class="info-icon symbol" title="{{title}}" id="asset-info-{{id}}">
+        <a href="/admin/assets/{{id}}" class="info-icon symbol" title="{{title}}" id="asset-info-{{id}}">
           {{title}}
         </a>
       </li>

@@ -3,7 +3,7 @@ var Pages = Sammy(function (app) {
   var context = this;  
    
   this.debug = false;
-  this.disable_push_state = true;
+  // this.disable_push_state = true;
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -204,7 +204,7 @@ var Pages = Sammy(function (app) {
 
   // Page routes
   // ---------------------------------------------  
-  this.get('#/pages/?', function(request){ 
+  this.get('/admin/pages/?', function(request){ 
   
     Galerie.close();    
     // context.refresh_pages = true; 
@@ -217,7 +217,7 @@ var Pages = Sammy(function (app) {
   
   // New Page
   // ---------------------------------------------
-  this.get('#/pages/:id/new/?', function(request){    
+  this.get('/admin/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
@@ -236,7 +236,7 @@ var Pages = Sammy(function (app) {
   
   // Create Page
   // ---------------------------------------------
-  this.post('#/pages/:page_id', function(request){
+  this.post('/admin/pages/:page_id/?', function(request){
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
@@ -256,7 +256,7 @@ var Pages = Sammy(function (app) {
   
   // Show Page
   // ---------------------------------------------
-  this.get('#/pages/:id/?', function(request){ 
+  this.get('/admin/pages/:id/?', function(request){ 
     var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();
@@ -286,7 +286,7 @@ var Pages = Sammy(function (app) {
   
   // Edit Page
   // ---------------------------------------------
-  this.get('#/pages/:id/edit/?', function(request){  
+  this.get('/admin/pages/:id/edit/?', function(request){  
     var application = this;
     Galerie.close();  
     context.modal = false;  
@@ -308,7 +308,7 @@ var Pages = Sammy(function (app) {
   
   // Update Page
   // ---------------------------------------------  
-  this.put('#/pages/:page_id', function(request){  
+  this.put('/admin/pages/:page_id', function(request){  
     var application = this;
     var page_id = request.params['page_id'];
     var page = Page.find(page_id);
@@ -327,7 +327,7 @@ var Pages = Sammy(function (app) {
   
   // Remove Page
   // ---------------------------------------------
-  this.get('#/pages/:id/remove', function(request){   
+  this.get('/admin/pages/:id/remove', function(request){   
     this.loadPages(function(){   
       var page_id = request.params['id'];
       var page = Page.find(page_id);         
@@ -344,7 +344,7 @@ var Pages = Sammy(function (app) {
   
   // Destroy Page
   // ---------------------------------------------
-  this.del('/pages/:id', function(request){
+  this.del('/admin/pages/:id', function(request){
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
       

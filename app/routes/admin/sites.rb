@@ -7,7 +7,10 @@ class Main
       # -------------------------------------------
       get '/?' do
         collection = current_user.is_super_user? ? Site.all : current_user.sites
-        collection.to_json
+        respond_to do |format|
+          format.html { admin_haml :'admin/index' }
+          format.json { collection.to_json }
+        end
       end
       
       # Create

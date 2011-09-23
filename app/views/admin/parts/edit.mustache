@@ -1,6 +1,6 @@
 <div class="modal-editor">
   {{#part}}   
-    <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
+    <form method="post" action="/admin/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
       <div class="hidden">
         <input type="hidden" name="_method" value="put" /> 
         <input type="hidden" name="part[id]" id="part-{{id}}-id" value="{{id}}" class="hidden" />
@@ -14,7 +14,7 @@
       
       <div class="buttons">
         <input type="submit" value="Save" class="button html-only" />
-        <a href="#/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
+        <a href="/admin/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
       </div>
     </form>  
   {{/part}}

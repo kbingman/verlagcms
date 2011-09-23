@@ -75,7 +75,7 @@ var Layouts = Sammy(function (app) {
 
   // Layout Index
   // ---------------------------------------------  
-  this.get('#/templates', function(request){  
+  this.get('/admin/templates', function(request){  
 
     Galerie.close();
     context.refresh_templates = false; 
@@ -90,7 +90,7 @@ var Layouts = Sammy(function (app) {
   
   // New Layout
   // ---------------------------------------------
-  this.get('#/templates/new/:klass', function(request){    
+  this.get('/admin/templates/new/:klass', function(request){    
     
     this.loadLayouts(function(){    
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
@@ -104,7 +104,7 @@ var Layouts = Sammy(function (app) {
   
   // Create Layout
   // ---------------------------------------------  
-  this.post('#/templates', function(request){
+  this.post('/admin/templates', function(request){
     var template = new Layout(request.params['template']);
     
     template.save(function(success, results){   
@@ -113,7 +113,7 @@ var Layouts = Sammy(function (app) {
         // alert(JSON.stringify(response));  
         Utilities.notice(JSON.stringify(response));
       }else{  
-        request.redirect('#/templates'); 
+        request.redirect('/admin/templates'); 
         Utilities.notice('Successfully saved template');
       }
     });
@@ -121,7 +121,7 @@ var Layouts = Sammy(function (app) {
 
   // Edit Layout
   // ---------------------------------------------
-  this.get('#/templates/:id/edit', function(request){ 
+  this.get('/admin/templates/:id/edit', function(request){ 
     Galerie.close(); 
     context.refresh_pages = true;       
     this.loadLayouts(function(){  
@@ -148,7 +148,7 @@ var Layouts = Sammy(function (app) {
   
   // Update Layout
   // ---------------------------------------------
-  this.put('#/templates/:id', function(request){  
+  this.put('/admin/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
       
     template.attr(request.params['layout']); 
@@ -162,7 +162,7 @@ var Layouts = Sammy(function (app) {
   
   // Remove Layout
   // ---------------------------------------------
-  this.get('#/templates/:id/remove', function(request){ 
+  this.get('/admin/templates/:id/remove', function(request){ 
     this.loadLayouts(function(){  
       var layout = Layout.find(request.params['id']); 
       Galerie.open();   
@@ -183,7 +183,7 @@ var Layouts = Sammy(function (app) {
       if(success){ 
         request.renderLayoutIndex(); 
         Utilities.notice('Successfully deleted template');
-        request.redirect('#/templates'); 
+        request.redirect('/admin/templates'); 
       }
     }); 
   });  
@@ -210,7 +210,7 @@ var Layouts = Sammy(function (app) {
       var template_id = request.params['id'];    
       var attributes = request.params['part']; 
       Part.create(attributes, function(){
-        request.redirect('#/templates/' + template_id + '/edit');
+        request.redirect('/admin/templates/' + template_id + '/edit');
       });
     });
   });  

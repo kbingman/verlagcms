@@ -9844,13 +9844,13 @@ var logger = {
 var Utilities = { 
   
   notice: function(message){
-    var notice = jQuery('.notice');
-    notice.text(message); 
-    notice.slideDown('slow', function(){
-      setTimeout(function(){
-        notice.slideUp('slow');
-      }, 1000);
-    });
+    // var notice = jQuery('.notice');
+    // notice.text(message); 
+    // notice.slideDown('slow', function(){
+    //   setTimeout(function(){
+    //     notice.slideUp('slow');
+    //   }, 1000);
+    // });
 
   },     
   
@@ -9915,17 +9915,38 @@ var Utilities = {
   
 } 
 
+var Loader = {
+  start: function(element){
+    element.show();
+    Loader.timer = setInterval(function(){
+      var y = element.css('background-position-y').replace('px','');
+      element.css({'background-position-y':  (y - 40) + 'px'});
+    }, 67);
+  },
+  
+  stop: function(element){
+    element.hide();
+    clearInterval(Loader.timer);
+  }
+}
+
 var iFramer = {       
   initialize: function(element, callback){   
     var trigger = jQuery(element);  
+    var loader_el = jQuery('#loader');
     var self = this;
     if(!trigger.length) return;
+    
+    Loader.start(loader_el);
+ 
     trigger.load(function(){   
       var iframe = $(this);
 
       var iFrameContent = iframe.contents();  
       var editor = iFrameContent.find('span.part-editor');
-      var flags = editor.find('a');  
+      var flags = editor.find('a'); 
+      
+      Loader.stop(loader_el); 
       self.setEditFlags(editor); 
       iframe.fadeIn('fast');
       
@@ -10005,7 +10026,7 @@ var Sites = Sammy(function (app) {
   var context = this; 
   
   this.debug = false;
-  this.disable_push_state = true;  
+  // this.disable_push_state = true;  
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -10051,7 +10072,7 @@ var Sites = Sammy(function (app) {
   
   // Site Index
   // ---------------------------------------------
-  this.get('#/sites', function(request){ 
+  this.get('/admin/sites', function(request){ 
     context.refresh_pages = true;  
     Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Sites</div>'); 
@@ -10063,7 +10084,7 @@ var Sites = Sammy(function (app) {
   
   // New Site 
   // --------------------------------------------- 
-  this.get('#/sites/new', function(request){   
+  this.get('/admin/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
       var newSite = request.load(jQuery('#admin-sites-new')).interpolate({}, 'mustache');
@@ -10074,7 +10095,7 @@ var Sites = Sammy(function (app) {
   
   // Create Site
   // ---------------------------------------------  
-  this.post('#/sites', function(request){
+  this.post('/admin/sites', function(request){
     var attributes = request.params['site'];  
     var site = new Site(request.params['site']);
     
@@ -10090,7 +10111,7 @@ var Sites = Sammy(function (app) {
   
   // Edit Site 
   // --------------------------------------------- 
-  this.get('#/sites/:id/edit', function(request){  
+  this.get('/admin/sites/:id/edit', function(request){  
     Galerie.close();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
@@ -10103,7 +10124,7 @@ var Sites = Sammy(function (app) {
   
   // Update Site 
   // --------------------------------------------- 
-  this.put('#/sites/:id', function(request){  
+  this.put('/admin/sites/:id', function(request){  
     var site = Site.find(request.params['id'])
 
     site.attr(request.params['site']);   
@@ -10119,7 +10140,7 @@ var Sites = Sammy(function (app) {
   
   // Remove Site 
   // --------------------------------------------- 
-  this.get('#/sites/:id/remove', function(request){ 
+  this.get('/admin/sites/:id/remove', function(request){ 
     Galerie.open();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
@@ -10131,7 +10152,7 @@ var Sites = Sammy(function (app) {
   
   // Delete Site 
   // --------------------------------------------- 
-  this.del('#/sites/:id', function(request){       
+  this.del('/admin/sites/:id', function(request){       
      
     site.destroy(function(success, results){   
       //var response = JSON.parse(results.responseText);   
@@ -10149,7 +10170,7 @@ var Layouts = Sammy(function (app) {
   var context = this;  
                     
   this.debug = false;
-  this.disable_push_state = true;  
+  // this.disable_push_state = true;  
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -10221,21 +10242,22 @@ var Layouts = Sammy(function (app) {
 
   // Layout Index
   // ---------------------------------------------  
-  this.get('#/templates', function(request){  
+  this.get('/admin/templates', function(request){  
 
     Galerie.close();
     context.refresh_templates = false; 
     context.refresh_pages = true;     
     
     jQuery('#editor').html('<h1 class="section">Templates</div>'); 
-    request.loadLayouts(function(){
+    // request.loadLayouts(function(){
+    Layout.load(function(){
       request.renderLayoutIndex(Layout.all());  
     });            
   });
   
   // New Layout
   // ---------------------------------------------
-  this.get('#/templates/new/:klass', function(request){    
+  this.get('/admin/templates/new/:klass', function(request){    
     
     this.loadLayouts(function(){    
       var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
@@ -10249,7 +10271,7 @@ var Layouts = Sammy(function (app) {
   
   // Create Layout
   // ---------------------------------------------  
-  this.post('#/templates', function(request){
+  this.post('/admin/templates', function(request){
     var template = new Layout(request.params['template']);
     
     template.save(function(success, results){   
@@ -10258,7 +10280,7 @@ var Layouts = Sammy(function (app) {
         // alert(JSON.stringify(response));  
         Utilities.notice(JSON.stringify(response));
       }else{  
-        request.redirect('#/templates'); 
+        request.redirect('/admin/templates'); 
         Utilities.notice('Successfully saved template');
       }
     });
@@ -10266,30 +10288,34 @@ var Layouts = Sammy(function (app) {
 
   // Edit Layout
   // ---------------------------------------------
-  this.get('#/templates/:id/edit', function(request){ 
+  this.get('/admin/templates/:id/edit', function(request){ 
     Galerie.close(); 
     context.refresh_pages = true;       
     this.loadLayouts(function(){  
-      var layout = Layout.find(request.params['id']);   
-      request.renderLayout(layout);   
-      request.renderLayoutIndex(Layout.all()); 
-      // setInterval(function(){
-      //   layout.load(function(results){
-      //     var timestamp = jQuery('#layout-updated_at').attr('value');
-      //     if(timestamp != results.updated_at){
-      //       logger.info('not up to date');
-      //     }else {
-      //       logger.info('up to date');
-      //     }
-      //     
-      //   });
-      // }, 30000)
+      var layout = Layout.find(request.params['id']); 
+      window.ninja = true; 
+      layout.load(function(results){ 
+        request.renderLayout(layout);   
+        request.renderLayoutIndex(Layout.all()); 
+        // setInterval(function(){
+        //   layout.load(function(results){
+        //     var timestamp = jQuery('#layout-updated_at').attr('value');
+        //     if(timestamp != results.updated_at){
+        //       logger.info('not up to date');
+        //     }else {
+        //       logger.info('up to date');
+        //     }
+        //     
+        //   });
+        // }, 30000);
+        window.ninja = false; 
+      });
     });
   });   
   
   // Update Layout
   // ---------------------------------------------
-  this.put('#/templates/:id', function(request){  
+  this.put('/admin/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
       
     template.attr(request.params['layout']); 
@@ -10303,7 +10329,7 @@ var Layouts = Sammy(function (app) {
   
   // Remove Layout
   // ---------------------------------------------
-  this.get('#/templates/:id/remove', function(request){ 
+  this.get('/admin/templates/:id/remove', function(request){ 
     this.loadLayouts(function(){  
       var layout = Layout.find(request.params['id']); 
       Galerie.open();   
@@ -10324,7 +10350,7 @@ var Layouts = Sammy(function (app) {
       if(success){ 
         request.renderLayoutIndex(); 
         Utilities.notice('Successfully deleted template');
-        request.redirect('#/templates'); 
+        request.redirect('/admin/templates'); 
       }
     }); 
   });  
@@ -10351,7 +10377,7 @@ var Layouts = Sammy(function (app) {
       var template_id = request.params['id'];    
       var attributes = request.params['part']; 
       Part.create(attributes, function(){
-        request.redirect('#/templates/' + template_id + '/edit');
+        request.redirect('/admin/templates/' + template_id + '/edit');
       });
     });
   });  
@@ -10386,7 +10412,7 @@ var Assets = Sammy(function (app) {
   var application = this; 
   
   this.debug = false;
-  this.disable_push_state = true;
+  // this.disable_push_state = true;
     
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -10442,26 +10468,52 @@ var Assets = Sammy(function (app) {
       }
     }
   });
+  
+  // Asset Events
+  // ---------------------------------------------
 
   this.bind('run', function () {
     application.modal = false; 
     application.first_run = true;  
   }); 
   
+  // Show Asset Info rollovers
+  this.bind('show_info', function(request){
+    var asset = Asset.find(application.current_asset_id); 
+    var asset_node = jQuery('#asset-' + asset.id());
+    var remove_modal = asset_node.find('.remove');
+    
+    jQuery('.modal-strip').remove();
+    if(!remove_modal.length){
+      var removeAsset = this.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
+      removeAsset.appendTo(asset_node).then(function(){
+        var modal_strip = jQuery('.modal-strip');
+        modal_strip.fadeIn('fast');
+      });
+    }
+  });
+  
   // Asset Index
   // ---------------------------------------------
-  this.get('#/assets', function(request){ 
+  this.get('/admin/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
     
-    Galerie.close();
+    // Galerie.close();
     if(!application.modal){
       Asset.searchAdmin(params, function(){  
         var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
         assetIndex.replace('#editor').then(function(){
+          // Sets uploader to multiple if browser supports it
           jQuery('#ajax_uploader').attr('multiple','multiple'); 
+          // Triggers info rollovers
+          jQuery('a.info-icon').click(function(e){
+            e.preventDefault();
+            application.current_asset_id = this.id.split('-')[2];
+            request.trigger('show_info');
+          });
         });
       });
     }
@@ -10471,7 +10523,7 @@ var Assets = Sammy(function (app) {
   
   // New Assets
   // ---------------------------------------------
-  this.get('#/assets/new', function(request){ 
+  this.get('/admin/assets/new', function(request){ 
     // var newAsset = request.render('/templates/admin/assets/new.mustache');
     var newAsset = request.load(jQuery('#admin-assets-new')).interpolate({}, 'mustache');
     newAsset.replace('#editor').then(function(){
@@ -10506,7 +10558,7 @@ var Assets = Sammy(function (app) {
 
   // Edit Asset 
   // ---------------------------------------------  
-  this.get('#/assets/:id/edit', function(request){
+  this.get('/admin/assets/:id/edit', function(request){
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : {};   
     
@@ -10526,7 +10578,7 @@ var Assets = Sammy(function (app) {
   
   // Update Asset
   // ---------------------------------------------  
-  this.put('#/assets/:id', function(req){
+  this.put('/admin/assets/:id', function(req){
     var application = this;
     var asset = Asset.find(req.params['id']);     
   
@@ -10540,7 +10592,7 @@ var Assets = Sammy(function (app) {
   
   // Remove Asset
   // ---------------------------------------------  
-  this.get('#/assets/:id/remove', function(request){   
+  this.get('/admin/assets/:id/remove', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : null; 
     
@@ -10578,7 +10630,7 @@ var Assets = Sammy(function (app) {
   
   // Delete Asset
   // ---------------------------------------------  
-  this.del('#/assets/:id', function(request){
+  this.del('/admin/assets/:id', function(request){
     var application = this;    
     var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
@@ -10588,7 +10640,7 @@ var Assets = Sammy(function (app) {
       if(success){ 
         Galerie.close(); 
         Utilities.notice('Successfully saved asset'); 
-        request.redirect('#/assets' + query_path);    
+        request.redirect('/admin/assets' + query_path);    
       }
     });
   });    
@@ -10599,7 +10651,7 @@ var Pages = Sammy(function (app) {
   var context = this;  
    
   this.debug = false;
-  this.disable_push_state = true;
+  // this.disable_push_state = true;
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -10631,7 +10683,8 @@ var Pages = Sammy(function (app) {
       var application = this;
       var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
-      pageIndex.replace('#sidebar').then(function(){    
+      pageIndex.replace('#sidebar').then(function(){   
+        jQuery('ul.page-children:first').attr('id', 'pages'); 
         application.renderNode(page, active_page); 
         if(page.id() == active_page.id()){
           jQuery('li#page-' + page.id()).addClass('active');
@@ -10642,11 +10695,13 @@ var Pages = Sammy(function (app) {
     
     // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
+      
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
-
+        logger.info(page.id())
+        $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
         page.children().each(function(child){  
           if(child.id() == active_page.id()){
             jQuery('li#page-' + child.id()).addClass('active');
@@ -10654,6 +10709,8 @@ var Pages = Sammy(function (app) {
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
             application.renderNode(child, active_page);  
+          }else{
+            // 
           }
         });
       });       
@@ -10694,16 +10751,31 @@ var Pages = Sammy(function (app) {
   });
   
   // renders the page index, only if that element is not found
-  this.bind('page-index', function(){
+  app.bind('page-index', function(){
     var application = this; 
     if(!jQuery('.page-children').length){
-      application.loadPages(function(){
+      Page.load(function(){
         application.renderTree(Page.root(), Page.root());  
       });
     } 
   }); 
+  
+  app.bind('set-active-tab', function(request){
+    
+  });
+  
+  // Sets active tab
+  // app.before(function(request) {
+  //   var tabs = jQuery('div#tabs a.tab');
+  //   // TODO make this a decent regex
+  //   var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
+  //   var active_tab = jQuery('#' + name);
+  //   
+  //   tabs.removeClass('active');
+  //   active_tab.addClass('active');
+  // });
 
-  this.bind('run', function () {   
+  app.bind('run', function () {   
     
     context.application = this;
     context.refresh_pages = true;
@@ -10780,7 +10852,7 @@ var Pages = Sammy(function (app) {
 
   // Page routes
   // ---------------------------------------------  
-  this.get('#/pages/?', function(request){ 
+  this.get('/admin/pages/?', function(request){ 
   
     Galerie.close();    
     // context.refresh_pages = true; 
@@ -10793,7 +10865,7 @@ var Pages = Sammy(function (app) {
   
   // New Page
   // ---------------------------------------------
-  this.get('#/pages/:id/new/?', function(request){    
+  this.get('/admin/pages/:id/new/?', function(request){    
     
     this.loadPages(function(){    
       var page = Page.find(request.params['id']);
@@ -10812,7 +10884,7 @@ var Pages = Sammy(function (app) {
   
   // Create Page
   // ---------------------------------------------
-  this.post('#/pages/:page_id', function(request){
+  this.post('/admin/pages/:page_id/?', function(request){
     var page_id = request.params['page_id'],
       parent = Page.find(page_id),   
       attributes = request.params['page'];  
@@ -10832,7 +10904,7 @@ var Pages = Sammy(function (app) {
   
   // Show Page
   // ---------------------------------------------
-  this.get('#/pages/:id/?', function(request){ 
+  this.get('/admin/pages/:id/?', function(request){ 
     var application = this;
     Galerie.close(); 
     jQuery('.modal-editor').remove();
@@ -10862,7 +10934,7 @@ var Pages = Sammy(function (app) {
   
   // Edit Page
   // ---------------------------------------------
-  this.get('#/pages/:id/edit/?', function(request){  
+  this.get('/admin/pages/:id/edit/?', function(request){  
     var application = this;
     Galerie.close();  
     context.modal = false;  
@@ -10884,7 +10956,7 @@ var Pages = Sammy(function (app) {
   
   // Update Page
   // ---------------------------------------------  
-  this.put('#/pages/:page_id', function(request){  
+  this.put('/admin/pages/:page_id', function(request){  
     var application = this;
     var page_id = request.params['page_id'];
     var page = Page.find(page_id);
@@ -10903,7 +10975,7 @@ var Pages = Sammy(function (app) {
   
   // Remove Page
   // ---------------------------------------------
-  this.get('#/pages/:id/remove', function(request){   
+  this.get('/admin/pages/:id/remove', function(request){   
     this.loadPages(function(){   
       var page_id = request.params['id'];
       var page = Page.find(page_id);         
@@ -10920,7 +10992,7 @@ var Pages = Sammy(function (app) {
   
   // Destroy Page
   // ---------------------------------------------
-  this.del('/pages/:id', function(request){
+  this.del('/admin/pages/:id', function(request){
     var page_id = request.params['id'];       
     var page = Page.find(page_id);               
       
@@ -11032,7 +11104,7 @@ var Parts = Sammy(function (app) {
   var context = this;  
    
   this.debug = false;
-  this.disable_push_state = true;
+  // this.disable_push_state = true;
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -11174,8 +11246,9 @@ var Parts = Sammy(function (app) {
       var query = request.params['query'] ? request.params['query'] : null; 
       var params = query ? { 'query': query } : {};
 
-      Asset.searchAdmin(params, function(){           
-        var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      Asset.searchAdmin(params, function(){    
+        var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
+        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
         searchResults.replace('#search-results-container').then(function(){
         
           application.set_asset_links(part, page);
@@ -11238,7 +11311,8 @@ var Parts = Sammy(function (app) {
     //  files = fileInput.attr('files');
     
     this.send_files(files, params, function(){
-      var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');
+      // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
         jQuery('#ajax_uploader').attr('files', null); 
         jQuery('.progress').slideUp('slow', function(){
@@ -11256,7 +11330,7 @@ var Users = Sammy(function (app) {
   var context = this; 
   
   this.debug = false;
-  this.disable_push_state = true;  
+  // this.disable_push_state = true;  
   
   // this.use(Sammy.Title);  
   this.use(Sammy.JSON); 
@@ -11295,7 +11369,7 @@ var Users = Sammy(function (app) {
   
   // User Index
   // ---------------------------------------------
-  this.get('#/users', function(request){ 
+  this.get('/admin/users', function(request){ 
     Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
@@ -11306,7 +11380,7 @@ var Users = Sammy(function (app) {
   
   // New User 
   // --------------------------------------------- 
-  this.get('#/users/new', function(request){   
+  this.get('/admin/users/new', function(request){   
     request.loadUsers(function(){    
       if (!jQuery('#modal').length){ Galerie.open(); }  
       var new_user = request.load(jQuery('#admin-users-new')).interpolate({}, 'mustache');
@@ -11317,7 +11391,7 @@ var Users = Sammy(function (app) {
   
   // Create User
   // ---------------------------------------------  
-  this.post('#/users', function(request){
+  this.post('/admin/users', function(request){
     var attributes = request.params['user'];  
     var user = new User(request.params['user']);
     
@@ -11326,14 +11400,14 @@ var Users = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        request.redirect('#/users'); 
+        request.redirect('/admin/users'); 
       }
     });
   });
   
   // Edit Users
   // ---------------------------------------------
-  this.get('#/users/:id/edit', function(request){ 
+  this.get('/admin/users/:id/edit', function(request){ 
     request.loadUsers(function(){  
       user = User.find(request.params['id']); 
       var users_list = jQuery('#users');
@@ -11353,7 +11427,7 @@ var Users = Sammy(function (app) {
   
   // Update Users
   // ---------------------------------------------
-  this.put('#/users/:id', function(request){ 
+  this.put('/admin/users/:id', function(request){ 
     var user = User.find(request.params['id'])
 
     user.attr(request.params['user']);   
@@ -11362,7 +11436,7 @@ var Users = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        request.redirect('#/users'); 
+        request.redirect('/admin/users'); 
       }
     });
   });
@@ -11373,43 +11447,32 @@ var Users = Sammy(function (app) {
 });
 jQuery(document).ready(function () {
 
-  // logger.info('Starting!!!')
-  
-  jQuery('body').ajaxStart(function() {
-    logger.info('starting');
-  });
-  
-  jQuery('body').ajaxSuccess(function() {
-    logger.info('success!');
-  });
-  
+  // Loads mustache templates and runs sammy app
   var login = jQuery('#login');   
   if(!login.length){
-    // loads mustache templates
     jQuery.ajax({
       url: '/templates',
       success: function(results){
         jQuery('head').append(results);
-        Pages.run('#/pages');
+        Pages.run();
       }
     });
   }
-
-
-  // AjaxUploader.initialize('#ajax_uploader');
-  // jQuery('#ajax_uploader').attr('multiple','multiple');
-  // jQuery('.js-only').show();  
   
+  // Global ajax indicator
+  var loader_el = jQuery('#loader');
+  jQuery('body')
+    .ajaxStart(function() {
+      if(!window.ninja){
+        Loader.start(loader_el);
+      }
+    }).ajaxSuccess(function() {
+      Loader.stop(loader_el);
+    });
+    
   // Grabs the keyboard shortcuts
   Utilities.keyboard_nav();  
   Utilities.check_browser_version();    
-   
-  // needs to fire on page load, too
-  // var tabs = jQuery('#tabs a'); 
-  // tabs.live('click', function(){   
-  //   tabs.removeClass('active');
-  //   $(this).addClass('active'); 
-  // });
   
 });
 

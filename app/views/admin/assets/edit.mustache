@@ -1,5 +1,5 @@
 {{#asset}}
-  <form method="post" action="#/assets/{{id}}" enctype="multipart/form-data" id="edit-asset" class="command-save">
+  <form method="post" action="/admin/assets/{{id}}" enctype="multipart/form-data" id="edit-asset" class="command-save">
     <div class="hidden">
       <input type="hidden" name="_method" value="put" />
     </div> 
@@ -23,13 +23,13 @@
           <!--input type="text" name="asset[tag_list]" id="asset_tag_list" value="{{tag_list}}" class="textfield" /--> 
           <textarea name="asset[tag_list]" id="asset_tags" class="textfield"-->{{tag_list}}</textarea>
         </div>
-        {{#previous}}<a class="previous" href="#/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
-        {{#next}}<a class="next" href="#/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}
+        {{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
+        {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}
       </div>
     </div>     
     <div class="buttons">
       <input type="submit" value="Save" class="button html-only" />
-      <a href="#/assets{{query_path}}" class="cancel">Cancel</a>
+      <a href="/admin/assets{{query_path}}" class="cancel">Cancel</a>
     </div>
   </form>   
 {{/asset}}

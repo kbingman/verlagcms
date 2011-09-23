@@ -1,6 +1,6 @@
 {{#layout}} 
 <div id="code-editor" class="{{klass}}">
-  <form action="#/templates/{{id}}" method= "post" id="edit-layout" class="command-save">  
+  <form action="/admin/templates/{{id}}" method= "post" id="edit-layout" class="command-save">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
       <input type="hidden" id="layout-updated_at" name="layout[updated_at]" value="{{updated_at}}" />

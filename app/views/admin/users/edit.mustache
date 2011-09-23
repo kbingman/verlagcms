@@ -1,5 +1,5 @@
 {{#user}}
-<form action="#/users/{{id}}" method= "post" class="command-save autosave">   
+<form action="/admin/users/{{id}}" method= "post" class="command-save autosave">   
   <div class="hidden">
     <input type="hidden" name="_method" value="put" /> 
   </div>
@@ -22,7 +22,7 @@
   {{/is_admin?}}
   <div class="">
     <input type="submit" id="save-user" value="Save" class="button" /> 
-    <a href="#/users" class="cancel">Cancel</a> 
+    <a href="/admin/users" class="cancel">Cancel</a> 
   </div>
 </form>  
 {{/user}}

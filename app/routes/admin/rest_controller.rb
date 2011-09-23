@@ -14,7 +14,10 @@ class Main
     # -------------------------------------------
     get '/:model/?' do
       collection = klass.by_site(current_site).all
-      collection.to_json  
+      respond_to do |format|
+        format.html { admin_haml :'admin/index' }
+        format.json { collection.to_json }
+      end
     end
     
     # Create
@@ -23,6 +26,10 @@ class Main
       resource = klass.new(params[model.singularize.to_sym]) 
       if resource.save
         resource.to_json
+        respond_to do |format|
+          format.html { redirect "/admin/#{model}" }
+          format.json { resource.to_json }
+        end
       else
         { :errors => resource.errors }.to_json 
       end
@@ -34,7 +41,21 @@ class Main
       resource = klass.by_site(current_site).find params['id']
       if resource
         respond_to do |format|
-          format.html { mustache(:"/admin/pages/show") }
+          format.html { admin_haml :'admin/index' }
+          format.json { resource.to_json }
+        end
+      else
+        raise Sinatra::NotFound
+      end
+    end
+    
+    # Edit
+    # -------------------------------------------
+    get '/:model/:id/edit/?' do
+      resource = klass.by_site(current_site).find params['id']
+      if resource
+        respond_to do |format|
+          format.html { admin_haml :'admin/index' }
           format.json { resource.to_json }
         end
       else
@@ -50,7 +71,10 @@ class Main
       test_enforce_update_permission(resource)
       
       if resource.update_attributes(params[model.singularize.to_sym])
-        resource.to_json
+        respond_to do |format|
+          format.html { redirect "/admin/#{model}/#{resource.id}/" }
+          format.json { resource.to_json }
+        end
       else
         { :errors => resource.errors }.to_json 
       end

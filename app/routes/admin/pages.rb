@@ -10,12 +10,12 @@ class Main
         
         active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
         pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
-        
         respond_to do |format|
-          # format.html do  
-          #   @root = current_site.root
-          #   admin_haml :'admin/pages/index'
-          # end 
+          format.html do  
+            # @root = current_site.root
+            # admin_haml :'admin/pages/index'
+            admin_haml :'admin/index'
+          end 
           format.json do  
             pages.to_json
           end
@@ -30,7 +30,7 @@ class Main
         
         if page.save
           respond_to do |format|
-            # format.html { redirect('/pages') }
+            format.html { redirect('/admin/pages') }
             format.json { page.to_json }
           end 
         else
@@ -64,13 +64,13 @@ class Main
                 
         if page.update_attributes(params['page'])
           respond_to do |format|
-            format.html { redirect("/admin/#/pages/#{page.id}/edit") }
+            format.html { redirect("/admin/pages/#{page.id}/edit") }
             format.json { page.to_json }
           end 
         else
           logger.debug "Page errors: #{page.errors}"
           respond_to do |format|
-            # format.html { redirect("/admin/#/pages/#{page.id}/edit") }
+            format.html { redirect("/admin/pages/#{page.id}/edit") }
             format.json do
               { :errors => page.errors }.to_json  
             end

@@ -1,7 +1,7 @@
 {{#page}}   
 
 <div id="page-editor">
-  <form action="#/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
+  <form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
       <input type="hidden" id="page-updated_at" name="page[updated_at]" value="{{updated_at}}" /> 
@@ -59,7 +59,7 @@
     </div
     <div class="buttons">
       <input type="submit" id="page_save" value="Save" class="button" />   
-      <a href="#/pages/{{id}}">Cancel</a>
+      <a href="/admin/pages/{{id}}">Cancel</a>
     </div>
   </form>    
 </div>     
@@ -73,7 +73,7 @@
           <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
         </a> 
         <br />
-        <a href="#/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
+        <a href="/admin/pages/{{page_id}}/assets/{{id}}/remove">Remove</a>  
       </div>
     {{/assets}}
   </div>     
@@ -82,21 +82,21 @@
   <h2>Recent Assets</h2>
   <ul>
     <li id="asset-{{id}}">
-      <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
+      <a href="/admin/pages/{{current_page_id}}/assets/{{id}}/add">
         <img src="/images/icons/{{id}}/{{file_name}}" alt="{{title}}" />
       </a>  
     </li>
   </ul> 
 {{/assets}}     
 {{#page}} 
-  <form action="#/pages/{{id}}" method="post" id="edit-page">  
+  <form action="/admin/pages/{{id}}" method="post" id="edit-page">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" />            
       <input type="hidden" name="page[assets_list]" id="page-asset-ids" value="{{assets_list}}" class="hidden" />
     </div>
   </form>
        
-  <form action="#/pages/{{id}}/results" id="search-form" method="get">
+  <form action="/admin/pages/{{id}}/results" id="search-form" method="get">
     <div class="field">
       <input class="textfield" id="search-query" name="query" type="text">
       <input class="button" type="submit" value="Search">

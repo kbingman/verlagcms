@@ -1,6 +1,6 @@
 <h1>New {{klass}}</h1>  
 
-<form action="#/templates" method= "post">  
+<form action="/admin/templates" method= "post">  
   <div class="hidden">
     <input type="hidden" id="page_parent_id" name="template[klass]" value="{{klass}}" class="hidden" />   
   </div>
@@ -10,6 +10,6 @@
   </div>
   <div class="buttons">
     <input type="submit" id="page_save" value="Save" class="button" /> 
-    <a href="#/templates" class="cancel">Cancel</a> 
+    <a href="/admin/templates" class="cancel">Cancel</a> 
   </div>
 </form>

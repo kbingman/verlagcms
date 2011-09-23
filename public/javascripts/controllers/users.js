@@ -42,7 +42,7 @@ var Users = Sammy(function (app) {
   
   // User Index
   // ---------------------------------------------
-  this.get('#/users', function(request){ 
+  this.get('/admin/users', function(request){ 
     Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
@@ -53,7 +53,7 @@ var Users = Sammy(function (app) {
   
   // New User 
   // --------------------------------------------- 
-  this.get('#/users/new', function(request){   
+  this.get('/admin/users/new', function(request){   
     request.loadUsers(function(){    
       if (!jQuery('#modal').length){ Galerie.open(); }  
       var new_user = request.load(jQuery('#admin-users-new')).interpolate({}, 'mustache');
@@ -64,7 +64,7 @@ var Users = Sammy(function (app) {
   
   // Create User
   // ---------------------------------------------  
-  this.post('#/users', function(request){
+  this.post('/admin/users', function(request){
     var attributes = request.params['user'];  
     var user = new User(request.params['user']);
     
@@ -73,14 +73,14 @@ var Users = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        request.redirect('#/users'); 
+        request.redirect('/admin/users'); 
       }
     });
   });
   
   // Edit Users
   // ---------------------------------------------
-  this.get('#/users/:id/edit', function(request){ 
+  this.get('/admin/users/:id/edit', function(request){ 
     request.loadUsers(function(){  
       user = User.find(request.params['id']); 
       var users_list = jQuery('#users');
@@ -100,7 +100,7 @@ var Users = Sammy(function (app) {
   
   // Update Users
   // ---------------------------------------------
-  this.put('#/users/:id', function(request){ 
+  this.put('/admin/users/:id', function(request){ 
     var user = User.find(request.params['id'])
 
     user.attr(request.params['user']);   
@@ -109,7 +109,7 @@ var Users = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        request.redirect('#/users'); 
+        request.redirect('/admin/users'); 
       }
     });
   });

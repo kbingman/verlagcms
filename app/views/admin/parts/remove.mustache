@@ -1,7 +1,7 @@
 <div class="small-modal"> 
   {{#part}}   
     <h2>Remove Part</h2>
-    <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="create-part">
+    <form method="post" action="/admin/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="create-part">
       <div class="hidden">                   
         <input type="hidden" name="_method" value="delete" />
       </div>
@@ -11,7 +11,7 @@
       </div>
       <div class="buttons">
         <input type="submit" value="Delete" class="button html-only" />
-        <a href="#/pages/{{page_id}}/edit" class="cancel">Cancel</a>
+        <a href="/admin/pages/{{page_id}}/edit" class="cancel">Cancel</a>
       </div>
     </form>  
   {{/part}}

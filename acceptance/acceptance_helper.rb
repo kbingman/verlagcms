@@ -14,7 +14,7 @@ require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :webkit
+Capybara.default_driver = :selenium #:webkit
 Capybara.app = Main
 
 def screen_shot_and_save_page(title)

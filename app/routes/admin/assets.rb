@@ -18,6 +18,7 @@ class Main
         assets = plucky_query.paginate(options)
 
         respond_to do |format|
+          format.html { admin_haml :'admin/index' }
           format.json { assets.to_json  }
         end
       end
@@ -34,7 +35,7 @@ class Main
         
         if asset.save
           respond_to do |format|
-            format.html { redirect('/assets') }
+            format.html { redirect('/admin/assets') }
             format.json { asset.to_json }
           end
         else

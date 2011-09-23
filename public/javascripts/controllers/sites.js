@@ -49,7 +49,7 @@ var Sites = Sammy(function (app) {
   
   // Site Index
   // ---------------------------------------------
-  this.get('#/sites', function(request){ 
+  this.get('/admin/sites', function(request){ 
     context.refresh_pages = true;  
     Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Sites</div>'); 
@@ -61,7 +61,7 @@ var Sites = Sammy(function (app) {
   
   // New Site 
   // --------------------------------------------- 
-  this.get('#/sites/new', function(request){   
+  this.get('/admin/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
       var newSite = request.load(jQuery('#admin-sites-new')).interpolate({}, 'mustache');
@@ -72,7 +72,7 @@ var Sites = Sammy(function (app) {
   
   // Create Site
   // ---------------------------------------------  
-  this.post('#/sites', function(request){
+  this.post('/admin/sites', function(request){
     var attributes = request.params['site'];  
     var site = new Site(request.params['site']);
     
@@ -88,7 +88,7 @@ var Sites = Sammy(function (app) {
   
   // Edit Site 
   // --------------------------------------------- 
-  this.get('#/sites/:id/edit', function(request){  
+  this.get('/admin/sites/:id/edit', function(request){  
     Galerie.close();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
@@ -101,7 +101,7 @@ var Sites = Sammy(function (app) {
   
   // Update Site 
   // --------------------------------------------- 
-  this.put('#/sites/:id', function(request){  
+  this.put('/admin/sites/:id', function(request){  
     var site = Site.find(request.params['id'])
 
     site.attr(request.params['site']);   
@@ -117,7 +117,7 @@ var Sites = Sammy(function (app) {
   
   // Remove Site 
   // --------------------------------------------- 
-  this.get('#/sites/:id/remove', function(request){ 
+  this.get('/admin/sites/:id/remove', function(request){ 
     Galerie.open();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
@@ -129,7 +129,7 @@ var Sites = Sammy(function (app) {
   
   // Delete Site 
   // --------------------------------------------- 
-  this.del('#/sites/:id', function(request){       
+  this.del('/admin/sites/:id', function(request){       
      
     site.destroy(function(success, results){   
       //var response = JSON.parse(results.responseText);   

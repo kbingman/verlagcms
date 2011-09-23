@@ -1,7 +1,7 @@
 <div class="remove small-modal">
 {{#layout}}   
   <h2>Remove Layout</h2>
-  <form method="post" action="#/templates/{{id}}" id="remove-template">
+  <form method="post" action="/admin/templates/{{id}}" id="remove-template">
     <div class="hidden">                   
       <input type="hidden" name="_method" value="delete" />
     </div>
@@ -10,7 +10,7 @@
     </div>
     <div class="buttons">
       <input type="submit" value="Delete" class="button html-only" />
-      <a href="#/templates" class="cancel">Cancel</a>
+      <a href="/admin/templates" class="cancel">Cancel</a>
     </div>
   </form>  
 {{/layout}}   

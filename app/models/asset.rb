@@ -105,7 +105,6 @@ class Asset
     # FileUtils.mkdir(root_path('tmp/import'))
     counter = 0
     errors = []
-    puts file.class
 
     json = JSON.parse(file.read)
     assets =  json['assets']

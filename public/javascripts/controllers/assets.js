@@ -86,7 +86,7 @@ var Assets = Sammy(function (app) {
   
   // Asset Index
   // ---------------------------------------------
-  this.get('#/assets', function(request){ 
+  this.get('/admin/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
     params['limit'] = request.params['limit'] || 48;
@@ -114,7 +114,7 @@ var Assets = Sammy(function (app) {
   
   // New Assets
   // ---------------------------------------------
-  this.get('#/assets/new', function(request){ 
+  this.get('/admin/assets/new', function(request){ 
     // var newAsset = request.render('/templates/admin/assets/new.mustache');
     var newAsset = request.load(jQuery('#admin-assets-new')).interpolate({}, 'mustache');
     newAsset.replace('#editor').then(function(){
@@ -149,7 +149,7 @@ var Assets = Sammy(function (app) {
 
   // Edit Asset 
   // ---------------------------------------------  
-  this.get('#/assets/:id/edit', function(request){
+  this.get('/admin/assets/:id/edit', function(request){
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : {};   
     
@@ -169,7 +169,7 @@ var Assets = Sammy(function (app) {
   
   // Update Asset
   // ---------------------------------------------  
-  this.put('#/assets/:id', function(req){
+  this.put('/admin/assets/:id', function(req){
     var application = this;
     var asset = Asset.find(req.params['id']);     
   
@@ -183,7 +183,7 @@ var Assets = Sammy(function (app) {
   
   // Remove Asset
   // ---------------------------------------------  
-  this.get('#/assets/:id/remove', function(request){   
+  this.get('/admin/assets/:id/remove', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : null; 
     
@@ -221,7 +221,7 @@ var Assets = Sammy(function (app) {
   
   // Delete Asset
   // ---------------------------------------------  
-  this.del('#/assets/:id', function(request){
+  this.del('/admin/assets/:id', function(request){
     var application = this;    
     var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
@@ -231,7 +231,7 @@ var Assets = Sammy(function (app) {
       if(success){ 
         Galerie.close(); 
         Utilities.notice('Successfully saved asset'); 
-        request.redirect('#/assets' + query_path);    
+        request.redirect('/admin/assets' + query_path);    
       }
     });
   });    

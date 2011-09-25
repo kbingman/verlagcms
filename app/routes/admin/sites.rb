@@ -31,6 +31,16 @@ class Main
         end
       end
       
+      # Current
+      # -------------------------------------------
+      get '/:id/current/?' do
+        @site = Site.find params['id']
+        respond_to do |format|
+          # format.html { admin_haml :'admin/index' }
+          format.json { render :rabl, :'admin/sites/current', :format => "json" }
+        end
+      end
+      
     end  
   end
 end

@@ -89,7 +89,7 @@ class Main < Monk::Glue
   register Sinatra::Images 
   register Sinatra::GetSubdomain 
   register Sinatra::AdvancedRoutes 
-  register Rabl
+  Rabl.register!
   
   configure do
     mime_type :mustache, 'text/mustache' 

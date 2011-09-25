@@ -1,0 +1,6 @@
+jQuery.ajax({
+  url: '/http://localhost:4567/admin/sites/4dd8103a73c44f2dbb000001/current.json',
+  success: function(results){
+    data = results;
+  }
+});

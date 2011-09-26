@@ -17,14 +17,14 @@ var Layouts = Sammy(function (app) {
     // Checks for loaded Layouts, renders the table, then executes the callback   
     loadLayouts: function(callback){  
       var application = this; 
-      
-      if(Layout.all().length == 0 ){
-        Layout.load(function(){      
-          if(callback){ callback.call(this); } 
-        });
-      } else {        
-        if(callback){ callback.call(this); } 
-      }
+      if(callback){ callback.call(this); } 
+      // if(Layout.all().length == 0 ){
+      //   Layout.load(function(){      
+      //     if(callback){ callback.call(this); } 
+      //   });
+      // } else {        
+      //   if(callback){ callback.call(this); } 
+      // }
     },
     
     // Renders the Page tree
@@ -82,10 +82,7 @@ var Layouts = Sammy(function (app) {
     context.refresh_pages = true;     
     
     jQuery('#editor').html('<h1 class="section">Templates</div>'); 
-    // request.loadLayouts(function(){
-    Layout.load(function(){
-      request.renderLayoutIndex(Layout.all());  
-    });            
+    request.renderLayoutIndex(Layout.all());           
   });
   
   // New Layout
@@ -124,10 +121,10 @@ var Layouts = Sammy(function (app) {
   this.get('/admin/templates/:id/edit', function(request){ 
     Galerie.close(); 
     context.refresh_pages = true;       
-    this.loadLayouts(function(){  
+
       var layout = Layout.find(request.params['id']); 
       window.ninja = true; 
-      layout.load(function(results){ 
+      // layout.load(function(results){ 
         request.renderLayout(layout);   
         request.renderLayoutIndex(Layout.all()); 
         // setInterval(function(){
@@ -142,8 +139,8 @@ var Layouts = Sammy(function (app) {
         //   });
         // }, 30000);
         window.ninja = false; 
-      });
-    });
+
+    // });
   });   
   
   // Update Layout

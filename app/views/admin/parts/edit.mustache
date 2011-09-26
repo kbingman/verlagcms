@@ -1,6 +1,6 @@
 <div class="modal-editor">
   {{#part}}   
-    <form method="post" action="/admin/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
+    <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
       <div class="hidden">
         <input type="hidden" name="_method" value="put" /> 
         <input type="hidden" name="part[id]" id="part-{{id}}-id" value="{{id}}" class="hidden" />

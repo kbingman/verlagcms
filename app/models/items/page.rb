@@ -32,6 +32,8 @@ class Page
   
   key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
+  
+  many :activities, :as => :activity
 
   timestamps!
   userstamps!
@@ -115,11 +117,15 @@ class Page
     self.level * 12
   end   
   
+  def class_name
+    self.class.to_s
+  end
+  
   
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:methods => [:path, :admin_path, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+    super(:methods => [:path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
   end  
   
   # Tags
@@ -152,10 +158,6 @@ class Page
   
   # Paths
   # ----------------------------------------   
-  def admin_path
-    "/pages/#{self.id}"
-  end
-   
   def path
     self.parent.nil? ? slug : parent.child_path(self)
   end
@@ -165,7 +167,7 @@ class Page
   end
   
   def admin_path
-    "/pages/#{self.id}"
+    "/admin/pages/#{self.id}"
   end
   
   def child_path(child)
@@ -198,7 +200,9 @@ class Page
   end
   
   protected
-    
+  
+    # Before Validation
+    # ----------------------------------------
     before_validation :set_level
     def set_level    
       self.level = self.parent.nil? ? 0 : self.parent.level + 1
@@ -230,6 +234,9 @@ class Page
       end 
     end  
     
+    
+    # Before Save
+    # ----------------------------------------
     before_save :create_parts 
     def create_parts  
       # if self.parts.empty?
@@ -249,6 +256,15 @@ class Page
       self.parts.each do |p|
         p.page_id = self.id
       end
+    end
+    
+    
+    # After Save
+    # ----------------------------------------
+    after_save :set_activity
+    def set_activity
+      a = Activity.new(:loggable => self)
+      a.save
     end
 
     def sanitize(text)

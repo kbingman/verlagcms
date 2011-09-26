@@ -9,12 +9,12 @@
       </span>
       {{/child?}}{{/children?}}
       <span class="title" style="padding-left: {{padding}}px;"> 
-         <a id="edit-{{id}}" href="/admin/pages/{{id}}">{{title}}</a> 
+         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a> 
          <!--(<a id="preview-{{id}}" class="preview" href="#/pages/{{id}}">preview</a>)-->     
       </span>
       <span class="modify">                 
-        <a title="Add Child" class="add-child" id="add-child-{{id}}"href="#/pages/{{id}}/new">+</a> 
-        <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="#/pages/{{id}}/remove">x</a> 
+        <a title="Add Child" class="add-child" id="add-child-{{id}}"href="{{admin_path}}/new">+</a> 
+        <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="{{admin_path}}/remove">x</a> 
       </span>
     </div>
   </li>  

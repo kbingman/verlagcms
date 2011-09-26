@@ -136,6 +136,7 @@ end
 # end
 require root_path('app/routes/admin/css')
 require root_path('app/routes/admin/assets')
+require root_path('app/routes/admin/activities')
 require root_path('app/routes/admin/pages')
 require root_path('app/routes/admin/part_types')
 require root_path('app/routes/admin/sites')

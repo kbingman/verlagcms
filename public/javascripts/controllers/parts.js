@@ -186,7 +186,9 @@ var Parts = Sammy(function (app) {
       if(success){
         context.modal = false;     
         // Utilities.notice('Successfully saved page');
-        request.redirect('#/pages/' + page_id);
+        var now = new Date();
+        // window.current = now.getTime();
+        request.redirect('/admin/pages/' + page_id);
       } 
     });
     

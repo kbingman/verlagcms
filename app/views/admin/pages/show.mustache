@@ -3,7 +3,7 @@
   <iframe src="/preview{{path}}?edit=true" id="page-preview">LOADING</iframe>
 </div>   
 <div id="page-editor">
-  <form action="#/pages/{{id}}" method= "post" id="edit-page" class="command-save autosave">  
+  <form action="{{admin_path}}" method= "post" id="edit-page" class="command-save autosave">  
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
       <input type='hidden' name='page[assets_list]' id='page-asset-ids' value="{{assets_list}}" class='hidden' />
@@ -12,7 +12,7 @@
     <div class="field" id="page-title-field">   
       <label for='page_title'>Title</label> 
       <input type="text" id="page-title" name="page[title]" value="{{title}}" class="textfield" disabled="disabled" />  
-      <a class="toggle-page-editor" href="#/pages/{{id}}/edit">Edit Page</a>
+      <a class="toggle-page-editor" href="{{admin_path}}/edit">Edit Page</a>
     </div> 
 
     <div id="extra-info">
@@ -35,7 +35,7 @@
     </div> 
     <div class="">
       <input type="submit" id="page_save" value="Save" class="button" />   
-      <a class="toggle-page-editor" href="#/pages/{{id}}">Cancel</a>
+      <a class="toggle-page-editor" href="{{admin_path}}">Cancel</a>
     </div>
   </form>
 </div> 

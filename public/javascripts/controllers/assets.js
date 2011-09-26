@@ -20,13 +20,14 @@ var Assets = Sammy(function (app) {
 
     // Checks for loaded assets, then executes the callback   
     loadAssets: function(params, callback){  
-      if(Asset.all().length == 0 ){
-        Asset.searchAdmin(params, function(){      
-          if(callback){ callback.call(this); } 
-        });
-      } else {        
-        if(callback){ callback.call(this); } 
-      }
+      if(callback){ callback.call(this); } 
+      // if(Asset.all().length == 0 ){
+      //   Asset.searchAdmin(params, function(){      
+      //     if(callback){ callback.call(this); } 
+      //   });
+      // } else {        
+      //   if(callback){ callback.call(this); } 
+      // }
     },
     
     // Sends each file to the server in turn, instead of all at once...
@@ -69,15 +70,16 @@ var Assets = Sammy(function (app) {
   }); 
   
   // Show Asset Info rollovers
+  // ---------------------------------------------
   this.bind('show_info', function(request){
     var asset = Asset.find(application.current_asset_id); 
     var asset_node = jQuery('#asset-' + asset.id());
-    var remove_modal = asset_node.find('.remove');
+    var remove_modal = asset_node.find('.info');
     
     jQuery('.modal-strip').remove();
     if(!remove_modal.length){
-      var removeAsset = this.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
-      removeAsset.appendTo(asset_node).then(function(){
+      var assetInfo = this.load(jQuery('#admin-assets-info')).interpolate({ asset: asset.toMustache() }, 'mustache');
+      assetInfo.appendTo(asset_node).then(function(){
         var modal_strip = jQuery('.modal-strip');
         modal_strip.fadeIn('fast');
       });
@@ -96,6 +98,7 @@ var Assets = Sammy(function (app) {
     if(!application.modal){
       Asset.searchAdmin(params, function(){  
         var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+        jQuery('#sidebar').html('');
         assetIndex.replace('#editor').then(function(){
           // Sets uploader to multiple if browser supports it
           jQuery('#ajax_uploader').attr('multiple','multiple'); 

@@ -1,4 +1,4 @@
-var Layout = Model('template', function() {
+var Layout = Model('layout', function() {
   this.persistence(Model.SinatraREST, "/admin/templates"), 
    
   // Instance methods

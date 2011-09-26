@@ -1,19 +1,8 @@
 jQuery(document).ready(function () {
-
-  // Loads mustache templates and runs sammy app
-  var login = jQuery('#login');   
-  if(!login.length){
-    jQuery.ajax({
-      url: '/templates',
-      success: function(results){
-        jQuery('head').append(results);
-        Pages.run();
-      }
-    });
-  }
   
   // Global ajax indicator
   var loader_el = jQuery('#loader');
+  var image = jQuery('<img />', {'src': '/images/loader.png'});
   jQuery('body')
     .ajaxStart(function() {
       if(!window.ninja){
@@ -22,6 +11,33 @@ jQuery(document).ready(function () {
     }).ajaxSuccess(function() {
       Loader.stop(loader_el);
     });
+
+  // Loads mustache templates and runs sammy app
+  var login = jQuery('#login');   
+  if(!login.length){
+    jQuery.ajax({
+      url: '/templates',
+      success: function(results){
+        jQuery('head').append(results);
+        // Pages.run();
+      }
+    });
+    jQuery.ajax({
+      url: '/admin/sites/current.json',
+      success: function(results){
+        Updater.setup(results.pages, Page);
+        Updater.setup(results.templates, Layout);
+        Updater.setup(results.assets, Asset);
+        Pages.run();
+        window.current = results.now;
+        setInterval(function(){
+          Updater.update();
+        }, 5000);
+      }
+    });
+  }
+
+
     
   // Grabs the keyboard shortcuts
   Utilities.keyboard_nav();  

@@ -111,12 +111,12 @@ var Utilities = {
   },
   
   formObserver: function(element){      
-    jQuery(element).keyup(function() {
-      delay(function(){
-        var form = jQuery(element).parents('form:first');
-        form.submit();
-      }, 800);
-    });
+    // jQuery(element).keyup(function() {
+    //   delay(function(){
+    //     var form = jQuery(element).parents('form:first');
+    //     form.submit();
+    //   }, 800);
+    // });
   }  
   
 } 
@@ -136,6 +136,35 @@ var Loader = {
   }
 }
 
+var Updater = {
+  
+  setup: function(data, model){
+    jQuery.each(data, function(i, item){
+      var object = new model({ id: item.id });  
+      object.merge(item);
+      model.add(object);
+    });
+  },
+  
+  update: function(){
+    window.ninja = true;
+    jQuery.ajax({
+      url: '/admin/activity.json',
+      type: 'POST',
+      data: { 'updated': window.current },
+      success: function(data){
+        jQuery.each(data.models, function(i, item){
+          var object = Page.find(item.id);
+          object.merge(item);
+          console.log(item.id)
+          var now = new Date();
+          window.current = now.getTime();;
+        });
+        window.ninja = false;
+      }
+    });
+  }
+}
 var iFramer = {       
   initialize: function(element, callback){   
     var trigger = jQuery(element);  
@@ -163,8 +192,8 @@ var iFramer = {
         var page = Page.find_by_path(link_path);
         if (page){
           e.preventDefault();
-          var page_id = page.id();
-          document.location.hash = page.attr('admin_path');
+          // TODO This whole thing needs to be moved to sammy to have access to the routes
+          document.location.path = page.attr('admin_path');
         }
       });
       

@@ -33,8 +33,11 @@ class Main
       
       # Current
       # -------------------------------------------
-      get '/:id/current/?' do
-        @site = Site.find params['id']
+      get '/current/?' do
+        @site = current_site
+        active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+        @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        
         respond_to do |format|
           # format.html { admin_haml :'admin/index' }
           format.json { render :rabl, :'admin/sites/current', :format => "json" }

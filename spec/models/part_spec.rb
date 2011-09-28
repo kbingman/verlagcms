@@ -1,6 +1,6 @@
 require 'spec_helper'
  
-describe Page do  
+describe Part do  
   before(:all) do  
     teardown
     build_complete_site

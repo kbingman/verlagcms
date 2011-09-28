@@ -5,16 +5,17 @@ module Sinatra
 
     def self.registered(app)  
       app.get '/images/:id/:filename' do
-        # cache_request(3600 * 24) # 24 Hour cache 
+        cache_request(3600 * 24) # 24 Hour cache 
         # response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
         
         h = params['h']
         w =  params['w']
         crop = params['c'] == 't' ? true : false
+        gravity = params['g'] || 'Center' 
 
         begin
           asset = Asset.find params[:id]
-          image = asset.render_image(w.to_i, h.to_i, {:crop => crop})
+          image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
 
           status 200 
           content_type(asset.file_type)
@@ -24,23 +25,6 @@ module Sinatra
           haml :'site/404'
         end
       end 
-      
-      app.get '/images/originals/:id/:filename' do
-        # cache_request(3600 * 24) # 24 Hour cache  
-        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
-
-        begin
-          asset = Asset.find params[:id]
-          file = asset.file.read
-
-          status 200 
-          content_type(asset.file_type)
-          file
-        rescue BSON::InvalidObjectId
-          status 404 
-          haml :'site/404'
-        end
-      end
       
       app.get '/images/:size/:id/:filename' do
         # cache_request(3600 * 24) # 24 Hour cache 

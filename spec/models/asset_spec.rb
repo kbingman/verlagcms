@@ -121,6 +121,43 @@ describe Asset do
     end
   end
   
+  describe 'Image Processing' do
+    context 'Original Image' do
+      before(:all) do
+        @image = MiniMagick::Image.read(@asset.file)
+      end 
+      
+      it 'should return the original width' do
+        @image[:width].should == 830
+      end
+      
+      it 'should return the original height' do
+        @image[:height].should == 671
+      end
+    end
+    
+    # context 'resizing' do
+    #   before(:all) do
+    #     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
+    #     @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id) 
+    #     # @image = @asset.render_image(100, 100)
+    #     open(root_path("tmp/#{@asset.file_name}"), 'w') do |f| 
+    #       f << @asset.render_image(100, 100)
+    #     end
+    #   end 
+    #   
+    #   it 'should return the original width' do
+    #     @image[:width].should == 830
+    #   end
+    #   
+    #   it 'should return the original height' do
+    #     @image[:height].should == 671
+    #   end
+    # end
+
+  end
+  
+  
  describe 'Asset Import' do
    before(:all) do
      file = File.open root_path('spec/data/assets.json')

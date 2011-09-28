@@ -135,21 +135,13 @@ class Asset
   def render_image(width=nil, height=nil, options={})
     file = self.file.read
     image = MiniMagick::Image.read(file)
-    quality = options[:quality] || '72' 
-    
+
     width = nil if width == 0
     height = nil if height == 0
-    
-    # puts "Height: #{height}"
-    # puts "Width: #{width}"
-    # 
-    # puts "Original Width: #{image[:width]}"
     
     if height || width
       image = resize(image, width, height, options)
     end
- 
-    image.quality(quality)
     return image
   end
   
@@ -189,9 +181,12 @@ class Asset
   private
     
     def resize(image, width, height, options={})
+      # Need to check for correct gravity, ie. North, South, East, West, Center
+      gravity = options[:gravity] || 'Center'
+      quality = options[:quality] || '72' 
+      
+      cols, rows = image[:dimensions]
       if options[:crop] == true
-        gravity = options[:gravity] || 'Center'
-        cols, rows = image[:dimensions]
         image.combine_options do |cmd|
           if width != cols || height != rows
             scale = [width/cols.to_f, height/rows.to_f].max
@@ -200,10 +195,16 @@ class Asset
             cmd.resize "#{cols}x#{rows}"
           end
           cmd.gravity gravity
+          cmd.quality quality
           cmd.extent "#{width}x#{height}" if cols != width || rows != height
         end
       else
-        image.resize("#{width}x#{height}") if ((image[:width] >= width.to_i) || (image[:height] >= height.to_i))
+        image.combine_options do |cmd|
+          if width != cols || height != rows
+            cmd.resize("#{width}x#{height}")
+          end
+          cmd.quality quality
+        end
       end
       image = yield(image) if block_given?
       image

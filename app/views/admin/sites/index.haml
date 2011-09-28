@@ -1,9 +1,0 @@
-#pages
-  %h1 Sites
-  
-  %table#sites
-    - @sites.each do |site| 
-      %tr.site{ :id => "site-#{site.id}" }
-        %td.name
-          %a{ :href => "http://#{site.domain}/admin/#/pages"}= site.name
-    

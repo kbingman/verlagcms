@@ -14,7 +14,7 @@ describe "lib/images" do
     teardown
   end
   
-  context 'images' do  
+  context 'paths' do  
     it "should correctly set the content type" do
       get "/images/display/#{@asset.id}/#{@asset.file_name}"
       last_response.headers['Content-Type'].should == 'image/jpeg'

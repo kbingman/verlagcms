@@ -84,7 +84,7 @@ describe "routes/templates" do
         
     context 'json' do   
       def do_put
-        put "/admin/templates/#{@template.id}.json", :template => { :name => 'Rename', :site_id => @site.id, :klass => 'layout' }
+        put "/admin/templates/#{@template.id}.json", :layout => { :name => 'Rename', :site_id => @site.id, :klass => 'layout' }
       end
     
       it 'should be successful' do

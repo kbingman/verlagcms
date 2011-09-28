@@ -68,7 +68,7 @@ class Main
     put '/:model/:id' do
       resource = klass.by_site(current_site).find params['id']
       # resource = klass.find params['id']   
-      test_enforce_update_permission(resource)
+      enforce_update_permission(resource)
       
       if resource.update_attributes(params[model.singularize.to_sym])
         respond_to do |format|

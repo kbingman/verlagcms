@@ -1,43 +1,34 @@
 class Main    
-  
   module Admin  
       
-      # Asset Index
-      # -------------------------------------------
-      # get '/activity/?' do  
-      #   last_updated = params['updated'].to_i
-      #   collection = Activity.where(:now.gte => last_updated).all
-      #   if collection.length > 0
-      #     @models = collection.collect{ |a| a.loggable }
-      #   else
-      #     @models = []
-      #   end
-      #   
-      #   respond_to do |format|
-      #     format.html { admin_haml :'admin/index' }
-      #     format.json {{ :models => @models }.to_json }
-      #     # format.json { render :rabl, :'admin/activity/index', :format => "json" }
-      #   end
-      # end
+    # Activity Index
+    # -------------------------------------------
+    get '/activity/?' do  
+      collection = Activity.all :limit => 30, :order => ('created_at DESC')
       
-      # Create Asset
-      # -------------------------------------------
-      post '/activity/?' do  
-        last_updated = params['updated'].to_i
-        collection = Activity.where(:now.gte => last_updated).all
-        if collection.length > 0
-          @models = collection.collect{ |a| a.loggable }
-        else
-          @models = []
-        end
-        
-        respond_to do |format|
-          format.html { admin_haml :'admin/index' }
-          format.json {{ :models => @models, :errors => [] }.to_json}
-          # format.json { render :rabl, :'admin/activity/index', :format => "json" }
-        end
+      respond_to do |format|
+        format.html { admin_haml :'admin/index' }
+        format.json { collection.to_json }
       end
+    end
+    
+    # Activity responder
+    # -------------------------------------------
+    post '/activity/?' do  
+      last_updated = params['updated'].to_i
+      collection = Activity.where(:now.gte => last_updated).all
+      if collection.length > 0
+        @models = collection.collect{ |a| a.loggable }
+      else
+        @models = []
+      end
+      
+      respond_to do |format|
+        format.html { admin_haml :'admin/index' }
+        format.json {{ :models => @models, :errors => [] }.to_json}
+        # format.json { render :rabl, :'admin/activity/index', :format => "json" }
+      end
+    end
  
-  end 
-  
+  end  
 end

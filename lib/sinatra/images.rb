@@ -3,7 +3,27 @@ require 'sinatra/base'
 module Sinatra                                   
   module Images  
 
-    def self.registered(app)   
+    def self.registered(app)  
+      app.get '/images/:id/:filename' do
+        # cache_request(3600 * 24) # 24 Hour cache 
+        # response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
+        
+        h = params['h']
+        w =  params['w']
+        crop = params['c'] == 't' ? true : false
+
+        begin
+          asset = Asset.find params[:id]
+          image = asset.render_image(w.to_i, h.to_i, {:crop => crop})
+
+          status 200 
+          content_type(asset.file_type)
+          image.to_blob
+        rescue BSON::InvalidObjectId
+          status 404 
+          haml :'site/404'
+        end
+      end 
       
       app.get '/images/originals/:id/:filename' do
         # cache_request(3600 * 24) # 24 Hour cache  
@@ -35,7 +55,7 @@ module Sinatra
 
         begin
           asset = Asset.find params[:id]
-          image = asset.render_image(h.to_i, w.to_i, {:crop => crop})
+          image = asset.render_image(w.to_i, h.to_i, {:crop => crop})
 
           status 200 
           content_type(asset.file_type)
@@ -45,7 +65,7 @@ module Sinatra
           haml :'site/404'
         end
       end
-     
+
     end
   end    
 

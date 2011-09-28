@@ -2,14 +2,6 @@ var Users = Sammy(function (app) {
   
   var context = this; 
   
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache); 
-  this.use(Sammy.NestedParams);  
-  
   // Helper Methods 
   // ---------------------------------------------  
   this.helpers({  
@@ -42,8 +34,7 @@ var Users = Sammy(function (app) {
   
   // User Index
   // ---------------------------------------------
-  this.get('/admin/users', function(request){ 
-    Galerie.close();  
+  this.get('/admin/users', function(request){  
     jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
     request.loadUsers(function(){  

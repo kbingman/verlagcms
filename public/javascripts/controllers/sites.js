@@ -2,14 +2,6 @@ var Sites = Sammy(function (app) {
   
   var context = this; 
   
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache); 
-  this.use(Sammy.NestedParams);  
-  
   // Helper Methods 
   // ---------------------------------------------  
   this.helpers({  
@@ -51,7 +43,6 @@ var Sites = Sammy(function (app) {
   // ---------------------------------------------
   this.get('/admin/sites', function(request){ 
     context.refresh_pages = true;  
-    Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Sites</div>'); 
 
     request.loadSites(function(){  
@@ -89,7 +80,7 @@ var Sites = Sammy(function (app) {
   // Edit Site 
   // --------------------------------------------- 
   this.get('/admin/sites/:id/edit', function(request){  
-    Galerie.close();         
+       
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
       var editSite = request.load(jQuery('#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');

@@ -38,6 +38,7 @@
       
       %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
       
+      %script{ :src => '/javascripts/controllers/base.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/layouts.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/controllers/pages.js', :type => 'text/javascript', :charset => 'utf-8' }  
@@ -67,7 +68,7 @@
             %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
             %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Templates
             %a.tab{ :id => 'assets-tab', :href => '/admin/assets' } Images 
-            %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
+            -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
             %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
         = content :header
       #content 

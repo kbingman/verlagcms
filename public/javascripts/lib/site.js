@@ -27,7 +27,6 @@ App = Sammy(function (app) {
   });
   
   this.get('/search', function (req) {
-    Galerie.close();
     var query = req.params['query'] ? req.params['query'].replace(/ /g, '+') : null;
     if(!app.modal){
       Asset.searchRemote(query, function(){

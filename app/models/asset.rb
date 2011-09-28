@@ -136,14 +136,19 @@ class Asset
     file = self.file.read
     image = MiniMagick::Image.read(file)
     quality = options[:quality] || '72' 
-
-    if width && height && width != 0
-      if options[:crop] == true
-        image = resize_and_crop(image, width, height)
-      else
-        image = resize(image, width, height)
-      end
+    
+    width = nil if width == 0
+    height = nil if height == 0
+    
+    # puts "Height: #{height}"
+    # puts "Width: #{width}"
+    # 
+    # puts "Original Width: #{image[:width]}"
+    
+    if height || width
+      image = resize(image, width, height, options)
     end
+ 
     image.quality(quality)
     return image
   end
@@ -182,22 +187,26 @@ class Asset
   end
   
   private
-    def resize(image, width, height)
-      # Doesn't resize images if they are smaller than the given sizes
-      image.resize("#{width}x#{height}") # if ((image[:width] >= width) || (image[:height] >= height))
-      return image
-    end
     
-    def resize_and_crop(image, width, height)
-      if image[:width] < image[:height]
-        shave_off = ((image[:height] - image[:width])/2).round
-        image.shave("0x#{shave_off}")
-      elsif image[:width] > image[:height]
-        shave_off = ((image[:width] - image[:height])/2).round
-        image.shave("#{shave_off}x0")
+    def resize(image, width, height, options={})
+      if options[:crop] == true
+        gravity = options[:gravity] || 'Center'
+        cols, rows = image[:dimensions]
+        image.combine_options do |cmd|
+          if width != cols || height != rows
+            scale = [width/cols.to_f, height/rows.to_f].max
+            cols = (scale * (cols + 0.5)).round
+            rows = (scale * (rows + 0.5)).round
+            cmd.resize "#{cols}x#{rows}"
+          end
+          cmd.gravity gravity
+          cmd.extent "#{width}x#{height}" if cols != width || rows != height
+        end
+      else
+        image.resize("#{width}x#{height}") if ((image[:width] >= width.to_i) || (image[:height] >= height.to_i))
       end
-      image.resize("#{width}x#{height}") if ((image[:width] >= width) || (image[:height] >= height))
-      return image
+      image = yield(image) if block_given?
+      image
     end     
     
     before_validation :set_title

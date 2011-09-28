@@ -8,6 +8,9 @@ class Template
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
   
+  # Activity monitor
+  many :activities, :as => :loggable
+  
   validates :name, :uniqueness => { :scope => :site_id }
   
   def self.by_site(site, admin = false)
@@ -26,8 +29,12 @@ class Template
     self.class.name == 'Layout'
   end
   
+  def class_name
+    'Layout'
+  end
+  
   def as_json(options)
-    super(:methods => [:klass, :mode, :part_types, :layout?])
+    super(:methods => [:klass, :class_name, :mode, :part_types, :layout?])
   end 
   
   def mode
@@ -41,5 +48,15 @@ class Template
       'registers' => { 'site_id' => self.site_id.to_s }
     })
   end
+  
+  protected
+  
+    # After Save
+    # ----------------------------------------
+    after_save :set_activity
+    def set_activity
+      a = Activity.new(:loggable => self)
+      a.save
+    end
 
 end

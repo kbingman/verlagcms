@@ -1,14 +1,6 @@
 var Layouts = Sammy(function (app) {   
   
   var context = this;  
-                    
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams);
   
   // Helper Methods 
   // ---------------------------------------------
@@ -18,13 +10,6 @@ var Layouts = Sammy(function (app) {
     loadLayouts: function(callback){  
       var application = this; 
       if(callback){ callback.call(this); } 
-      // if(Layout.all().length == 0 ){
-      //   Layout.load(function(){      
-      //     if(callback){ callback.call(this); } 
-      //   });
-      // } else {        
-      //   if(callback){ callback.call(this); } 
-      // }
     },
     
     // Renders the Page tree
@@ -77,7 +62,6 @@ var Layouts = Sammy(function (app) {
   // ---------------------------------------------  
   this.get('/admin/templates', function(request){  
 
-    Galerie.close();
     context.refresh_templates = false; 
     context.refresh_pages = true;     
     
@@ -88,15 +72,12 @@ var Layouts = Sammy(function (app) {
   // New Layout
   // ---------------------------------------------
   this.get('/admin/templates/new/:klass', function(request){    
+    var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
     
-    this.loadLayouts(function(){    
-      var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
- 
-      if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
-      newLayout.replace('#new-page-container');       
-      request.renderLayoutIndex(Layout.all()); 
-    }); 
+    if ($('#modal').length == 0){ Galerie.open(displayContents); } 
+    var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
+    newLayout.replace('#new-page-container');       
+    request.renderLayoutIndex(Layout.all());  
   });  
   
   // Create Layout
@@ -118,29 +99,12 @@ var Layouts = Sammy(function (app) {
 
   // Edit Layout
   // ---------------------------------------------
-  this.get('/admin/templates/:id/edit', function(request){ 
-    Galerie.close(); 
+  this.get('/admin/templates/:id/edit', function(request){  
     context.refresh_pages = true;       
-
-      var layout = Layout.find(request.params['id']); 
-      window.ninja = true; 
-      // layout.load(function(results){ 
-        request.renderLayout(layout);   
-        request.renderLayoutIndex(Layout.all()); 
-        // setInterval(function(){
-        //   layout.load(function(results){
-        //     var timestamp = jQuery('#layout-updated_at').attr('value');
-        //     if(timestamp != results.updated_at){
-        //       logger.info('not up to date');
-        //     }else {
-        //       logger.info('up to date');
-        //     }
-        //     
-        //   });
-        // }, 30000);
-        window.ninja = false; 
-
-    // });
+    var layout = Layout.find(request.params['id']); 
+    
+    request.renderLayout(layout);   
+    request.renderLayoutIndex(Layout.all()); 
   });   
   
   // Update Layout
@@ -159,16 +123,14 @@ var Layouts = Sammy(function (app) {
   
   // Remove Layout
   // ---------------------------------------------
-  this.get('/admin/templates/:id/remove', function(request){ 
-    this.loadLayouts(function(){  
-      var layout = Layout.find(request.params['id']); 
-      Galerie.open();   
-      
-      var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
-      removeTemplate.replace('#modal');
-      
-      request.renderLayoutIndex(Layout.all()); 
-    });
+  this.get('/admin/templates/:id/remove', function(request){  
+    var layout = Layout.find(request.params['id']); 
+    Galerie.open();   
+    
+    var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
+    removeTemplate.replace('#modal');
+    
+    request.renderLayoutIndex(Layout.all()); 
   }); 
   
   // Destroy Layout

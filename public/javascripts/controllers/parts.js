@@ -1,15 +1,6 @@
 var Parts = Sammy(function (app) {   
   
   var context = this;  
-   
-  this.debug = false;
-  // this.disable_push_state = true;
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams); 
-  
   
   // Helper Methods 
   // ---------------------------------------------
@@ -74,6 +65,7 @@ var Parts = Sammy(function (app) {
     }
     
   });  
+    
   
   // Edit Parts
   // ---------------------------------------------
@@ -81,97 +73,84 @@ var Parts = Sammy(function (app) {
     jQuery('.modal-editor').remove();
     var iframe = $('iframe');
     var template = 'parts';
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
+    var timestamp = jQuery('#page-updated_at').attr('value');
     
-    this.loadPages(function(){ 
-      Page.load_by_id(request.params['page_id'], function(){
-        var page = Page.find(request.params['page_id']);
-        var part = page.parts().find(request.params['id']);
-        var timestamp = jQuery('#page-updated_at').attr('value');
+    // Checks to see if part is current...
+    if(iframe.length){
+      if(timestamp != page.attr('updated_at')){
+        var preview = jQuery('.preview iframe');
+        preview.hide().attr('src', preview.attr('src'));
+        preview.load(function(){
+          preview.fadeIn('fast');
+          request.render_part(part, page, template);
+        });
+      }else{
+        request.render_part(part, page, template);
+      }
+    }else{
+      request.renderPagePreview(page, function(){
+        request.render_part(part, page, template);
+      }); 
+    }
 
-        // Checks to see if part is current...
-        if(iframe.length){
-          if(timestamp != page.attr('updated_at')){
-            var preview = jQuery('.preview iframe');
-            preview.hide().attr('src', preview.attr('src'));
-            preview.load(function(){
-              preview.fadeIn('fast');
-              request.render_part(part, page, template);
-            });
-          }else{
-            request.render_part(part, page, template);
-          }
-        }else{
-          request.renderPagePreview(page, function(){
-            request.render_part(part, page, template);
-          }); 
-        }
-      });    
-    }); 
     // context.modal = true;
   });
   
   // Edit Image Parts
   // ---------------------------------------------
-  this.get('#/pages/:page_id/image_parts/:id/edit', function(request){ 
-    var application = this;
-    jQuery('.modal-editor').remove(); 
+  this.get('#/pages/:page_id/image_parts/:id/edit', function(request){   
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
+    var template = 'image_parts';
+    var iframe = $('iframe');
     
-    application.loadPages(function(){     
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(request.params['id']);
-      var template = 'image_parts';
-      var iframe = $('iframe');
-      
-      Asset.searchAdmin({ 'limit': '8' }, function(){ 
-        if(iframe.length){
-          application.render_part(part, page, template);
-        }else{
-          request.renderPagePreview(page, function(){
-            application.render_part(part, page, template);
-          }); 
-        }
-      });  
-    }); 
+    Asset.searchAdmin({ 'limit': '8' }, function(){ 
+      if(iframe.length){
+        request.render_part(part, page, template);
+      }else{
+        request.renderPagePreview(page, function(){
+          request.render_part(part, page, template);
+        }); 
+      }
+    });  
     // context.modal = true; 
   });
   
   // Add Image Page Parts
   // ---------------------------------------------
-  this.get('/pages/:page_id/parts/:id/results', function(request){ 
-    var application = this;
-    this.loadPages(function(){
-      var page = Page.find(request.params['page_id']);
-      var part = Part.find(request.params['id']);
-      var query = request.params['query'] ? request.params['query'] : null; 
-      var params = query ? { 'query': query } : {};
+  this.get('/admin/pages/:page_id/parts/:id/results', function(request){ 
+   
 
-      Asset.searchAdmin(params, function(){    
-        var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
-        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container').then(function(){
-        
-          application.set_asset_links(part, page);
-        });
+    var page = Page.find(request.params['page_id']);
+    var part = Part.find(request.params['id']);
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': query } : {};
+    
+    Asset.searchAdmin(params, function(){    
+      var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
+      // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      searchResults.replace('#search-results-container').then(function(){
+        request.set_asset_links(part, page);
       });
     });
+
   });
   
   // Update Parts
   // ---------------------------------------------
   this.put('#/pages/:page_id/parts/:id', function(request){
-    var id = request.params['id'];  
-    var page_id =  request.params['page_id'];
-    var page = Page.find(page_id);
-    var part = page.parts().find(id);
     
-    logger.info(request.params['part']);
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
     
     // Updates part
     var parts = page.attr('parts'); 
     var length = parts.length;
     for (var i=0, l=length; i<l; ++i ){
       var part = parts[i];
-      if(id == part.id){
+      if(request.params['id'] == part.id){
         // This needs to be more generalized
         var content = request.params['part']['content'];
         part.content = content;
@@ -188,10 +167,9 @@ var Parts = Sammy(function (app) {
         // Utilities.notice('Successfully saved page');
         var now = new Date();
         // window.current = now.getTime();
-        request.redirect('/admin/pages/' + page_id);
+        request.redirect(page.attr('admin_path'));
       } 
     });
-    
   });
   
   // Upload Assets to Part (Create)

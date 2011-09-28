@@ -19,6 +19,24 @@ class Main
         end
       end
       
+      
+      # Update 
+      # -------------------------------------------
+      put '/:id' do
+        resource = Template.by_site(current_site).find params['id']
+        # resource = klass.find params['id']   
+        enforce_update_permission(resource)
+
+        if resource.update_attributes(params['layout'])
+          respond_to do |format|
+            format.html { redirect "/admin/#{model}/#{resource.id}/" }
+            format.json { resource.to_json }
+          end
+        else
+          { :errors => resource.errors }.to_json 
+        end
+      end
+      
     end  
   end
 end

@@ -22,17 +22,15 @@ jQuery(document).ready(function () {
         // Pages.run();
       }
     });
+    // Gets one big object that loads everything at once
     jQuery.ajax({
       url: '/admin/sites/current.json',
       success: function(results){
         Updater.setup(results.pages, Page);
         Updater.setup(results.templates, Layout);
         Updater.setup(results.assets, Asset);
-        Pages.run();
+        Base.run();
         window.current = results.now;
-        setInterval(function(){
-          Updater.update();
-        }, 5000);
       }
     });
   }

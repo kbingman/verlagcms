@@ -33,7 +33,8 @@ class Page
   key :layout_id, ObjectId, :required => true 
   belongs_to :layout, :foreign_key => :layout_id
   
-  many :activities, :as => :activity
+  # Activity monitor
+  many :activities, :as => :loggable
 
   timestamps!
   userstamps!

@@ -28,4 +28,13 @@ class Stylesheet < Template
     end
   end
   
+  protected
+    # After Save
+    # ----------------------------------------
+    after_save :set_activity
+    def set_activity
+      a = Activity.new(:loggable => self)
+      a.save
+    end
+  
 end

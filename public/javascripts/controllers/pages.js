@@ -1,16 +1,7 @@
 var Pages = Sammy(function (app) {   
   
-  var context = this;  
-   
-  this.debug = false;
-  // this.disable_push_state = true;
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams); 
-  
-  
+  var context = this;    
+
   // Helper Methods 
   // ---------------------------------------------
   app.helpers({  
@@ -53,7 +44,6 @@ var Pages = Sammy(function (app) {
       // This is a little slow, as it renders the children for each page. 
       var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
-        logger.info(page.id())
         $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
         page.children().each(function(child){  
           if(child.id() == active_page.id()){
@@ -106,6 +96,7 @@ var Pages = Sammy(function (app) {
   // renders the page index, only if that element is not found
   app.bind('page-index', function(){
     var application = this; 
+    console.log('Page Index');
     if(!jQuery('.page-children').length){
       application.renderTree(Page.root(), Page.root());  
       // Page.load(function(){
@@ -203,9 +194,7 @@ var Pages = Sammy(function (app) {
 
   // Page Index
   // ---------------------------------------------  
-  this.get('/admin/pages/?', function(request){ 
-  
-    Galerie.close();    
+  this.get('/admin/pages/?', function(request){  
     // context.refresh_pages = true; 
     request.trigger('page-index');
     jQuery('#editor').html('<h1 class="section">Pages</div>');  
@@ -217,20 +206,17 @@ var Pages = Sammy(function (app) {
   // New Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/new/?', function(request){    
+    var page = Page.find(request.params['id']);
+    var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
+    if ($('#modal').length == 0){ Galerie.open(displayContents); } 
     
-    this.loadPages(function(){    
-      var page = Page.find(request.params['id']);
-      var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-      if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      
-      request.trigger('page-index');
-
-      var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
-        parent: page.asJSON(),
-        layouts: Layout.asLayoutJSON(page.attr('layout_id'))
-      }, 'mustache'); 
-      newPage.replace('#new-page-container');
-    }); 
+    request.trigger('page-index');
+    
+    var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
+      parent: page.asJSON(),
+      layouts: Layout.asLayoutJSON(page.attr('layout_id'))
+    }, 'mustache'); 
+    newPage.replace('#new-page-container');
   }); 
   
   // Create Page
@@ -247,8 +233,8 @@ var Pages = Sammy(function (app) {
         alert(JSON.stringify(response));  
       }else{  
         context.refresh_pages = true;  
-        Utilities.notice('Successfully saved page');
-        request.redirect('#/pages/' + response.id);
+        Utilities.notice('Successfully created page');
+        request.redirect(response.admin_path);
       }
     });
   }); 
@@ -256,7 +242,6 @@ var Pages = Sammy(function (app) {
   // Show Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/?', function(request){ 
-    Galerie.close(); 
     jQuery('.modal-editor').remove();
  
     var page = Page.find(request.params['id']); 

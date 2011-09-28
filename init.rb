@@ -56,7 +56,8 @@ class Main < Monk::Glue
   set :sass, { 
     :cache => RACK_ENV == 'development' ? false : true, 
     :cache_location => './tmp/sass-cache',
-    :style => RACK_ENV == 'development' ? :compact : :compressed }
+    :style => RACK_ENV == 'development' ? :compact : :compressed,
+    :css_location => root_path('public') }
   set :haml, { 
     :format => :html5, 
     :ugly => RACK_ENV == 'development' ? false : true } 

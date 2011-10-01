@@ -15,7 +15,7 @@ var Layouts = Sammy(function (app) {
     // Renders the Page tree
     renderLayoutIndex: function(){   
       var application = this;
-      var layoutIndex = application.load(jQuery('#admin-templates-index')).interpolate({
+      var layoutIndex = application.load(jQuery('script#admin-templates-index')).interpolate({
         layouts: Layout.find_all_by_class('Layout').map(function(item){ return item.attributes }), 
         partials: Layout.find_all_by_class('Partial').map(function(item){ return item.attributes }), 
         javascripts: Layout.find_all_by_class('Javascript').map(function(item){ return item.attributes }),
@@ -26,7 +26,7 @@ var Layouts = Sammy(function (app) {
     
     renderLayout: function(layout){ 
       var application = this;     
-      var editLayout = application.load(jQuery('#admin-templates-edit')).interpolate({ 
+      var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
           { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 

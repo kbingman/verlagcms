@@ -30,7 +30,14 @@ var Base = Sammy(function (app) {
           jQuery.each(data.models, function(i, item){
             // console.log(item.class_name);
             if(item.class_name == 'Page'){ 
-              Page.find(item.id).merge(item); 
+              
+              page = Page.find(item.id);
+              page.merge(item); 
+              // Temp
+              var el = jQuery('li#page-' + item.id);
+              // var node = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+              // node.replace(el);
+              el.find('span.title a').text(page.attr('title'));
               //  application.trigger('page-index');
             }
             if(item.class_name == 'Layout'){ 
@@ -38,7 +45,7 @@ var Base = Sammy(function (app) {
               // Render Index
             }
             var now = new Date();
-            window.current = now.getTime();;
+            window.current = now.getTime();
           });
           window.ninja = false;
         }

@@ -139,10 +139,14 @@ class Asset
     width = nil if width == 0
     height = nil if height == 0
     
-    if height || width
-      image = resize(image, width, height, options)
+    begin
+      if height || width
+        image = resize(image, width, height, options)
+      end
+      image
+    rescue
+      image
     end
-    return image
   end
   
   def image_path(name='original')
@@ -181,8 +185,9 @@ class Asset
   private
     
     def resize(image, width, height, options={})
-      # Need to check for correct gravity, ie. North, South, East, West, Center
-      gravity = options[:gravity] || 'Center'
+      # Needs to check for correct gravity, ie. North, South, East, West, Center
+      gravity = options[:gravity] ? options[:gravity].titlecase : 'Center'
+      gravity = 'Center' unless ['North', 'South', 'East', 'West', 'Center'].include?(gravity)
       quality = options[:quality] || '72' 
       
       cols, rows = image[:dimensions]

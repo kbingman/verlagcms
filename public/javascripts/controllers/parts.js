@@ -8,7 +8,7 @@ var Parts = Sammy(function (app) {
     // Render Part
     render_part: function(part, page, template){
       var application = this;  
-      var edit_part = application.load(jQuery('#admin-' + template + '-edit')).interpolate({ 
+      var edit_part = application.load(jQuery('script#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()

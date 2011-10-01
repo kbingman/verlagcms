@@ -1,7 +1,6 @@
 class Main  
   
-  # Catchall REST actions.
-  # Override these by simply adding a route above them
+  # Public API for Pages
   # -------------------------------------------
   
   module Api 
@@ -10,7 +9,7 @@ class Main
   
     end
       
-    # Index
+    # Page Index
     # -------------------------------------------
     get '/pages/?' do
       per_page = params['limit'] || nil
@@ -18,7 +17,7 @@ class Main
       collection.to_json  
     end
     
-    # Show
+    # Show page
     # -------------------------------------------
     get '/pages/:id/?' do
       resource = klass.by_site(current_site).find params['id']
@@ -26,6 +25,16 @@ class Main
         resource.to_json
       else
         raise Sinatra::NotFound
+      end
+    end
+    
+    # Show page children
+    # -------------------------------------------
+    get '/pages/:id/children' do
+      @page = Page.by_site(current_site).find(params['id'])
+      respond_to do |format|
+        # format.html { redirect('/pages') }
+        format.json { @page.children.to_json }
       end
     end
       

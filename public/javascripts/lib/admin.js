@@ -28,7 +28,7 @@ jQuery(document).ready(function () {
       success: function(results){
         Updater.setup(results.pages, Page);
         Updater.setup(results.templates, Layout);
-        Updater.setup(results.assets, Asset);
+        // Updater.setup(results.assets, Asset);
         Base.run();
         window.current = results.now;
       }

@@ -5,8 +5,8 @@ module Sinatra
 
     def self.registered(app)  
       app.get '/images/:id/:filename' do
-        cache_request(3600 * 24) # 24 Hour cache 
-        # response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
+        # cache_request(3600 * 24) # 24 Hour cache 
+        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
         
         h = params['h']
         w =  params['w']

@@ -1,7 +1,6 @@
 class Main  
   
-  # Catchall REST actions.
-  # Override these by simply adding a route above them
+  # Public API for Assets
   # -------------------------------------------
   
   module Api 

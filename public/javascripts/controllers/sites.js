@@ -20,7 +20,7 @@ var Sites = Sammy(function (app) {
     
     renderSiteIndex: function(){  
       var application = this;    
-      var siteIndex = application.load(jQuery('#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
+      var siteIndex = application.load(jQuery('script#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
       siteIndex.replace('#sidebar');
     }
   });
@@ -55,7 +55,7 @@ var Sites = Sammy(function (app) {
   this.get('/admin/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
-      var newSite = request.load(jQuery('#admin-sites-new')).interpolate({}, 'mustache');
+      var newSite = request.load(jQuery('script#admin-sites-new')).interpolate({}, 'mustache');
       newSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });
@@ -83,7 +83,7 @@ var Sites = Sammy(function (app) {
        
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var editSite = request.load(jQuery('#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
+      var editSite = request.load(jQuery('script#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
       editSite.replace('#editor');  
       request.renderSiteIndex(Site.all());
     });
@@ -112,7 +112,7 @@ var Sites = Sammy(function (app) {
     Galerie.open();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var removeSite = request.load(jQuery('#admin-sites-remove')).interpolate({ site: site.asJSON() }, 'mustache');
+      var removeSite = request.load(jQuery('script#admin-sites-remove')).interpolate({ site: site.asJSON() }, 'mustache');
       removeSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });

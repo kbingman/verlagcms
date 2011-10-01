@@ -6,26 +6,10 @@ var Pages = Sammy(function (app) {
   // ---------------------------------------------
   app.helpers({  
     
-    // Checks for loaded pages, renders the tree, then executes the callback   
-    loadPages: function(callback){  
-      var application = this; 
-      if(callback){ callback.call(this); }
-        
-      // if(Page.all().length == 0 ){
-      //   Page.load(function(){  
-      //     Layout.load(function(){
-      //       if(callback){ callback.call(this); }  
-      //     });    
-      //   });
-      // } else {        
-      //   if(callback){ callback.call(this); } 
-      // }
-    },
-    
     // Renders the Page tree
     renderTree: function(page, active_page){ 
       var application = this;
-      var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+      var pageIndex = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
       // jQuery('#sidebar').hide();
       pageIndex.replace('#sidebar').then(function(){   
         jQuery('ul.page-children:first').attr('id', 'pages'); 
@@ -39,10 +23,11 @@ var Pages = Sammy(function (app) {
     
     // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
+      console.log('node')
       
       var application = this;
       // This is a little slow, as it renders the children for each page. 
-      var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
+      var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
         $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
         page.children().each(function(child){  
@@ -62,7 +47,7 @@ var Pages = Sammy(function (app) {
     renderPagePreview: function(page, callback){
       var application = this;   
       if(!context.modal){
-        var showPage = application.load(jQuery('#admin-pages-show')).interpolate({ 
+        var showPage = application.load(jQuery('script#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
@@ -99,97 +84,77 @@ var Pages = Sammy(function (app) {
     console.log('Page Index');
     if(!jQuery('.page-children').length){
       application.renderTree(Page.root(), Page.root());  
-      // Page.load(function(){
-      //   application.renderTree(Page.root(), Page.root());  
-      // });
     } 
   }); 
   
-  app.bind('set-active-tab', function(request){
+  app.bind('toggle-children', function(e, el){
     
+    var application = this;
+    var toggle = $(el);  
+    var parent_node = toggle.parents('li:first'); 
+    var page_id = el.id.split('-')[2];  
+    var page = Page.find(page_id)  
+    var active_page_cookie = jQuery.cookie('active_page_ids');
+    var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
+
+    if(!parent_node.hasClass('open')){
+      active_page_ids.push(page_id);
+      parent_node.toggleClass('open');  
+      var now = new Date();
+      var start = now.getTime();  
+      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
+    
+      // move to model
+      var url = '/admin/pages/' + page_id + '/children.json';    
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",                   
+        success: function(results) {    
+          jQuery.each(results, function(i, results) { 
+            var page = Page.find(results.id);
+            if(!page){
+              var page = new Page({ id: results.id });
+            }
+            page.merge(results);
+            Page.add(page);
+          });
+          application.renderNode(page, page);
+        }
+      });   
+    } else {    
+      parent_node.toggleClass('open'); 
+      var arr = new Array();
+      active_page_ids = jQuery.grep(active_page_ids, function(value) {
+        return value != page_id;
+      }); 
+      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
+      page.children().each(function(child){
+        Page.remove(child);
+      }); 
+      jQuery('#page-' + page_id + ' ul').remove();
+    }
+    
+    context.refresh_pages = false; 
+    context.modal = false;
   });
-  
-  // Sets active tab
-  // app.before(function(request) {
-  //   var tabs = jQuery('div#tabs a.tab');
-  //   // TODO make this a decent regex
-  //   var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
-  //   var active_tab = jQuery('#' + name);
-  //   
-  //   tabs.removeClass('active');
-  //   active_tab.addClass('active');
-  // });
 
   app.bind('run', function () {   
     
-    context.application = this;
+    application = this;
     context.refresh_pages = true;
     context.modal = false;    
     
     jQuery('.add-asset').live('click', function(){
-      context.application.trigger('add-asset');
+      application.trigger('add-asset');
       return false;
-    });  
+    }); 
     
-    // This needs to be moved
-    jQuery('#sidebar .opener').live('click', function(e){    
-
-      var toggle = $(this);  
-      var parent_node = toggle.parents('li:first'); 
-      
-      var page_id = this.id.split('-')[2];  
-      var page = Page.find(page_id)  
-
-      var active_page_cookie = jQuery.cookie('active_page_ids');
-      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
-
-      if(!parent_node.hasClass('open')){
-        active_page_ids.push(page_id);
-        parent_node.toggleClass('open');  
-        var now = new Date();
-        var start = now.getTime();  
-        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        // var url = '/admin/pages/' + page_id + '/children.json';    
-        // move to model
-        // jQuery.ajax({
-        //   type: 'GET',
-        //   url: url,
-        //   dataType: "json",                   
-        //   success: function(results) {    
-        //     jQuery.each(results, function(i, results) { 
-        //       var page = Page.find(results.id);
-        //       if(!page){
-        //         var page = new Page({ id: results.id });
-        //       }
-        //       page.merge(results);
-        //       Page.add(page);
-        //     });
-        //     context.application.renderNode(page);
-        //     // Hide spinner  
-        //   }
-        // });   
-        // Loads all open pages...  
-        // Should really only load the relevent ones...
-        Page.load(function(){  
-          context.application.renderNode(page, page);
-          // Hide spinner    
-        });
-      } else {    
-        parent_node.toggleClass('open'); 
-        var arr = new Array();
-        active_page_ids = jQuery.grep(active_page_ids, function(value) {
-          return value != page_id;
-        }); 
-        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        page.children().each(function(child){
-          Page.remove(child);
-        }); 
-        jQuery('#page-' + page_id + ' ul').remove();
-      } 
-      context.refresh_pages = false; 
-      context.modal = false;
-      return false; 
-    });
+    jQuery('#sidebar .opener').live('click', function(e){
+      el = this;
+      application.trigger('toggle-children', el);
+      return false;
+    }); 
   });
 
   // Page Index
@@ -251,7 +216,7 @@ var Pages = Sammy(function (app) {
         request.renderPagePreview(page); 
       } else {  
         // Loads page if the current collection does not contain it
-        page = new Page({ id: page_id });
+        page = new Page({ id: request.params['id'] });
         page.load(function(){
           request.renderPagePreview(page); 
         });
@@ -294,8 +259,17 @@ var Pages = Sammy(function (app) {
       if(success){   
         Utilities.notice('Successfully saved page');
         
-        // TODO this should render just the node...
-        // application.renderNode(page);
+        // TODO move this
+        var el = jQuery('li#page-' + page.id());
+        // var preview = jQuery('iframe#page-preview');
+        // var preview_src = preview.attr('src');
+        // var node = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+        // node.replace(el).then(function(){
+        //   el.addClass('active')
+        // });
+        // preview.attr('src', preview_src);
+        context.do_not_refresh = false; 
+        
         request.renderTree(Page.root(), page); 
         request.redirect(page.attr('admin_path'));
       } 

@@ -405,7 +405,6 @@ SanskritToolbar.prototype = {
         self.updateListStatus(self.editor.getCurrentAncestors());
         self.editor.focusEditor();
       }
-      
       return false;
     };
   },
@@ -416,8 +415,9 @@ SanskritToolbar.prototype = {
     for (var key in actions) {
       if (actions.hasOwnProperty(key)) {
         var listItem = document.createElement('li');
-        var link = document.createElement('a');
-        link.setAttribute('href', '#');
+        // NOTE Changed to span from a, as the link created problems with Sammy routes
+        var link = document.createElement('span');
+        // link.setAttribute('href', '#');
         Sanskrit.addClassName(listItem, key);
         link.appendChild((typeof actions[key] == 'string') ? document.createTextNode(actions[key]) : actions[key]);
         link.onclick = this.createAction(link, key);

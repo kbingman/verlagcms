@@ -71,7 +71,9 @@ class Main < Monk::Glue
     :verbose => false,
     :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
-  use Rack::Session::Cookie, :secret => "fibble this must be longer"
+  use Rack::Session::Cookie, 
+    :secret => 'fibble this must be longer',
+    :expire_after => 604800 # One Week
   use Rack::RawUpload
   
   # use Jim::Rack, :bundle_uri => '/js/'
@@ -139,6 +141,7 @@ require root_path('app/routes/admin/css')
 require root_path('app/routes/admin/assets')
 require root_path('app/routes/admin/activities')
 require root_path('app/routes/admin/pages')
+require root_path('app/routes/admin/parts')
 require root_path('app/routes/admin/part_types')
 require root_path('app/routes/admin/sites')
 require root_path('app/routes/admin/templates')

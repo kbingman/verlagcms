@@ -3,20 +3,17 @@ class Main
   module Admin 
     module Pages 
       
-      # Page Parts Index (by Page)
+      # Edit Page Parts
       # -------------------------------------------
-      # get '/:page_id/parts' do
-      #   page = Page.find(params[:page_id])
-      #   parts = page.parts.sort_by{ |p| p.created_at }
-      # 
-      #   respond_to do |format| 
-      #     format.html { 
-      #       status 404
-      #       haml :'errors/not_found' 
-      #     }
-      #     format.json { parts.to_json }
-      #   end
-      # end
+      get '/:page_id/parts/:id/edit' do
+        page = Page.find(params[:page_id])
+        # parts = page.parts.sort_by{ |p| p.created_at }
+      
+        respond_to do |format| 
+          format.html { admin_haml :'admin/index' }
+          # format.json { parts.to_json }
+        end
+      end
       
       # Create Page Part 
       # -------------------------------------------

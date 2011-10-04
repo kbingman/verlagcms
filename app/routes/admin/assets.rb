@@ -26,7 +26,8 @@ class Main
       # Create Asset
       # -------------------------------------------
       post '' do
-        # For some reason Sinatra is not picking up the params here...
+        # NOTE: For some reason Sinatra is not picking up the params here...
+        # we need to get them directly with the rack request object
         data = params.empty? ? request.env["rack.request.form_hash"] : params
         
         asset = Asset.new(:file => data['file'][:tempfile])

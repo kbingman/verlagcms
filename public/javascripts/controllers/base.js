@@ -21,6 +21,7 @@ var Base = Sammy(function (app) {
 
     update: function(){
       var application = this;
+      // Sets invisible (no indicator) Ajax requests
       window.ninja = true;
       jQuery.ajax({
         url: '/admin/activity.json',
@@ -28,22 +29,13 @@ var Base = Sammy(function (app) {
         data: { 'updated': window.current },
         success: function(data){
           jQuery.each(data.models, function(i, item){
-            // console.log(item.class_name);
             if(item.class_name == 'Page'){ 
-              
-              page = Page.find(item.id);
-              page.merge(item); 
-              // Temp
-              var el = jQuery('li#page-' + item.id);
-              // var node = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
-              // node.replace(el);
-              el.find('span.title a').text(page.attr('title'));
-              //  application.trigger('page-index');
+              applicaton.trigger('update-page', item.id);
             }
             if(item.class_name == 'Layout'){ 
-              Layout.find(item.id).merge(item); 
-              // Render Index
+              applicaton.trigger('update-layout', item.id);
             }
+            // Sets window timestamp
             var now = new Date();
             window.current = now.getTime();
           });
@@ -54,13 +46,18 @@ var Base = Sammy(function (app) {
 
   });
   
+  // Initialize App
+  // ---------------------------------------------
   app.bind('run', function(){
     var application = this;
+    // Starts the updater
     app.updater = setInterval(function(){
       application.update();
     }, 5000);
   });
-  
+ 
+  // Set Active Tab
+  // ---------------------------------------------
   app.bind('set-active-tab', function(request){
     var tabs = jQuery('div#tabs a.tab');
     // TODO make this a decent regex
@@ -69,6 +66,27 @@ var Base = Sammy(function (app) {
     
     tabs.removeClass('active');
     active_tab.addClass('active');
+  });
+  
+  // Update Page
+  // ---------------------------------------------
+  app.bind('update-page', function(page_id){
+    page = Page.find(item.id);
+    page.merge(item); 
+    // Temp
+    // var node = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+    // node.replace(el);
+    var el = jQuery('li#page-' + item.id);
+    el.find('span.title a').text(page.attr('title'));
+  });
+  
+  // Update Layout
+  // ---------------------------------------------
+  app.bind('update-layout', function(layout_id){
+    layout = Layout.find(item.id); 
+    layout.merge(item); 
+    var el = jQuery('li#layout-' + item.id);
+    el.find('span.title a').text(layout.attr('name'));
   });
   
   // Before Filters

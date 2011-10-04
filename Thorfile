@@ -17,7 +17,8 @@ class Monk < Thor
   def features
     acceptance_root = File.join(File.dirname(__FILE__), 'acceptance')
     spec_files = Dir[File.join(acceptance_root, '**', '*feature.rb')].map{ |f| File.expand_path(f) }.join(' ')
-    spec_opts = "-f p -c -b -p"  
+    spec_opts = "-f p -c -b -p" 
+    puts 'jim bundle' 
     puts 'jim compress'
     puts `bundle exec rspec #{spec_files}`
   end

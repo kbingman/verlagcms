@@ -199,6 +199,7 @@ var iFramer = {
       
       flags.click(function(){  
         window.top.trigger = $(this);
+        // TODO Use history object here
         window.top.location.hash = $(this).attr('href');  
         return false;
       });

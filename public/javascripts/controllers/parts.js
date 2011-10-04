@@ -15,14 +15,21 @@ var Parts = Sammy(function (app) {
       }, 'mustache');
       edit_part.appendTo(jQuery('body')).then(function(){
         var modal_editor = jQuery('.modal-editor');
+        
+        // Just needed for positioning of editor
+        // Can be removed if a unified editor is added
         var iframe_content = $('iframe').contents();  
         var part_editor = iframe_content.find('#editor-' + part.id());
         modal_editor.fadeIn('fast').css({
           'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
           'left':  part_editor.offset().left + 400 + 'px'
         });
+        
+        // Triggers Sanskrit editor
+        application.trigger('sanskrit', modal_editor);
+        
+        // For image parts only. Otherwise ignored
         application.set_asset_links(part, page);
-      
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
@@ -65,11 +72,35 @@ var Parts = Sammy(function (app) {
     }
     
   });  
+  
+  // Initialize Sanskrit Editor
+  // ---------------------------------------------
+  app.bind('sanskrit', function(e, element){
+    if(!element.length){ return true }
+    var textareas = element.find('textarea.sanskrit');
+    textareas.each(function(i, t){
+      new Sanskrit(t, {
+        toolbar: {
+          // onEm: function(){
+          //   alert('image goes here!') 
+          // },
+          actions: {
+            'strong': 'B', 
+            'em': 'I', 
+            'ins': 'ins', 
+            'del': 'del', 
+            'link': 'link', 
+            'unlink': 'unlink'
+          }  
+        }
+      }); 
+    });
+  });
     
   
   // Edit Parts
   // ---------------------------------------------
-  this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
+  this.get('/admin/pages/:page_id/parts/:id/edit', function(request){ 
     jQuery('.modal-editor').remove();
     var iframe = $('iframe');
     var template = 'parts';

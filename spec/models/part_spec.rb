@@ -20,7 +20,7 @@ describe Part do
     it 'should have the correct path' do  
       part = Part.new :name => 'pathpart', :page => @page
       @page.save
-      part.path.should == "/pages/#{@page.id}/parts/#{part.id}" 
+      part.path.should == "/admin/pages/#{@page.id}/parts/#{part.id}" 
     end
     
   end

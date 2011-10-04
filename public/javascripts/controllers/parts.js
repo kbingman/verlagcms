@@ -79,7 +79,7 @@ var Parts = Sammy(function (app) {
     if(!element.length){ return true }
     var textareas = element.find('textarea.sanskrit');
     textareas.each(function(i, t){
-      new Sanskrit(t, {
+      var editor = new Sanskrit(t, {
         toolbar: {
           // onEm: function(){
           //   alert('image goes here!') 
@@ -92,8 +92,9 @@ var Parts = Sammy(function (app) {
             'link': 'link', 
             'unlink': 'unlink'
           }  
-        }
+        },
       }); 
+      editor.addStyle('body { font-family: "Helvetica Neue", Arial, helvetica; color: #333; font-size:16px; }');
     });
   });
     

@@ -172,7 +172,8 @@ var aceModes = {
   'html'       : require('ace/mode/html').Mode,
   'css'        : require('ace/mode/css').Mode,
   'scss'       : require('ace/mode/scss').Mode,
-  'sass'       : require('ace/mode/scss').Mode
+  'sass'       : require('ace/mode/scss').Mode,
+  'none'       : require('ace/mode/text').Mode
 }
 
 var iFramer = {       

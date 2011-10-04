@@ -29,25 +29,22 @@ var Layouts = Sammy(function (app) {
       var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
-          { name: 'none', value: 'css', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
+          { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
           { name: 'Sass', value: 'sass', selected: ((layout.attr('filter') == 'sass') ? 'selected="selected"' : '') }, 
           { name: 'Scss', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') }
         ]
       }, 'mustache');    
       editLayout.replace('#editor').then(function(){
-        // Because liquid templates use a syntax that is very similar to 
-        // Mustache, this manually sets the content. A bit of a hack, but hey, sue me. 
-        var editor_field = jQuery('#layout_content');
-        // editor_field.attr('value', layout.attr('content'));   
-        var mode = editor_field.attr('class'); 
-        
         // ACE editor
+        var mode = layout.attr('mode'); 
+        var editorMode = aceModes[mode];
         window.editor = ace.edit('layout_content');
         window.editor.setTheme('ace/theme/textmate');
-
-        var editorMode = aceModes[mode];
-        window.editor.getSession().setMode(new editorMode());
-        // Utilities.formObserver('#layout_content, #layout_name'); 
+        window.editor.getSession().setMode(new editorMode);
+        window.editor.session.setUseWrapMode(true);
+        // Because Mustache screws up my liquid templates, I just set it manually, directly from the model
+        // This also eleminates the FUC
+        window.editor.getSession().setValue(layout.attr('content'));
       });
     }
     
@@ -121,6 +118,12 @@ var Layouts = Sammy(function (app) {
       if(success){ 
         request.renderLayoutIndex(); 
         Utilities.notice('Successfully saved template');
+        
+        // ACE editor
+        var editorMode = aceModes[template.attr('mode')];
+        window.editor.getSession().setUseSoftTabs(true);
+        window.editor.getSession().setTabSize(2);
+        window.editor.getSession().setMode(new editorMode);
       }
     });  
   });

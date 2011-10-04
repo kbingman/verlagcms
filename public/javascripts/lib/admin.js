@@ -38,8 +38,22 @@ jQuery(document).ready(function () {
 
     
   // Grabs the keyboard shortcuts
-  Utilities.keyboard_nav();  
-  Utilities.check_browser_version();    
+  // Utilities.keyboard_nav();  
+  Utilities.check_browser_version();  
+  
+  // ACE Save. Only works with the ACE editor windows
+  var canon = require("pilot/canon");  
+  canon.addCommand({
+    name: "save",
+    bindKey: {
+      win: "Ctrl-S",
+      mac: "Command-S",
+      sender: "editor"
+    },
+    exec: function() {
+      jQuery('form.command-save').submit();
+    }
+  });
   
 });
 

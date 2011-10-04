@@ -27,7 +27,8 @@ var Base = Sammy(function (app) {
         url: '/admin/activity.json',
         type: 'POST',
         data: { 'updated': window.current },
-        success: function(data){
+        success: function(data){ 
+          // console.log(data)
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 
               application.trigger('update-page', item);
@@ -51,9 +52,9 @@ var Base = Sammy(function (app) {
   app.bind('run', function(){
     var application = this;
     // Starts the updater
-    app.updater = setInterval(function(){
-      application.update();
-    }, 5000);
+    // app.updater = setInterval(function(){
+    //   application.update();
+    // }, 5000);
   });
  
   // Set Active Tab
@@ -83,10 +84,11 @@ var Base = Sammy(function (app) {
   // Update Layout
   // ---------------------------------------------
   app.bind('update-layout', function(item){
-    // layout = Layout.find(item.id); 
-    // layout.merge(item); 
-    // var el = jQuery('li#layout-' + item.id);
-    // el.find('span.title a').text(layout.attr('name'));
+    console.log(item.id)
+    layout = Layout.find(item.id); 
+    layout.merge(item); 
+    var el = jQuery('li#layout-' + item.id);
+    el.find('span.title a').text(layout.attr('name'));
   });
   
   // Before Filters

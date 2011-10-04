@@ -48,8 +48,8 @@ group :test do
   gem 'rspec', '>= 2.5.0'
   gem 'capybara' #, :git => 'https://github.com/jnicklas/capybara.git'
   gem 'yajl-ruby'
-  gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
-  gem 'capybara-webkit', :git => 'https://github.com/thoughtbot/capybara-webkit.git'
+  # gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
+  # gem 'capybara-webkit', :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl' #, :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'
   gem 'jasmine'

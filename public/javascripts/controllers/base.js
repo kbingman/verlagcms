@@ -30,10 +30,10 @@ var Base = Sammy(function (app) {
         success: function(data){
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 
-              applicaton.trigger('update-page', item.id);
+              application.trigger('update-page', item);
             }
             if(item.class_name == 'Layout'){ 
-              applicaton.trigger('update-layout', item.id);
+              application.trigger('update-layout', item);
             }
             // Sets window timestamp
             var now = new Date();
@@ -70,7 +70,7 @@ var Base = Sammy(function (app) {
   
   // Update Page
   // ---------------------------------------------
-  app.bind('update-page', function(page_id){
+  app.bind('update-page', function(item){
     page = Page.find(item.id);
     page.merge(item); 
     // Temp
@@ -82,11 +82,11 @@ var Base = Sammy(function (app) {
   
   // Update Layout
   // ---------------------------------------------
-  app.bind('update-layout', function(layout_id){
-    layout = Layout.find(item.id); 
-    layout.merge(item); 
-    var el = jQuery('li#layout-' + item.id);
-    el.find('span.title a').text(layout.attr('name'));
+  app.bind('update-layout', function(item){
+    // layout = Layout.find(item.id); 
+    // layout.merge(item); 
+    // var el = jQuery('li#layout-' + item.id);
+    // el.find('span.title a').text(layout.attr('name'));
   });
   
   // Before Filters

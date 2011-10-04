@@ -165,6 +165,16 @@ var Updater = {
     });
   }
 }
+
+// Sets the ACE Editor modes depending on content type
+var aceModes = {
+  'javascript' : require('ace/mode/javascript').Mode,
+  'html'       : require('ace/mode/html').Mode,
+  'css'        : require('ace/mode/css').Mode,
+  'scss'       : require('ace/mode/scss').Mode,
+  'sass'       : require('ace/mode/scss').Mode
+}
+
 var iFramer = {       
   initialize: function(element, callback){   
     var trigger = jQuery(element);  

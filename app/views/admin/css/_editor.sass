@@ -12,18 +12,7 @@
   // :background rgba(255,255,255,0.9)
   label
     :display block 
-          
-  #page-files 
-    +positionable  
-    :z-index 1000
-    :left auto
-    :width 229px   
-    :padding 10px 5px 10px 10px
-    :border solid #555
-    :border-width 0 0 0 1px   
-    :background #ccc
-    #new_asset
-      :display none
+    
   #code-editor 
     +positionable
     .tabs     
@@ -46,16 +35,7 @@
         :font-size 1.0em  
         :padding 6px 0 3px 16px        
       input:focus
-        :background white 
-        
-          
-  .CodeMirror
-    :height 100%  
-    :line-height 1.4  
-    :margin-right 0 
-    :background white     
-  // .liquid
-     
+        :background white
   .code 
     :position absolute
     :bottom 80px
@@ -93,18 +73,21 @@
     .buttons
       #layout-filter 
         :display block
-#parts 
-  :position absolute
-  :bottom 0
-  :top 0
-  :right 0                  
-  :width 200px   
-  :border-left 1px solid #ccc     
-  :background #ddd
-  
-  #add-layout-part
+  #parts 
     :position absolute
     :bottom 0
-
- 
+    :top 0
+    :right 0                  
+    :width 200px   
+    :border-left 1px solid #ccc     
+    :background #ddd
+    
+    #add-layout-part
+      :position absolute
+      :bottom 0
   
+#layout_content
+  +positionable  
+  :bottom 0
+  :top 0
+  :line-height 1.6

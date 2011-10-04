@@ -37,9 +37,7 @@ class Template
     super(:methods => [:klass, :class_name, :mode, :part_types, :layout?])
   end 
   
-  def mode
-    'liquid'
-  end
+
   
   def render
     template = Liquid::Template.parse(self.content)

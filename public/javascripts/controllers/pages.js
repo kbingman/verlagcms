@@ -19,12 +19,9 @@ var Pages = Sammy(function (app) {
         }
       });
     },
-    
-    
+ 
     // Renders a single page node for each page, then renders the children as well
     renderNode: function(page, active_page){ 
-      console.log('node')
-      
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');

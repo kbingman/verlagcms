@@ -29,7 +29,7 @@ var Layouts = Sammy(function (app) {
       var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
-          { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
+          { name: 'none', value: 'css', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
           { name: 'Sass', value: 'sass', selected: ((layout.attr('filter') == 'sass') ? 'selected="selected"' : '') }, 
           { name: 'Scss', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') }
         ]
@@ -38,14 +38,15 @@ var Layouts = Sammy(function (app) {
         // Because liquid templates use a syntax that is very similar to 
         // Mustache, this manually sets the content. A bit of a hack, but hey, sue me. 
         var editor_field = jQuery('#layout_content');
-        editor_field.attr('value', layout.attr('content'));   
+        // editor_field.attr('value', layout.attr('content'));   
         var mode = editor_field.attr('class'); 
-        if(jQuery('#layout_content').length > 0){
-          CodeMirror.fromTextArea(document.getElementById('layout_content'), {
-            mode: mode,
-            lineNumbers: true
-          });
-        }
+        
+        // ACE editor
+        window.editor = ace.edit('layout_content');
+        window.editor.setTheme('ace/theme/textmate');
+
+        var editorMode = aceModes[mode];
+        window.editor.getSession().setMode(new editorMode());
         // Utilities.formObserver('#layout_content, #layout_name'); 
       });
     }
@@ -111,8 +112,11 @@ var Layouts = Sammy(function (app) {
   // ---------------------------------------------
   this.put('/admin/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
-      
-    template.attr(request.params['layout']); 
+    
+    // Sets the layout content to the ACE editor value
+    request.params['layout']['content'] = window.editor.getSession().getValue();
+    
+    template.attr(request.params['layout']);  
     template.save(function(success, results){
       if(success){ 
         request.renderLayoutIndex(); 

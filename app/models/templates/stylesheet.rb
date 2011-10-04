@@ -4,7 +4,7 @@ class Stylesheet < Template
   
   # Syntax editor theme name
   def mode
-    'css'
+    self.filter || 'css'
   end  
   
   attr_accessible :filter 

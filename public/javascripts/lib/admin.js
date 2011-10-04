@@ -43,5 +43,8 @@ jQuery(document).ready(function () {
   
 });
 
+
+
+// Sets the default styles in the sanskrit iFrame
 Sanskrit.defaultStyle = 'html { padding:0; cursor:text; } body { font-size:100%; margin:0; padding:0.5em; cursor:text; } p { margin: 0.5em 0; }';
 

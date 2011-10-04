@@ -5,6 +5,10 @@ class Layout < Template
   # key :part_types_ids, Array
   # many :part_types, :in => :part_types_ids
   
+  def mode
+    'html'
+  end
+  
   protected
         
     after_create :create_default_part_type

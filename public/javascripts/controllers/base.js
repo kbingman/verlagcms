@@ -1,11 +1,10 @@
 var Base = Sammy(function (app) {   
-  
-  var context = this;  
    
   app.debug = false; 
   app.use(Sammy.JSON); 
   app.use(Sammy.Mustache);
   app.use(Sammy.NestedParams); 
+  app.template_engine = 'mustache'
   
   // Helper Methods 
   // ---------------------------------------------
@@ -28,7 +27,6 @@ var Base = Sammy(function (app) {
         type: 'POST',
         data: { 'updated': window.current },
         success: function(data){ 
-          // console.log(data)
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 
               application.trigger('update-page', item);
@@ -52,9 +50,9 @@ var Base = Sammy(function (app) {
   app.bind('run', function(){
     var application = this;
     // Starts the updater
-    // app.updater = setInterval(function(){
-    //   application.update();
-    // }, 5000);
+    app.updater = setInterval(function(){
+      application.update();
+    }, 5000);
   });
  
   // Set Active Tab
@@ -71,7 +69,7 @@ var Base = Sammy(function (app) {
   
   // Update Page
   // ---------------------------------------------
-  app.bind('update-page', function(item){
+  app.bind('update-page', function(e, item){
     page = Page.find(item.id);
     page.merge(item); 
     // Temp
@@ -83,8 +81,7 @@ var Base = Sammy(function (app) {
   
   // Update Layout
   // ---------------------------------------------
-  app.bind('update-layout', function(item){
-    console.log(item.id)
+  app.bind('update-layout', function(e, item){
     layout = Layout.find(item.id); 
     layout.merge(item); 
     var el = jQuery('li#layout-' + item.id);

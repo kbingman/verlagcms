@@ -34,7 +34,7 @@ describe "routes/site" do
   
     it 'should respond to json' do
       get '/search/naked.json'
-      last_response.headers['Content-Type'].should == 'application/json'
+      last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
     end
   end  
     

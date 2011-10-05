@@ -1,8 +1,8 @@
 source "http://rubygems.org"
 
-gem 'rack'
-gem 'sinatra', '1.2.6' 
-gem 'tilt', '1.3' 
+gem 'rack', '~> 1.3.4' 
+gem 'sinatra', '1.3.1' 
+gem 'tilt', '~> 1.3' 
 gem 'sinatra-namespace', :path => 'vendor/sinatra-namespace' #, :git => 'https://github.com/rkh/sinatra-namespace.git' 
 gem 'sinatra-advanced-routes'
 gem 'thin' 

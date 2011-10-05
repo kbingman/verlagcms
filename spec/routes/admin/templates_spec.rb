@@ -27,7 +27,7 @@ describe "routes/templates" do
       
       it 'should set the content header to json' do
         do_get
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include layouts in the json' do  
@@ -60,7 +60,7 @@ describe "routes/templates" do
       
       it 'should set the content header to json' do
         do_post
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include the template in the json' do  
@@ -94,7 +94,7 @@ describe "routes/templates" do
       
       it 'should set the content header to json' do
         do_put
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
       
       it 'should include pages in the json' do  
@@ -123,7 +123,7 @@ describe "routes/templates" do
       
       it 'should set the content header to json' do
         do_delete
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end 
       
       it 'should delete the template' do 

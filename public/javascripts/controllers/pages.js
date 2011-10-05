@@ -78,7 +78,6 @@ var Pages = Sammy(function (app) {
   // renders the page index, only if that element is not found
   app.bind('page-index', function(){
     var application = this; 
-    console.log('Page Index');
     if(!jQuery('.page-children').length){
       application.renderTree(Page.root(), Page.root());  
     } 

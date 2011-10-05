@@ -24,7 +24,7 @@
 #     
 #     it "should correctly set the content type" do
 #       do_post
-#       last_response.headers['Content-Type'].should == 'application/json'
+#       last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
 #     end 
 #     
 #     it "should include the page_id" do 
@@ -71,7 +71,7 @@
 #       
 #       it 'should set the content header to json' do 
 #         do_delete
-#         last_response.headers['Content-Type'].should == 'application/json'
+#         last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
 #       end
 #     
 #       it 'should include pages in the json' do  

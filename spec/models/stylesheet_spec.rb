@@ -60,7 +60,8 @@ describe Stylesheet do
     end
     
     it 'should return the editor mode' do
-      @stylesheet.mode.should == 'css'
+      @stylesheet.filter = 'sass'
+      @stylesheet.mode.should == 'sass'
     end
   end
   

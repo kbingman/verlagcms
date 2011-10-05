@@ -26,7 +26,7 @@ describe "routes/admin/sites" do
       
       it 'should set the content header to json' do
         do_get
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include sites in the json' do  
@@ -56,7 +56,7 @@ describe "routes/admin/sites" do
       
       it 'should set the content header to json' do
         do_post
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include the name in the json' do  
@@ -85,7 +85,7 @@ describe "routes/admin/sites" do
       
       it 'should set the content header to json' do
         do_put
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
       
       it 'should include pages in the json' do  
@@ -116,7 +116,7 @@ describe "routes/admin/sites" do
       
       it 'should set the content header to json' do
         do_delete
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end 
       
       it 'should delete the site' do 

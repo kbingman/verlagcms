@@ -29,7 +29,7 @@ describe "routes/admin/assets" do
       
       it 'should set the content header to json' do
         do_get
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include assets in the json' do
@@ -75,7 +75,7 @@ describe "routes/admin/assets" do
       
       it 'should set the content header to json' do
         do_post
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end 
       
       it 'should return the filename in the json' do
@@ -100,7 +100,7 @@ describe "routes/admin/assets" do
       
       it 'should set the content header to json' do
         do_put
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
       
       it 'should include the title in the json' do  
@@ -133,7 +133,7 @@ describe "routes/admin/assets" do
 
       it 'should set the content header to json' do
         do_delete
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end 
 
       it 'should delete the site' do 

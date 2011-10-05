@@ -29,7 +29,7 @@ describe "routes/admin/export" do
       
       it 'should set the content header to json' do
         do_get
-        last_response.headers['Content-Type'].should == 'application/json'
+        last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
     
       it 'should include assets in the json' do

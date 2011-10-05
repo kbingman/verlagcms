@@ -1,14 +1,17 @@
 class Main
-  helpers do
-    def model
-      @model ||= params['model']
-    end
+  module Admin 
     
-    def klass 
-      begin
-        @klass ||= model.singularize.titlecase.constantize if model 
-      rescue
-        nil
+    helpers do
+      def model
+        @model ||= params['model']
+      end
+      
+      def klass 
+        begin
+          @klass ||= model.singularize.titlecase.constantize if model 
+        rescue
+          nil
+        end
       end
     end
     

@@ -14,7 +14,7 @@ class Main
       get '/assets' do
         assets = Asset.by_site(current_site).all(:limit => 2)
         r = []
-        # RABL goes here
+        # TODO RABL goes here
         assets.each do |asset|
           a = {
             :id => asset.id.to_s,

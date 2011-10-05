@@ -52,9 +52,9 @@ var Utilities = {
   notice: function(message){
     var notice = jQuery('.notice');
     notice.text(message); 
-    notice.slideDown('slow', function(){
+    notice.fadeIn('fast', function(){
       setTimeout(function(){
-        notice.slideUp('slow');
+        notice.fadeOut('fast');
       }, 1000);
     });
   },     

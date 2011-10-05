@@ -16,7 +16,7 @@ class Main
         if template.save 
           template.to_json 
         else
-          'error'
+          { :errors => part.errors }.to_json  
         end
       end  
       

@@ -59,6 +59,22 @@ var Pages = Sammy(function (app) {
       }
     }, 
     
+    renderPageEditor: function(page, callback){
+      var application = this;   
+      if(!context.modal){
+        var pageEditor = application.load(jQuery('script#admin-pages-edit')).interpolate({ 
+          page: page.asJSON(),
+          layouts: Layout.asLayoutJSON(page.attr('layout_id')),
+          base_page_id: page.id()
+        }, 'mustache');  
+        pageEditor.appendTo('body').then(function(){  
+          // TODO make an event
+          jQuery('li.node').removeClass('active');
+          jQuery('#page-' + page.id()).addClass('active');
+        });
+      }
+    },
+    
     open_page_editor: function(){
       var page_editor = jQuery('#page-editor');
       var page_title_input = jQuery('#page-title');
@@ -232,10 +248,12 @@ var Pages = Sammy(function (app) {
   this.get('/admin/pages/:id/edit/?', function(request){  
     var page = Page.find(request.params['id']); 
     if(jQuery('#preview-' + page.id()).length){
-      request.open_page_editor();
+      // request.open_page_editor();
+      request.renderPageEditor(page);
     } else {
       request.renderPagePreview(page, function(){
-        request.open_page_editor();
+        request.renderPageEditor(page);
+        // request.open_page_editor();
       }); 
       request.trigger('page-index');
     }

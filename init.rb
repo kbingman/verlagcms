@@ -5,7 +5,7 @@ require 'bundler/setup'
 
 Bundler.setup
 
-# Monk
+# Monk and Sinatra
 require 'monk/glue'
 require 'sinatra/base' 
 require 'sinatra/advanced_routes'  
@@ -77,12 +77,6 @@ class Main < Monk::Glue
   use Rack::RawUpload
   
   # use Jim::Rack, :bundle_uri => '/js/'
-  
-  register Mustache::Sinatra  
-  set :mustache, {
-    :views     => root_path('app/views'),
-    :templates => root_path('app/views'),
-    :namespace => Main }
   
   # Extensions    
   register Sinatra::Namespace  

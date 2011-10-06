@@ -12,13 +12,7 @@ class PageDrop < Liquid::Drop
   end
   
   def path  
-     edit = @request.params['edit'] unless @request.nil?
-     if edit == 'true' 
-       # This is used for the inline editor, setting a small flag with the edit page / part path
-       "/preview#{@page.path}" 
-     else
-       @page.path 
-     end
+    @page.path 
   end
   
   def children 

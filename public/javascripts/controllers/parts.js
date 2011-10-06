@@ -6,27 +6,23 @@ var Parts = Sammy(function (app) {
   // ---------------------------------------------
   app.helpers({  
     // Render Part
-    render_part: function(part, page, template){
+    renderPart: function(part, page, template){
       var application = this;  
-      var edit_part = application.load(jQuery('script#admin-' + template + '-edit')).interpolate({ 
+      var editPart = application.load(jQuery('script#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON()
       }, 'mustache');
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
+      
+      // jQuery('#page-tabs-' + page.id()).html('FIBBLE');
+      editPart.replace('#page-tabs-' + page.id()).then(function(){
         
-        // Just needed for positioning of editor
-        // Can be removed if a unified editor is added
-        var iframe_content = $('iframe').contents();  
-        var part_editor = iframe_content.find('#editor-' + part.id());
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
-        });
+        // TODO remove
+        var modal_editor = jQuery('.modal-editor');
+        modal_editor.fadeIn('fast');
         
         // Triggers Sanskrit editor
-        application.trigger('sanskrit', modal_editor);
+        application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
         
         // For image parts only. Otherwise ignored
         application.set_asset_links(part, page);
@@ -71,33 +67,7 @@ var Parts = Sammy(function (app) {
       });
     }
     
-  });  
-  
-  // Initialize Sanskrit Editor
-  // ---------------------------------------------
-  app.bind('sanskrit', function(e, element){
-    if(!element.length){ return true }
-    var textareas = element.find('textarea.sanskrit');
-    textareas.each(function(i, t){
-      var editor = new Sanskrit(t, {
-        toolbar: {
-          // onEm: function(){
-          //   alert('image goes here!') 
-          // },
-          actions: {
-            'strong': 'B', 
-            'em': 'I', 
-            'ins': 'ins', 
-            'del': 'del', 
-            'link': 'link', 
-            'unlink': 'unlink'
-          }  
-        },
-      }); 
-      editor.addStyle('body { font-family: "Helvetica Neue", Arial, helvetica; color: #333; font-size:16px; }');
-    });
-  });
-    
+  });    
   
   // Edit Parts
   // ---------------------------------------------
@@ -107,53 +77,51 @@ var Parts = Sammy(function (app) {
     var template = 'parts';
     var page = Page.find(request.params['page_id']);
     var part = page.parts().find(request.params['id']);
-    var timestamp = jQuery('#page-updated_at').attr('value');
-    
-    // Checks to see if part is current...
-    if(iframe.length){
-      if(timestamp != page.attr('updated_at')){
-        var preview = jQuery('.preview iframe');
-        preview.hide().attr('src', preview.attr('src'));
-        preview.load(function(){
-          preview.fadeIn('fast');
-          request.render_part(part, page, template);
-        });
-      }else{
-        request.render_part(part, page, template);
-      }
-    }else{
+    console.log(part)
+
+    if (iframe.length) {
+      request.renderPageEditor(page, function(){
+        request.renderPart(part, page, template);
+      });
+    } else {
       request.renderPagePreview(page, function(){
-        request.render_part(part, page, template);
+        request.renderPageEditor(page, function(){
+          request.renderPart(part, page, template);
+        });
       }); 
     }
-
     // context.modal = true;
   });
   
+  // Remove this
   // Edit Image Parts
   // ---------------------------------------------
-  this.get('#/pages/:page_id/image_parts/:id/edit', function(request){   
+  this.get('/admin/pages/:page_id/image_parts/:id/edit', function(request){   
     var page = Page.find(request.params['page_id']);
     var part = page.parts().find(request.params['id']);
     var template = 'image_parts';
     var iframe = $('iframe');
     
-    Asset.searchAdmin({ 'limit': '8' }, function(){ 
-      if(iframe.length){
-        request.render_part(part, page, template);
-      }else{
+    Asset.searchAdmin({ 'limit': '24' }, function(){ 
+      if (iframe.length) {
+        request.renderPageEditor(page, function(){
+          request.renderPart(part, page, template);
+        });
+      } else {
         request.renderPagePreview(page, function(){
-          request.render_part(part, page, template);
+          request.renderPageEditor(page, function(){
+            request.renderPart(part, page, template);
+          });
         }); 
       }
     });  
     // context.modal = true; 
   });
   
+  // TODO change to Event
   // Add Image Page Parts
   // ---------------------------------------------
   this.get('/admin/pages/:page_id/parts/:id/results', function(request){ 
-   
 
     var page = Page.find(request.params['page_id']);
     var part = Part.find(request.params['id']);
@@ -195,10 +163,10 @@ var Parts = Sammy(function (app) {
     // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
     page.save(function(success, result){
       if(success){
-        context.modal = false;     
-        // Utilities.notice('Successfully saved page');
-        var now = new Date();
-        // window.current = now.getTime();
+        context.modal = false;   
+        Utilities.setTimestamp();  
+        Utilities.notice('Successfully saved page');
+        
         request.redirect(page.attr('admin_path'));
       } 
     });

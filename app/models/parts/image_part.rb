@@ -11,7 +11,7 @@ class ImagePart < Part
   liquid_methods :name, :content, :render, :image_path
   
   def path
-   "/pages/#{self.page_id}/image_parts/#{self.id}" 
+   "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end
   
   def image_path
@@ -19,7 +19,7 @@ class ImagePart < Part
   end
   
   def as_json(options)
-    super(:methods => [:image_path, :asset])
+    super(:methods => [:image_path, :asset, :path, :klass])
   end
   
   def render(edit=false)

@@ -253,6 +253,7 @@ Sanskrit.prototype = {
   },
   
   textilize: function(html, escape){
+    console.log(html)
     html = html.replace(/\s*<p>((.|[\r\n])*?)<\/p>\s*/gi, "\n\n$1\n\n");
     html = html.replace(/<br ?\/?>/gi, "\n");
     html = html.replace(/<(?:b|strong)>((.|[\r\n])*?)<\/(?:b|strong)>/gi, '*$1*');
@@ -270,7 +271,9 @@ Sanskrit.prototype = {
   },
   
   htmlize: function(textile, escape){
+    // console.log(textile)
     var paragraphs = textile.split("\n\n");
+    // console.log(paragraphs)
     for (var i=0; i<paragraphs.length; i++) {
       paragraphs[i] = paragraphs[i].replace(/(^|\r\n|\n|\r)\* (.*)/g, '$1###LI### $2');
       paragraphs[i] = paragraphs[i].replace(/\n/gi, '<br/>');

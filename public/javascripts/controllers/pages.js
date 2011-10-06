@@ -61,7 +61,7 @@ var Pages = Sammy(function (app) {
     
     renderPageEditor: function(page, callback){
       var application = this;   
-      if(!context.modal){
+      if(!jQuery('#page-editor').length){
         var pageEditor = application.load(jQuery('script#admin-pages-edit')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
@@ -71,7 +71,10 @@ var Pages = Sammy(function (app) {
           // TODO make an event
           jQuery('li.node').removeClass('active');
           jQuery('#page-' + page.id()).addClass('active');
+          if(callback){ callback.call(this); }
         });
+      }else {
+        if(callback){ callback.call(this); }
       }
     },
     
@@ -219,6 +222,7 @@ var Pages = Sammy(function (app) {
   // Show Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/?', function(request){ 
+    jQuery('#overlay').remove();
     jQuery('.modal-editor').remove();
  
     var page = Page.find(request.params['id']); 
@@ -236,10 +240,7 @@ var Pages = Sammy(function (app) {
       context.modal = false;
       context.do_not_refresh = false;
       request.trigger('page-index');
-    }else{
-      request.close_page_editor();
     }
-
     context.do_not_refresh = false;    
   });
   
@@ -271,6 +272,7 @@ var Pages = Sammy(function (app) {
     page.attr(request.params['page']);  
     page.save(function(success, result){
       if(success){   
+        Utilities.setTimestamp();
         Utilities.notice('Successfully saved page');
         
         // TODO move this
@@ -286,6 +288,7 @@ var Pages = Sammy(function (app) {
         
         request.renderTree(Page.root(), page); 
         request.redirect(page.attr('admin_path'));
+
       } 
     });
   });

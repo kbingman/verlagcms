@@ -49,37 +49,32 @@ var logger = {
 
 var Utilities = { 
   
-  notice: function(message){
+  notice: function(message, options){
+    var options = options || {};
     var notice = jQuery('.notice');
-    notice.text(message); 
+    notice.html(message); 
     notice.fadeIn('fast', function(){
       setTimeout(function(){
-        notice.fadeOut('fast');
-      }, 1000);
+        if (!options['persist']){
+          notice.fadeOut('slow');
+        }
+      }, 1800);
     });
-  },     
+  },  
+  
+  hideNotice: function(){
+    jQuery('.notice').fadeOut('slow');    
+  },
+  
+  setTimestamp: function(){
+    var now = new Date();
+    window.current = now.getTime();
+  },
   
   keyboard_nav: function(){      
     jQuery('body').keydown(function(e){ 
       // logger.info(e.keyCode);  
       switch (e.keyCode) {    
-        // Cmd s
-        // case 91 && 83:  
-        //   logger.info('Save me!');     
-        //   // this needs to change...
-        //   var form = jQuery('form.command-save');
-        //   form.submit();    
-        //   // return false;
-        //   e.preventDefault();
-        //   break;
-        // // Ctrl S
-        // case 17 && 83: 
-        //   logger.info('Save me!');       
-        //   // this needs to change...
-        //   // var form = jQuery('form.command-save');
-        //   // form.submit(); 
-        //   e.preventDefault();    
-        //   break;
         // Left Arrow
         case 37:
           $('a.previous').click();
@@ -88,10 +83,6 @@ var Utilities = {
         case 39:
           $('a.next').click();
           break; 
-        // 'W' key
-        // case 87:
-        //   $('a.cancel').click();
-        //   break; 
       }
     });
   }, 
@@ -155,9 +146,7 @@ var Updater = {
         jQuery.each(data.models, function(i, item){
           var object = Page.find(item.id);
           object.merge(item);
-          console.log(item.id)
-          var now = new Date();
-          window.current = now.getTime();;
+          Utilities.setTimestamp();
         });
         window.ninja = false;
       }
@@ -196,23 +185,31 @@ var iFramer = {
       iframe.fadeIn('fast');
       
       // Sets preview links to change the sammy.js routes instead of the usual route
-      var internal_links = iFrameContent.find('a[href^="/preview"]');
+      var internal_links = iFrameContent.find('a'); // iFrameContent.find('a[href^="/preview"]');
       internal_links.click(function(e){
-        var link_path = $(this).attr('href').split('?')[0].replace('/preview','');
-        var page = Page.find_by_path(link_path);
-        if (page){
-          e.preventDefault();
-          // TODO This whole thing needs to be moved to sammy to have access to the routes
-          document.location.path = page.attr('admin_path');
+        var self = jQuery(this);
+        if(!self.hasClass('verlag-editor')){
+          var link_path = self.attr('href').split('?')[0].replace('/preview','');
+          var page = Page.find_by_path(link_path);
+          if (page){
+            e.preventDefault();
+            // TODO This whole thing needs to be moved to sammy to have access to the routes
+            history.pushState({path: page.attr('title')}, page.attr('title'), page.attr('admin_path'));
+            // document.location.path = page.attr('admin_path');
+          }
         }
       });
       
-      flags.click(function(){  
+      flags.click(function(e){  
+        e.preventDefault();
         window.top.trigger = $(this);
         // TODO Use history object here
-        window.top.location.hash = $(this).attr('href');  
-        return false;
+        // window.top.location.hash = $(this).attr('href');  
+        var path = $(this).attr('href');  
+        history.pushState({part: path}, "Part", path);
+        // return false;
       });
+      
       if(callback){ callback.call(this); } 
     }); 
   },

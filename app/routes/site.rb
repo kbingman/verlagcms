@@ -92,7 +92,7 @@ class Main
   
   error 404 do   
     # TODO Build custom pages
-    haml :'errors/not_found'     
+    admin_haml :'errors/not_found'     
   end
   
   #  Error logging

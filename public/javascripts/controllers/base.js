@@ -35,8 +35,7 @@ var Base = Sammy(function (app) {
               application.trigger('update-layout', item);
             }
             // Sets window timestamp
-            var now = new Date();
-            window.current = now.getTime();
+            Utilities.setTimestamp();
           });
           window.ninja = false;
         }
@@ -77,6 +76,21 @@ var Base = Sammy(function (app) {
     // node.replace(el);
     var el = jQuery('li#page-' + item.id);
     el.find('span.title a').text(page.attr('title'));
+    // Sets page title
+    jQuery('h1#page-title-' + page.id()).text(page.attr('title'));
+    
+    var iframe =jQuery('#page-iframe-' + page.id());
+    if (iframe.length){
+      var message = 'This page has been changed. Click to reload.'
+      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { persist: true });
+      // Reloads page
+      // Utilities.notice(message);
+      // var pageFrame = jQuery('iframe#page-iframe-' + page.id());
+      // var src = pageFrame.attr('src');
+      // pageFrame.attr('src', src);
+      // // Sets page title
+      // jQuery('h1#page-title-' + page.id()).text(page.attr('title'));
+    }
   });
   
   // Update Layout
@@ -86,6 +100,36 @@ var Base = Sammy(function (app) {
     layout.merge(item); 
     var el = jQuery('li#layout-' + item.id);
     el.find('span.title a').text(layout.attr('name'));
+    // Utilities.notice('Updated layout');
+  });
+  
+  // Initialize Sanskrit Editor
+  // ---------------------------------------------
+  app.bind('sanskrit', function(e, element){
+    if(!element.length){ return }
+    
+    var textareas = element.find('textarea.sanskrit');
+    textareas.hide().each(function(i, t){
+      var editor = new Sanskrit(t, {
+        toolbar: {
+          // onEm: function(){
+          //   alert('image goes here!') 
+          // },
+          actions: {
+            'strong': 'B', 
+            'em': 'I', 
+            'ins': 'ins', 
+            'del': 'del', 
+            'link': 'link', 
+            'unlink': 'unlink',
+            'textile': 'Textile'
+          }  
+        },
+      }); 
+    });
+    setTimeout(function(){
+      textareas.fadeIn('fast');
+    }, 420);
   });
   
   // Before Filters
@@ -93,6 +137,7 @@ var Base = Sammy(function (app) {
   app.before(function(){
     // jQuery('.modal-editor').remove(); 
     Galerie.close(); 
+    // Utilities.hideNotice();
   });
   
   // Sets active tab

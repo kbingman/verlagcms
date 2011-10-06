@@ -47,7 +47,6 @@ var Layouts = Sammy(function (app) {
         window.editor.getSession().setValue(layout.attr('content'));
       });
     }
-    
   });
 
   this.bind('run', function () { 

@@ -11,11 +11,7 @@ class MultiImagePart < Part
   liquid_methods :name, :content, :render, :image_path, :assets, :id
   
   def path
-   "/pages/#{self.page_id}/image_parts/#{self.id}" 
-  end
-  
-  def as_json(options)
-    super
+   "/pages/#{self.page_id}/parts/#{self.id}" 
   end
   
   def render(edit=false)

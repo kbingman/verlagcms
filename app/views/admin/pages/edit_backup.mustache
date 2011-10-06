@@ -5,10 +5,6 @@
 <div id="page-editor">
   
   <div class="edit-nav">
-    <h2>Page</h2>
-    <ul>
-      <li><a href="{{admin_path}}/edit">Edit</a></li>
-    </ul>
     <h2>Parts</h2>
     <ul>
     {{#parts}}  
@@ -18,9 +14,9 @@
   </div><!-- .edit-nav -->
   
   <div class="edit-window">
-    <div class="tabs" id="page-tabs-{{id}}"> 
-      <form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
-  
+    <form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
+    
+      <div class="tabs"> 
         <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p-->  
         <div class="page-properties tab">
           <div class="hidden">
@@ -39,12 +35,11 @@
           </div>  
            
           <div class="field">
-            <label for="asset_tags">Layout</label> 
+            <label for="asset_tags">Tags</label> 
             <input type="text" name="page[tag_list]" id="page-tag-list" value="{{tag_list}}" class="textfield" /> 
           </div>
           
           <div class="select-boxes">
-            <label for="page-layout">Tags</label> 
             <select id="page-layout" class="select" name="page[layout_id]"> 
               {{#layouts}}
               <option value="{{id}}" {{selected}}>{{name}}</option>
@@ -52,14 +47,31 @@
             </select>  
           </div>
         </div><!-- .page-properties -->
-     
-        <div class="buttons">
-          <input type="submit" id="page_save" value="Save" class="button" />   
-          <a href="/admin/pages/{{id}}">Cancel</a>
-        </div>
-        
-      </form> 
-    </div><!-- .tabs -->
+    
+        {{#parts}}  
+          <div class="part tab" id="tab-{{id}}">
+            <!--a href="#/pages/{{page_id}}/parts/{{id}}/remove">Remove</a--> 
+            <label for="part-{{id}}-content">{{name}}</label>
+            <div class="hidden">                  
+              <input type="hidden" name="page[parts][][id]" id="part-{{id}}-id" value="{{id}}" class="hidden" />
+              <input type="hidden" name="page[parts][][name]" id="part-{{id}}-name" value="{{name}}" class="hidden" />
+            </div>  
+            
+            <div class="field part-content">  
+              <textarea type="text" name="page[parts][][content]" id="part-{{id}}-content" class="textarea">{{content}}</textarea>
+              {{#image_path}} 
+              <img src="{{image_path}}" alt="{{name}}" />
+              {{/image_path}}
+            </div> 
+          </div><!-- .tab -->
+        {{/parts}}  
+      </div><!-- .tabs -->
+    
+      <div class="buttons">
+        <input type="submit" id="page_save" value="Save" class="button" />   
+        <a href="/admin/pages/{{id}}">Cancel</a>
+      </div>
+    </form> 
   </div><!-- .edit-window -->   
 </div>     
 

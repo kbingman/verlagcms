@@ -16,6 +16,10 @@ class Part
    "/admin/pages/#{self.page_id}/parts/#{self.id}" 
   end
   
+  def klass
+    self.class.to_s.downcase.pluralize
+  end
+  
   # This needs to be moved into the liquid methods, like the image part editor...
   def render(edit=false)
     if edit == 'true' 
@@ -31,7 +35,7 @@ class Part
   end
   
   def as_json(options)
-    super(:methods => [:path])
+    super(:methods => [:path, :klass])
   end
     
 end

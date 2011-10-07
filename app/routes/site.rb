@@ -83,7 +83,11 @@ class Main
     page = Page.find_by_path(path, current_site) if path
     
     if page 
-      page.render(format, request)
+      # Liquid based templates...
+      # page.render(format, request)
+      # Mustache Attempt:
+      # mustache :'site/page'
+      Mustache.render("<h1>Page: {{#page}}{{title}}</h1>{{#data}}{{sidebar}}{{/data}}{{/page}}", {:page => JSON.parse(page.to_json)})
     else   
       raise Sinatra::NotFound   
     end

@@ -62,6 +62,10 @@ class Main < Monk::Glue
     :format => :html5, 
     :ugly => RACK_ENV == 'development' ? false : true } 
   set :default_content_type, :html
+  set :mustache, {
+    :views     => 'app/views/',
+    :templates => 'app/views/'
+  }
   
   # Not sure if this is the correct syntax
   register Rabl
@@ -86,8 +90,9 @@ class Main < Monk::Glue
   register Sinatra::Images 
   register Sinatra::GetSubdomain 
   register Sinatra::AdvancedRoutes 
+  register Mustache::Sinatra
   Rabl.register!
-  
+
   configure do
     mime_type :mustache, 'text/mustache' 
     mime_type :'octet-stream', 'application/octet-stream' 

@@ -11,7 +11,8 @@ var Parts = Sammy(function (app) {
       var editPart = application.load(jQuery('script#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
-        assets: Asset.asJSON()
+        assets: Asset.asJSON(),
+        timestamp: window.timestamp
       }, 'mustache');
       
       // jQuery('#page-tabs-' + page.id()).html('FIBBLE');

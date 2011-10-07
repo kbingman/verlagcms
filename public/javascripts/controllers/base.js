@@ -25,7 +25,7 @@ var Base = Sammy(function (app) {
       jQuery.ajax({
         url: '/admin/activity.json',
         type: 'POST',
-        data: { 'updated': window.current },
+        data: { 'updated': window.timestamp },
         success: function(data){ 
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 
@@ -81,8 +81,8 @@ var Base = Sammy(function (app) {
     
     var iframe =jQuery('#page-iframe-' + page.id());
     if (iframe.length){
-      var message = 'This page has been changed. Click to reload.'
-      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { persist: true });
+      var message = 'This page has been changed. Click here to reload.'
+      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { persist: true, class: 'warning' });
       // Reloads page
       // Utilities.notice(message);
       // var pageFrame = jQuery('iframe#page-iframe-' + page.id());
@@ -109,7 +109,8 @@ var Base = Sammy(function (app) {
     if(!element.length){ return }
     
     var textareas = element.find('textarea.sanskrit');
-    textareas.hide().each(function(i, t){
+    // textareas.hide();
+    textareas.each(function(i, t){
       var editor = new Sanskrit(t, {
         toolbar: {
           // onEm: function(){

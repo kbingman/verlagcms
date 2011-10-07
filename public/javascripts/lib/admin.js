@@ -30,7 +30,7 @@ jQuery(document).ready(function () {
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);
         Base.run();
-        window.current = results.now;
+        window.timestamp = results.now;
       }
     });
   }

@@ -52,14 +52,18 @@ var Utilities = {
   notice: function(message, options){
     var options = options || {};
     var notice = jQuery('.notice');
-    notice.html(message); 
-    notice.fadeIn('fast', function(){
-      setTimeout(function(){
-        if (!options['persist']){
-          notice.fadeOut('slow');
-        }
-      }, 1800);
-    });
+    var klass = options['class'] || 'message';
+    
+    notice
+      .html(message) 
+      .addClass(klass)
+      .fadeIn('fast', function(){
+        setTimeout(function(){
+          if (!options['persist']){
+            notice.fadeOut('slow');
+          }
+        }, 1800);
+      });
   },  
   
   hideNotice: function(){
@@ -68,7 +72,7 @@ var Utilities = {
   
   setTimestamp: function(){
     var now = new Date();
-    window.current = now.getTime();
+    window.timestamp = now.getTime();
   },
   
   keyboard_nav: function(){      
@@ -141,7 +145,7 @@ var Updater = {
     jQuery.ajax({
       url: '/admin/activity.json',
       type: 'POST',
-      data: { 'updated': window.current },
+      data: { 'updated': window.timestamp },
       success: function(data){
         jQuery.each(data.models, function(i, item){
           var object = Page.find(item.id);
@@ -233,28 +237,28 @@ var iFramer = {
   }
 } 
 
-var TabControl = {
-  initialize: function(element){
-    var tabs = jQuery(element);  
-    if(!tabs) return;
-    var self = this; 
-    tabs.each(function(i, tab){
-      $(tab).hide();
-    }); 
-    tabs.first().show();   
-    self.tabControl(jQuery('.tab-control'));
-  },
-  
-  tabControl: function(element){  
-    element.click(function(){  
-      var partId = $(this).find('label').attr('for').split('-')[1];
-      var tabId = 'tab-' + partId;   
-      
-      jQuery('.tab').hide(); 
-      jQuery('#' + tabId).show();
-    })
-  }
-}
+// var TabControl = {
+//   initialize: function(element){
+//     var tabs = jQuery(element);  
+//     if(!tabs) return;
+//     var self = this; 
+//     tabs.each(function(i, tab){
+//       $(tab).hide();
+//     }); 
+//     tabs.first().show();   
+//     self.tabControl(jQuery('.tab-control'));
+//   },
+//   
+//   tabControl: function(element){  
+//     element.click(function(){  
+//       var partId = $(this).find('label').attr('for').split('-')[1];
+//       var tabId = 'tab-' + partId;   
+//       
+//       jQuery('.tab').hide(); 
+//       jQuery('#' + tabId).show();
+//     })
+//   }
+// }
 
 var delay = (function(){
   var timer = 0;

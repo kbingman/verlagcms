@@ -1,5 +1,5 @@
 {{#part}}  
-  {{ name }} 
+  {{ name }} <span class="timestamp">{{ timestamp }}</span>
   <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 

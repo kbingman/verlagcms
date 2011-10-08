@@ -26,7 +26,7 @@ var Parts = Sammy(function (app) {
         application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
         
         // For image parts only. Otherwise ignored
-        application.set_asset_links(part, page);
+        application.trigger('set_asset_links');
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
@@ -38,37 +38,27 @@ var Parts = Sammy(function (app) {
         application.trigger('page-index');
         context.modal = true;
       });
-    },
-    
-    // Sets add asset links
-    set_asset_links: function(part, page){
-      jQuery('#search-results-container li.asset').each(function(i, el){
-        var link = jQuery(el).find('a');
-        var asset_id = jQuery(el).attr('id').split('-')[1];
-        link.click(function(e){
-          e.preventDefault();
-          // Updates part
-          var parts = page.attr('parts'); 
-          var length = parts.length;
-          for (var i=0, l=length; i<l; ++i ){
-            var p = parts[i];
-            if(part.id() == p.id){
-              p.asset_id = asset_id;
-              part.attr('asset_id', asset_id);
-              part.save();
-            }
-          }
-          page.save(function(success){
-            jQuery('.modal-editor').remove();
-            // TODO Change to sammy method
-            context.modal = false;
-            document.location.hash = '#' + page.attr('admin_path');
-          });
-        });
-      });
     }
     
   });    
+  
+  // Sets add asset links
+  // ---------------------------------------------
+  this.bind('set_asset_links', function(part, page){
+    jQuery('#search-results-container li.asset').each(function(i, el){
+      var link = jQuery(el).find('a');
+      var assetId = jQuery(el).attr('id').split('-')[1];
+      var assetSrc = link.find('img').attr('src');
+      
+      link.click(function(e){
+        e.preventDefault();
+        // Sets the asset id to the part page input
+        jQuery('input#part-asset-id').attr('value', assetId);
+        // Sets the preview image to the new image
+        jQuery('form#edit-part img.preview').attr('src', assetSrc);
+      });
+    });
+  });
   
   // Edit Parts
   // ---------------------------------------------
@@ -133,7 +123,7 @@ var Parts = Sammy(function (app) {
       var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
       // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
       searchResults.replace('#search-results-container').then(function(){
-        request.set_asset_links(part, page);
+        request.trigger('set_asset_links');
       });
     });
 
@@ -147,16 +137,22 @@ var Parts = Sammy(function (app) {
     var part = page.parts().find(request.params['id']);
     
     // Updates part
-    var parts = page.attr('parts'); 
+    var parts = page.attr('contents'); 
     var length = parts.length;
+    // TODO Find by id method for part?
+    // Or just make parts their own objects...
     for (var i=0, l=length; i<l; ++i ){
       var part = parts[i];
+      
       if(request.params['id'] == part.id){
         // This needs to be more generalized
-        var content = request.params['part']['content'];
-        part.content = content;
+        console.log(request.params['part'])
+        // var params = request.params['part'];
+        // // Temp! 
+        part['content'] = request.params['part']['content'];
+        part['asset_id'] = request.params['part']['asset_id'];
         var p = Part.find(part.id);
-        p.attr('content', content);
+        p.attr({'asset_id': request.params['part']['asset_id'], 'content': request.params['part']['content']});
         p.save();
       }
     }
@@ -166,7 +162,7 @@ var Parts = Sammy(function (app) {
       if(success){
         context.modal = false;   
         Utilities.setTimestamp();  
-        Utilities.notice('Successfully saved page');
+        Utilities.notice('Successfully saved part');
         
         request.redirect(page.attr('admin_path'));
       } 
@@ -198,7 +194,7 @@ var Parts = Sammy(function (app) {
         jQuery('.progress').slideUp('slow', function(){
           jQuery(this).html('');
         });
-        application.set_asset_links(part, page);
+        request.trigger('set_asset_links');
       });
     });
 

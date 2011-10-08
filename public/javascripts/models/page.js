@@ -32,7 +32,8 @@ var Page = Model('page', function() {
     
     parts: function(){
       var self = this;
-      var parts = self.attr('parts'); 
+      // TODO Change back to parts...
+      var parts = self.attr('contents'); 
       var length = parts.length;                                 
       Part.each(function(){ Part.remove(this); });
       

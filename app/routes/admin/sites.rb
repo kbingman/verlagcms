@@ -40,7 +40,7 @@ class Main
         
         respond_to do |format|
           # format.html { admin_haml :'admin/index' }
-          format.json { render :rabl, :'admin/sites/current', :format => "json" }
+          format.json { render :rabl, :'admin/sites/current', :format => 'json' }
         end
       end
       

@@ -13,6 +13,8 @@ class ImagePart < Part
   def path
    "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end
+  alias :admin_path :path
+  
   
   def image_path
     self.asset.image_path   

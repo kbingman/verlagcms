@@ -39,6 +39,21 @@ class Main
         end
       end
       
+      # Show
+      # -------------------------------------------
+      get '/:id/?' do
+        @page = Page.by_site(current_site).find params['id']
+        if @page
+          respond_to do |format|
+            format.html { admin_haml :'admin/index' }
+            format.json { @page.to_json }
+            # format.json { render :rabl, :'admin/pages/show', :format => 'json' }
+          end
+        else
+          raise Sinatra::NotFound
+        end
+      end
+      
       # Show page children
       # -------------------------------------------
       get '/:id/children' do
@@ -54,11 +69,19 @@ class Main
       put '/:id' do
         page = Page.by_site(current_site).find(params['id']) 
         # enforce_update_permission(page) 
+        puts "Params: #{params['page']}"
         
         # This is a bit of a hack needed to get the parts to save when sent by jQuery / js-model
         if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)
           parts = []
           params['page']['parts'].each{|k,v| parts << v if v }
+          params['page']['parts'] = parts
+        end
+        
+        # HACK!! TODO move parts out of page....
+        if params['page']['contents'] && !params['page']['contents'].kind_of?(Array)
+          parts = []
+          params['page']['contents'].each{|k,v| parts << v if v }
           params['page']['parts'] = parts
         end
                 

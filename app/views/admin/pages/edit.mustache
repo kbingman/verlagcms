@@ -11,9 +11,10 @@
     </ul>
     <h2>Parts</h2>
     <ul>
-    {{#parts}}  
-      <li><a href="/admin/pages/{{page_id}}/parts/{{id}}/edit">{{name}}</a></li>
-    {{/parts}}
+    <!-- TODO Temp!! change this back to parts -->
+    {{#contents}}  
+      <li><a href="{{admin_path}}/edit">{{name}}</a></li>
+    {{/contents}}
     </ul>
   </div><!-- .edit-nav -->
   

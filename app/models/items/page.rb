@@ -122,11 +122,19 @@ class Page
     self.class.to_s
   end
   
+  def contents
+    # TODO bad hack. remove...
+    JSON.parse(self.parts.to_json)
+  end
   
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:methods => [:path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?])
+    super(:only => [
+      :title, :slug, :url, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id, :site_ids
+    ], :methods => [
+      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :contents
+    ])
   end  
   
   # Tags

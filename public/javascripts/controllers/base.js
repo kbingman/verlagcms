@@ -49,9 +49,9 @@ var Base = Sammy(function (app) {
   app.bind('run', function(){
     var application = this;
     // Starts the updater
-    app.updater = setInterval(function(){
-      application.update();
-    }, 5000);
+    // app.updater = setInterval(function(){
+    //   application.update();
+    // }, 5000);
   });
  
   // Set Active Tab

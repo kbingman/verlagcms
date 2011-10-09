@@ -1,5 +1,5 @@
 {{#part}}  
-{{ name }}
+{{ name }} <span class="timestamp">{{ timestamp }}</span>
 <div id="selected-assets"  class="assets-container">
   <h1>Selected Asset</h1>  
   <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-part">
@@ -12,7 +12,7 @@
     </div>
     <ul>
       <li class="asset">
-        <img class="preview" src="/images/icon/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
+        <img class="preview" src="/images/thumbnail/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
       </li>
     </ul>
     

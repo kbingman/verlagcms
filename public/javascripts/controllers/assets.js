@@ -39,10 +39,6 @@ var Assets = Sammy(function (app) {
   
   // Asset Events
   // ------------------------------------------------------------------------------------------
-  app.bind('run', function () {
-    context.modal = false; 
-    context.first_run = true;  
-  }); 
   
   // Show Asset Info popup
   // ---------------------------------------------

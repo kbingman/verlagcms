@@ -1,49 +1,48 @@
-var Pages = Sammy(function (app) {   
-  
-  var context = this;    
+var Pages = Sammy(function (app) {     
 
   // Helper Methods 
   // ---------------------------------------------
   app.helpers({  
     
     // Renders the Page tree
-    renderTree: function(page, active_page){ 
+    renderTree: function(page, active_page_id){ 
       var application = this;
-      var pageIndex = application.load(jQuery('script#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
-      // jQuery('#sidebar').hide();
-      pageIndex.replace('#sidebar').then(function(){   
-        jQuery('ul.page-children:first').attr('id', 'pages'); 
-        application.renderNode(page, active_page); 
-        if(page.id() == active_page.id()){
-          jQuery('li#page-' + page.id()).addClass('active');
-        }
-      });
+      if(!jQuery('ul#pages').length){
+        var pageIndex = application.load(jQuery('script#admin-pages-index')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+        // jQuery('#sidebar').hide();
+        pageIndex.replace('#sidebar').then(function(){   
+          jQuery('ul.page-children:first').attr('id', 'pages'); 
+          application.renderNode(page, active_page_id); 
+          application.trigger('toggle-sidebar');
+        });
+      }
     },
  
     // Renders a single page node for each page, then renders the children as well
-    renderNode: function(page, active_page){ 
+    renderNode: function(page, active_page_id){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
       var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
         $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
-        page.children().each(function(child){  
-          if(child.id() == active_page.id()){
-            jQuery('li#page-' + child.id()).addClass('active');
+        page.children().each(function(child){ 
+          //  var active_page_id = document.location.pathname.split('/')[3]; 
+          if(child.id() == active_page_id){
+            application.trigger('set-active-page', child);
           }
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child, active_page);  
+            application.renderNode(child, active_page_id);  
           }else{
-            // 
+            // console.log('end ' + active_page_id)
           }
         });
       });       
     }, 
     
     renderPagePreview: function(page, callback){
-      var application = this;   
-      if(!context.modal){
+      var application = this;  
+      if(!jQuery('div#preview-' + page.id()).length){
         var showPage = application.load(jQuery('script#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
@@ -53,9 +52,10 @@ var Pages = Sammy(function (app) {
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
-          jQuery('li.node').removeClass('active');
-          jQuery('#page-' + page.id()).addClass('active');
+          application.trigger('set-active-page', page);
         });
+      }else{
+        application.trigger('set-active-page', page);
       }
     }, 
     
@@ -70,9 +70,11 @@ var Pages = Sammy(function (app) {
           jQuery('li.node').removeClass('active');
           jQuery('#page-' + page.id()).addClass('active');
           if(callback){ callback.call(this); }
+          application.trigger('set-active-page', page);
         });
       }else {
         if(callback){ callback.call(this); }
+        application.trigger('set-active-page', page);
       }
     },
     
@@ -86,35 +88,25 @@ var Pages = Sammy(function (app) {
       }, 'mustache');  
       pageProperties.replace('#page-tabs-' + page.id()).then(function(){  
         // TODO make an event
-        jQuery('li.node').removeClass('active');
-        jQuery('#page-' + page.id()).addClass('active');
         if(callback){ callback.call(this); }
       });
-    },
-    
-    open_page_editor: function(){
-      var page_editor = jQuery('#page-editor');
-      var page_title_input = jQuery('#page-title');
-      page_editor.addClass('open').animate({'height': '200px'}, 300);
-      page_title_input.removeAttr('disabled').focus();
-    }, 
-    
-    close_page_editor: function(){
-      var page_editor = jQuery('#page-editor');
-      var page_title_input = jQuery('#page-title');
-      page_editor.removeClass('open').animate({'height': '0'}, 300);
-      page_title_input.attr('disabled', 'disabled');
     }
     
   });
   
   // renders the page index, only if that element is not found
-  app.bind('page-index', function(){
+  app.bind('page-index', function(e){
     var application = this; 
+    var pageId = document.location.pathname.split('/')[3];
     if(!jQuery('.page-children').length){
-      application.renderTree(Page.root(), Page.root());  
+      application.renderTree(Page.root(), pageId);  
     } 
   }); 
+  
+  app.bind('set-active-page', function(e, page){
+    jQuery('li.node').removeClass('active');
+    jQuery('li#page-' + page.id()).addClass('active');
+  });
   
   app.bind('toggle-children', function(e, el){
     
@@ -163,37 +155,25 @@ var Pages = Sammy(function (app) {
       }); 
       jQuery('#page-' + page_id + ' ul').remove();
     }
-    
-    context.refresh_pages = false; 
-    context.modal = false;
   });
-
-  app.bind('run', function () {   
+  
+  // Reload Page
+  // ---------------------------------------------
+  app.bind('reload-page', function(e, page){
+    var id = page.id();
+    var pageFrame = jQuery('iframe#page-iframe-' + id);
+    // Sets page title
+    jQuery('li#page-' + id).find('span.title a').text(page.attr('title'));
+    jQuery('h1#page-title-' + id).text(page.attr('title'));
     
-    application = this;
-    context.refresh_pages = true;
-    context.modal = false;    
-    
-    jQuery('.add-asset').live('click', function(){
-      application.trigger('add-asset');
-      return false;
-    }); 
-    
-    jQuery('#sidebar .opener').live('click', function(e){
-      el = this;
-      application.trigger('toggle-children', el);
-      return false;
-    }); 
+    pageFrame.attr('src', pageFrame.attr('src'));
   });
 
   // Page Index
   // ---------------------------------------------  
   this.get('/admin/pages/?', function(request){  
-    // context.refresh_pages = true; 
     request.trigger('page-index');
-    jQuery('#editor').html('<h1 class="section">Pages</div>');  
-
-    context.do_not_refresh = false;              
+    jQuery('#editor').html('<h1 class="section">Pages</div>');            
   });
   
   
@@ -226,7 +206,6 @@ var Pages = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        context.refresh_pages = true;  
         Utilities.notice('Successfully created page');
         request.redirect(response.admin_path);
       }
@@ -241,21 +220,17 @@ var Pages = Sammy(function (app) {
  
     var page = Page.find(request.params['id']); 
     
-    if(!context.do_not_refresh){
-      if(page) {
+    if(page) {
+      request.renderPagePreview(page); 
+    } else {  
+      // Loads page if the current collection does not contain it
+      page = new Page({ id: request.params['id'] });
+      page.load(function(){
         request.renderPagePreview(page); 
-      } else {  
-        // Loads page if the current collection does not contain it
-        page = new Page({ id: request.params['id'] });
-        page.load(function(){
-          request.renderPagePreview(page); 
-        });
-      } 
-      context.modal = false;
-      context.do_not_refresh = false;
-      request.trigger('page-index');
-    }
-    context.do_not_refresh = false;    
+      });
+      page.save;
+    } 
+    request.trigger('page-index');
   });
   
   // Edit Page
@@ -273,8 +248,7 @@ var Pages = Sammy(function (app) {
         });
       }); 
       request.trigger('page-index');
-    }
-    context.do_not_refresh = true;       
+    }    
   }); 
     
   
@@ -288,8 +262,8 @@ var Pages = Sammy(function (app) {
     page.attr(request.params['page']); 
     
     var updatedStamp = jQuery('span.timestamp').text();
-    console.log('Updated: ' + updatedStamp);
-    console.log('Timestamp: ' + window.timestamp);
+    // console.log('Updated: ' + updatedStamp);
+    // console.log('Timestamp: ' + window.timestamp);
     
     if(!(updatedStamp < window.timestamp)){
       page.save(function(success, result){
@@ -297,11 +271,8 @@ var Pages = Sammy(function (app) {
           Utilities.setTimestamp();
           Utilities.notice('Successfully saved page');
 
-          // TODO move this
-          var el = jQuery('li#page-' + page.id());
-          context.do_not_refresh = false; 
-
-          request.renderTree(Page.root(), page); 
+          // request.renderTree(Page.root(), page.id()); 
+          request.trigger('reload-page', page);
           request.redirect(page.attr('admin_path'));
         } 
       });
@@ -332,7 +303,6 @@ var Pages = Sammy(function (app) {
     page.destroy(function(success){  
       if(success){
         jQuery('#page-' + page.id()).remove();
-        context.refresh_pages = false;
         request.redirect('#/pages');
       }
     }); 

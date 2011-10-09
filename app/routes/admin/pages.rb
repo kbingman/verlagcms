@@ -69,7 +69,6 @@ class Main
       put '/:id' do
         page = Page.by_site(current_site).find(params['id']) 
         # enforce_update_permission(page) 
-        puts "Params: #{params['page']}"
         
         # This is a bit of a hack needed to get the parts to save when sent by jQuery / js-model
         if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)

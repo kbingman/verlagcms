@@ -1,7 +1,7 @@
 class Main  
   
   # Catchall REST actions.
-  # Override these by simply adding a route above them
+  # Override these by simply adding a matching route above them
   # -------------------------------------------
   
   module Admin 

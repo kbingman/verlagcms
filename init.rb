@@ -127,20 +127,11 @@ Dir[root_path('app/helpers/*.rb')].each do |file|
   require file
 end
 
-# Load all admin routes.
-# Dir[root_path('app/routes/admin/*.rb')].each do |file|
-#   require file
-# end
-require root_path('app/routes/admin/css')
-require root_path('app/routes/admin/assets')
-require root_path('app/routes/admin/activities')
-require root_path('app/routes/admin/pages')
-require root_path('app/routes/admin/parts')
-require root_path('app/routes/admin/part_types')
-require root_path('app/routes/admin/sites')
-require root_path('app/routes/admin/templates')
-require root_path('app/routes/admin/users')
-require root_path('app/routes/admin/export')
+# Load all admin routes, except the rest_controller.
+# This is loaded last
+Dir[root_path('app/routes/admin/*.rb')].each do |file|
+  require file unless file.match('rest_controller')
+end
 require root_path('app/routes/admin/rest_controller') 
 
 # Load api routes

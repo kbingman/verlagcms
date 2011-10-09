@@ -59,8 +59,7 @@ var Layouts = Sammy(function (app) {
   // ---------------------------------------------  
   this.get('/admin/templates', function(request){  
 
-    context.refresh_templates = false; 
-    context.refresh_pages = true;     
+    context.refresh_templates = false;   
     
     jQuery('#editor').html('<h1 class="section">Templates</div>'); 
     request.renderLayoutIndex(Layout.all());           

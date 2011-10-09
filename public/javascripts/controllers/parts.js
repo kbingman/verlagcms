@@ -36,7 +36,6 @@ var Parts = Sammy(function (app) {
             });
           });
         application.trigger('page-index');
-        context.modal = true;
       });
     }
     
@@ -55,7 +54,7 @@ var Parts = Sammy(function (app) {
         // Sets the asset id to the part page input
         jQuery('input#part-asset-id').attr('value', assetId);
         // Sets the preview image to the new image
-        jQuery('form#edit-part img.preview').attr('src', assetSrc);
+        jQuery('form#edit-part img.preview').attr('src', assetSrc.replace('icon','thumbnail'));
       });
     });
   });
@@ -67,6 +66,7 @@ var Parts = Sammy(function (app) {
     var iframe = $('iframe');
     var template = 'parts';
     var page = Page.find(request.params['page_id']);
+    console.log(page)
     var part = page.parts().find(request.params['id']);
     console.log(part)
 
@@ -81,7 +81,6 @@ var Parts = Sammy(function (app) {
         });
       }); 
     }
-    // context.modal = true;
   });
   
   // Remove this
@@ -105,8 +104,7 @@ var Parts = Sammy(function (app) {
           });
         }); 
       }
-    });  
-    // context.modal = true; 
+    });
   });
   
   // TODO change to Event
@@ -126,7 +124,6 @@ var Parts = Sammy(function (app) {
         request.trigger('set_asset_links');
       });
     });
-
   });
   
   // Update Parts
@@ -145,10 +142,7 @@ var Parts = Sammy(function (app) {
       var part = parts[i];
       
       if(request.params['id'] == part.id){
-        // This needs to be more generalized
-        console.log(request.params['part'])
-        // var params = request.params['part'];
-        // // Temp! 
+        // TODO This needs to be more generalized
         part['content'] = request.params['part']['content'];
         part['asset_id'] = request.params['part']['asset_id'];
         var p = Part.find(part.id);
@@ -160,10 +154,10 @@ var Parts = Sammy(function (app) {
     // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
     page.save(function(success, result){
       if(success){
-        context.modal = false;   
         Utilities.setTimestamp();  
-        Utilities.notice('Successfully saved part');
+        Utilities.notice(p.attr('name') + ' saved'); // 
         
+        request.trigger('reload-page', page);
         request.redirect(page.attr('admin_path'));
       } 
     });

@@ -1,15 +1,24 @@
-<ul>
-  {{#page}} 
-    <li class="node level-{{level}}" id="page-{{id}}">
-      <span class="title" style="padding-left: {{padding}}px;"> 
-         <a id id="edit-{{id}}" href="#/pages/{{id}}">{{title}}</a>       
-      </span> 
-      <span class="modify">                 
-        <a title="Add Child" class="add-child" id="add-child-{{id}}"href="#/pages/{{id}}/new">+</a> 
-        <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="#/pages/{{id}}/remove">x</a> 
+<a class="toggle-sidebar" href="#">Close</a>
+<ul class="page-children" id="pages">
+  {{#pages}}
+  <li class="node level-{{level}}" id="page-{{id}}"> 
+    <div class="item">
+      {{#children?}}{{#child?}} 
+      <span class="opener" id="open-children-{{id}}">
+         <!--a title="open" href="#/pages" class="opener" id="open-children-{{id}}">+</a-->
+         +
       </span>
-    </li> 
-  {{/page}}
+      {{/child?}}{{/children?}}
+      <span class="title" style="padding-left: {{padding}}px;"> 
+         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a> 
+         <!--(<a id="preview-{{id}}" class="preview" href="#/pages/{{id}}">preview</a>)-->     
+      </span>
+      <span class="modify">                 
+        <a title="Add Child" class="add-child" id="add-child-{{id}}"href="{{admin_path}}/new">+</a> 
+        <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="{{admin_path}}/remove">x</a> 
+      </span>
+    </div>
+  </li>  
+ {{/pages}}
 </ul>
-
 

@@ -13,7 +13,6 @@ var Pages = Sammy(function (app) {
         pageIndex.replace('#sidebar').then(function(){   
           jQuery('ul.page-children:first').attr('id', 'pages'); 
           application.renderNode(page, active_page_id); 
-          application.trigger('toggle-sidebar');
         });
       }
     },
@@ -172,8 +171,10 @@ var Pages = Sammy(function (app) {
   // Page Index
   // ---------------------------------------------  
   this.get('/admin/pages/?', function(request){  
-    request.trigger('page-index');
-    jQuery('#editor').html('<h1 class="section">Pages</div>');            
+    // request.trigger('page-index');
+    // jQuery('#editor').html('<h1 class="section">Pages</div>');     
+    var first = Page.first()
+    request.redirect(first.attr('admin_path'));       
   });
   
   

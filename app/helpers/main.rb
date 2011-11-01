@@ -75,6 +75,14 @@ class Main
     def content(key)
       @content && @content[key]
     end  
+    
+    def sidebar_toggled?
+      request.cookies['sidebar_toggled']
+    end
+    
+    def editor_toggled?
+      request.cookies['sidebar_toggled'] == 'closed' ? 'open' : 'closed'
+    end
  
   end
 end

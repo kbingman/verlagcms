@@ -52,15 +52,28 @@ var Base = Sammy(function (app) {
   app.bind('run', function(){
     var application = this;
     // Starts the updater
-    app.updater = setInterval(function(){
-      application.update();
-    }, 5000);
+    // app.updater = setInterval(function(){
+    //   application.update();
+    // }, 5000);
     
     // Starts page tree opener
     jQuery('#sidebar .opener').live('click', function(e){
       application.trigger('toggle-children', this);
       return false;
     });
+    
+    // Start the sidebar toggle
+    application.trigger('toggle-sidebar');
+    // TODO This needs to be abstracted or a css class or both...
+    // if(jQuery.cookie('toggle-sidebar') == 'closed'){
+    //   var sidebar = jQuery('div#sidebar');
+    //   var editor =  jQuery('div#editor');
+    //   var toggle = jQuery('div#toggle');
+    //   
+    //   sidebar.css({'width':'24px'}).toggleClass('closed');
+    //   editor.css({'left':'24px'});
+    //   toggle.css({'left':'24px'});
+    // }
   });
  
   // Set Active Tab
@@ -140,16 +153,28 @@ var Base = Sammy(function (app) {
   app.bind('toggle-sidebar', function(e){
     var sidebar = jQuery('div#sidebar');
     var editor =  jQuery('div#editor');
-    var sidebarToggle = jQuery('a.toggle-sidebar');
+    var toggle = jQuery('p#toggle');
+    var sidebarToggle = toggle.find('a');
     sidebarToggle.click(function(e){
       e.preventDefault();
       if(sidebar.hasClass('closed')){
         var width = '300';
+        jQuery.cookie('sidebar_toggled', '');
       } else {
         var width = '24';
+        jQuery.cookie('sidebar_toggled', 'closed');
       }
-      sidebar.animate({'width':width}, 200).toggleClass('closed');;
-      editor.animate({'left':width}, 200);
+      if(!Modernizr.cssanimations){
+        sidebar.animate({'width':width}, 200).toggleClass('closed');;
+        editor.animate({'left':width}, 200).toggleClass('open');
+        toggle.animate({'left':width}, 200).toggleClass('open');
+      }else{
+        console.log('Move.js goes here')
+        sidebar.animate({'width':width}, 200).toggleClass('closed');;
+        editor.animate({'left':width}, 200).toggleClass('open');
+        toggle.animate({'left':width}, 200).toggleClass('open');
+      }
+
     })
   });
   

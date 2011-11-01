@@ -11,9 +11,9 @@ module Sinatra
       
       def current_site 
         if subdomain.blank? 
-          @current_site || Site.first
+          @current_site ||= Site.first
         else
-          @current_site || Site.find_by_subdomain(subdomain) 
+          @current_site ||= Site.find_by_subdomain(subdomain) 
         end 
       end
       

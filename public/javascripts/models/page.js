@@ -100,9 +100,9 @@ var Page = Model('page', function() {
       }
     },
     
-    asJSON: function(){
-      return Page.map(function(item){ return item.attr() });
-    },  
+    // asJSON: function(){
+    //   return Page.map(function(item){ return item.attr() });
+    // },  
     
     root: function(){
       return this.detect(function(){

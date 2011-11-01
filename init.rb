@@ -112,8 +112,6 @@ else
 end
 
 require root_path('app/models/template.rb') 
-# This needs to be required first or Artist blows up...
-require root_path('app/models/asset.rb')
 # This needs to be required first or Page blows up...
 require root_path('app/models/part.rb')  
 

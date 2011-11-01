@@ -1,13 +1,32 @@
-#sidebar 
+#toggle
   :position absolute
   :top 0
-  :left 0
-  :bottom 0 
+  :left 300px
+  :background #333
+  :padding 10px
+  :z-index 10
+  &.open
+    :left 24px
+  a 
+    :color white
+    :display block
+    :height 100%
+    :width 100%
+    :cursor pointer
+#sidebar 
+  +box-shadow(0, 0, 6px, #555)
+  +positionable  
+  :right auto
   :padding 0
   :width 300px     
   :overflow-y auto
   :overflow-x hidden
-  :background #333 
+  :background 
+    :color #333 
+  :z-index 10
+  // Closed state of Sidebar
+  &.closed
+    :width 24px
   a
     :color #bbb
     :text-decoration none

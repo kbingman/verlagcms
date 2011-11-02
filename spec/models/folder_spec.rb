@@ -7,6 +7,7 @@ describe Folder do
   before(:all) do
     build_complete_site
     @parent_folder = Factory(:folder, :site => @site, :name => 'Parent Folder')
+    @asset = Factory(:asset, :site_id => @site.id)   
   end
   
   after(:all) do
@@ -55,6 +56,22 @@ describe Folder do
     it "should require a unique name, scoped to the parent" do
       folder = Folder.new :name => 'Child Folder 1', :site => nil, :parent => @parent_folder
       folder.should_not be_valid
+    end
+  end
+  
+  context 'json' do
+    it "should return the admin path" do
+      @parent_folder.admin_path.should == "/admin/folders/#{@parent_folder.id}"
+    end
+  end
+  
+  context 'assets' do
+    it "should have assets" do
+      file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
+      asset = Factory(:asset, :site_id => @site.id, :file => file)   
+      @parent_folder.assets << asset
+      @parent_folder.save
+      @parent_folder.assets.should == [asset]
     end
   end
   

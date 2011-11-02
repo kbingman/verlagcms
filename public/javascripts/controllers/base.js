@@ -102,8 +102,8 @@ var Base = Sammy(function (app) {
     
     var iframe =jQuery('#page-iframe-' + page.id());
     if (iframe.length){
-      var message = 'This page has been changed. Click here to reload.'
-      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { persist: true, class: 'warning' });
+      var message = 'This page has been changed. Click here to reload.';
+      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { 'persist': true, 'class': 'warning' });
     }
   });
   
@@ -140,7 +140,7 @@ var Base = Sammy(function (app) {
             'unlink': 'unlink',
             'textile': 'Textile'
           }  
-        },
+        }
       }); 
     });
     setTimeout(function(){

@@ -111,9 +111,11 @@ else
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil, :logger => logger)
 end
 
-require root_path('app/models/template.rb') 
-# This needs to be required first or Page blows up...
-require root_path('app/models/part.rb')  
+# Models
+
+# These need to be required first or Page blows up...
+require root_path('app/models/templates/template.rb')
+require root_path('app/models/parts/part.rb')
 
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
@@ -130,6 +132,7 @@ end
 Dir[root_path('app/routes/admin/*.rb')].each do |file|
   require file unless file.match('rest_controller')
 end
+# Loads this last so that one can easily override it
 require root_path('app/routes/admin/rest_controller') 
 
 # Load api routes

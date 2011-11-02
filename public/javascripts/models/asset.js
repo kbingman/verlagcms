@@ -54,6 +54,14 @@ var Asset = Model('asset', function() {
   }), 
   
   this.extend({
+    
+    find_all_by_folder_id: function(folder_id){
+      return this.select(function(){
+        return this.attr('folder_id') == folder_id
+      });
+    },
+    
+    
     // returns a json array of all assets, including the query and query_path
     toMustache: function(query) {
       var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';

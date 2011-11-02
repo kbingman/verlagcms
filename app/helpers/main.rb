@@ -1,6 +1,18 @@
 class Main
   
   helpers do
+    
+    def model
+      @model ||= params['model']
+    end
+    
+    def klass 
+      begin
+        @klass ||= model.singularize.titlecase.constantize if model 
+      rescue
+        nil
+      end
+    end
      
     # Basic Date formatting
     def format_date(date, format = "%d/%m/%Y")

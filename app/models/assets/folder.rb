@@ -1,4 +1,4 @@
-class Folder < Part
+class Folder
   include MongoMapper::Document
   
   # Attributes
@@ -26,6 +26,16 @@ class Folder < Part
     :presence => true
   
   timestamps!
+  
+  def admin_path
+    "/admin/folders/#{self.id}"
+  end
+  
+  def as_json(options)
+    super(:methods => [
+      :admin_path
+    ]) 
+  end
   
   
   protected

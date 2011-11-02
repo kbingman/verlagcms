@@ -8,6 +8,7 @@ class Site
   many :pages
   many :assets
   many :templates   
+  many :folders 
   
   key :group_id, ObjectId, :required => true
   belongs_to :group, :foreign_key => :group_id

@@ -6,6 +6,19 @@ var Assets = Sammy(function (app) {
   // ---------------------------------------------  
   app.helpers({  
     
+    // Renders the Folder tree
+    renderFolderTree: function(callback){ 
+      var application = this;
+      if(!jQuery('ul#folders').length){
+        var index = application.load(jQuery('script#admin-folders-index')).interpolate({ folders: Folder.asJSON() }, 'mustache');
+        index.replace('#sidebar').then(function(){
+          if(callback){ callback.call(this); }  
+        });
+      } else {
+        if(callback){ callback.call(this); }  
+      }
+    },
+    
     // Sends each file to the server in turn, instead of all at once...
     send_files: function(files, params, callback){
       var application = this;
@@ -39,6 +52,37 @@ var Assets = Sammy(function (app) {
   
   // Asset Events
   // ------------------------------------------------------------------------------------------
+  
+  app.bind('render-index', function(e, query){
+    var application = this; 
+    var query = query ? query : '';
+    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+    assetIndex.replace('#editor').then(function(){
+      // Sets uploader to multiple if browser supports it
+      // jQuery('#ajax_uploader').attr('multiple','multiple'); 
+      
+      // Triggers info popups
+      jQuery('a.info-icon').click(function(e){
+        e.preventDefault();
+        current_asset_id = this.id.split('-')[2];
+        application.trigger('show_info', { 'current_asset_id': current_asset_id });
+      });
+      
+      // Upload Form
+      jQuery('#ajax_uploader')
+        .attr('multiple','multiple')
+        .change(function(e){
+          jQuery(this).parents('form:first').submit();
+        });
+      
+      // Triggers remove popups
+      jQuery('a.remove-icon').click(function(e){
+        e.preventDefault();
+        current_asset_id = this.id.split('-')[2];
+        application.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
+      });
+    });
+  });
   
   // Show Asset Info popup
   // ---------------------------------------------
@@ -83,34 +127,29 @@ var Assets = Sammy(function (app) {
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
 
-    if(!context.modal){
-      Asset.searchAdmin(params, function(){  
-        var assetIndex = request.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
-        jQuery('#sidebar').html('');
-        assetIndex.replace('#editor').then(function(){
-          // Sets uploader to multiple if browser supports it
-          jQuery('#ajax_uploader').attr('multiple','multiple'); 
-          
-          // Triggers info popups
-          jQuery('a.info-icon').click(function(e){
-            e.preventDefault();
-            current_asset_id = this.id.split('-')[2];
-            request.trigger('show_info', { 'current_asset_id': current_asset_id });
-          });
-          
-          // Triggers remove popups
-          jQuery('a.remove-icon').click(function(e){
-            e.preventDefault();
-            current_asset_id = this.id.split('-')[2];
-            request.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
-          });
-        });
-      });
-    }
-    context.modal = false; 
-    context.first_run = false;
+    request.renderFolderTree();
+    
+    Asset.searchAdmin(params, function(){  
+      request.trigger('render-index', query);
+    });
   }); 
   
+  // Show Folder
+  // ---------------------------------------------
+  app.get('/admin/folders/:id', function(request){ 
+    var folderId = request.params['id'];
+    var folder = Folder.find(folderId);
+    request.renderFolderTree(function(){
+      jQuery('ul#folders li').removeClass('active');
+      jQuery('#folder-' + folderId).addClass('active');
+    });
+    
+    // var assets = Asset.find_all_by_folder_id(folderId);
+    folder.loadAssets(function(){
+      request.trigger('render-index');
+    });
+
+  });
   
   // New Assets
   // ---------------------------------------------
@@ -135,10 +174,7 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
     
     this.send_files(files, params, function(){
-      var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
-      assetIndex.replace('#editor').then(function(){
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
-      });
+      request.trigger('render-index');
     });
 
     return false; 

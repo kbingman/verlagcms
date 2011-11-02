@@ -97,9 +97,7 @@ var Pages = Sammy(function (app) {
   app.bind('page-index', function(e){
     var application = this; 
     var pageId = document.location.pathname.split('/')[3];
-    if(!jQuery('.page-children').length){
-      application.renderTree(Page.root(), pageId);  
-    } 
+    application.renderTree(Page.root(), pageId);  
   }); 
   
   app.bind('set-active-page', function(e, page){

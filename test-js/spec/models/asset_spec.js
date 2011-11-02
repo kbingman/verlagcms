@@ -1,6 +1,7 @@
 var assetData = {
   "created_at":"2011-10-09T19:24:48Z",
   "file_name":"Zooey Deschanel by Ellen von Unwerth 2.jpg",
+  "folder_id":"4eafa19a73c44f0862000002",
   "id":"4e91f50073c44f517a00366a",
   "tag_list":"",
   "tags":["ellen", "woman"],
@@ -38,6 +39,10 @@ describe("Asset", function () {
   
   it("returns a JSON object of all assets", function(){
     expect(Asset.asJSON()).toEqual([assetData]);
-  })
+  });
+  
+  it("returns all assets with the corresponding folder_id", function(){
+    expect(Asset.find_all_by_folder_id('4eafa19a73c44f0862000002').all()).toEqual([this.asset]);
+  });
   
 });

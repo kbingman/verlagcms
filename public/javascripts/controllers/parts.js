@@ -30,10 +30,11 @@ var Parts = Sammy(function (app) {
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
-            var form = jQuery(this).parents('form:first');
-            jQuery('.progress').slideDown('slow',function(){
-              form.submit();
-            });
+            alert('HHH')
+            // var form = jQuery(this).parents('form:first');
+            // jQuery('.progress').slideDown('slow',function(){
+            //   form.submit();
+            // });
           });
         application.trigger('page-index');
       });

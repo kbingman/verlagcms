@@ -29,6 +29,7 @@ jQuery(document).ready(function () {
         Updater.setup(results.pages, Page);
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);
+        Updater.setup(results.folders, Folder);
         Base.run();
         window.timestamp = results.now;
       }

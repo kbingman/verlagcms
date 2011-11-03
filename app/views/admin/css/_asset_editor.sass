@@ -5,23 +5,71 @@
     +positionable  
     :padding 20px
     :overflow auto   
-    :top 41px
+    :top 46px
     :bottom 0
   #title-wrapper
     :width 100%
     :border-bottom 2px solid #444  
     :background white 
+
+
+#asset-editor  
+  // +positionable 
+  :position relative
+  +box-shadow(0, 0, 12px, #888)
+  // +border-radius(3px)
+  // :border 0 solid hsla(0,0,72,0.54)
+  :width 94%
+  :max-width 800px
+  :margin 20px auto
+  // :bottom auto
+  :padding 0
+  :z-index 100
+  :overflow hidden
   .image-display
-    :float left
+    +clearfix
+    
+    img
+      :width 100%
+      :float left
   .image-info  
-    :padding 12px 0 0 18px
-    :float left
+    +positionable 
+    :overflow hidden
+    :top auto
+    :height 200px
+    :padding 0
+    :color white
+    :background hsla(0,0,0,0.5)
+    form
+      :width auto
+      :margin 0
+    input
+      :border none
+      :color white
+      :width 100%
+      :background transparent
+      :font
+        :family $headline-fonts
+        :size 2em
+  .actions
+    +positionable 
+    :top auto
+    :height 72px
+    input
+      +border-radius(5px)
+      :position absolute
+      :bottom 12px
+      :right 12px
+      :padding 0 12px
+      :width auto
+      :background hsla(192,89,34.5,0.72)
+        
 
 // asset toolbar, with upload and search functions    
 .toolbar
   :width 100%
   :position relative
-  :min-height 36px
+  :min-height 46px
   :margin 0 0 6px 0
   :background 
     :color #ddd
@@ -29,27 +77,53 @@
     :position absolute
     :right 0
     :top 0
+    input[type=text]
+      +border-radius(5px)
+      :margin 5px
+      :height 34px
+      :border none
+      :background white
+      :font-size 1.4em
+    input[type=submit]
+      :display none
   form.upload-asset
+    +border-radius(5px)
     :position absolute
-    :left 0
-    :top 0
+    :left 5px
+    :top 5px
+    :height 36px
+    :cursor pointer
+    :background 
+      :color hsla(192,89,34.5,0.12)
     .uploader
       :overflow hidden
-      :width 24px
-      :height 24px
+      :width 30px
+      :height 30px
       :float left
-      :margin 4px 4px
-      :background red
+      :margin 2px 4px
+      :background 
+        :image url(/images/icons/upload_alt.png)
+        :repeat no-repeat
+        :position center center
+        
       input
         :opacity 0
     .filefield
       :cursor pointer
+
       label
-        :line-height 32px
-        :width 200px
+        :line-height 30px
+        :padding-top 2px
+        :font
+          :size 1.4em
+          :weight 500
+        :color white
+        :width 223px
         :cursor pointer
     .filefield:hover
+      label
+        :color black
       .uploader
-        :background #333
+        :opacity 1
     .html-only
       :display none

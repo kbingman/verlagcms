@@ -1,3 +1,7 @@
+$steel: #252d3b
+$fonts: 'Gotham', 'Helvetica Neue', 'arial', 'Helvetica', sans-serif
+$headline-fonts: 'Gotham', 'Helvetica Neue', 'arial', 'Helvetica', sans-serif
+
 =clearfix
   *display:     inline-block
   &:after
@@ -31,10 +35,6 @@
   :background-image -moz-linear-gradient(top, $from, $to)
   :background-image gradient(linear, left top, left bottom, from($from), to($to))
 
-$steel: #252d3b
-$fonts: "Helvetica Neue", "Helvetica", sans-serif
-$headline-fonts: 'League Gothic', 'Futura-CondensedMedium', 'Gill Sans MT Condensed', 'Arial Narrow', sans-serif
-
 @import '_reset.sass'    
 @import '_layout.sass'
 @import '_sidebar.sass'  
@@ -51,13 +51,3 @@ $headline-fonts: 'League Gothic', 'Futura-CondensedMedium', 'Gill Sans MT Conden
 @import '_editor.sass'
 @import '_modal_editor.sass'
 @import '_sanskrit_editor.sass'
-
-// Code Mirror Files
-// SCSS will import plain css, useful for libraries and plugins...
-// @import '_codemirror.scss'
-// @import '_javascript.scss'
-// @import '_css.scss'
-// @import '_xml.scss'
-
-    
-

@@ -69,6 +69,12 @@ jQuery(document).ready(function () {
     Utilities.hideNotice();
   });
   
+  // Resizes Modals on window resize
+  jQuery(window).resize(function(){
+    Utilities.resizeModal('div#asset-editor');
+  });
+
+  
 });
 
 // Sets the default styles in the sanskrit iFrame

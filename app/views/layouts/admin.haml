@@ -69,12 +69,12 @@
           %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
         - if authenticated?
           #tabs        
-            %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
             %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
-            %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Templates
             %a.tab{ :id => 'assets-tab', :href => '/admin/assets' } Images 
+            %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
             -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
             %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
+            %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
         = content :header
       #content 
         = yield  

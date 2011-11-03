@@ -78,10 +78,11 @@ var Base = Sammy(function (app) {
  
   // Set Active Tab
   // ---------------------------------------------
-  app.bind('set-active-tab', function(request){
+  app.bind('set-active-tab', function(e, path){
     var tabs = jQuery('div#tabs a.tab');
-    // TODO make this a decent regex
-    var name = request.path.split('?')[0].split('/')[2];
+    // TODO make this a decent regex    
+    var name = path.split('?')[0].split('/')[2];
+    // var name = 'folders' ? 'assets' : name;
     var active_tab = jQuery('#' + name + '-tab');
     
     tabs.removeClass('active');
@@ -188,7 +189,10 @@ var Base = Sammy(function (app) {
   
   // Sets active tab
   app.before(function(request) {
-    // request.trigger('set-active-tab');
+    var path = request.path;
+    if(request && request.verb == 'get'){
+      request.trigger('set-active-tab', path);
+    }
   });
 
 });

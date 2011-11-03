@@ -50,38 +50,51 @@ var Assets = Sammy(function (app) {
     }
   });
   
-  // Asset Events
+  // Render Asset 
   // ------------------------------------------------------------------------------------------
-  
-  app.bind('render-index', function(e, query){
+  app.bind('render-asset', function(e, asset, query){
     var application = this; 
-    var query = query ? query : '';
-    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
-    assetIndex.replace('#editor').then(function(){
-      // Sets uploader to multiple if browser supports it
-      // jQuery('#ajax_uploader').attr('multiple','multiple'); 
-      
-      // Triggers info popups
-      jQuery('a.info-icon').click(function(e){
-        e.preventDefault();
-        current_asset_id = this.id.split('-')[2];
-        application.trigger('show_info', { 'current_asset_id': current_asset_id });
-      });
-      
-      // Upload Form
-      jQuery('#ajax_uploader')
-        .attr('multiple','multiple')
-        .change(function(e){
-          jQuery(this).parents('form:first').submit();
-        });
-      
-      // Triggers remove popups
-      jQuery('a.remove-icon').click(function(e){
-        e.preventDefault();
-        current_asset_id = this.id.split('-')[2];
-        application.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
+    var editAsset = application.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
+    editAsset.appendTo('body').then(function(){
+      Utilities.resizeModal('div#asset-editor', function(){
+        setTimeout(function(){
+          jQuery('div#asset-editor').fadeIn('fast'); 
+        }, 100);
       });
     });
+  });
+  
+  // Asset Index
+  // ---------------------------------------------
+  app.bind('render-index', function(e, query){
+    var application = this; 
+    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+      assetIndex.replace('#editor').then(function(){
+        // Sets uploader to multiple if browser supports it
+        // jQuery('#ajax_uploader').attr('multiple','multiple'); 
+
+        // Triggers info popups
+        jQuery('a.info-icon').click(function(e){
+          e.preventDefault();
+          current_asset_id = this.id.split('-')[2];
+          application.trigger('show_info', { 'current_asset_id': current_asset_id });
+        });
+
+        // Upload Form
+        jQuery('#ajax_uploader')
+          .attr('multiple','multiple')
+          .change(function(e){
+            jQuery(this).parents('form:first').submit();
+          });
+
+        // Triggers remove popups
+        jQuery('a.remove-icon').click(function(e){
+          e.preventDefault();
+          current_asset_id = this.id.split('-')[2];
+          application.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
+        });
+      });
+
   });
   
   // Show Asset Info popup
@@ -122,13 +135,13 @@ var Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   app.get('/admin/assets', function(request){ 
-    var query = request.params['query'];
-    var params = query ? { 'query': query } : {};   
+    jQuery('#overlay').remove();
+    var query = request.params['query'] ? request.params['query'] : '';
+    var params = { 'query': query };
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
 
     request.renderFolderTree();
-    
     Asset.searchAdmin(params, function(){  
       request.trigger('render-index', query);
     });
@@ -137,6 +150,7 @@ var Assets = Sammy(function (app) {
   // Show Folder
   // ---------------------------------------------
   app.get('/admin/folders/:id', function(request){ 
+    jQuery('#overlay').remove();
     var folderId = request.params['id'];
     var folder = Folder.find(folderId);
     request.renderFolderTree(function(){
@@ -146,7 +160,7 @@ var Assets = Sammy(function (app) {
     
     // var assets = Asset.find_all_by_folder_id(folderId);
     folder.loadAssets(function(){
-      request.trigger('render-index');
+      request.trigger('render-index', '');
     });
 
   });
@@ -183,33 +197,48 @@ var Assets = Sammy(function (app) {
   // Edit Asset 
   // ---------------------------------------------  
   app.get('/admin/assets/:id/edit', function(request){
+    jQuery('#overlay').remove();
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
-    var editAsset = request.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
+    // request.trigger('render-index');
     
-    editAsset.replace('#editor').then(function(results){  
-      setTimeout(function(){
-        $('img.fade-in').fadeIn('slow'); 
-      }, 100);
-      Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
-    });                                                                           
-
-    // sets a flag so the the search results are not reloaded   
-    context.modal = false;  
+    request.renderFolderTree();
+    
+    if(asset) {
+      app.trigger('render-asset', asset, query);
+    } else {  
+      // Loads asset if the current collection does not contain it
+      asset = new Asset({ id: request.params['id'] });
+      asset.load(function(){
+        app.trigger('render-asset', asset, query);
+      });
+    }                                                                         
   });
   
   // Update Asset
   // ---------------------------------------------  
   app.put('/admin/assets/:id', function(request){
-    var asset = Asset.find(request.params['id']);     
-  
-    asset.attr(request.params['asset']);
-    asset.save(function(success){   
-      if(success){
-        Utilities.notice('Successfully saved asset');   
-      }
-    });
+    var asset = Asset.find(request.params['id']);  
+    if(asset) {
+      asset.attr(request.params['asset']);
+      asset.save(function(success){   
+        if(success){
+          Utilities.notice('Successfully saved asset');   
+        }
+      });
+    } else {  
+      // Loads asset if the current collection does not contain it
+      asset = new Asset({ id: request.params['id'] });
+      asset.load(function(success){
+        asset.attr(request.params['asset']);
+        asset.save(function(success, results){   
+          if(success){
+            Utilities.notice('Successfully saved asset');   
+          }
+        });
+      });  
+    }
   });    
   
   // Delete Asset

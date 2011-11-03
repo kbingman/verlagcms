@@ -180,6 +180,7 @@ class Asset
   def tag_list=(list)
     new_tags = list.split(',').map{ |t| t.strip.downcase }
     self.tags = new_tags.uniq
+    puts self.tags
   end
   
   private

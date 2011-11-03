@@ -49,6 +49,29 @@ var logger = {
 
 var Utilities = { 
   
+  // resizes and centers modals vertically. 
+  // Horizontal centering is handled with CSS...
+  resizeModal: function(element, callback){
+    if(!jQuery(element).length){ return }
+    
+    var container = jQuery('#asset-editor');
+    var width = container.width();
+    var height = container.height();
+    var ratio = width / height;
+    var docWidth = jQuery(window).width();
+    var docHeight = jQuery(window).height();
+    if(height > docHeight){
+      container
+        .height(docHeight - 40)
+        .width((docHeight - 40) * ratio);
+    }else{
+      container.css({
+        'margin-top': (docHeight - height)/2
+      });
+    }
+    if(callback){ callback.call(this); }
+  },
+  
   notice: function(message, options){
     var options = options || {};
     var notice = jQuery('.notice');

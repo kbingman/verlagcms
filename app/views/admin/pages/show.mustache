@@ -3,8 +3,10 @@
   <iframe src="/preview{{path}}?edit=true" id="page-iframe-{{id}}"></iframe>
 </div>   
 
-<div class="field page-title">   
-  <h1 id="page-title-{{id}}">{{title}}</h1>
-  <a class="toggle-page-editor" href="{{admin_path}}/edit">Edit Page</a>
+<div class="toolbar">   
+  <h1 id="page-title-{{id}}">
+    {{title}}
+    <a class="toggle-page-editor edit" href="{{admin_path}}/edit">Edit</a>
+  </h1>
 </div>
 {{/page}}

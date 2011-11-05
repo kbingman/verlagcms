@@ -19,13 +19,15 @@
           <input type="text" name="asset[tag_list]" id="asset_tag_list" value="{{tag_list}}" class="textfield" /> 
         </div>
         <div class="actions">
-          <input type="submit" value="Save" class="button html-only" />
+          
           <!--input type="submit" value="Save and Continue" class="button html-only" /-->
           <a href="/admin/assets{{query_path}}" class="cancel">Cancel</a>
+          or
+          <input type="submit" value="Save" class="button html-only" />
         </div>
       </form>  
-      {{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
-      {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}
+      <!--{{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
+      {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}-->
     </div>
 
   </div> 

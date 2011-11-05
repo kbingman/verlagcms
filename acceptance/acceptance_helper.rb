@@ -6,12 +6,12 @@ require 'capybara/rspec'
 require 'capybara/dsl'
 require 'yajl'
 # require 'capybara/zombie' 
-# require 'capybara-webkit'
+require 'capybara-webkit'
 require 'faker'
 
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :selenium #:webkit
+Capybara.default_driver = :webkit # :selenium 
 Capybara.app = Main
 
 def screen_shot_and_save_page(title)

@@ -49,6 +49,23 @@ var logger = {
 
 var Utilities = { 
   
+  // Adds the # to each link for use with IE and other older browsers
+  setNonHistoryLinks: function(){
+    // if (!Modernizr.history) {     
+      jQuery('a').click(function(){
+        var el = this;
+        var href = jQuery(el).attr('href');
+        if(href && !href.match('http://') && !href.match(/^#/)){
+          console.log('#' + href);
+          document.location.hash = $(this).attr('href');
+        }
+      });
+      // var search_form = jQuery('form#search-form');
+      // search_form.attr('action', '#' + search_form.attr('action'));
+    // }
+
+  },
+  
   // resizes and centers modals vertically. 
   // Horizontal centering is handled with CSS...
   resizeModal: function(element, callback){
@@ -65,6 +82,7 @@ var Utilities = {
         .height(docHeight - 40)
         .width((docHeight - 40) * ratio);
     }else{
+      console.log((docHeight - height)/2)
       container.css({
         'margin-top': (docHeight - height)/2
       });
@@ -117,14 +135,14 @@ var Utilities = {
   // Adds the '#' tag to all links if the history object is not available   
   // Temp. The zombie tests are failing with the history object...
   check_browser_version: function(){
-    if (!Modernizr.history) {     
-      jQuery('a').live('click', function(e){
-        e.preventDefault();
-        document.location.hash = $(this).attr('href');
-      });
-      var search_form = jQuery('form#search-form');
-      search_form.attr('action', '#' + search_form.attr('action'));
-    }
+    //if (!Modernizr.history) {     
+    //  jQuery('a').live('click', function(e){
+    //    e.preventDefault();
+    //    document.location.hash = $(this).attr('href');
+    //  });
+    //  var search_form = jQuery('form#search-form');
+    //  search_form.attr('action', '#' + search_form.attr('action'));
+    //}
   },
   
   formObserver: function(element){      

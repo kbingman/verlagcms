@@ -38,7 +38,8 @@ jQuery(document).ready(function () {
 
   // Grabs the keyboard shortcuts
   // Utilities.keyboard_nav();  
-  Utilities.check_browser_version();  
+  // Utilities.check_browser_version(); 
+  Utilities.setNonHistoryLinks(); 
   
   // ACE Save. Only works with the ACE editor windows
   var canon = require("pilot/canon");  

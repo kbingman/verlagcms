@@ -51,42 +51,58 @@ var Utilities = {
   
   // Adds the # to each link for use with IE and other older browsers
   setNonHistoryLinks: function(){
-    // if (!Modernizr.history) {     
-      jQuery('a').click(function(){
-        var el = this;
-        var href = jQuery(el).attr('href');
-        if(href && !href.match('http://') && !href.match(/^#/)){
-          console.log('#' + href);
-          document.location.hash = $(this).attr('href');
-        }
-      });
-      // var search_form = jQuery('form#search-form');
-      // search_form.attr('action', '#' + search_form.attr('action'));
-    // }
+   // // if (!Modernizr.history) {     
+   //   jQuery('a').click(function(){
+   //     var el = this;
+   //     var href = jQuery(el).attr('href');
+   //     if(href && !href.match('http://') && !href.match(/^#/)){
+   //       console.log('#' + href);
+   //       document.location.hash = $(this).attr('#' + 'href');
+   //     }
+   //   });
+   //   // var search_form = jQuery('form#search-form');
+   //   // search_form.attr('action', '#' + search_form.attr('action'));
+   // // }
 
   },
   
   // resizes and centers modals vertically. 
   // Horizontal centering is handled with CSS...
-  resizeModal: function(element, callback){
-    if(!jQuery(element).length){ return }
+  loadModal: function(element, callback){
+    var self = this;
+    var container = jQuery(element);
+    if(!container.length){ return }
+
+    Loader.start();
+    var img = container.find('img');
     
-    var container = jQuery('#asset-editor');
+    // setTimeout(function(){
+    if(container.height() == 0){
+      img.load(function(){
+        self.resizeModal(container, callback);
+      });
+    } else {
+      self.resizeModal(container, callback);
+    }
+    // }, 13);
+  },
+  
+  resizeModal: function(container, callback){
     var width = container.width();
     var height = container.height();
     var ratio = width / height;
     var docWidth = jQuery(window).width();
     var docHeight = jQuery(window).height();
-    if(height > docHeight){
+    if(height > (docHeight - 40)){
       container
         .height(docHeight - 40)
         .width((docHeight - 40) * ratio);
     }else{
-      console.log((docHeight - height)/2)
       container.css({
         'margin-top': (docHeight - height)/2
       });
     }
+    Loader.stop();
     if(callback){ callback.call(this); }
   },
   
@@ -158,6 +174,9 @@ var Utilities = {
 
 var Loader = {
   start: function(element){
+    var element = jQuery('#loader');
+    if(!element.length){ return }
+    
     element.show();
     Loader.timer = setInterval(function(){
       var y = element.css('background-position-y').replace('px','');
@@ -166,6 +185,8 @@ var Loader = {
   },
   
   stop: function(element){
+    var element = jQuery('#loader');
+    if(!element.length){ return }
     element.hide();
     clearInterval(Loader.timer);
   }
@@ -216,7 +237,7 @@ var iFramer = {
     var self = this;
     if(!trigger.length) return;
     
-    Loader.start(loader_el);
+    Loader.start();
  
     trigger.load(function(){   
       var iframe = $(this);
@@ -225,7 +246,7 @@ var iFramer = {
       var editor = iFrameContent.find('span.part-editor');
       var flags = editor.find('a'); 
       
-      Loader.stop(loader_el); 
+      Loader.stop(); 
       self.setEditFlags(editor); 
       iframe.fadeIn('fast');
       

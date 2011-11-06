@@ -97,7 +97,9 @@ var Pages = Sammy(function (app) {
   app.bind('page-index', function(e){
     var application = this; 
     var pageId = document.location.pathname.split('/')[3];
-    application.renderTree(Page.root(), pageId);  
+    if(!jQuery('ul.page-children').length){
+      application.renderTree(Page.root(), pageId);  
+    }
   }); 
   
   app.bind('set-active-page', function(e, page){
@@ -171,7 +173,7 @@ var Pages = Sammy(function (app) {
   this.get('/admin/pages/?', function(request){  
     // request.trigger('page-index');
     // jQuery('#editor').html('<h1 class="section">Pages</div>');     
-    var first = Page.first()
+    var first = Page.first();
     request.redirect(first.attr('admin_path'));       
   });
   

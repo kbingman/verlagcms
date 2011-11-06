@@ -56,10 +56,8 @@ var Assets = Sammy(function (app) {
     var application = this; 
     var editAsset = application.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
     editAsset.appendTo('body').then(function(){
-      Utilities.resizeModal('div#asset-editor', function(){
-        setTimeout(function(){
-          jQuery('div#asset-editor').fadeIn('fast'); 
-        }, 100);
+      Utilities.loadModal('div#asset-editor', function(){
+        jQuery('div#asset-editor').fadeIn('fast'); 
       });
     });
   });

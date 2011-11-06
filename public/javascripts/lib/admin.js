@@ -72,7 +72,8 @@ jQuery(document).ready(function () {
   
   // Resizes Modals on window resize
   jQuery(window).resize(function(){
-    Utilities.resizeModal('div#asset-editor');
+    var container = jQuery('div#asset-editor'); 
+    Utilities.loadModal(container);
   });
 
   

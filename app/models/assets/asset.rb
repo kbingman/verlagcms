@@ -168,7 +168,7 @@ class Asset
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:only => [:id, :file_name, :created_at, :title, :tags], :methods => [:tag_list]) #:artist_id, 
+    super(:only => [:id, :created_at, :file_name,  :folder_id, :title], :methods => [:tag_list]) #:artist_id, 
   end
   
   # Tags
@@ -180,6 +180,7 @@ class Asset
   def tag_list=(list)
     new_tags = list.split(',').map{ |t| t.strip.downcase }
     self.tags = new_tags.uniq
+    puts self.tags
   end
   
   private

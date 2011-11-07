@@ -5,16 +5,13 @@ require File.join(File.dirname(__FILE__),'../spec/spec_helper')
 require 'capybara/rspec'
 require 'capybara/dsl'
 require 'yajl'
-require 'capybara/zombie' 
+# require 'capybara/zombie' 
 require 'capybara-webkit'
 require 'faker'
 
-# require 'factory_girl'
-# require File.join(File.dirname(__FILE__), '../factories.rb')
-
 RSpec.configuration.include Capybara::DSL, :type => :acceptance
 
-Capybara.default_driver = :selenium #:webkit
+Capybara.default_driver = :webkit # :selenium 
 Capybara.app = Main
 
 def screen_shot_and_save_page(title)

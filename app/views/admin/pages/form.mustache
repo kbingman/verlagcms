@@ -1,0 +1,43 @@
+{{#page}} 
+<span class="timestamp">{{ timestamp }}</span>
+<form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save">  
+
+  <!--p><a href="#/pages/{{id}}/parts/new">Add Part</a></p-->  
+  <div class="page-properties tab">
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" /> 
+      <input type="hidden" id="page-updated_at" name="page[updated_at]" value="{{updated_at}}" /> 
+    </div>
+    
+    <div class="field" id="page-title-field">   
+      <label for="page-title">Title</label>
+      <input type="text" id="page-title" name="page[title]" value="{{title}}" class="textfield" />  
+    </div> 
+    
+    <div class="field"> 
+      <label for="page-slug">Slug</label>
+      <input type="text" id="page-slug" name="page[slug]" value="{{slug}}" class="textfield" />  
+    </div>  
+     
+    <div class="field">
+      <label for="asset_tags">Tags</label> 
+      <input type="text" name="page[tag_list]" id="page-tag-list" value="{{tag_list}}" class="textfield" /> 
+    </div>
+    
+    <div class="select-boxes">
+      <label for="page-layout">Layout</label> 
+      <select id="page-layout" class="select" name="page[layout_id]"> 
+        {{#layouts}}
+        <option value="{{id}}" {{selected}}>{{name}}</option>
+        {{/layouts}}
+      </select>  
+    </div>
+  </div><!-- .page-properties -->
+
+  <div class="buttons">
+    <input type="submit" id="page_save" value="Save" class="button" />   
+    <a href="/admin/pages/{{id}}">Cancel</a>
+  </div>
+  
+</form>
+{{/page}} 

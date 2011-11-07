@@ -15,6 +15,7 @@ class Part
   def path
    "/admin/pages/#{self.page_id}/parts/#{self.id}" 
   end
+  alias :admin_path :path
   
   def klass
     self.class.to_s.downcase.pluralize
@@ -35,7 +36,7 @@ class Part
   end
   
   def as_json(options)
-    super(:methods => [:path, :klass])
+    super(:methods => [:path, :klass, :admin_path])
   end
     
 end

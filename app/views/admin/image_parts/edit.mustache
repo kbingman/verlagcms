@@ -1,49 +1,68 @@
-{{#part}} 
-  <div class="toolbar">
-    <form action="#/pages/{{page_id}}/image_parts/{{id}}/assets" enctype="multipart/form-data" class="upload-asset" method="post">
-      <div class="hidden">
-        <input name="limit" value="12" type="hidden" />
-      </div>
-      <div class="filefield">
-        <div class="uploader">
-          <input id="ajax_uploader" name="file" type="file" />
-        </div>
-        <label for="ajax_uploader">Upload Images</label>
-        <!--input type="submit" value="Save" class="button html-only" /-->
-      </div>
-    </form>
-    <form action="/admin/pages/{{page_id}}/parts/{{id}}/results" class="search-form" method="get">
-      <div class="field">
-        <input class="textfield" id="search-query" name="query" type="text">
-        <input class="button search" type="submit" value="Search">
-      </div>
-    </form>
-  </div>
-  {{/part}}
-  
-  <div class="progress"></div> 
-  <div id="search-results-container" class="assets-container"> 
-    <h1>Recent Assets</h1>
-    <ul id="part-assets">
-      {{#assets}}
-        <li id="asset-{{id}}" class="asset">
-          <a href="#/pages/{{current_page_id}}/assets/{{id}}/add">
-            <img src="/images/icon/{{id}}/{{file_name}}" alt="{{title}}" />
-          </a>  
-        </li>
-      {{/assets}}
-    </ul>
-  </div> 
-  
-  {{#part}}  
-  <div id="selected-assets"  class="assets-container">
-    <h1>Selected Asset</h1>
+{{#part}}  
+{{ name }} <span class="timestamp">{{ timestamp }}</span>
+<div id="selected-assets"  class="assets-container">
+  <h1>Selected Asset</h1>  
+  <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-part">
+    <div class="hidden">
+      <input type="hidden" name="_method" value="put" /> 
+      <input type="hidden" name="part[id]" id="part-{{id}}-id" value="{{id}}" class="hidden" />
+      <input type="hidden" name="part[name]" id="part-{{id}}-name" value="{{name}}" class="hidden" />
+      <input type="hidden" name="base_id" id="base-{{id}}" value="{{base_page_id}}" class="hidden" />
+      <input type="hidden" name="part[asset_id]" id="part-asset-id" value="{{asset_id}}" class="" />
+    </div>
     <ul>
-      <li id="asset-{{asset_id}}" class="asset">
-        <img src="/images/icon/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
+      <li class="asset">
+        <img class="preview" src="/images/thumbnail/{{asset_id}}/file_name_goes_here.jpg" alt="{{title}}" />
       </li>
     </ul>
+    
+    <div class="field">
+      
+    </div>
     last updated: 
-  </div>
+    <div class="buttons">
+      <input type="submit" value="Save" class="button html-only" />
+      <a href="/admin/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<div class="toolbar">
+  <form action="#/pages/{{page_id}}/image_parts/{{id}}/assets" enctype="multipart/form-data" class="upload-asset" method="post">
+    <div class="hidden">
+      <input name="limit" value="12" type="hidden" />
+    </div>
+    <div class="filefield">
+      <div class="uploader">
+        <input id="ajax_uploader" name="file" type="file" />
+      </div>
+      <label for="ajax_uploader">Upload Images</label>
+      <!--input type="submit" value="Save" class="button html-only" /-->
+    </div>
+  </form>
+  <form action="/admin/pages/{{page_id}}/parts/{{id}}/results" class="search-form" method="get">
+    <div class="field">
+      <input class="textfield" id="search-query" name="query" type="text">
+      <input class="button search" type="submit" value="Search">
+    </div>
+  </form>
+</div>
+{{/part}}
+  
+<div class="progress"></div> 
+<div id="search-results-container" class="assets-container"> 
+  <h1>Recent Assets</h1>
+  <ul id="part-assets">
+    {{#assets}}
+      <li id="asset-{{id}}" class="asset">
+        <a href="#">
+          <img src="/images/icon/{{id}}/{{file_name}}" alt="{{title}}" />
+        </a>  
+      </li>
+    {{/assets}}
+  </ul>
+</div>
+
+{{#part}}
   <a href="/admin/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
-{{/part}} 
+{{/part}}

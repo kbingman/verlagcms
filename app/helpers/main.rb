@@ -1,6 +1,18 @@
 class Main
   
   helpers do
+    
+    def model
+      @model ||= params['model']
+    end
+    
+    def klass 
+      begin
+        @klass ||= model.singularize.titlecase.constantize if model 
+      rescue
+        nil
+      end
+    end
      
     # Basic Date formatting
     def format_date(date, format = "%d/%m/%Y")
@@ -75,6 +87,14 @@ class Main
     def content(key)
       @content && @content[key]
     end  
+    
+    def sidebar_toggled?
+      request.cookies['sidebar_toggled']
+    end
+    
+    def editor_toggled?
+      request.cookies['sidebar_toggled'] == 'closed' ? 'open' : 'closed'
+    end
  
   end
 end

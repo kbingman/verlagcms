@@ -1,0 +1,75 @@
+// asset toolbar, with upload and search functions    
+.toolbar
+  :width 100%
+  :position relative
+  :height 46px
+  :margin 0 0 6px 0
+  // :border-bottom 3px solid #423d3a
+  :background 
+    :color #b8aea5
+  h1
+    :color white
+    :padding 8px 0 0 12px
+    :font
+      :size 2em
+      :weight 500
+  a.edit
+    :color #1a4963
+    :text-transform lowercase
+    :font
+      :size 0.5em
+
+  form.search-form
+    :position absolute
+    :right 0
+    :top 0
+    input[type=text]
+      +border-radius(5px)
+      :margin 5px
+      :height 34px
+      :border none
+      :background white
+      :font-size 1.4em
+    input[type=submit]
+      :display none
+  form.upload-asset
+    +border-radius(5px)
+    :position absolute
+    :left 5px
+    :top 5px
+    :height 36px
+    :cursor pointer
+    :background 
+      :color hsla(192,89,34.5,0.42)
+    .uploader
+      :overflow hidden
+      :width 30px
+      :height 30px
+      :float left
+      :margin 2px 4px
+      :background 
+        :image url(/images/icons/upload_alt.png)
+        :repeat no-repeat
+        :position center center
+        
+      input
+        :opacity 0
+    .filefield
+      :cursor pointer
+
+      label
+        :line-height 30px
+        :padding-top 2px
+        :font
+          :size 1.4em
+          :weight 500
+        :color white
+        :width 223px
+        :cursor pointer
+    .filefield:hover
+      label
+        :color black
+      .uploader
+        :opacity 1
+    .html-only
+      :display none

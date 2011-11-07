@@ -1,0 +1,42 @@
+<div id="assets-editor">
+  
+  <div class="toolbar">
+    <form action="/admin/assets" enctype="multipart/form-data" class="upload-asset" method="post">
+      <div class="hidden">
+        <input name="limit" value="12" type="hidden" />
+      </div>
+      <div class="filefield">
+        <div class="uploader">
+          <input id="ajax_uploader" name="file" type="file" />
+        </div>
+        <label for="ajax_uploader">Upload Images</label>
+        <input type="submit" value="Save" class="button html-only" />
+      </div>
+    </form>
+    <form action="/admin/assets" class="search-form" method="get">
+      <div class="field">
+        <input class="textfield" id="search-query" name="query" type="text" value="{{query}}">
+        <input class="button search" type="submit" value="Search">
+      </div>
+    </form>
+  </div><!--toolbar -->
+
+  <ul id="assets">
+    {{#assets}}
+      <li id="asset-{{id}}">
+        <div class="image">
+          <a href="/admin/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
+            <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
+          </a>  
+        </div>
+        <a href="/admin/assets/{{id}}/remove{{query_path}}" class="remove-icon symbol" id="remove-asset-{{id}}">
+          <span>Remove</span>
+        </a>
+        <a href="/admin/assets/{{id}}" class="info-icon symbol" title="{{title}}" id="asset-info-{{id}}">
+          {{title}}
+        </a>
+      </li>
+    {{/assets}}
+  </ul>
+</div>
+

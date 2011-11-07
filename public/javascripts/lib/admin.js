@@ -29,15 +29,17 @@ jQuery(document).ready(function () {
         Updater.setup(results.pages, Page);
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);
+        Updater.setup(results.folders, Folder);
         Base.run();
-        window.current = results.now;
+        window.timestamp = results.now;
       }
     });
   }
 
   // Grabs the keyboard shortcuts
   // Utilities.keyboard_nav();  
-  Utilities.check_browser_version();  
+  // Utilities.check_browser_version(); 
+  Utilities.setNonHistoryLinks(); 
   
   // ACE Save. Only works with the ACE editor windows
   var canon = require("pilot/canon");  
@@ -67,6 +69,13 @@ jQuery(document).ready(function () {
   jQuery('div#sidebar a').live('click', function(){
     Utilities.hideNotice();
   });
+  
+  // Resizes Modals on window resize
+  jQuery(window).resize(function(){
+    var container = jQuery('div#asset-editor'); 
+    Utilities.loadModal(container);
+  });
+
   
 });
 

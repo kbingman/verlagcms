@@ -8,6 +8,7 @@ gem 'sinatra-advanced-routes'
 gem 'thin' 
 gem 'monk-glue', :path => 'vendor/glue' 
 gem 'rack-cache'
+gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
 
 gem 'warden'
 gem 'bcrypt-ruby'
@@ -49,7 +50,7 @@ group :test do
   gem 'capybara' #, :git => 'https://github.com/jnicklas/capybara.git'
   gem 'yajl-ruby'
   # gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
-  # gem 'capybara-webkit', :git => 'https://github.com/thoughtbot/capybara-webkit.git'
+  gem 'capybara-webkit', :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl' #, :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'
   gem 'jasmine'

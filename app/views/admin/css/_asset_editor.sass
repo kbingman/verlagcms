@@ -1,53 +1,65 @@
 #assets-editor 
   +positionable  
   :bottom 0
-  #assets
-    +positionable  
-    :padding 20px
-    :overflow auto   
-    :top 41px
-    :bottom 0
   #title-wrapper
     :width 100%
     :border-bottom 2px solid #444  
     :background white 
-  .image-display
-    :float left
-  .image-info  
-    :padding 12px 0 0 18px
-    :float left
 
-// asset toolbar, with upload and search functions    
-.toolbar
-  :width 100%
+
+#asset-editor  
+  // +positionable 
   :position relative
-  :min-height 36px
-  :margin 0 0 6px 0
-  :background 
-    :color #ddd
-  form.search-form
-    :position absolute
-    :right 0
-    :top 0
-  form.upload-asset
-    :position absolute
-    :left 0
-    :top 0
-    .uploader
-      :overflow hidden
-      :width 24px
-      :height 24px
+  +box-shadow(0, 0, 12px, #555)
+  // +border-radius(3px)
+  // :border 0 solid hsla(0,0,72,0.54)
+  :width 94%
+  :max-width 960px
+  :margin 20px auto
+  // :bottom auto
+  :padding 0
+  :z-index 100
+  :overflow hidden
+  a
+    :color white
+  .image-display
+    +clearfix
+    
+    img
+      :width 100%
       :float left
-      :margin 4px 4px
-      :background red
-      input
-        :opacity 0
-    .filefield
-      :cursor pointer
-      label
-        :line-height 32px
-        :width 200px
-        :cursor pointer
-    .filefield:hover
-      .uploader
-        :background #333
+  .image-info  
+    +positionable 
+    :overflow hidden
+    :top auto
+    :height 120px
+    :padding 0
+    :color white
+    :background hsla(0,0,0,0.5)
+    form
+      :width auto
+      :margin 0
+    input
+      :border none
+      :color white
+      :width 100%
+      :background transparent
+      :font
+        :family $headline-fonts
+        :size 2em
+  .field
+    :margin 0 10px
+  .actions
+    :position absolute
+    :bottom 0
+    :right 0
+    :width 170px
+    :height 42px
+    input
+      +border-radius(5px)
+      :padding 0 12px
+      :width auto
+      :background hsla(192,89,34.5,0.72)
+      :font-size 1.4em
+        
+

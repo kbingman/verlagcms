@@ -15,6 +15,17 @@ class Main
         end
       end
       
+      # TEMP
+      get '/:page_id/image_parts/:id/edit' do
+        page = Page.find(params[:page_id])
+        # parts = page.parts.sort_by{ |p| p.created_at }
+      
+        respond_to do |format| 
+          format.html { admin_haml :'admin/index' }
+          # format.json { parts.to_json }
+        end
+      end
+      
       # Create Page Part 
       # -------------------------------------------
       # post '/:page_id/parts' do

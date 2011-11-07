@@ -10,7 +10,7 @@
           <input id="ajax_uploader" name="file" type="file" />
         </div>
         <label for="ajax_uploader">Upload Images</label>
-        <!--input type="submit" value="Save" class="button html-only" /-->
+        <input type="submit" value="Save" class="button html-only" />
       </div>
     </form>
     <form action="/admin/assets" class="search-form" method="get">
@@ -26,15 +26,11 @@
       <li id="asset-{{id}}">
         <div class="image">
           <a href="/admin/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
-            <img src="/images/thumbnail/{{id}}/{{file_name}}" alt="{{title}}" />
-          </a>  
+            <img src="/images/{{id}}/{{file_name}}?w=240&h=180&c=t&g=North" alt="{{title}}" />
+          </a> 
+          
         </div>
-        <a href="/admin/assets/{{id}}/remove{{query_path}}" class="remove-icon symbol" id="remove-asset-{{id}}">
-          <span>Remove</span>
-        </a>
-        <a href="/admin/assets/{{id}}" class="info-icon symbol" title="{{title}}" id="asset-info-{{id}}">
-          {{title}}
-        </a>
+        <p>{{title}}</p> 
       </li>
     {{/assets}}
   </ul>

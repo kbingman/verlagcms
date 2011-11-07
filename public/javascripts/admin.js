@@ -8190,6 +8190,7 @@ Sanskrit.prototype = {
   },
   
   textilize: function(html, escape){
+    // console.log(html)
     html = html.replace(/\s*<p>((.|[\r\n])*?)<\/p>\s*/gi, "\n\n$1\n\n");
     html = html.replace(/<br ?\/?>/gi, "\n");
     html = html.replace(/<(?:b|strong)>((.|[\r\n])*?)<\/(?:b|strong)>/gi, '*$1*');
@@ -8207,7 +8208,9 @@ Sanskrit.prototype = {
   },
   
   htmlize: function(textile, escape){
+    // console.log(textile)
     var paragraphs = textile.split("\n\n");
+    // console.log(paragraphs)
     for (var i=0; i<paragraphs.length; i++) {
       paragraphs[i] = paragraphs[i].replace(/(^|\r\n|\n|\r)\* (.*)/g, '$1###LI### $2');
       paragraphs[i] = paragraphs[i].replace(/\n/gi, '<br/>');
@@ -8342,7 +8345,6 @@ SanskritToolbar.prototype = {
         self.updateListStatus(self.editor.getCurrentAncestors());
         self.editor.focusEditor();
       }
-      
       return false;
     };
   },
@@ -8353,8 +8355,9 @@ SanskritToolbar.prototype = {
     for (var key in actions) {
       if (actions.hasOwnProperty(key)) {
         var listItem = document.createElement('li');
-        var link = document.createElement('a');
-        link.setAttribute('href', '#');
+        // NOTE Changed to span from a, as the link created problems with Sammy routes
+        var link = document.createElement('span');
+        // link.setAttribute('href', '#');
         Sanskrit.addClassName(listItem, key);
         link.appendChild((typeof actions[key] == 'string') ? document.createTextNode(actions[key]) : actions[key]);
         link.onclick = this.createAction(link, key);
@@ -8496,762 +8499,6 @@ if (typeof Event != 'undefined' && Event.onReady) { //LowPro
     Sanskrit.onLoadFunction();
   };
 }
-CodeMirror.defineMode("javascript", function(config, parserConfig) {
-  var indentUnit = config.indentUnit;
-  var jsonMode = parserConfig.json;
-
-  // Tokenizer
-
-  var keywords = function(){
-    function kw(type) {return {type: type, style: "js-keyword"};}
-    var A = kw("keyword a"), B = kw("keyword b"), C = kw("keyword c");
-    var operator = kw("operator"), atom = {type: "atom", style: "js-atom"};
-    return {
-      "if": A, "while": A, "with": A, "else": B, "do": B, "try": B, "finally": B,
-      "return": C, "break": C, "continue": C, "new": C, "delete": C, "throw": C,
-      "var": kw("var"), "function": kw("function"), "catch": kw("catch"),
-      "for": kw("for"), "switch": kw("switch"), "case": kw("case"), "default": kw("default"),
-      "in": operator, "typeof": operator, "instanceof": operator,
-      "true": atom, "false": atom, "null": atom, "undefined": atom, "NaN": atom, "Infinity": atom
-    };
-  }();
-
-  var isOperatorChar = /[+\-*&%=<>!?|]/;
-
-  function chain(stream, state, f) {
-    state.tokenize = f;
-    return f(stream, state);
-  }
-
-  function nextUntilUnescaped(stream, end) {
-    var escaped = false, next;
-    while ((next = stream.next()) != null) {
-      if (next == end && !escaped)
-        return false;
-      escaped = !escaped && next == "\\";
-    }
-    return escaped;
-  }
-
-  // Used as scratch variables to communicate multiple values without
-  // consing up tons of objects.
-  var type, content;
-  function ret(tp, style, cont) {
-    type = tp; content = cont;
-    return style;
-  }
-
-  function jsTokenBase(stream, state) {
-    var ch = stream.next();
-    if (ch == '"' || ch == "'")
-      return chain(stream, state, jsTokenString(ch));
-    else if (/[\[\]{}\(\),;\:\.]/.test(ch))
-      return ret(ch);
-    else if (ch == "0" && stream.eat(/x/i)) {
-      stream.eatWhile(/[\da-f]/i);
-      return ret("number", "js-atom");
-    }      
-    else if (/\d/.test(ch)) {
-      stream.match(/^\d*(?:\.\d*)?(?:e[+\-]?\d+)?/);
-      return ret("number", "js-atom");
-    }
-    else if (ch == "/") {
-      if (stream.eat("*")) {
-        return chain(stream, state, jsTokenComment);
-      }
-      else if (stream.eat("/")) {
-        stream.skipToEnd();
-        return ret("comment", "js-comment");
-      }
-      else if (state.reAllowed) {
-        nextUntilUnescaped(stream, "/");
-        stream.eatWhile(/[gimy]/); // 'y' is "sticky" option in Mozilla
-        return ret("regexp", "js-string");
-      }
-      else {
-        stream.eatWhile(isOperatorChar);
-        return ret("operator", null, stream.current());
-      }
-    }
-    else if (isOperatorChar.test(ch)) {
-      stream.eatWhile(isOperatorChar);
-      return ret("operator", null, stream.current());
-    }
-    else {
-      stream.eatWhile(/[\w\$_]/);
-      var word = stream.current(), known = keywords.propertyIsEnumerable(word) && keywords[word];
-      return known ? ret(known.type, known.style, word) :
-                     ret("variable", "js-variable", word);
-    }
-  }
-
-  function jsTokenString(quote) {
-    return function(stream, state) {
-      if (!nextUntilUnescaped(stream, quote))
-        state.tokenize = jsTokenBase;
-      return ret("string", "js-string");
-    };
-  }
-
-  function jsTokenComment(stream, state) {
-    var maybeEnd = false, ch;
-    while (ch = stream.next()) {
-      if (ch == "/" && maybeEnd) {
-        state.tokenize = jsTokenBase;
-        break;
-      }
-      maybeEnd = (ch == "*");
-    }
-    return ret("comment", "js-comment");
-  }
-
-  // Parser
-
-  var atomicTypes = {"atom": true, "number": true, "variable": true, "string": true, "regexp": true};
-
-  function JSLexical(indented, column, type, align, prev, info) {
-    this.indented = indented;
-    this.column = column;
-    this.type = type;
-    this.prev = prev;
-    this.info = info;
-    if (align != null) this.align = align;
-  }
-
-  function inScope(state, varname) {
-    for (var v = state.localVars; v; v = v.next)
-      if (v.name == varname) return true;
-  }
-
-  function parseJS(state, style, type, content, stream) {
-    var cc = state.cc;
-    // Communicate our context to the combinators.
-    // (Less wasteful than consing up a hundred closures on every call.)
-    cx.state = state; cx.stream = stream; cx.marked = null, cx.cc = cc;
-  
-    if (!state.lexical.hasOwnProperty("align"))
-      state.lexical.align = true;
-
-    while(true) {
-      var combinator = cc.length ? cc.pop() : jsonMode ? expression : statement;
-      if (combinator(type, content)) {
-        while(cc.length && cc[cc.length - 1].lex)
-          cc.pop()();
-        if (cx.marked) return cx.marked;
-        if (type == "variable" && inScope(state, content)) return "js-localvariable";
-        return style;
-      }
-    }
-  }
-
-  // Combinator utils
-
-  var cx = {state: null, column: null, marked: null, cc: null};
-  function pass() {
-    for (var i = arguments.length - 1; i >= 0; i--) cx.cc.push(arguments[i]);
-  }
-  function cont() {
-    pass.apply(null, arguments);
-    return true;
-  }
-  function register(varname) {
-    var state = cx.state;
-    if (state.context) {
-      cx.marked = "js-variabledef";
-      for (var v = state.localVars; v; v = v.next)
-        if (v.name == varname) return;
-      state.localVars = {name: varname, next: state.localVars};
-    }
-  }
-
-  // Combinators
-
-  var defaultVars = {name: "this", next: {name: "arguments"}};
-  function pushcontext() {
-    if (!cx.state.context) cx.state.localVars = defaultVars;
-    cx.state.context = {prev: cx.state.context, vars: cx.state.localVars};
-  }
-  function popcontext() {
-    cx.state.localVars = cx.state.context.vars;
-    cx.state.context = cx.state.context.prev;
-  }
-  function pushlex(type, info) {
-    var result = function() {
-      var state = cx.state;
-      state.lexical = new JSLexical(state.indented, cx.stream.column(), type, null, state.lexical, info)
-    };
-    result.lex = true;
-    return result;
-  }
-  function poplex() {
-    var state = cx.state;
-    if (state.lexical.prev) {
-      if (state.lexical.type == ")")
-        state.indented = state.lexical.indented;
-      state.lexical = state.lexical.prev;
-    }
-  }
-  poplex.lex = true;
-
-  function expect(wanted) {
-    return function expecting(type) {
-      if (type == wanted) return cont();
-      else if (wanted == ";") return pass();
-      else return cont(arguments.callee);
-    };
-  }
-
-  function statement(type) {
-    if (type == "var") return cont(pushlex("vardef"), vardef1, expect(";"), poplex);
-    if (type == "keyword a") return cont(pushlex("form"), expression, statement, poplex);
-    if (type == "keyword b") return cont(pushlex("form"), statement, poplex);
-    if (type == "{") return cont(pushlex("}"), block, poplex);
-    if (type == ";") return cont();
-    if (type == "function") return cont(functiondef);
-    if (type == "for") return cont(pushlex("form"), expect("("), pushlex(")"), forspec1, expect(")"),
-                                      poplex, statement, poplex);
-    if (type == "variable") return cont(pushlex("stat"), maybelabel);
-    if (type == "switch") return cont(pushlex("form"), expression, pushlex("}", "switch"), expect("{"),
-                                         block, poplex, poplex);
-    if (type == "case") return cont(expression, expect(":"));
-    if (type == "default") return cont(expect(":"));
-    if (type == "catch") return cont(pushlex("form"), pushcontext, expect("("), funarg, expect(")"),
-                                        statement, poplex, popcontext);
-    return pass(pushlex("stat"), expression, expect(";"), poplex);
-  }
-  function expression(type) {
-    if (atomicTypes.hasOwnProperty(type)) return cont(maybeoperator);
-    if (type == "function") return cont(functiondef);
-    if (type == "keyword c") return cont(expression);
-    if (type == "(") return cont(pushlex(")"), expression, expect(")"), poplex, maybeoperator);
-    if (type == "operator") return cont(expression);
-    if (type == "[") return cont(pushlex("]"), commasep(expression, "]"), poplex, maybeoperator);
-    if (type == "{") return cont(pushlex("}"), commasep(objprop, "}"), poplex, maybeoperator);
-    return cont();
-  }
-  function maybeoperator(type, value) {
-    if (type == "operator" && /\+\+|--/.test(value)) return cont(maybeoperator);
-    if (type == "operator") return cont(expression);
-    if (type == ";") return;
-    if (type == "(") return cont(pushlex(")"), commasep(expression, ")"), poplex, maybeoperator);
-    if (type == ".") return cont(property, maybeoperator);
-    if (type == "[") return cont(pushlex("]"), expression, expect("]"), poplex, maybeoperator);
-  }
-  function maybelabel(type) {
-    if (type == ":") return cont(poplex, statement);
-    return pass(maybeoperator, expect(";"), poplex);
-  }
-  function property(type) {
-    if (type == "variable") {cx.marked = "js-property"; return cont();}
-  }
-  function objprop(type) {
-    if (type == "variable") cx.marked = "js-property";
-    if (atomicTypes.hasOwnProperty(type)) return cont(expect(":"), expression);
-  }
-  function commasep(what, end) {
-    function proceed(type) {
-      if (type == ",") return cont(what, proceed);
-      if (type == end) return cont();
-      return cont(expect(end));
-    }
-    return function commaSeparated(type) {
-      if (type == end) return cont();
-      else return pass(what, proceed);
-    };
-  }
-  function block(type) {
-    if (type == "}") return cont();
-    return pass(statement, block);
-  }
-  function vardef1(type, value) {
-    if (type == "variable"){register(value); return cont(vardef2);}
-    return cont();
-  }
-  function vardef2(type, value) {
-    if (value == "=") return cont(expression, vardef2);
-    if (type == ",") return cont(vardef1);
-  }
-  function forspec1(type) {
-    if (type == "var") return cont(vardef1, forspec2);
-    if (type == ";") return pass(forspec2);
-    if (type == "variable") return cont(formaybein);
-    return pass(forspec2);
-  }
-  function formaybein(type, value) {
-    if (value == "in") return cont(expression);
-    return cont(maybeoperator, forspec2);
-  }
-  function forspec2(type, value) {
-    if (type == ";") return cont(forspec3);
-    if (value == "in") return cont(expression);
-    return cont(expression, expect(";"), forspec3);
-  }
-  function forspec3(type) {
-    if (type != ")") cont(expression);
-  }
-  function functiondef(type, value) {
-    if (type == "variable") {register(value); return cont(functiondef);}
-    if (type == "(") return cont(pushlex(")"), pushcontext, commasep(funarg, ")"), poplex, statement, popcontext);
-  }
-  function funarg(type, value) {
-    if (type == "variable") {register(value); return cont();}
-  }
-
-  // Interface
-
-  return {
-    startState: function(basecolumn) {
-      return {
-        tokenize: jsTokenBase,
-        reAllowed: true,
-        cc: [],
-        lexical: new JSLexical((basecolumn || 0) - indentUnit, 0, "block", false),
-        localVars: null,
-        context: null,
-        indented: 0
-      };
-    },
-
-    token: function(stream, state) {
-      if (stream.sol()) {
-        if (!state.lexical.hasOwnProperty("align"))
-          state.lexical.align = false;
-        state.indented = stream.indentation();
-      }
-      if (stream.eatSpace()) return null;
-      var style = state.tokenize(stream, state);
-      if (type == "comment") return style;
-      state.reAllowed = type == "operator" || type == "keyword c" || type.match(/^[\[{}\(,;:]$/);
-      return parseJS(state, style, type, content, stream);
-    },
-
-    indent: function(state, textAfter) {
-      if (state.tokenize != jsTokenBase) return 0;
-      var firstChar = textAfter && textAfter.charAt(0), lexical = state.lexical,
-          type = lexical.type, closing = firstChar == type;
-      if (type == "vardef") return lexical.indented + 4;
-      else if (type == "form" && firstChar == "{") return lexical.indented;
-      else if (type == "stat" || type == "form") return lexical.indented + indentUnit;
-      else if (lexical.info == "switch" && !closing)
-        return lexical.indented + (/^(?:case|default)\b/.test(textAfter) ? indentUnit : 2 * indentUnit);
-      else if (lexical.align) return lexical.column + (closing ? 0 : 1);
-      else return lexical.indented + (closing ? 0 : indentUnit);
-    },
-
-    electricChars: ":{}"
-  };
-});
-
-CodeMirror.defineMIME("text/javascript", "javascript");
-CodeMirror.defineMIME("application/json", {name: "javascript", json: true});
-
-CodeMirror.defineMode("xml", function(config, parserConfig) {
-  var indentUnit = config.indentUnit;
-  var Kludges = parserConfig.htmlMode ? {
-    autoSelfClosers: {"br": true, "img": true, "hr": true, "link": true, "input": true,
-                      "meta": true, "col": true, "frame": true, "base": true, "area": true},
-    doNotIndent: {"pre": true, "!cdata": true},
-    allowUnquoted: true
-  } : {autoSelfClosers: {}, doNotIndent: {"!cdata": true}, allowUnquoted: false};
-  var alignCDATA = parserConfig.alignCDATA;
-
-  // Return variables for tokenizers
-  var tagName, type;
-
-  function inText(stream, state) {
-    function chain(parser) {
-      state.tokenize = parser;
-      return parser(stream, state);
-    }
-
-    var ch = stream.next();
-    if (ch == "<") {
-      if (stream.eat("!")) {
-        if (stream.eat("[")) {
-          if (stream.match("CDATA[")) return chain(inBlock("xml-cdata", "]]>"));
-          else return null;
-        }
-        else if (stream.match("--")) return chain(inBlock("xml-comment", "-->"));
-        else if (stream.match("DOCTYPE")) {
-          stream.eatWhile(/[\w\._\-]/);
-          return chain(inBlock("xml-doctype", ">"));
-        }
-        else return null;
-      }
-      else if (stream.eat("?")) {
-        stream.eatWhile(/[\w\._\-]/);
-        state.tokenize = inBlock("xml-processing", "?>");
-        return "xml-processing";
-      }
-      else {
-        type = stream.eat("/") ? "closeTag" : "openTag";
-        stream.eatSpace();
-        tagName = "";
-        var c;
-        while ((c = stream.eat(/[^\s\u00a0=<>\"\'\/?]/))) tagName += c;
-        state.tokenize = inTag;
-        return "xml-tag";
-      }
-    }
-    else if (ch == "&") {
-      stream.eatWhile(/[^;]/);
-      stream.eat(";");
-      return "xml-entity";
-    }
-    else {
-      stream.eatWhile(/[^&<]/);
-      return null;
-    }
-  }
-
-  function inTag(stream, state) {
-    var ch = stream.next();
-    if (ch == ">" || (ch == "/" && stream.eat(">"))) {
-      state.tokenize = inText;
-      type = ch == ">" ? "endTag" : "selfcloseTag";
-      return "xml-tag";
-    }
-    else if (ch == "=") {
-      type = "equals";
-      return null;
-    }
-    else if (/[\'\"]/.test(ch)) {
-      state.tokenize = inAttribute(ch);
-      return state.tokenize(stream, state);
-    }
-    else {
-      stream.eatWhile(/[^\s\u00a0=<>\"\'\/?]/);
-      return "xml-word";
-    }
-  }
-
-  function inAttribute(quote) {
-    return function(stream, state) {
-      while (!stream.eol()) {
-        if (stream.next() == quote) {
-          state.tokenize = inTag;
-          break;
-        }
-      }
-      return "xml-attribute";
-    };
-  }
-
-  function inBlock(style, terminator) {
-    return function(stream, state) {
-      while (!stream.eol()) {
-        if (stream.match(terminator)) {
-          state.tokenize = inText;
-          break;
-        }
-        stream.next();
-      }
-      return style;
-    };
-  }
-
-  var curState, setStyle;
-  function pass() {
-    for (var i = arguments.length - 1; i >= 0; i--) curState.cc.push(arguments[i]);
-  }
-  function cont() {
-    pass.apply(null, arguments);
-    return true;
-  }
-
-  function pushContext(tagName, startOfLine) {
-    var noIndent = Kludges.doNotIndent.hasOwnProperty(tagName) || (curState.context && curState.context.noIndent);
-    curState.context = {
-      prev: curState.context,
-      tagName: tagName,
-      indent: curState.indented,
-      startOfLine: startOfLine,
-      noIndent: noIndent
-    };
-  }
-  function popContext() {
-    if (curState.context) curState.context = curState.context.prev;
-  }
-
-  function element(type) {
-    if (type == "openTag") {curState.tagName = tagName; return cont(attributes, endtag(curState.startOfLine));}
-    else if (type == "closeTag") {popContext(); return cont(endclosetag);}
-    else if (type == "xml-cdata") {
-      if (!curState.context || curState.context.name != "!cdata") pushContext("!cdata");
-      if (curState.tokenize == inText) popContext();
-      return cont();
-    }
-    else return cont();
-  }
-  function endtag(startOfLine) {
-    return function(type) {
-      if (type == "selfcloseTag" ||
-          (type == "endTag" && Kludges.autoSelfClosers.hasOwnProperty(curState.tagName.toLowerCase())))
-        return cont();
-      if (type == "endTag") {pushContext(curState.tagName, startOfLine); return cont();}
-      return cont();
-    };
-  }
-  function endclosetag(type) {
-    if (type == "endTag") return cont();
-    return pass();
-  }
-
-  function attributes(type) {
-    if (type == "xml-word") {setStyle = "xml-attname"; return cont(attributes);}
-    if (type == "equals") return cont(attvalue, attributes);
-    return pass();
-  }
-  function attvalue(type) {
-    if (type == "xml-word" && Kludges.allowUnquoted) {setStyle = "xml-attribute"; return cont();}
-    if (type == "xml-attribute") return cont();
-    return pass();
-  }
-
-  return {
-    startState: function() {
-      return {tokenize: inText, cc: [], indented: 0, startOfLine: true, tagName: null, context: null};
-    },
-
-    token: function(stream, state) {
-      if (stream.sol()) {
-        state.startOfLine = true;
-        state.indented = stream.indentation();
-      }
-      if (stream.eatSpace()) return null;
-
-      setStyle = type = tagName = null;
-      var style = state.tokenize(stream, state);
-      if ((style || type) && style != "xml-comment") {
-        curState = state;
-        while (true) {
-          var comb = state.cc.pop() || element;
-          if (comb(type || style)) break;
-        }
-      }
-      state.startOfLine = false;
-      return setStyle || style;
-    },
-
-    indent: function(state, textAfter) {
-      var context = state.context;
-      if (context && context.noIndent) return 0;
-      if (alignCDATA && /<!\[CDATA\[/.test(textAfter)) return 0;
-      if (context && /^<\//.test(textAfter))
-        context = context.prev;
-      while (context && !context.startOfLine)
-        context = context.prev;
-      if (context) return context.indent + indentUnit;
-      else return 0;
-    },
-
-    electricChars: "/"
-  };
-});
-
-CodeMirror.defineMIME("application/xml", "xml");
-CodeMirror.defineMIME("text/html", {name: "xml", htmlMode: true});
-
-CodeMirror.defineMode("css", function(config) {
-  var indentUnit = config.indentUnit, type;
-  function ret(style, tp) {type = tp; return style;}
-
-  function tokenBase(stream, state) {
-    var ch = stream.next();
-    if (ch == "@") {stream.eatWhile(/\w/); return ret("css-at", stream.current());}
-    else if (ch == "/" && stream.eat("*")) {
-      state.tokenize = tokenCComment;
-      return tokenCComment(stream, state);
-    }
-    else if (ch == "<" && stream.eat("!")) {
-      state.tokenize = tokenSGMLComment;
-      return tokenSGMLComment(stream, state);
-    }
-    else if (ch == "=") ret(null, "compare");
-    else if ((ch == "~" || ch == "|") && stream.eat("=")) return ret(null, "compare");
-    else if (ch == "\"" || ch == "'") {
-      state.tokenize = tokenString(ch);
-      return state.tokenize(stream, state);
-    }
-    else if (ch == "#") {
-      stream.eatWhile(/\w/);
-      return ret("css-selector", "hash");
-    }
-    else if (ch == "!") {
-      stream.match(/^\s*\w*/);
-      return ret("css-important", "important");
-    }
-    else if (/\d/.test(ch)) {
-      stream.eatWhile(/[\w.%]/);
-      return ret("css-unit", "unit");
-    }
-    else if (/[,.+>*\/]/.test(ch)) {
-      return ret(null, "select-op");
-    }
-    else if (/[;{}:\[\]]/.test(ch)) {
-      return ret(null, ch);
-    }
-    else {
-      stream.eatWhile(/[\w\\\-_]/);
-      return ret("css-identifier", "identifier");
-    }
-  }
-
-  function tokenCComment(stream, state) {
-    var maybeEnd = false, ch;
-    while ((ch = stream.next()) != null) {
-      if (maybeEnd && ch == "/") {
-        state.tokenize = tokenBase;
-        break;
-      }
-      maybeEnd = (ch == "*");
-    }
-    return ret("css-comment", "comment");
-  }
-
-  function tokenSGMLComment(stream, state) {
-    var dashes = 0, ch;
-    while ((ch = stream.next()) != null) {
-      if (dashes >= 2 && ch == ">") {
-        state.tokenize = tokenBase;
-        break;
-      }
-      dashes = (ch == "-") ? dashes + 1 : 0;
-    }
-    return ret("css-comment", "comment");
-  }
-
-  function tokenString(quote) {
-    return function(stream, state) {
-      var escaped = false, ch;
-      while ((ch = stream.next()) != null) {
-        if (ch == quote && !escaped)
-          break;
-        escaped = !escaped && ch == "\\";
-      }
-      if (!escaped) state.tokenize = tokenBase;
-      return ret("css-string", "string");
-    };
-  }
-
-  return {
-    startState: function(base) {
-      return {tokenize: tokenBase,
-              baseIndent: base || 0,
-              stack: []};
-    },
-
-    token: function(stream, state) {
-      if (stream.eatSpace()) return null;
-      var style = state.tokenize(stream, state);
-
-      var context = state.stack[state.stack.length-1];
-      if (type == "hash" && context == "rule") style = "css-colorcode";
-      else if (style == "css-identifier") {
-        if (context == "rule") style = "css-value";
-        else if (!context || context == "@media{") style = "css-selector";
-      }
-
-      if (context == "rule" && /^[\{\};]$/.test(type))
-        state.stack.pop();
-      if (type == "{") {
-        if (context == "@media") state.stack[state.stack.length-1] = "@media{";
-        else state.stack.push("{");
-      }
-      else if (type == "}") state.stack.pop();
-      else if (type == "@media") state.stack.push("@media");
-      else if (context != "rule" && context != "@media" && type != "comment") state.stack.push("rule");
-      return style;
-    },
-
-    indent: function(state, textAfter) {
-      var n = state.stack.length;
-      if (/^\}/.test(textAfter))
-        n -= state.stack[state.stack.length-1] == "rule" ? 2 : 1;
-      return state.baseIndent + n * indentUnit;
-    },
-
-    electricChars: "}"
-  };
-});
-
-CodeMirror.defineMIME("text/css", "css");
-
-CodeMirror.defineMode("liquid", function(config, parserConfig) {
-  var htmlMode = CodeMirror.getMode(config, {name: "xml", htmlMode: true});
-  var jsMode = CodeMirror.getMode(config, "javascript");
-  var cssMode = CodeMirror.getMode(config, "css");
-
-  function html(stream, state) {
-    var style = htmlMode.token(stream, state.htmlState);
-    if (style == "xml-tag" && stream.current() == ">" && state.htmlState.context) {
-      if (/^script$/i.test(state.htmlState.context.tagName)) {
-        state.token = javascript;
-        state.localState = jsMode.startState(htmlMode.indent(state.htmlState, ""));
-      }
-      else if (/^style$/i.test(state.htmlState.context.tagName)) {
-        state.token = css;
-        state.localState = cssMode.startState(htmlMode.indent(state.htmlState, ""));
-      }
-    }
-    return style;
-  }
-  function maybeBackup(stream, pat, style) {
-    var cur = stream.current();
-    var close = cur.search(pat);
-    if (close > -1) stream.backUp(cur.length - close);
-    return style;
-  }
-  function javascript(stream, state) {
-    if (stream.match(/^<\/\s*script\s*>/i, false)) {
-      state.token = html;
-      state.curState = null;
-      return html(stream, state);
-    }
-    return maybeBackup(stream, /<\/\s*script\s*>/,
-                       jsMode.token(stream, state.localState));
-  }
-  function css(stream, state) {
-    if (stream.match(/^<\/\s*style\s*>/i, false)) {
-      state.token = html;
-      state.localState = null;
-      return html(stream, state);
-    }
-    return maybeBackup(stream, /<\/\s*style\s*>/,
-                       cssMode.token(stream, state.localState));
-  }
-
-  return {
-    startState: function() {
-      var state = htmlMode.startState();
-      return {token: html, localState: null, htmlState: state};
-    },
-
-    copyState: function(state) {
-      if (state.localState)
-        var local = CodeMirror.copyState(state.token == css ? cssMode : jsMode, state.localState);
-      return {token: state.token, localState: local, htmlState: CodeMirror.copyState(htmlMode, state.htmlState)};
-    },
-
-    token: function(stream, state) {
-      return state.token(stream, state);
-    },
-
-    indent: function(state, textAfter) {
-      if (state.token == html || /^\s*<\//.test(textAfter))
-        return htmlMode.indent(state.htmlState, textAfter);
-      else if (state.token == javascript)
-        return jsMode.indent(state.localState, textAfter);
-      else
-        return cssMode.indent(state.localState, textAfter);
-    },
-
-    electricChars: "/{}:"
-  }
-});
-
-CodeMirror.defineMIME("text/html", "htmlmixed");
-
 var Asset = Model('asset', function() {
   this.persistence(Model.REST, "/admin/assets"), 
   
@@ -9308,6 +8555,14 @@ var Asset = Model('asset', function() {
   }), 
   
   this.extend({
+    
+    find_all_by_folder_id: function(folder_id){
+      return this.select(function(){
+        return this.attr('folder_id') == folder_id
+      });
+    },
+    
+    
     // returns a json array of all assets, including the query and query_path
     toMustache: function(query) {
       var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';
@@ -9446,6 +8701,23 @@ var Asset = Model('asset', function() {
 });
 
 
+var Folder = Model('folder', function() {
+  this.persistence(Model.SinatraREST, '/admin/folders'), 
+ 
+  this.include({
+
+  }),  
+  
+  this.extend({   
+    
+    // Returns a JSON object with all folders 
+    asJSON: function(){
+      return Folder.map(function(item){ return item.attr() });
+    }
+    
+  });
+  
+});
 var Page = Model('page', function() {
   this.persistence(Model.SinatraREST, "/admin/pages"), 
    
@@ -9480,7 +8752,8 @@ var Page = Model('page', function() {
     
     parts: function(){
       var self = this;
-      var parts = self.attr('parts'); 
+      // TODO Change back to parts...
+      var parts = self.attr('contents'); 
       var length = parts.length;                                 
       Part.each(function(){ Part.remove(this); });
       
@@ -9547,9 +8820,9 @@ var Page = Model('page', function() {
       }
     },
     
-    asJSON: function(){
-      return Page.map(function(item){ return item.attr() });
-    },  
+    // asJSON: function(){
+    //   return Page.map(function(item){ return item.attr() });
+    // },  
     
     root: function(){
       return this.detect(function(){
@@ -9615,7 +8888,7 @@ var Page = Model('page', function() {
   });
 
 });
-var Layout = Model('template', function() {
+var Layout = Model('layout', function() {
   this.persistence(Model.SinatraREST, "/admin/templates"), 
    
   // Instance methods
@@ -9732,25 +9005,6 @@ var Part = Model('part', function() {
       });
     }
     
-    // load: function(page_id, callback) {
-    //   Part.each(function(){ Part.remove(this); });
-    //   var url = '/pages/' + page_id + '/parts.json';
-    //   jQuery.ajax({
-    //     type: 'get',
-    //     url: url,
-    //     contentType: "application/json",
-    //     dataType: "json",  
-    //     success: function(results) {
-    //       jQuery.each(results, function(i, part_data) {
-    //         var part = new Part({ id: part_data.id });
-    //         part.merge(part_data);
-    //         Part.add(part);
-    //       });
-    //       callback.call(this);
-    //     }
-    //   });
-    // },
-
   });
 
 });
@@ -9843,38 +9097,36 @@ var logger = {
 
 var Utilities = { 
   
-  notice: function(message){
-    // var notice = jQuery('.notice');
-    // notice.text(message); 
-    // notice.slideDown('slow', function(){
-    //   setTimeout(function(){
-    //     notice.slideUp('slow');
-    //   }, 1000);
-    // });
-
-  },     
+  notice: function(message, options){
+    var options = options || {};
+    var notice = jQuery('.notice');
+    var klass = options['class'] || 'message';
+    
+    notice
+      .html(message) 
+      .addClass(klass)
+      .fadeIn('fast', function(){
+        setTimeout(function(){
+          if (!options['persist']){
+            notice.fadeOut('slow');
+          }
+        }, 1800);
+      });
+  },  
+  
+  hideNotice: function(){
+    jQuery('.notice').fadeOut('slow');    
+  },
+  
+  setTimestamp: function(){
+    var now = new Date();
+    window.timestamp = now.getTime();
+  },
   
   keyboard_nav: function(){      
     jQuery('body').keydown(function(e){ 
       // logger.info(e.keyCode);  
       switch (e.keyCode) {    
-        // Cmd s
-        // case 91 && 83:  
-        //   logger.info('Save me!');     
-        //   // this needs to change...
-        //   var form = jQuery('form.command-save');
-        //   form.submit();    
-        //   // return false;
-        //   e.preventDefault();
-        //   break;
-        // // Ctrl S
-        // case 17 && 83: 
-        //   logger.info('Save me!');       
-        //   // this needs to change...
-        //   // var form = jQuery('form.command-save');
-        //   // form.submit(); 
-        //   e.preventDefault();    
-        //   break;
         // Left Arrow
         case 37:
           $('a.previous').click();
@@ -9883,10 +9135,6 @@ var Utilities = {
         case 39:
           $('a.next').click();
           break; 
-        // 'W' key
-        // case 87:
-        //   $('a.cancel').click();
-        //   break; 
       }
     });
   }, 
@@ -9905,12 +9153,12 @@ var Utilities = {
   },
   
   formObserver: function(element){      
-    jQuery(element).keyup(function() {
-      delay(function(){
-        var form = jQuery(element).parents('form:first');
-        form.submit();
-      }, 800);
-    });
+    // jQuery(element).keyup(function() {
+    //   delay(function(){
+    //     var form = jQuery(element).parents('form:first');
+    //     form.submit();
+    //   }, 800);
+    // });
   }  
   
 } 
@@ -9928,6 +9176,44 @@ var Loader = {
     element.hide();
     clearInterval(Loader.timer);
   }
+}
+
+var Updater = {
+  
+  setup: function(data, model){
+    jQuery.each(data, function(i, item){
+      var object = new model({ id: item.id });  
+      object.merge(item);
+      model.add(object);
+    });
+  },
+  
+  update: function(){
+    window.ninja = true;
+    jQuery.ajax({
+      url: '/admin/activity.json',
+      type: 'POST',
+      data: { 'updated': window.timestamp },
+      success: function(data){
+        jQuery.each(data.models, function(i, item){
+          var object = Page.find(item.id);
+          object.merge(item);
+          Utilities.setTimestamp();
+        });
+        window.ninja = false;
+      }
+    });
+  }
+}
+
+// Sets the ACE Editor modes depending on content type
+var aceModes = {
+  'javascript' : require('ace/mode/javascript').Mode,
+  'html'       : require('ace/mode/html').Mode,
+  'css'        : require('ace/mode/css').Mode,
+  'scss'       : require('ace/mode/scss').Mode,
+  'sass'       : require('ace/mode/scss').Mode,
+  'none'       : require('ace/mode/text').Mode
 }
 
 var iFramer = {       
@@ -9951,22 +9237,31 @@ var iFramer = {
       iframe.fadeIn('fast');
       
       // Sets preview links to change the sammy.js routes instead of the usual route
-      var internal_links = iFrameContent.find('a[href^="/preview"]');
+      var internal_links = iFrameContent.find('a'); // iFrameContent.find('a[href^="/preview"]');
       internal_links.click(function(e){
-        var link_path = $(this).attr('href').split('?')[0].replace('/preview','');
-        var page = Page.find_by_path(link_path);
-        if (page){
-          e.preventDefault();
-          var page_id = page.id();
-          document.location.hash = page.attr('admin_path');
+        var self = jQuery(this);
+        if(!self.hasClass('verlag-editor')){
+          var link_path = self.attr('href').split('?')[0].replace('/preview','');
+          var page = Page.find_by_path(link_path);
+          if (page){
+            e.preventDefault();
+            // TODO This whole thing needs to be moved to sammy to have access to the routes
+            history.pushState({path: page.attr('title')}, page.attr('title'), page.attr('admin_path'));
+            // document.location.path = page.attr('admin_path');
+          }
         }
       });
       
-      flags.click(function(){  
+      flags.click(function(e){  
+        e.preventDefault();
         window.top.trigger = $(this);
-        window.top.location.hash = $(this).attr('href');  
-        return false;
+        // TODO Use history object here
+        // window.top.location.hash = $(this).attr('href');  
+        var path = $(this).attr('href');  
+        history.pushState({part: path}, "Part", path);
+        // return false;
       });
+      
       if(callback){ callback.call(this); } 
     }); 
   },
@@ -9990,28 +9285,28 @@ var iFramer = {
   }
 } 
 
-var TabControl = {
-  initialize: function(element){
-    var tabs = jQuery(element);  
-    if(!tabs) return;
-    var self = this; 
-    tabs.each(function(i, tab){
-      $(tab).hide();
-    }); 
-    tabs.first().show();   
-    self.tabControl(jQuery('.tab-control'));
-  },
-  
-  tabControl: function(element){  
-    element.click(function(){  
-      var partId = $(this).find('label').attr('for').split('-')[1];
-      var tabId = 'tab-' + partId;   
-      
-      jQuery('.tab').hide(); 
-      jQuery('#' + tabId).show();
-    })
-  }
-}
+// var TabControl = {
+//   initialize: function(element){
+//     var tabs = jQuery(element);  
+//     if(!tabs) return;
+//     var self = this; 
+//     tabs.each(function(i, tab){
+//       $(tab).hide();
+//     }); 
+//     tabs.first().show();   
+//     self.tabControl(jQuery('.tab-control'));
+//   },
+//   
+//   tabControl: function(element){  
+//     element.click(function(){  
+//       var partId = $(this).find('label').attr('for').split('-')[1];
+//       var tabId = 'tab-' + partId;   
+//       
+//       jQuery('.tab').hide(); 
+//       jQuery('#' + tabId).show();
+//     })
+//   }
+// }
 
 var delay = (function(){
   var timer = 0;
@@ -10021,17 +9316,203 @@ var delay = (function(){
   };
 })();
 
+var Base = Sammy(function (app) {   
+   
+  app.debug = false; 
+  app.use(Sammy.JSON); 
+  app.use(Sammy.Mustache);
+  app.use(Sammy.NestedParams); 
+  app.template_engine = 'mustache'
+  
+  // Base Helpers
+  // ------------------------------------------------------------------------------------------
+  app.helpers({  
+    
+    setup: function(data, model){
+      jQuery.each(data, function(i, item){
+        var object = new model({ id: item.id });  
+        object.merge(item);
+        model.add(object);
+      });
+    },
+
+    update: function(){
+      var application = this;
+      // Sets invisible (no indicator) Ajax requests
+      window.ninja = true;
+      jQuery.ajax({
+        url: '/admin/activity.json',
+        type: 'POST',
+        data: { 'updated': window.timestamp },
+        success: function(data){ 
+          jQuery.each(data.models, function(i, item){
+            if(item.class_name == 'Page'){ 
+              application.trigger('update-page', item);
+            }
+            if(item.class_name == 'Layout'){ 
+              application.trigger('update-layout', item);
+            }
+            // Sets window timestamp
+            Utilities.setTimestamp();
+          });
+          window.ninja = false;
+        }
+      });
+    }
+
+  });
+  
+  // Base Events
+  // ------------------------------------------------------------------------------------------
+  
+  // Initialize App
+  // ---------------------------------------------
+  app.bind('run', function(){
+    var application = this;
+    // Starts the updater
+    // app.updater = setInterval(function(){
+    //   application.update();
+    // }, 5000);
+    
+    // Starts page tree opener
+    jQuery('#sidebar .opener').live('click', function(e){
+      application.trigger('toggle-children', this);
+      return false;
+    });
+    
+    // Start the sidebar toggle
+    application.trigger('toggle-sidebar');
+    // TODO This needs to be abstracted or a css class or both...
+    // if(jQuery.cookie('toggle-sidebar') == 'closed'){
+    //   var sidebar = jQuery('div#sidebar');
+    //   var editor =  jQuery('div#editor');
+    //   var toggle = jQuery('div#toggle');
+    //   
+    //   sidebar.css({'width':'24px'}).toggleClass('closed');
+    //   editor.css({'left':'24px'});
+    //   toggle.css({'left':'24px'});
+    // }
+  });
+ 
+  // Set Active Tab
+  // ---------------------------------------------
+  app.bind('set-active-tab', function(request){
+    var tabs = jQuery('div#tabs a.tab');
+    // TODO make this a decent regex
+    var name = request.path.split('?')[0].split('/')[2];
+    var active_tab = jQuery('#' + name + '-tab');
+    
+    tabs.removeClass('active');
+    active_tab.addClass('active');
+  });
+  
+  // Update Page
+  // ---------------------------------------------
+  app.bind('update-page', function(e, item){
+    var page = Page.find(item.id);
+    page.merge(item); 
+    // Is this needed? Need to check js-model docs...
+    page.save();
+
+    jQuery('li#page-' + item.id).find('span.title a').text(page.attr('title'));
+    // Sets page title
+    jQuery('h1#page-title-' + page.id()).text(page.attr('title'));
+    
+    var iframe =jQuery('#page-iframe-' + page.id());
+    if (iframe.length){
+      var message = 'This page has been changed. Click here to reload.';
+      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { 'persist': true, 'class': 'warning' });
+    }
+  });
+  
+  // Update Layout
+  // ---------------------------------------------
+  app.bind('update-layout', function(e, item){
+    var layout = Layout.find(item.id); 
+    layout.merge(item); 
+    layout.save();
+    var el = jQuery('li#layout-' + item.id);
+    el.find('span.title a').text(layout.attr('name'));
+    // Utilities.notice('Updated layout');
+  });
+  
+  // Initialize Sanskrit Editor
+  // ---------------------------------------------
+  app.bind('sanskrit', function(e, element){
+    if(!element.length){ return }
+    
+    var textareas = element.find('textarea.sanskrit');
+    // textareas.hide();
+    textareas.each(function(i, t){
+      var editor = new Sanskrit(t, {
+        toolbar: {
+          // onEm: function(){
+          //   alert('image goes here!') 
+          // },
+          actions: {
+            'strong': 'B', 
+            'em': 'I', 
+            'ins': 'ins', 
+            'del': 'del', 
+            'link': 'link', 
+            'unlink': 'unlink',
+            'textile': 'Textile'
+          }  
+        }
+      }); 
+    });
+    setTimeout(function(){
+      textareas.fadeIn('fast');
+    }, 420);
+  });
+  
+  // Sidebar Toggle
+  // ---------------------------------------------
+  app.bind('toggle-sidebar', function(e){
+    var sidebar = jQuery('div#sidebar');
+    var editor =  jQuery('div#editor');
+    var toggle = jQuery('p#toggle');
+    var sidebarToggle = toggle.find('a');
+    sidebarToggle.click(function(e){
+      e.preventDefault();
+      if(sidebar.hasClass('closed')){
+        var width = '300';
+        jQuery.cookie('sidebar_toggled', '');
+      } else {
+        var width = '24';
+        jQuery.cookie('sidebar_toggled', 'closed');
+      }
+      if(!Modernizr.cssanimations){
+        sidebar.animate({'width':width}, 200).toggleClass('closed');;
+        editor.animate({'left':width}, 200).toggleClass('open');
+        toggle.animate({'left':width}, 200).toggleClass('open');
+      }else{
+        console.log('Move.js goes here')
+        sidebar.animate({'width':width}, 200).toggleClass('closed');;
+        editor.animate({'left':width}, 200).toggleClass('open');
+        toggle.animate({'left':width}, 200).toggleClass('open');
+      }
+
+    })
+  });
+  
+  // Before Filters
+  // ---------------------------------------------
+  app.before(function(){
+    // jQuery('.modal-editor').remove(); 
+    Galerie.close(); 
+    // Utilities.hideNotice();
+  });
+  
+  // Sets active tab
+  app.before(function(request) {
+    // request.trigger('set-active-tab');
+  });
+
+});
 var Sites = Sammy(function (app) {
   
   var context = this; 
-  
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache); 
-  this.use(Sammy.NestedParams);  
   
   // Helper Methods 
   // ---------------------------------------------  
@@ -10051,7 +9532,7 @@ var Sites = Sammy(function (app) {
     
     renderSiteIndex: function(){  
       var application = this;    
-      var siteIndex = application.load(jQuery('#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
+      var siteIndex = application.load(jQuery('script#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
       siteIndex.replace('#sidebar');
     }
   });
@@ -10074,7 +9555,6 @@ var Sites = Sammy(function (app) {
   // ---------------------------------------------
   this.get('/admin/sites', function(request){ 
     context.refresh_pages = true;  
-    Galerie.close();  
     jQuery('#editor').html('<h1 class="section">Sites</div>'); 
 
     request.loadSites(function(){  
@@ -10087,7 +9567,7 @@ var Sites = Sammy(function (app) {
   this.get('/admin/sites/new', function(request){   
     request.loadSites(function(){    
       if ($('#modal').length == 0){ Galerie.open(); }  
-      var newSite = request.load(jQuery('#admin-sites-new')).interpolate({}, 'mustache');
+      var newSite = request.load(jQuery('script#admin-sites-new')).interpolate({}, 'mustache');
       newSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });
@@ -10112,10 +9592,10 @@ var Sites = Sammy(function (app) {
   // Edit Site 
   // --------------------------------------------- 
   this.get('/admin/sites/:id/edit', function(request){  
-    Galerie.close();         
+       
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var editSite = request.load(jQuery('#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
+      var editSite = request.load(jQuery('script#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
       editSite.replace('#editor');  
       request.renderSiteIndex(Site.all());
     });
@@ -10144,7 +9624,7 @@ var Sites = Sammy(function (app) {
     Galerie.open();         
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var removeSite = request.load(jQuery('#admin-sites-remove')).interpolate({ site: site.asJSON() }, 'mustache');
+      var removeSite = request.load(jQuery('script#admin-sites-remove')).interpolate({ site: site.asJSON() }, 'mustache');
       removeSite.replace('#modal');  
       request.renderSiteIndex(Site.all());
     });
@@ -10168,14 +9648,6 @@ var Sites = Sammy(function (app) {
 var Layouts = Sammy(function (app) {   
   
   var context = this;  
-                    
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams);
   
   // Helper Methods 
   // ---------------------------------------------
@@ -10184,20 +9656,13 @@ var Layouts = Sammy(function (app) {
     // Checks for loaded Layouts, renders the table, then executes the callback   
     loadLayouts: function(callback){  
       var application = this; 
-      
-      if(Layout.all().length == 0 ){
-        Layout.load(function(){      
-          if(callback){ callback.call(this); } 
-        });
-      } else {        
-        if(callback){ callback.call(this); } 
-      }
+      if(callback){ callback.call(this); } 
     },
     
     // Renders the Page tree
     renderLayoutIndex: function(){   
       var application = this;
-      var layoutIndex = application.load(jQuery('#admin-templates-index')).interpolate({
+      var layoutIndex = application.load(jQuery('script#admin-templates-index')).interpolate({
         layouts: Layout.find_all_by_class('Layout').map(function(item){ return item.attributes }), 
         partials: Layout.find_all_by_class('Partial').map(function(item){ return item.attributes }), 
         javascripts: Layout.find_all_by_class('Javascript').map(function(item){ return item.attributes }),
@@ -10208,7 +9673,7 @@ var Layouts = Sammy(function (app) {
     
     renderLayout: function(layout){ 
       var application = this;     
-      var editLayout = application.load(jQuery('#admin-templates-edit')).interpolate({ 
+      var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
           { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
@@ -10217,21 +9682,18 @@ var Layouts = Sammy(function (app) {
         ]
       }, 'mustache');    
       editLayout.replace('#editor').then(function(){
-        // Because liquid templates use a syntax that is very similar to 
-        // Mustache, this manually sets the content. A bit of a hack, but hey, sue me. 
-        var editor_field = jQuery('#layout_content');
-        editor_field.attr('value', layout.attr('content'));   
-        var mode = editor_field.attr('class'); 
-        if(jQuery('#layout_content').length > 0){
-          CodeMirror.fromTextArea(document.getElementById('layout_content'), {
-            mode: mode,
-            lineNumbers: true
-          });
-        }
-        // Utilities.formObserver('#layout_content, #layout_name'); 
+        // ACE editor
+        var mode = layout.attr('mode'); 
+        var editorMode = aceModes[mode];
+        window.editor = ace.edit('layout_content');
+        window.editor.setTheme('ace/theme/textmate');
+        window.editor.getSession().setMode(new editorMode);
+        window.editor.session.setUseWrapMode(true);
+        // Because Mustache screws up my liquid templates, I just set it manually, directly from the model
+        // This also eleminates the FUC
+        window.editor.getSession().setValue(layout.attr('content'));
       });
     }
-    
   });
 
   this.bind('run', function () { 
@@ -10244,29 +9706,21 @@ var Layouts = Sammy(function (app) {
   // ---------------------------------------------  
   this.get('/admin/templates', function(request){  
 
-    Galerie.close();
-    context.refresh_templates = false; 
-    context.refresh_pages = true;     
+    context.refresh_templates = false;   
     
     jQuery('#editor').html('<h1 class="section">Templates</div>'); 
-    // request.loadLayouts(function(){
-    Layout.load(function(){
-      request.renderLayoutIndex(Layout.all());  
-    });            
+    request.renderLayoutIndex(Layout.all());           
   });
   
   // New Layout
   // ---------------------------------------------
   this.get('/admin/templates/new/:klass', function(request){    
+    var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
     
-    this.loadLayouts(function(){    
-      var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
- 
-      if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
-      newLayout.replace('#new-page-container');       
-      request.renderLayoutIndex(Layout.all()); 
-    }); 
+    if ($('#modal').length == 0){ Galerie.open(displayContents); } 
+    var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
+    newLayout.replace('#new-page-container');       
+    request.renderLayoutIndex(Layout.all());  
   });  
   
   // Create Layout
@@ -10288,57 +9742,47 @@ var Layouts = Sammy(function (app) {
 
   // Edit Layout
   // ---------------------------------------------
-  this.get('/admin/templates/:id/edit', function(request){ 
-    Galerie.close(); 
+  this.get('/admin/templates/:id/edit', function(request){  
     context.refresh_pages = true;       
-    this.loadLayouts(function(){  
-      var layout = Layout.find(request.params['id']); 
-      window.ninja = true; 
-      layout.load(function(results){ 
-        request.renderLayout(layout);   
-        request.renderLayoutIndex(Layout.all()); 
-        // setInterval(function(){
-        //   layout.load(function(results){
-        //     var timestamp = jQuery('#layout-updated_at').attr('value');
-        //     if(timestamp != results.updated_at){
-        //       logger.info('not up to date');
-        //     }else {
-        //       logger.info('up to date');
-        //     }
-        //     
-        //   });
-        // }, 30000);
-        window.ninja = false; 
-      });
-    });
+    var layout = Layout.find(request.params['id']); 
+    
+    request.renderLayout(layout);   
+    request.renderLayoutIndex(Layout.all()); 
   });   
   
   // Update Layout
   // ---------------------------------------------
   this.put('/admin/templates/:id', function(request){  
     var template = Layout.find(request.params['id']);   
-      
-    template.attr(request.params['layout']); 
+    
+    // Sets the layout content to the ACE editor value
+    request.params['layout']['content'] = window.editor.getSession().getValue();
+    
+    template.attr(request.params['layout']);  
     template.save(function(success, results){
       if(success){ 
         request.renderLayoutIndex(); 
         Utilities.notice('Successfully saved template');
+        
+        // ACE editor
+        var editorMode = aceModes[template.attr('mode')];
+        window.editor.getSession().setUseSoftTabs(true);
+        window.editor.getSession().setTabSize(2);
+        window.editor.getSession().setMode(new editorMode);
       }
     });  
   });
   
   // Remove Layout
   // ---------------------------------------------
-  this.get('/admin/templates/:id/remove', function(request){ 
-    this.loadLayouts(function(){  
-      var layout = Layout.find(request.params['id']); 
-      Galerie.open();   
-      
-      var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
-      removeTemplate.replace('#modal');
-      
-      request.renderLayoutIndex(Layout.all()); 
-    });
+  this.get('/admin/templates/:id/remove', function(request){  
+    var layout = Layout.find(request.params['id']); 
+    Galerie.open();   
+    
+    var removeTemplate = request.load(jQuery('#admin-templates-remove')).interpolate({ layout: layout.asJSON() }, 'mustache');
+    removeTemplate.replace('#modal');
+    
+    request.renderLayoutIndex(Layout.all()); 
   }); 
   
   // Destroy Layout
@@ -10409,32 +9853,22 @@ var Layouts = Sammy(function (app) {
 });
 var Assets = Sammy(function (app) {
   
-  var application = this; 
-  
-  this.debug = false;
-  // this.disable_push_state = true;
-    
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache); 
-  this.use(Sammy.NestedParams);  
-  
-  this.swap = function(content) {
-    jQuery('#editor').html(content); 
-  }
+  var context = this; 
   
   // Helper Methods 
   // ---------------------------------------------  
-  this.helpers({  
-
-    // Checks for loaded assets, then executes the callback   
-    loadAssets: function(params, callback){  
-      if(Asset.all().length == 0 ){
-        Asset.searchAdmin(params, function(){      
-          if(callback){ callback.call(this); } 
+  app.helpers({  
+    
+    // Renders the Folder tree
+    renderFolderTree: function(callback){ 
+      var application = this;
+      if(!jQuery('ul#folders').length){
+        var index = application.load(jQuery('script#admin-folders-index')).interpolate({ folders: Folder.asJSON() }, 'mustache');
+        index.replace('#sidebar').then(function(){
+          if(callback){ callback.call(this); }  
         });
-      } else {        
-        if(callback){ callback.call(this); } 
+      } else {
+        if(callback){ callback.call(this); }  
       }
     },
     
@@ -10470,72 +9904,108 @@ var Assets = Sammy(function (app) {
   });
   
   // Asset Events
-  // ---------------------------------------------
-
-  this.bind('run', function () {
-    application.modal = false; 
-    application.first_run = true;  
-  }); 
+  // ------------------------------------------------------------------------------------------
   
-  // Show Asset Info rollovers
-  this.bind('show_info', function(request){
-    var asset = Asset.find(application.current_asset_id); 
+  // Show Asset Info popup
+  // ---------------------------------------------
+  app.bind('show_info', function(e, data){
+    var asset = Asset.find(data['current_asset_id']); 
     var asset_node = jQuery('#asset-' + asset.id());
-    var remove_modal = asset_node.find('.remove');
+    var remove_modal = asset_node.find('.info');
     
     jQuery('.modal-strip').remove();
     if(!remove_modal.length){
-      var removeAsset = this.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
-      removeAsset.appendTo(asset_node).then(function(){
+      var assetInfo = this.load(jQuery('#admin-assets-info')).interpolate({ asset: asset.toMustache() }, 'mustache');
+      assetInfo.appendTo(asset_node).then(function(){
         var modal_strip = jQuery('.modal-strip');
         modal_strip.fadeIn('fast');
       });
     }
   });
   
+  // Show Remove Asset popup
+  // ---------------------------------------------
+  app.bind('show_remove_dialog', function(e, data){
+    var asset = Asset.find(data['current_asset_id']); 
+    var asset_node = jQuery('#asset-' + asset.id());
+    var remove_modal = asset_node.find('.remove');
+    
+    jQuery('.modal-strip').remove();
+    if(!remove_modal.length){
+      var removeAsset = this.load(jQuery('script#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
+      removeAsset.appendTo(asset_node).then(function(){
+        var modal_strip = jQuery('.modal-strip');
+        modal_strip.fadeIn('fast');
+      });
+    }
+  });
+  // ------------------------------------------------------------------------------------------
+  
   // Asset Index
   // ---------------------------------------------
-  this.get('/admin/assets', function(request){ 
+  app.get('/admin/assets', function(request){ 
     var query = request.params['query'];
     var params = query ? { 'query': query } : {};   
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
+
+    request.renderFolderTree();
     
-    // Galerie.close();
-    if(!application.modal){
-      Asset.searchAdmin(params, function(){  
-        var assetIndex = request.load(jQuery('#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
-        assetIndex.replace('#editor').then(function(){
-          // Sets uploader to multiple if browser supports it
-          jQuery('#ajax_uploader').attr('multiple','multiple'); 
-          // Triggers info rollovers
-          jQuery('a.info-icon').click(function(e){
-            e.preventDefault();
-            application.current_asset_id = this.id.split('-')[2];
-            request.trigger('show_info');
-          });
+    Asset.searchAdmin(params, function(){  
+      var assetIndex = request.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+      assetIndex.replace('#editor').then(function(){
+        // Sets uploader to multiple if browser supports it
+        jQuery('#ajax_uploader').attr('multiple','multiple'); 
+        
+        // Triggers info popups
+        jQuery('a.info-icon').click(function(e){
+          e.preventDefault();
+          current_asset_id = this.id.split('-')[2];
+          request.trigger('show_info', { 'current_asset_id': current_asset_id });
+        });
+        
+        // Triggers remove popups
+        jQuery('a.remove-icon').click(function(e){
+          e.preventDefault();
+          current_asset_id = this.id.split('-')[2];
+          request.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
         });
       });
-    }
-    application.modal = false; 
-    application.first_run = false;
+    });
   }); 
+  
+  // Show Folder
+  // ---------------------------------------------
+  app.get('/admin/folders/:id', function(request){ 
+    var folderId = request.params['id'];
+    var folder = Folder.find(folderId);
+    request.renderFolderTree(function(){
+      jQuery('ul#folders li').removeClass('active');
+      jQuery('#folder-' + folderId).addClass('active');
+    });
+    
+    var assets = Asset.find_by_folder_id(folderId);
+    var show = request.load(jQuery('script#admin-assets-index')).interpolate({ assets: []}, 'mustache');
+    show.replace('#editor').then(function(){
+      jQuery('#ajax_uploader').attr('multiple','multiple'); 
+    });
+
+  });
   
   // New Assets
   // ---------------------------------------------
-  this.get('/admin/assets/new', function(request){ 
+  app.get('/admin/assets/new', function(request){ 
     // var newAsset = request.render('/templates/admin/assets/new.mustache');
-    var newAsset = request.load(jQuery('#admin-assets-new')).interpolate({}, 'mustache');
+    var newAsset = request.load(jQuery('script#admin-assets-new')).interpolate({}, 'mustache');
     newAsset.replace('#editor').then(function(){
       jQuery('#ajax_uploader').attr('multiple','multiple'); 
     });
-    application.first_run = false;
+    context.first_run = false;
   });
   
   // Create Asset
   // ---------------------------------------------  
-  this.post('/admin/assets', function(request){   
-    var application = this;
+  app.post('/admin/assets', function(request){   
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files; 
     var query = request.params['query'] ? request.params['query'] : null;
@@ -10543,11 +10013,9 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': query } : {}; 
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
-    //  fileInput = uploadForm.find('input[type=file]'),
-    //  files = fileInput.attr('files');
     
     this.send_files(files, params, function(){
-      var assetIndex = application.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
+      var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
       assetIndex.replace('#editor').then(function(){
         jQuery('#ajax_uploader').attr('multiple','multiple'); 
       });
@@ -10558,31 +10026,29 @@ var Assets = Sammy(function (app) {
 
   // Edit Asset 
   // ---------------------------------------------  
-  this.get('/admin/assets/:id/edit', function(request){
+  app.get('/admin/assets/:id/edit', function(request){
     var query = request.params['query'] ? request.params['query'] : null; 
     var params = query ? { 'query': request.params['query']} : {};   
+    var asset = Asset.find(request.params['id']);
+    var editAsset = request.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
     
-    this.loadAssets(params, function(){
-      var asset = Asset.find(request.params['id']);
-      var editAsset = request.load(jQuery('#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
-      editAsset.replace('#editor').then(function(results){  
-        setTimeout(function(){
-          $('img.fade-in').fadeIn('slow'); 
-        }, 100);
-        Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
-      });                                                                           
-    }); 
+    editAsset.replace('#editor').then(function(results){  
+      setTimeout(function(){
+        $('img.fade-in').fadeIn('slow'); 
+      }, 100);
+      Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
+    });                                                                           
+
     // sets a flag so the the search results are not reloaded   
-    application.modal = false;  
+    context.modal = false;  
   });
   
   // Update Asset
   // ---------------------------------------------  
-  this.put('/admin/assets/:id', function(req){
-    var application = this;
-    var asset = Asset.find(req.params['id']);     
+  app.put('/admin/assets/:id', function(request){
+    var asset = Asset.find(request.params['id']);     
   
-    asset.attr(req.params['asset']);
+    asset.attr(request.params['asset']);
     asset.save(function(success){   
       if(success){
         Utilities.notice('Successfully saved asset');   
@@ -10590,55 +10056,15 @@ var Assets = Sammy(function (app) {
     });
   });    
   
-  // Remove Asset
-  // ---------------------------------------------  
-  this.get('/admin/assets/:id/remove', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null; 
-    var params = query ? { 'query': request.params['query']} : null; 
-    
-    jQuery('.modal-strip').remove();
-    
-    this.loadAssets(params, function(){ 
-      var asset = Asset.find(request.params['id']);  
-
-      if(application.first_run){
-        var assetIndex = request.load(jQuery('#admin-assets-edit')).interpolate(Asset.toMustache(query), 'mustache');
-        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
-        assetIndex.replace('#editor').then(function(){
-          var asset_node = jQuery('#asset-' + asset.id());
-          removeAsset.appendTo(asset_node).then(function(){
-            var modal_strip = jQuery('.modal-strip');
-            modal_strip.fadeIn('fast').css({
-              // 'top' :  + 'px',
-              // 'left':  'px'
-            });
-          });
-        }); 
-      } else {
-        var asset_node = jQuery('#asset-' + asset.id());
-        var removeAsset = request.load(jQuery('#admin-assets-remove')).interpolate({ asset: asset.toMustache(query) }, 'mustache');
-        removeAsset.appendTo(asset_node).then(function(){
-          var modal_strip = jQuery('.modal-strip');
-          modal_strip.fadeIn('fast').css({
-            // 'top' :  + 'px',
-            // 'left':  'px'
-          });
-        });
-      }
-    }); 
-  });
-  
   // Delete Asset
   // ---------------------------------------------  
-  this.del('/admin/assets/:id', function(request){
-    var application = this;    
+  app.del('/admin/assets/:id', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
     var asset = Asset.find(request.params['id']);  
        
     asset.destroy(function(success){   
-      if(success){ 
-        Galerie.close(); 
+      if(success){  
         Utilities.notice('Successfully saved asset'); 
         request.redirect('/admin/assets' + query_path);    
       }
@@ -10646,80 +10072,51 @@ var Assets = Sammy(function (app) {
   });    
 
 });
-var Pages = Sammy(function (app) {   
-  
-  var context = this;  
-   
-  this.debug = false;
-  // this.disable_push_state = true;
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams); 
-  
-  
+var Pages = Sammy(function (app) {     
+
   // Helper Methods 
   // ---------------------------------------------
   app.helpers({  
     
-    // Checks for loaded pages, renders the tree, then executes the callback   
-    loadPages: function(callback){  
-      var application = this; 
-      
-      if(Page.all().length == 0 ){
-        Page.load(function(){  
-          Layout.load(function(){
-            if(callback){ callback.call(this); }  
-          });    
+    // Renders the Page tree
+    renderTree: function(page, active_page_id){ 
+      var application = this;
+      if(!jQuery('ul#pages').length){
+        var pageIndex = application.load(jQuery('script#admin-pages-index')).interpolate({ pages: [page.asJSON()] }, 'mustache');
+        // jQuery('#sidebar').hide();
+        pageIndex.replace('#sidebar').then(function(){   
+          jQuery('ul.page-children:first').attr('id', 'pages'); 
+          application.renderNode(page, active_page_id); 
         });
-      } else {        
-        if(callback){ callback.call(this); } 
       }
     },
-    
-    // Renders the Page tree
-    renderTree: function(page, active_page){ 
-      var application = this;
-      var pageIndex = application.load(jQuery('#admin-pages-node')).interpolate({ pages: [page.asJSON()] }, 'mustache');
-      // jQuery('#sidebar').hide();
-      pageIndex.replace('#sidebar').then(function(){   
-        jQuery('ul.page-children:first').attr('id', 'pages'); 
-        application.renderNode(page, active_page); 
-        if(page.id() == active_page.id()){
-          jQuery('li#page-' + page.id()).addClass('active');
-        }
-      });
-    },
-    
-    
+ 
     // Renders a single page node for each page, then renders the children as well
-    renderNode: function(page, active_page){ 
-      
+    renderNode: function(page, active_page_id){ 
       var application = this;
       // This is a little slow, as it renders the children for each page. 
-      var pageNode = application.load(jQuery('#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
+      var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
       pageNode.appendTo('#page-' + page.id()).then(function(){
-        logger.info(page.id())
         $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
-        page.children().each(function(child){  
-          if(child.id() == active_page.id()){
-            jQuery('li#page-' + child.id()).addClass('active');
+        page.children().each(function(child){ 
+          //  var active_page_id = document.location.pathname.split('/')[3]; 
+          if(child.id() == active_page_id){
+            application.trigger('set-active-page', child);
           }
           if(child.has_children() == true){ 
             jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child, active_page);  
+            application.renderNode(child, active_page_id);  
           }else{
-            // 
+            // console.log('end ' + active_page_id)
           }
         });
       });       
     }, 
     
     renderPagePreview: function(page, callback){
-      var application = this;   
-      if(!context.modal){
-        var showPage = application.load(jQuery('#admin-pages-show')).interpolate({ 
+      var application = this;  
+      if(!jQuery('div#preview-' + page.id()).length){
+        var showPage = application.load(jQuery('script#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
@@ -10728,158 +10125,145 @@ var Pages = Sammy(function (app) {
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
-          jQuery('li.node').removeClass('active');
-          jQuery('#page-' + page.id()).addClass('active');
+          application.trigger('set-active-page', page);
         });
+      }else{
+        application.trigger('set-active-page', page);
       }
     }, 
     
-    open_page_editor: function(){
-      var page_editor = jQuery('#page-editor');
-      var page_title_input = jQuery('#page-title');
-      page_editor.addClass('open').animate({'height': '200px'}, 300);
-      page_title_input.removeAttr('disabled').focus();
-    }, 
+    renderPageEditor: function(page, callback){
+      var application = this;   
+      if(!jQuery('#page-editor').length){
+        var pageEditor = application.load(jQuery('script#admin-pages-edit')).interpolate({ 
+          page: page.asJSON()
+        }, 'mustache');  
+        pageEditor.appendTo('body').then(function(){  
+          // TODO make an event
+          jQuery('li.node').removeClass('active');
+          jQuery('#page-' + page.id()).addClass('active');
+          if(callback){ callback.call(this); }
+          application.trigger('set-active-page', page);
+        });
+      }else {
+        if(callback){ callback.call(this); }
+        application.trigger('set-active-page', page);
+      }
+    },
     
-    close_page_editor: function(){
-      var page_editor = jQuery('#page-editor');
-      var page_title_input = jQuery('#page-title');
-      page_editor.removeClass('open').animate({'height': '0'}, 300);
-      page_title_input.attr('disabled', 'disabled');
+    renderPageProperties: function(page, callback){
+      var application = this;   
+      var pageProperties = application.load(jQuery('script#admin-pages-form')).interpolate({ 
+        page: page.asJSON(),
+        layouts: Layout.asLayoutJSON(page.attr('layout_id')),
+        base_page_id: page.id(),
+        timestamp: window.timestamp
+      }, 'mustache');  
+      pageProperties.replace('#page-tabs-' + page.id()).then(function(){  
+        // TODO make an event
+        if(callback){ callback.call(this); }
+      });
     }
     
   });
   
   // renders the page index, only if that element is not found
-  app.bind('page-index', function(){
+  app.bind('page-index', function(e){
     var application = this; 
-    if(!jQuery('.page-children').length){
-      Page.load(function(){
-        application.renderTree(Page.root(), Page.root());  
-      });
-    } 
+    var pageId = document.location.pathname.split('/')[3];
+    application.renderTree(Page.root(), pageId);  
   }); 
   
-  app.bind('set-active-tab', function(request){
-    
+  app.bind('set-active-page', function(e, page){
+    jQuery('li.node').removeClass('active');
+    jQuery('li#page-' + page.id()).addClass('active');
   });
   
-  // Sets active tab
-  // app.before(function(request) {
-  //   var tabs = jQuery('div#tabs a.tab');
-  //   // TODO make this a decent regex
-  //   var name = request.path.split('?')[0].split('#/')[1].split('/')[0];
-  //   var active_tab = jQuery('#' + name);
-  //   
-  //   tabs.removeClass('active');
-  //   active_tab.addClass('active');
-  // });
-
-  app.bind('run', function () {   
+  app.bind('toggle-children', function(e, el){
     
-    context.application = this;
-    context.refresh_pages = true;
-    context.modal = false;    
+    var application = this;
+    var toggle = $(el);  
+    var parent_node = toggle.parents('li:first'); 
+    var page_id = el.id.split('-')[2];  
+    var page = Page.find(page_id)  
+    var active_page_cookie = jQuery.cookie('active_page_ids');
+    var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
+
+    if(!parent_node.hasClass('open')){
+      active_page_ids.push(page_id);
+      parent_node.toggleClass('open');  
+      var now = new Date();
+      var start = now.getTime();  
+      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
     
-    jQuery('.add-asset').live('click', function(){
-      context.application.trigger('add-asset');
-      return false;
-    });  
+      // move to model
+      var url = '/admin/pages/' + page_id + '/children.json';    
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",                   
+        success: function(results) {    
+          jQuery.each(results, function(i, results) { 
+            var page = Page.find(results.id);
+            if(!page){
+              var page = new Page({ id: results.id });
+            }
+            page.merge(results);
+            Page.add(page);
+          });
+          application.renderNode(page, page);
+        }
+      });   
+    } else {    
+      parent_node.toggleClass('open'); 
+      var arr = new Array();
+      active_page_ids = jQuery.grep(active_page_ids, function(value) {
+        return value != page_id;
+      }); 
+      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
+      page.children().each(function(child){
+        Page.remove(child);
+      }); 
+      jQuery('#page-' + page_id + ' ul').remove();
+    }
+  });
+  
+  // Reload Page
+  // ---------------------------------------------
+  app.bind('reload-page', function(e, page){
+    var id = page.id();
+    var pageFrame = jQuery('iframe#page-iframe-' + id);
+    // Sets page title
+    jQuery('li#page-' + id).find('span.title a').text(page.attr('title'));
+    jQuery('h1#page-title-' + id).text(page.attr('title'));
     
-    // This needs to be moved
-    jQuery('#sidebar .opener').live('click', function(e){    
-
-      var Now = new Date()
-      var start = Now.getTime();  
-      var toggle = $(this);  
-      var parent_node = toggle.parents('li:first'); 
-      console.log(parent_node)
-      
-      var page_id = this.id.split('-')[2];  
-      var page = Page.find(page_id)  
-
-      var active_page_cookie = jQuery.cookie('active_page_ids');
-      var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
-
-      if(!parent_node.hasClass('open')){
-        active_page_ids.push(page_id);
-        parent_node.toggleClass('open');  
-        var now = new Date();
-        var start = now.getTime();  
-        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        // var url = '/admin/pages/' + page_id + '/children.json';    
-        // move to model
-        // jQuery.ajax({
-        //   type: 'GET',
-        //   url: url,
-        //   dataType: "json",                   
-        //   success: function(results) {    
-        //     jQuery.each(results, function(i, results) { 
-        //       var page = Page.find(results.id);
-        //       if(!page){
-        //         var page = new Page({ id: results.id });
-        //       }
-        //       page.merge(results);
-        //       Page.add(page);
-        //     });
-        //     context.application.renderNode(page);
-        //     // Hide spinner  
-        //   }
-        // });   
-        // Loads all open pages...  
-        // Should really only load the relevent ones...
-        Page.load(function(){  
-          context.application.renderNode(page, page);
-          // Hide spinner    
-        });
-      } else {    
-        parent_node.toggleClass('open'); 
-        var arr = new Array();
-        active_page_ids = jQuery.grep(active_page_ids, function(value) {
-          return value != page_id;
-        }); 
-        jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-        page.children().each(function(child){
-          Page.remove(child);
-        }); 
-        jQuery('#page-' + page_id + ' ul').remove();
-      } 
-      context.refresh_pages = false; 
-      context.modal = false;
-      return false; 
-    });
+    pageFrame.attr('src', pageFrame.attr('src'));
   });
 
-  // Page routes
+  // Page Index
   // ---------------------------------------------  
-  this.get('/admin/pages/?', function(request){ 
-  
-    Galerie.close();    
-    // context.refresh_pages = true; 
-    request.trigger('page-index');
-    jQuery('#editor').html('<h1 class="section">Pages</div>');  
-
-    context.do_not_refresh = false;              
+  this.get('/admin/pages/?', function(request){  
+    // request.trigger('page-index');
+    // jQuery('#editor').html('<h1 class="section">Pages</div>');     
+    var first = Page.first()
+    request.redirect(first.attr('admin_path'));       
   });
   
   
   // New Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/new/?', function(request){    
+    var page = Page.find(request.params['id']);
+    var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
+    if ($('#modal').length == 0){ Galerie.open(displayContents); } 
     
-    this.loadPages(function(){    
-      var page = Page.find(request.params['id']);
-      var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-      if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-      
-      request.trigger('page-index');
-
-      var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
-        parent: page.asJSON(),
-        layouts: Layout.asLayoutJSON(page.attr('layout_id'))
-      }, 'mustache'); 
-      newPage.replace('#new-page-container');
-    }); 
+    request.trigger('page-index');
+    
+    var newPage = request.load(jQuery('#admin-pages-new')).interpolate({ 
+      parent: page.asJSON(),
+      layouts: Layout.asLayoutJSON(page.attr('layout_id'))
+    }, 'mustache'); 
+    newPage.replace('#new-page-container');
   }); 
   
   // Create Page
@@ -10895,9 +10279,8 @@ var Pages = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{  
-        context.refresh_pages = true;  
-        Utilities.notice('Successfully saved page');
-        request.redirect('#/pages/' + response.id);
+        Utilities.notice('Successfully created page');
+        request.redirect(response.admin_path);
       }
     });
   }); 
@@ -10905,52 +10288,40 @@ var Pages = Sammy(function (app) {
   // Show Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/?', function(request){ 
-    var application = this;
-    Galerie.close(); 
+    jQuery('#overlay').remove();
     jQuery('.modal-editor').remove();
-    this.loadPages(function(){  
-      var page_id = request.params['id'];
-      var page = Page.find(page_id); 
-
-      if(!context.do_not_refresh){
-        if(page) {
-          request.renderPagePreview(page); 
-        } else {  
-          // Loads page if the current collection does not contain it
-          page = new Page({ id: page_id });
-          page.load(function(){
-            request.renderPagePreview(page); 
-          });
-        } 
-        context.modal = false;
-        context.do_not_refresh = false;
-        request.trigger('page-index');
-      }else{
-        application.close_page_editor();
-      }
-    });
-    context.do_not_refresh = false;    
+ 
+    var page = Page.find(request.params['id']); 
+    
+    if(page) {
+      request.renderPagePreview(page); 
+    } else {  
+      // Loads page if the current collection does not contain it
+      page = new Page({ id: request.params['id'] });
+      page.load(function(){
+        request.renderPagePreview(page); 
+      });
+      page.save;
+    } 
+    request.trigger('page-index');
   });
   
   // Edit Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/edit/?', function(request){  
-    var application = this;
-    Galerie.close();  
-    context.modal = false;  
-
-    this.loadPages(function(){  
-      var page = Page.find(request.params['id']); 
-      if(jQuery('#preview-' + page.id()).length){
-        application.open_page_editor();
-      } else {
-        request.renderPagePreview(page, function(){
-          application.open_page_editor();
-        }); 
-        request.trigger('page-index');
-      }
-    }); 
-    context.do_not_refresh = true;       
+    var page = Page.find(request.params['id']); 
+    if(jQuery('#preview-' + page.id()).length){
+      request.renderPageEditor(page, function(){
+        request.renderPageProperties(page);
+      });
+    } else {
+      request.renderPagePreview(page, function(){
+        request.renderPageEditor(page, function(){
+          request.renderPageProperties(page);
+        });
+      }); 
+      request.trigger('page-index');
+    }    
   }); 
     
   
@@ -10961,178 +10332,85 @@ var Pages = Sammy(function (app) {
     var page_id = request.params['page_id'];
     var page = Page.find(page_id);
     
-    page.attr(request.params['page']);  
-    page.save(function(success, result){
-      if(success){
-        context.modal = false;     
-        Utilities.notice('Successfully saved page');
-        // application.renderNode(page);
-        request.renderTree(Page.root(), page); 
-        // request.redirect('#/pages/' + page_id + '/edit');
-      } 
-    });
+    page.attr(request.params['page']); 
+    
+    var updatedStamp = jQuery('span.timestamp').text();
+    // console.log('Updated: ' + updatedStamp);
+    // console.log('Timestamp: ' + window.timestamp);
+    
+    if(!(updatedStamp < window.timestamp)){
+      page.save(function(success, result){
+        if(success){   
+          Utilities.setTimestamp();
+          Utilities.notice('Successfully saved page');
+
+          // request.renderTree(Page.root(), page.id()); 
+          request.trigger('reload-page', page);
+          request.redirect(page.attr('admin_path'));
+        } 
+      });
+    } else {
+      alert('Someone else has edited this page, please reload and try again');
+    }
   });
   
   // Remove Page
   // ---------------------------------------------
-  this.get('/admin/pages/:id/remove', function(request){   
-    this.loadPages(function(){   
-      var page_id = request.params['id'];
-      var page = Page.find(page_id);         
-      var displayContents = $('<div />').attr({'id': 'remove-page-container', 'class': 'small-modal'});   
-      
-      if($('#modal').length == 0){ Galerie.open(displayContents); } 
-      
-      request.trigger('page-index');
-      
-      var removePage = request.load(jQuery('#admin-pages-remove')).interpolate({ page: page.asJSON() }, 'mustache');    
-      removePage.replace('#remove-page-container');
-    });  
+  this.get('/admin/pages/:id/remove', function(request){    
+    var page = Page.find(request.params['id']);         
+    var displayContents = $('<div />').attr({'id': 'remove-page-container', 'class': 'small-modal'});   
+    
+    if($('#modal').length == 0){ Galerie.open(displayContents); } 
+    
+    request.trigger('page-index');
+    
+    var removePage = request.load(jQuery('#admin-pages-remove')).interpolate({ page: page.asJSON() }, 'mustache');    
+    removePage.replace('#remove-page-container'); 
   }); 
   
   // Destroy Page
   // ---------------------------------------------
-  this.del('/admin/pages/:id', function(request){
-    var page_id = request.params['id'];       
-    var page = Page.find(page_id);               
+  this.del('/admin/pages/:id', function(request){    
+    var page = Page.find(request.params['id']);               
       
     page.destroy(function(success){  
       if(success){
-        jQuery('#page-' + page_id).remove();
-        context.refresh_pages = false;
+        jQuery('#page-' + page.id()).remove();
         request.redirect('#/pages');
       }
     }); 
   });  
-  
-  
-  // Asset Search Results
-  // ---------------------------------------------
-  // this.get('/pages/:id/results', function(request){ 
-  //   this.loadPages(function(){
-  //     var page_id = request.params['id'];  
-  //     var page = Page.find(page_id);  
-  //     
-  //     var query = request.params['query'] ? request.params['query'] : null; 
-  //     var params = query ? { 'query': query } : {};
-  //     
-  //     Asset.searchAdmin(params, function(){  
-  //       Asset.each(function(asset){
-  //         asset.attr('current_page_id', page.id());
-  //         asset.save();
-  //       });  
-  //        
-  //       var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-  //       searchResults.replace('#search-results-container');
-  //     });
-  //   });
-  // });   
-  // 
-  // 
-  // // Add Page Asset
-  // // ---------------------------------------------  
-  // this.get('#/pages/:page_id/assets/:id/add', function(request){ 
-  //   this.loadPages(function(){   
-  //     var page_id = request.params['page_id'];  
-  //     var page = Page.find(page_id);  
-  //     var asset = Asset.find(request.params['id']);  
-  //     var page_asset_input = jQuery('#page-asset-ids');
-  //     var asset_ids_list = page_asset_input.attr('value'); 
-  //     var new_asset_ids_list = page_asset_input.attr('value') + ',' + asset.id(); 
-  //     
-  //     page_asset_input.attr('value', new_asset_ids_list);
-  //     // page.attr('assets_list', new_asset_ids_list);
-  //     
-  //     page.saveRemote({ page: { assets_list: new_asset_ids_list }}, {
-  //       success: function(){ 
-  //         // think of a better way to render these links 
-  //         var image_div = jQuery('<div class="asset" />').attr('id', 'page-asset-' + asset.id());     
-  //         var image_link = jQuery('<a href="#/assets/' + asset.id() + '/edit"></a>');
-  //         var remove_link = jQuery('<br /><a href="#/pages/' + page.id() + '/assets/' + asset.id() + '/remove">Remove</a>');   
-  //         image_link.append('<img src="/images/icons/' + asset.id() + '/' + asset.attr('file_name') + '" alt="' + asset.attr('title') + '" /></a>');
-  //         image_div.html(image_link);
-  //         image_div.append(remove_link);
-  //         
-  //         jQuery('#page-assets').append(image_div); 
-  //         var preview = jQuery('.preview iframe');
-  //         preview.hide().attr('src', preview.attr('src'));
-  //         preview.load(function(){
-  //           preview.fadeIn('fast')
-  //         })
-  //         context.do_not_refresh = true;
-  //         request.redirect('#/pages/' + page_id);  
-  //       }
-  //     });
-  //   });  
-  // }); 
-  // 
-  // 
-  // // Remove Page Asset
-  // // ---------------------------------------------   
-  // this.get('#/pages/:page_id/assets/:id/remove', function(request){ 
-  //   this.loadPages(function(){     
-  //     var id = request.params['id']; 
-  //     var page_id = request.params['page_id'];  
-  //     var page = Page.find(page_id);
-  //     var page_asset_input = jQuery('#page-asset-ids');   
-  // 
-  //     var asset_ids_list = page_asset_input.attr('value').split(','); 
-  //     var idx = asset_ids_list.indexOf(id);    
-  //     if(idx!=-1) asset_ids_list.splice(idx, 1);  
-  // 
-  //     page_asset_input.attr('value', asset_ids_list);  
-  //     page.attr('assets_list', asset_ids_list.join(','));
-  //     page.save(function(){
-  //       jQuery('#page-asset-' + id).fadeOut('fast', function(){
-  //         $(this).remove();
-  //       }); 
-  //       var preview = jQuery('.preview iframe');
-  //       preview.hide().attr('src', preview.attr('src'));
-  //       preview.load(function(){
-  //         preview.fadeIn('fast')
-  //       })
-  //       context.do_not_refresh = true;
-  //       request.redirect('#/pages/' + page_id);
-  //     })
-  //   }); 
-  // });
-
 
 });
 var Parts = Sammy(function (app) {   
   
   var context = this;  
-   
-  this.debug = false;
-  // this.disable_push_state = true;
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache);
-  this.use(Sammy.NestedParams); 
-  
   
   // Helper Methods 
   // ---------------------------------------------
   app.helpers({  
     // Render Part
-    render_part: function(part, page, template){
+    renderPart: function(part, page, template){
       var application = this;  
-      var edit_part = application.load(jQuery('#admin-' + template + '-edit')).interpolate({ 
+      var editPart = application.load(jQuery('script#admin-' + template + '-edit')).interpolate({ 
         part: part.asJSON(),
         page: page.asJSON(),
-        assets: Asset.asJSON()
+        assets: Asset.asJSON(),
+        timestamp: window.timestamp
       }, 'mustache');
-      edit_part.appendTo(jQuery('body')).then(function(){
-        var modal_editor = jQuery('.modal-editor');
-        var iframe_content = $('iframe').contents();  
-        var part_editor = iframe_content.find('#editor-' + part.id());
-        modal_editor.fadeIn('fast').css({
-          'top' : part_editor.offset().top - iframe_content.find('body').scrollTop() + 'px',
-          'left':  part_editor.offset().left + 400 + 'px'
-        });
-        application.set_asset_links(part, page);
       
+      // jQuery('#page-tabs-' + page.id()).html('FIBBLE');
+      editPart.replace('#page-tabs-' + page.id()).then(function(){
+        
+        // TODO remove
+        var modal_editor = jQuery('.modal-editor');
+        modal_editor.fadeIn('fast');
+        
+        // Triggers Sanskrit editor
+        application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
+        
+        // For image parts only. Otherwise ignored
+        application.trigger('set_asset_links');
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
@@ -11142,117 +10420,92 @@ var Parts = Sammy(function (app) {
             });
           });
         application.trigger('page-index');
-        context.modal = true;
-      });
-    },
-    
-    // Sets add asset links
-    set_asset_links: function(part, page){
-      jQuery('#search-results-container li.asset').each(function(i, el){
-        var link = jQuery(el).find('a');
-        var asset_id = jQuery(el).attr('id').split('-')[1];
-        link.click(function(e){
-          e.preventDefault();
-          // Updates part
-          var parts = page.attr('parts'); 
-          var length = parts.length;
-          for (var i=0, l=length; i<l; ++i ){
-            var p = parts[i];
-            if(part.id() == p.id){
-              p.asset_id = asset_id;
-              part.attr('asset_id', asset_id);
-              part.save();
-            }
-          }
-          page.save(function(success){
-            jQuery('.modal-editor').remove();
-            // TODO Change to sammy method
-            context.modal = false;
-            document.location.hash = '#' + page.attr('admin_path');
-          });
-        });
       });
     }
     
-  });  
+  });    
+  
+  // Sets add asset links
+  // ---------------------------------------------
+  this.bind('set_asset_links', function(part, page){
+    jQuery('#search-results-container li.asset').each(function(i, el){
+      var link = jQuery(el).find('a');
+      var assetId = jQuery(el).attr('id').split('-')[1];
+      var assetSrc = link.find('img').attr('src');
+      
+      link.click(function(e){
+        e.preventDefault();
+        // Sets the asset id to the part page input
+        jQuery('input#part-asset-id').attr('value', assetId);
+        // Sets the preview image to the new image
+        jQuery('form#edit-part img.preview').attr('src', assetSrc.replace('icon','thumbnail'));
+      });
+    });
+  });
   
   // Edit Parts
   // ---------------------------------------------
-  this.get('#/pages/:page_id/parts/:id/edit', function(request){ 
+  this.get('/admin/pages/:page_id/parts/:id/edit', function(request){ 
     jQuery('.modal-editor').remove();
     var iframe = $('iframe');
     var template = 'parts';
-    
-    this.loadPages(function(){ 
-      Page.load_by_id(request.params['page_id'], function(){
-        var page = Page.find(request.params['page_id']);
-        var part = page.parts().find(request.params['id']);
-        var timestamp = jQuery('#page-updated_at').attr('value');
+    var page = Page.find(request.params['page_id']);
+    console.log(page)
+    var part = page.parts().find(request.params['id']);
+    console.log(part)
 
-        // Checks to see if part is current...
-        if(iframe.length){
-          if(timestamp != page.attr('updated_at')){
-            var preview = jQuery('.preview iframe');
-            preview.hide().attr('src', preview.attr('src'));
-            preview.load(function(){
-              preview.fadeIn('fast');
-              request.render_part(part, page, template);
-            });
-          }else{
-            request.render_part(part, page, template);
-          }
-        }else{
-          request.renderPagePreview(page, function(){
-            request.render_part(part, page, template);
-          }); 
-        }
-      });    
-    }); 
-    // context.modal = true;
+    if (iframe.length) {
+      request.renderPageEditor(page, function(){
+        request.renderPart(part, page, template);
+      });
+    } else {
+      request.renderPagePreview(page, function(){
+        request.renderPageEditor(page, function(){
+          request.renderPart(part, page, template);
+        });
+      }); 
+    }
   });
   
+  // Remove this
   // Edit Image Parts
   // ---------------------------------------------
-  this.get('#/pages/:page_id/image_parts/:id/edit', function(request){ 
-    var application = this;
-    jQuery('.modal-editor').remove(); 
+  this.get('/admin/pages/:page_id/image_parts/:id/edit', function(request){   
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
+    var template = 'image_parts';
+    var iframe = $('iframe');
     
-    application.loadPages(function(){     
-      var page = Page.find(request.params['page_id']);
-      var part = page.parts().find(request.params['id']);
-      var template = 'image_parts';
-      var iframe = $('iframe');
-      
-      Asset.searchAdmin({ 'limit': '8' }, function(){ 
-        if(iframe.length){
-          application.render_part(part, page, template);
-        }else{
-          request.renderPagePreview(page, function(){
-            application.render_part(part, page, template);
-          }); 
-        }
-      });  
-    }); 
-    // context.modal = true; 
+    Asset.searchAdmin({ 'limit': '24' }, function(){ 
+      if (iframe.length) {
+        request.renderPageEditor(page, function(){
+          request.renderPart(part, page, template);
+        });
+      } else {
+        request.renderPagePreview(page, function(){
+          request.renderPageEditor(page, function(){
+            request.renderPart(part, page, template);
+          });
+        }); 
+      }
+    });
   });
   
+  // TODO change to Event
   // Add Image Page Parts
   // ---------------------------------------------
-  this.get('/pages/:page_id/parts/:id/results', function(request){ 
-    var application = this;
-    this.loadPages(function(){
-      var page = Page.find(request.params['page_id']);
-      var part = Part.find(request.params['id']);
-      var query = request.params['query'] ? request.params['query'] : null; 
-      var params = query ? { 'query': query } : {};
+  this.get('/admin/pages/:page_id/parts/:id/results', function(request){ 
 
-      Asset.searchAdmin(params, function(){    
-        var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
-        // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
-        searchResults.replace('#search-results-container').then(function(){
-        
-          application.set_asset_links(part, page);
-        });
+    var page = Page.find(request.params['page_id']);
+    var part = Part.find(request.params['id']);
+    var query = request.params['query'] ? request.params['query'] : null; 
+    var params = query ? { 'query': query } : {};
+    
+    Asset.searchAdmin(params, function(){    
+      var searchResults = request.load(jQuery('#admin-pages-search_results')).interpolate(Asset.toMustache(), 'mustache');       
+      // var searchResults = request.render('/templates/admin/pages/search_results.mustache', Asset.toMustache());    
+      searchResults.replace('#search-results-container').then(function(){
+        request.trigger('set_asset_links');
       });
     });
   });
@@ -11260,24 +10513,24 @@ var Parts = Sammy(function (app) {
   // Update Parts
   // ---------------------------------------------
   this.put('#/pages/:page_id/parts/:id', function(request){
-    var id = request.params['id'];  
-    var page_id =  request.params['page_id'];
-    var page = Page.find(page_id);
-    var part = page.parts().find(id);
     
-    logger.info(request.params['part']);
+    var page = Page.find(request.params['page_id']);
+    var part = page.parts().find(request.params['id']);
     
     // Updates part
-    var parts = page.attr('parts'); 
+    var parts = page.attr('contents'); 
     var length = parts.length;
+    // TODO Find by id method for part?
+    // Or just make parts their own objects...
     for (var i=0, l=length; i<l; ++i ){
       var part = parts[i];
-      if(id == part.id){
-        // This needs to be more generalized
-        var content = request.params['part']['content'];
-        part.content = content;
+      
+      if(request.params['id'] == part.id){
+        // TODO This needs to be more generalized
+        part['content'] = request.params['part']['content'];
+        part['asset_id'] = request.params['part']['asset_id'];
         var p = Part.find(part.id);
-        p.attr('content', content);
+        p.attr({'asset_id': request.params['part']['asset_id'], 'content': request.params['part']['content']});
         p.save();
       }
     }
@@ -11285,12 +10538,13 @@ var Parts = Sammy(function (app) {
     // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
     page.save(function(success, result){
       if(success){
-        context.modal = false;     
-        // Utilities.notice('Successfully saved page');
-        request.redirect('#/pages/' + page_id);
+        Utilities.setTimestamp();  
+        Utilities.notice(p.attr('name') + ' saved'); // 
+        
+        request.trigger('reload-page', page);
+        request.redirect(page.attr('admin_path'));
       } 
     });
-    
   });
   
   // Upload Assets to Part (Create)
@@ -11318,7 +10572,7 @@ var Parts = Sammy(function (app) {
         jQuery('.progress').slideUp('slow', function(){
           jQuery(this).html('');
         });
-        application.set_asset_links(part, page);
+        request.trigger('set_asset_links');
       });
     });
 
@@ -11328,14 +10582,6 @@ var Parts = Sammy(function (app) {
 var Users = Sammy(function (app) {
   
   var context = this; 
-  
-  this.debug = false;
-  // this.disable_push_state = true;  
-  
-  // this.use(Sammy.Title);  
-  this.use(Sammy.JSON); 
-  this.use(Sammy.Mustache); 
-  this.use(Sammy.NestedParams);  
   
   // Helper Methods 
   // ---------------------------------------------  
@@ -11355,7 +10601,7 @@ var Users = Sammy(function (app) {
     
     renderUserIndex: function(callback){  
       var application = this;    
-      var userIndex = application.load(jQuery('#admin-users-index')).interpolate(User.toMustache(), 'mustache');
+      var userIndex = application.load(jQuery('script#admin-users-index')).interpolate(User.toMustache(), 'mustache');
       userIndex.replace('#editor').then(function(){
         if(callback){ callback.call(this); }  
       });
@@ -11369,8 +10615,7 @@ var Users = Sammy(function (app) {
   
   // User Index
   // ---------------------------------------------
-  this.get('/admin/users', function(request){ 
-    Galerie.close();  
+  this.get('/admin/users', function(request){  
     jQuery('#editor').html('<h1 class="section">Users</div>'); 
 
     request.loadUsers(function(){  
@@ -11383,7 +10628,7 @@ var Users = Sammy(function (app) {
   this.get('/admin/users/new', function(request){   
     request.loadUsers(function(){    
       if (!jQuery('#modal').length){ Galerie.open(); }  
-      var new_user = request.load(jQuery('#admin-users-new')).interpolate({}, 'mustache');
+      var new_user = request.load(jQuery('script#admin-users-new')).interpolate({}, 'mustache');
       new_user.replace('#modal');  
       request.renderUserIndex();
     });
@@ -11414,12 +10659,12 @@ var Users = Sammy(function (app) {
       if(!users_list.length){
         request.renderUserIndex(function(){
           jQuery('.user-form').html('');
-          var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
+          var editUser = request.load(jQuery('script#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
           editUser.replace('#user-form-' + user.id());
         });
       } else {
         jQuery('.user-form').html('');
-        var editUser = request.load(jQuery('#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
+        var editUser = request.load(jQuery('script#admin-users-edit')).interpolate({ user: user.asJSON() }, 'mustache');
         editUser.replace('#user-form-' + user.id());
       } 
     });
@@ -11446,21 +10691,10 @@ var Users = Sammy(function (app) {
   
 });
 jQuery(document).ready(function () {
-
-  // Loads mustache templates and runs sammy app
-  var login = jQuery('#login');   
-  if(!login.length){
-    jQuery.ajax({
-      url: '/templates',
-      success: function(results){
-        jQuery('head').append(results);
-        Pages.run();
-      }
-    });
-  }
   
   // Global ajax indicator
   var loader_el = jQuery('#loader');
+  var image = jQuery('<img />', {'src': '/images/loader.png'});
   jQuery('body')
     .ajaxStart(function() {
       if(!window.ninja){
@@ -11469,11 +10703,67 @@ jQuery(document).ready(function () {
     }).ajaxSuccess(function() {
       Loader.stop(loader_el);
     });
-    
+
+  // Loads mustache templates and runs sammy app
+  var login = jQuery('#login');   
+  if(!login.length){
+    jQuery.ajax({
+      url: '/templates',
+      success: function(results){
+        jQuery('head').append(results);
+        // Pages.run();
+      }
+    });
+    // Gets one big object that loads everything at once
+    jQuery.ajax({
+      url: '/admin/sites/current.json',
+      success: function(results){
+        Updater.setup(results.pages, Page);
+        Updater.setup(results.templates, Layout);
+        // Updater.setup(results.assets, Asset);
+        Updater.setup(results.folders, Folder);
+        Base.run();
+        window.timestamp = results.now;
+      }
+    });
+  }
+
   // Grabs the keyboard shortcuts
-  Utilities.keyboard_nav();  
-  Utilities.check_browser_version();    
+  // Utilities.keyboard_nav();  
+  Utilities.check_browser_version();  
+  
+  // ACE Save. Only works with the ACE editor windows
+  var canon = require("pilot/canon");  
+  canon.addCommand({
+    name: "save",
+    bindKey: {
+      win: "Ctrl-S",
+      mac: "Command-S",
+      sender: "editor"
+    },
+    exec: function() {
+      jQuery('form.command-save').submit();
+    }
+  });
+  
+  // TODO move to utilities or base.js
+  // Reloads iframe
+  jQuery('a.page-reload').live('click', function(){
+    var id = jQuery(this).attr('href').split('/')[3];
+    var pageFrame = jQuery('iframe#page-iframe-' + id);
+    // var src = pageFrame.attr('src');
+    pageFrame.attr('src', pageFrame.attr('src'));
+    Utilities.hideNotice();
+  });
+  
+  // Temp? Hides notices when changing pages...
+  jQuery('div#sidebar a').live('click', function(){
+    Utilities.hideNotice();
+  });
   
 });
+
+// Sets the default styles in the sanskrit iFrame
+Sanskrit.defaultStyle = 'html { padding:0; cursor:text; } body { font-family: "Helvetica Neue", Arial, helvetica; color: #333; background: #fff; font-size: 100%; margin:0; padding:0.5em; cursor:text; } p { margin: 0.5em 0; }';
 
 

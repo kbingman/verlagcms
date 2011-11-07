@@ -17,13 +17,9 @@
       "vendor/codemirror",
       "vendor/jquery.cookie",
       "vendor/sanskrit",
-      
-      "modes/javascript", 
-      "modes/xml",  
-      "modes/css",  
-      "modes/liquid",  
-      
+
       "models/asset",
+      "models/folder",  
       "models/page",
       "models/layout",  
       "models/part",

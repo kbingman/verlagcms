@@ -116,11 +116,11 @@ else
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil, :logger => logger)
 end
 
-require root_path('app/models/template.rb') 
-# This needs to be required first or Artist blows up...
-require root_path('app/models/asset.rb')
-# This needs to be required first or Page blows up...
-require root_path('app/models/part.rb')  
+# Models
+
+# These need to be required first or Page blows up...
+require root_path('app/models/templates/template.rb')
+require root_path('app/models/parts/part.rb')
 
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
@@ -132,20 +132,12 @@ Dir[root_path('app/helpers/*.rb')].each do |file|
   require file
 end
 
-# Load all admin routes.
-# Dir[root_path('app/routes/admin/*.rb')].each do |file|
-#   require file
-# end
-require root_path('app/routes/admin/css')
-require root_path('app/routes/admin/assets')
-require root_path('app/routes/admin/activities')
-require root_path('app/routes/admin/pages')
-require root_path('app/routes/admin/parts')
-require root_path('app/routes/admin/part_types')
-require root_path('app/routes/admin/sites')
-require root_path('app/routes/admin/templates')
-require root_path('app/routes/admin/users')
-require root_path('app/routes/admin/export')
+# Load all admin routes, except the rest_controller.
+# This is loaded last
+Dir[root_path('app/routes/admin/*.rb')].each do |file|
+  require file unless file.match('rest_controller')
+end
+# Loads this last so that one can easily override it
 require root_path('app/routes/admin/rest_controller') 
 
 # Load api routes

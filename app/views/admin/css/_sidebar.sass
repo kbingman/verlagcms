@@ -1,15 +1,36 @@
-#sidebar 
+#toggle
+  :display none
   :position absolute
   :top 0
-  :left 0
-  :bottom 0 
+  :left 300px
+  :background #333
+  :padding 10px
+  :z-index 10
+  &.open
+    :left 24px
+  a 
+    :color black
+    :display block
+    :height 100%
+    :width 100%
+    :cursor pointer
+#sidebar 
+  // +box-shadow(0, 0, 6px, #555)
+  +positionable  
+  :right auto
+  :line-height 1
   :padding 0
   :width 300px     
   :overflow-y auto
   :overflow-x hidden
-  :background #333 
+  :background 
+    :color #fff
+  :z-index 10
+  // Closed state of Sidebar
+  &.closed
+    :width 24px
   a
-    :color #bbb
+    :color #1091ad
     :text-decoration none
   
   #layouts
@@ -18,16 +39,20 @@
     h2
       :margin 18px 0 4px 0
     ul
-      +border-radius(3px)
-      +box-shadow(0, 0, 4px, #444)
+      // +border-radius(3px)
+      // +box-shadow(0, 0, 4px, #444)
       li
         :padding 4px
-  ul#pages
+  ul#pages, ul#folders
     :width 300px
     :margin 0
-    :font-family $headline-fonts
-    :text-transform uppercase
-    :letter-spacing 0.12em
+    :font
+      :family $headline-fonts
+      :weight 500
+    // :text-transform uppercase
+    :background 
+      :color #e4e1dd 
+    // :letter-spacing 0.12em
     li
       .item   
         // +border-radius(3px)
@@ -35,10 +60,10 @@
         :position relative
         :margin 0 0
         :padding 9px 18px
-        :border solid #222
+        // :border solid #222
         :border-width 0 0 1px 0
         // :background #333
-        +gradient(#383838, #333)
+        // +gradient(#383838, #333)
         .opener
           :position absolute
           :color #bbb
@@ -48,11 +73,17 @@
           :left 3px
           :cursor pointer
         .title
+          :display block
           a
-            :color #bbb
+            :color #777371
             :display inline-block
             :padding 6px 0 
             :text-decoration none
+        .count
+          :display block
+          :padding 0 0 0 12px
+          :font-size 12px
+          :color #777371 + #222222
         .modify
           :display inline-block
           :float right
@@ -60,27 +91,28 @@
           :width 3em
           :text-align right
           a
-            :color #bbb
+            :color #777371
             :text-decoration none
       .item:hover
-        :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
-        :background #252525
+        // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+        :background hsla(0,0,0,0.1)
     li.active 
-      .item
-        :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
-        :background #252525
+      > .item
+        // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+        // :background #252525
+        :background hsla(0,0,0,0.1)
         a 
-          :color #eee
+          :color #777371
       li
         .item
           :-webkit-box-shadow none
-          :background #333
-          +gradient(#383838, #333)
+          // :background #333
+          // +gradient(#383838, #333)
           a 
-            :color #bbb
+            :color #777371
         .item:hover
-          :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
-          :background #252525
+          // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
+          // :background #252525
           a 
-            :color #bbb
+            :color #777371
           // +gradient(#333, #000)

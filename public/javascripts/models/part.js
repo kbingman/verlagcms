@@ -45,25 +45,6 @@ var Part = Model('part', function() {
       });
     }
     
-    // load: function(page_id, callback) {
-    //   Part.each(function(){ Part.remove(this); });
-    //   var url = '/pages/' + page_id + '/parts.json';
-    //   jQuery.ajax({
-    //     type: 'get',
-    //     url: url,
-    //     contentType: "application/json",
-    //     dataType: "json",  
-    //     success: function(results) {
-    //       jQuery.each(results, function(i, part_data) {
-    //         var part = new Part({ id: part_data.id });
-    //         part.merge(part_data);
-    //         Part.add(part);
-    //       });
-    //       callback.call(this);
-    //     }
-    //   });
-    // },
-
   });
 
 });

@@ -6,9 +6,9 @@ end
 code :folders do 
   @site.folders 
 end
-code(:assets) { 
-  @site.assets 
-}
+# code(:assets) { 
+#   @site.assets 
+# }
 code(:templates) { 
  @site.templates 
 }

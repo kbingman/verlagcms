@@ -51,18 +51,19 @@ var Utilities = {
   
   // Adds the # to each link for use with IE and other older browsers
   setNonHistoryLinks: function(){
-   // // if (!Modernizr.history) {     
-   //   jQuery('a').click(function(){
-   //     var el = this;
-   //     var href = jQuery(el).attr('href');
-   //     if(href && !href.match('http://') && !href.match(/^#/)){
-   //       console.log('#' + href);
-   //       document.location.hash = $(this).attr('#' + 'href');
-   //     }
-   //   });
-   //   // var search_form = jQuery('form#search-form');
-   //   // search_form.attr('action', '#' + search_form.attr('action'));
-   // // }
+   // if (!Modernizr.history) {     
+     jQuery('a').click(function(e){
+       e.preventDefault();
+       var el = this;
+       var href = jQuery(el).attr('href');
+       if(href && !href.match('http://') && !href.match(/^#/)){
+         console.log('#' + href);
+         document.location.hash = $(this).attr('#' + 'href');
+       }
+     });
+     // var search_form = jQuery('form#search-form');
+     // search_form.attr('action', '#' + search_form.attr('action'));
+   // }
 
   },
   

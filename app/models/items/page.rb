@@ -113,6 +113,10 @@ class Page
     self.children.empty? ? false : true
   end
   
+  def child_count
+    self.children.count
+  end
+  
   def padding  
     # this needs to be moved out of the model...
     self.level * 12
@@ -133,7 +137,7 @@ class Page
     super(:only => [
       :title, :slug, :url, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id, :site_ids
     ], :methods => [
-      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :contents
+      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :child_count, :contents
     ])
   end  
   

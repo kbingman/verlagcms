@@ -4,41 +4,6 @@ var Pages = Sammy(function (app) {
   // ---------------------------------------------
   app.helpers({  
     
-    // Renders the Page tree
-    renderTree: function(page, active_page_id){ 
-      var application = this;
-      if(!jQuery('ul#pages').length){
-        var pageIndex = application.load(jQuery('script#admin-pages-index')).interpolate({ pages: [page.asJSON()] }, 'mustache');
-        // jQuery('#sidebar').hide();
-        pageIndex.replace('#sidebar').then(function(){   
-          jQuery('ul.page-children:first').attr('id', 'pages'); 
-          application.renderNode(page, active_page_id); 
-        });
-      }
-    },
- 
-    // Renders a single page node for each page, then renders the children as well
-    renderNode: function(page, active_page_id){ 
-      var application = this;
-      // This is a little slow, as it renders the children for each page. 
-      var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
-      pageNode.appendTo('#page-' + page.id()).then(function(){
-        $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
-        page.children().each(function(child){ 
-          //  var active_page_id = document.location.pathname.split('/')[3]; 
-          if(child.id() == active_page_id){
-            application.trigger('set-active-page', child);
-          }
-          if(child.has_children() == true){ 
-            jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child, active_page_id);  
-          }else{
-            // console.log('end ' + active_page_id)
-          }
-        });
-      });       
-    }, 
-    
     renderPagePreview: function(page, callback){
       var application = this;  
       if(!jQuery('div#preview-' + page.id()).length){
@@ -89,71 +54,57 @@ var Pages = Sammy(function (app) {
         // TODO make an event
         if(callback){ callback.call(this); }
       });
+    }, 
+    
+    renderPageMenu: function(page){
+      var application = this;   
+      var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
+        pages: [page.asJSON()],
+        children: page.childrenAsJSON()
+      }, 'mustache');
+      pageNode.replace('#sidebar');
     }
     
   });
   
-  // renders the page index, only if that element is not found
-  app.bind('page-index', function(e){
-    var application = this; 
-    var pageId = document.location.pathname.split('/')[3];
-    if(!jQuery('ul.page-children').length){
-      application.renderTree(Page.root(), pageId);  
+  // Page Menu
+  // ---------------------------------------------
+  app.bind('show-page-menu', function(e, page){
+    var application = this;   
+    // Checks if the page has children that are not yet loaded.
+    // if this is the case, makes a json request, otherwise renders the menu
+    if(page.children().count() == 0 && page.attr('child_count') != 0){
+      console.log('ajax')
+      page.getChildren(function(){
+        application.renderPageMenu(page);
+      })
+    } else if(page.attr('child_count') != 0){
+      application.renderPageMenu(page);
+    } else {
+      // renders the parent menu if the page has no children at all
+      var page = page.parent();
+      application.renderPageMenu(page);
     }
-  }); 
+
+  });
   
+  // Page Index
+  // ---------------------------------------------
+  // renders the page index, only if that element is not found
+  // app.bind('page-index', function(e){
+  //   var application = this; 
+  //   var pageId = document.location.pathname.split('/')[3];
+  //   if(!jQuery('ul.page-children').length){
+  //     application.renderTree(Page.root(), pageId);  
+  //   }
+  // }); 
+  
+  
+  // Set Active Page
+  // ---------------------------------------------
   app.bind('set-active-page', function(e, page){
     jQuery('li.node').removeClass('active');
     jQuery('li#page-' + page.id()).addClass('active');
-  });
-  
-  app.bind('toggle-children', function(e, el){
-    
-    var application = this;
-    var toggle = $(el);  
-    var parent_node = toggle.parents('li:first'); 
-    var page_id = el.id.split('-')[2];  
-    var page = Page.find(page_id)  
-    var active_page_cookie = jQuery.cookie('active_page_ids');
-    var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
-
-    if(!parent_node.hasClass('open')){
-      active_page_ids.push(page_id);
-      parent_node.toggleClass('open');  
-      var now = new Date();
-      var start = now.getTime();  
-      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-    
-      // move to model
-      var url = '/admin/pages/' + page_id + '/children.json';    
-      jQuery.ajax({
-        type: 'GET',
-        url: url,
-        dataType: "json",                   
-        success: function(results) {    
-          jQuery.each(results, function(i, results) { 
-            var page = Page.find(results.id);
-            if(!page){
-              var page = new Page({ id: results.id });
-            }
-            page.merge(results);
-            Page.add(page);
-          });
-          application.renderNode(page, page);
-        }
-      });   
-    } else {    
-      parent_node.toggleClass('open'); 
-      var arr = new Array();
-      active_page_ids = jQuery.grep(active_page_ids, function(value) {
-        return value != page_id;
-      }); 
-      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-      page.children().each(function(child){
-        Page.remove(child);
-      }); 
-      jQuery('#page-' + page_id + ' ul').remove();
-    }
   });
   
   // Reload Page
@@ -171,7 +122,7 @@ var Pages = Sammy(function (app) {
   // Page Index
   // ---------------------------------------------  
   this.get('/admin/pages/?', function(request){  
-    // request.trigger('page-index');
+    // request.trigger('show-page-menu', Page.root());
     // jQuery('#editor').html('<h1 class="section">Pages</div>');     
     var first = Page.first();
     request.redirect(first.attr('admin_path'));       
@@ -230,8 +181,9 @@ var Pages = Sammy(function (app) {
         request.renderPagePreview(page); 
       });
       page.save;
-    } 
-    request.trigger('page-index');
+    }
+    request.trigger('show-page-menu', page);
+    //request.trigger('page-index');
   });
   
   // Edit Page

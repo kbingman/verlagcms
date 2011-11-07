@@ -4,17 +4,48 @@ var Page = Model('page', function() {
   // Instance methods
   this.include({  
     
+    initialize: function() {
+      // Placeholder
+    },
+    
     children: function(){ 
       var children = [];
-      return Page.find_all_by_parent_id(this.id())
+      return Page.find_all_by_parent_id(this.id());
+    },
+    
+    childrenAsJSON: function(){ 
+      return this.children().map(function(item){ return item.attr() });
+    },
+    
+    getChildren: function(callback){
+      var self = this;
+      var url = '/admin/pages/' + self.id()  + '/children.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          $.each(results, function(i, data) {
+            var page = new Page({ id: data.id });
+            page.merge(data);
+            Page.add(page);
+          }); 
+          if(callback){ callback.call(this, results); }    
+        }
+      });
     },
     
     has_children: function(){  
-      var self = this;
-      if(self.children().all().length > 0){
+      if(this.children().all().length > 0){
         return true
       }
     }, 
+    
+    parent: function(){
+      return Page.find(this.attr('parent_id'));
+    },
     
     assets: function(){ 
       var self = this;
@@ -59,30 +90,6 @@ var Page = Model('page', function() {
         success: function(results) {    
           self.merge(results);    
           callback.call(this);    
-        }
-      });
-    }, 
-    
-    // TODO remove
-    // exatract this for general use...
-    saveRemote: function(params, callback){ 
-      var self = this;  
-      var url = '/admin/pages/' + this.id() + '.json';   
-
-      // self.save();
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        data: params ,
-        dataType: "json", 
-        success: function(results) {
-          if(results.errors){
-            alert(JSON.stringify(results.errors));
-             if(callback['error']){ callback['error'].call(this); }  
-          } else {
-            self.merge(results); 
-            if(callback['success']){ callback['success'].call(this); }
-          }
         }
       });
     }

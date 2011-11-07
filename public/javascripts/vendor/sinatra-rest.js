@@ -1,5 +1,5 @@
 Model.SinatraREST = function(klass, resource, methods) {
-	var PARAM_NAME_MATCHER = /:([\w\d]+)/g;
+  var PARAM_NAME_MATCHER = /:([\w\d]+)/g;
   var resource_param_names = (function() {
     var resource_param_names = []
     var param_name
@@ -12,13 +12,13 @@ Model.SinatraREST = function(klass, resource, methods) {
   })()
 
   return jQuery.extend({
-		path: function(model) {
+    path: function(model) {
       var path = resource;
       jQuery.each(resource_param_names, function(i, param) {
-				path = path.replace(":" + param, model.attributes[param]);
-			});
-			return path;
-		},
+        path = path.replace(":" + param, model.attributes[param]);
+      });
+      return path;
+    },
 
     create: function(model, callback) {
       return this.xhr('POST', this.create_path(model), model, callback);

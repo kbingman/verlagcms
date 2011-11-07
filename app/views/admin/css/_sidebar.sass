@@ -18,6 +18,7 @@
   // +box-shadow(0, 0, 6px, #555)
   +positionable  
   :right auto
+  :line-height 1
   :padding 0
   :width 300px     
   :overflow-y auto
@@ -72,11 +73,17 @@
           :left 3px
           :cursor pointer
         .title
+          :display block
           a
             :color #777371
             :display inline-block
             :padding 6px 0 
             :text-decoration none
+        .count
+          :display block
+          :padding 0 0 0 12px
+          :font-size 12px
+          :color #777371 + #222222
         .modify
           :display inline-block
           :float right

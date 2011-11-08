@@ -6,9 +6,9 @@ class Main
       # Create layout
       # -------------------------------------------
       post '' do 
-        klass = params[:template][:klass].titlecase.constantize
+        klass = params[:layout][:klass].titlecase.constantize
         logger.debug("Klass: #{klass}")   
-        template = klass.new(params[:template]) 
+        template = klass.new(params[:layout]) 
         template.site = current_site
         
         if template.save

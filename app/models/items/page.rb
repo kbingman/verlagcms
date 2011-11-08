@@ -141,6 +141,18 @@ class Page
     ])
   end  
   
+  def branch(page)
+    active = page == self ? true : false
+    { 
+      :title => self.title,
+      :slug => self.slug,
+      :parent_id => self.parent_id,
+      :path => self.path,
+      :children => self.children.collect{ |c| c.branch(page) }, 
+      :active => active
+    }
+  end
+  
   # Tags
   # ----------------------------------------
   def tag_list

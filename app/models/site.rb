@@ -56,6 +56,10 @@ class Site
     super(:methods => [:domain])
   end
   
+  def tree(page)
+    self.root.branch(page) 
+  end
+  
   # liquid_methods :name, :root, :children 
   
   # Permissions

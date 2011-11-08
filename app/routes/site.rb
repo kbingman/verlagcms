@@ -76,18 +76,15 @@ class Main
   # Site Pages
   # -------------------------------------------
   pages_route = get '*' do   
-    cache_request # unless authenticated?
+    # cache_request # unless authenticated?
     authenticate! unless current_site.published?    
          
     path = params[:splat].first
     page = Page.find_by_path(path, current_site) if path
     
     if page 
-      # Liquid based templates...
-      # page.render(format, request)
-      # Mustache Attempt:
-      # mustache :'site/page'
-      Mustache.render("<h1>Page: {{#page}}{{title}}</h1>{{#data}}{{sidebar}}{{/data}}{{/page}}", {:page => JSON.parse(page.to_json)})
+      page_view = Main::Views::Site::Page.new page
+      page_view.render()
     else   
       raise Sinatra::NotFound   
     end

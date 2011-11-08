@@ -19,7 +19,9 @@ class Main
     # Create
     # -------------------------------------------
     post '/:model' do   
-      resource = klass.new(params[model.singularize.to_sym]) 
+      resource = klass.new(params[model.singularize.to_sym])
+      # TODO may break some things 
+      klass.site = current_site
       if resource.save
         resource.to_json
         respond_to do |format|

@@ -9,7 +9,7 @@ module Sinatra
       app.before do
         @start = Time.now
         logger.info "Starting: #{request.request_method} #{request.path} #{response.status}"
-        logger.debug "Parameters: #{params.inspect}" 
+        puts "Parameters: #{params.inspect}" 
         logger.debug "Content Type:  #{request.content_type}"   
         logger.debug "Subdomain:  #{subdomain}"
         # logger.debug "Format: #{format}" if format 

@@ -56,7 +56,7 @@ class Site
     super(:methods => [:domain])
   end
   
-  def tree(page)
+  def tree(page=self.root)
     self.root.branch(page) 
   end
   

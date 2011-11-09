@@ -148,6 +148,11 @@ end
 # Load site and assets route. 
 require root_path('app/routes/assets.rb') 
 require root_path('app/routes/site.rb')
+
+# Loud Mustache Views
+Dir[root_path('./lib/views/*.rb')].each do |file|
+  require file
+end
   
 # Load all views.
 Dir[root_path('app/views/**/*.rb')].each do |file|

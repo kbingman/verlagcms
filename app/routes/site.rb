@@ -83,7 +83,7 @@ class Main
     page = Page.find_by_path(path, current_site) if path
     
     if page 
-      page_view = Main::Views::Site::Page.new page
+      page_view = Views::Page.new page
       page_view.render()
     else   
       raise Sinatra::NotFound   

@@ -50,8 +50,6 @@ describe Site do
     
     before(:all) do
       @site = Factory(:site, :name => 'Daily Scans', :subdomain => '', :group => @group) 
-      # @layout = Factory(:layout, :site_id => @site.id)
-      # @page = Factory(:page, :site_id => @site.id, :layout_id => @layout.id) 
     end
     
     after(:all) do
@@ -59,8 +57,19 @@ describe Site do
     end 
     
     it 'should find the root page' do
-      @site.root.should_not == nil
+      @site.root.should_not be_nil
     end  
+    
+    it 'returns a site tree' do 
+      @site.tree.should == {
+        :title => "Root", 
+        :slug => "/", 
+        :parent_id => nil, 
+        :path => "/", 
+        :children => [], 
+        :active => true
+      } 
+    end
     
   end  
   

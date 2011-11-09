@@ -141,7 +141,7 @@ class Page
     ])
   end  
   
-  def branch(page)
+  def branch(page=nil)
     active = page == self ? true : false
     { 
       :title => self.title,

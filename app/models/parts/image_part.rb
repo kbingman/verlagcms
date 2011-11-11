@@ -22,6 +22,12 @@ class ImagePart < Part
     self.asset.image_path if self.asset
   end
   
+  def editor
+    if self.edit
+      '<p>insert widget goes here<p>'
+    end
+  end
+  
   def as_json(options)
     super(:methods => [:image_path, :asset, :path, :klass])
   end

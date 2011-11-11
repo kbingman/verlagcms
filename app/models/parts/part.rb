@@ -36,7 +36,7 @@ class Part
     else
       # TODO figure out if we want to wrap this in a div...
       r =  "<div class='part #{self.name}' id='#{self.name}_part'>"
-      r += self.content.blank? ? '' : RedCloth.new(self.content).to_html 
+      r += self.content.blank? ? '<p>&nbsp;</p>' : RedCloth.new(self.content).to_html 
       r += '</div>'
     end
   end

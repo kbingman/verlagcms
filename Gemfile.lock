@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/sstephenson/sprockets.git
+  revision: 1b1d6d6c1f6bf2ff7d6e15c1811aabec573be612
+  specs:
+    sprockets (2.1.0)
+      hike (~> 1.2)
+      rack (~> 1.0)
+      tilt (~> 1.1, != 1.3.0)
+
+GIT
   remote: https://github.com/defunkt/mustache.git
   revision: d5ad1f164c6c4b24efd197c8ab739e3bf65a21ae
   specs:
@@ -107,6 +116,7 @@ GEM
     fast-stemmer (1.0.0)
     ffi (1.0.9)
     haml (3.1.2)
+    hike (1.2.1)
     i18n (0.5.0)
     jasmine (1.0.2.1)
       json_pure (>= 1.4.3)
@@ -221,6 +231,7 @@ DEPENDENCIES
   sinatra (= 1.3.1)
   sinatra-advanced-routes
   sinatra-namespace!
+  sprockets!
   test-unit
   thin
   thor

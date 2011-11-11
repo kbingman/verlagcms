@@ -27,6 +27,7 @@
       "models/user",
       
       "lib/utilities",  
+      "lib/editor",  
       
       "controllers/base",  
       "controllers/sites",  

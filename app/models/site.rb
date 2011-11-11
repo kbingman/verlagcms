@@ -2,15 +2,16 @@ class Site
   include MongoMapper::Document
   include Canable::Ables
   
-  key :name, String, :required => true, :unique => true 
-  key :subdomain, String, :required => true, :unique => true 
+  key :name, String # , :required => true #, :unique => true 
+  key :subdomain #, String, :required => true #, :unique => true 
+  key :domain_name# , String, :required => true, :unique => true 
 
   many :pages
   many :assets
   many :templates   
   many :folders 
   
-  key :group_id, ObjectId, :required => true
+  key :group_id, ObjectId #, :required => true
   belongs_to :group, :foreign_key => :group_id
   
   # key :user_ids, Array
@@ -47,10 +48,6 @@ class Site
     pages << self.root
     pages
   end
-   
-  def domain
-    "#{self.subdomain}.#{monk_settings(:domain)}"
-  end  
   
   def as_json(options)
     super(:methods => [:domain])
@@ -77,6 +74,11 @@ class Site
     before_validation :set_subdomain
     def set_subdomain
       self.subdomain = self.subdomain.blank? ? sanitize(self.name) :sanitize(self.subdomain)
+    end
+    
+    before_validation :set_domain_name
+    def set_domain_name
+      self.domain_name = self.domain_name.blank? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain_name
     end
     
     def sanitize(text)

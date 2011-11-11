@@ -1,17 +1,20 @@
-<div id="sites">
+<div id="sites" class="listing">
   <h1>Sites</h1> 
   <ul>
   {{#sites}} 
     <li class="site" id="site-{{id}}"> 
       <div class="item"> 
         <span class="title"> 
-           <a href= "http://{{domain}}/admin/">{{name}}</a>        
+           {{name}}
         </span> 
         <span class="modify">                 
-          <a class="edit-site" id="edit-site-{{id}}" href="/admin/sites/{{id}}/edit">edit</a> 
+          <a class="edit-site" id="edit-site-{{id}}" href="/admin/sites/{{id}}/edit">edit</a>    
         </span>  
       </div>
+      <div class="site-form" id="site-form-{{id}}"></div>
     </li>  
   {{/sites}}  
   </ul>
 </div>
+
+

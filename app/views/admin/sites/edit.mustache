@@ -10,12 +10,17 @@
     <input type="text" id="site_name" name="site[name]" value="{{name}}" class="textfield" />  
   </div> 
   <div class="field">   
+    <label for="site_domain">Domain</label>
+    <input type="text" id="site_domain" name="site[domain]" value="{{domain}}" class="textfield" />  
+  </div>
+  <div class="field">   
     <label for="site_subdomain">Subdomain</label>
     <input type="text" id="site_subdomain" name="site[subdomain]" value="{{subdomain}}" class="textfield" />  
   </div>
-  <div class="buttons">
+  <div class="actions">
     <input type="submit" id="page_save" value="Save" class="button" /> 
     <a href="/admin/sites" class="cancel">Cancel</a> 
+    <a href= "http://{{domain}}/admin/">Switch to this Site</a>
   </div>
 </form>  
 {{/site}} 

@@ -78,7 +78,7 @@ class Main
   
   # Site Pages
   # -------------------------------------------
-  pages_route = get '*' do   
+  pages_route = get '*' do
     # cache_request # unless authenticated?
     authenticate! unless current_site.published?    
          

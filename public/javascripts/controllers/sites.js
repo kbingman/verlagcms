@@ -18,10 +18,12 @@ var Sites = Sammy(function (app) {
       }
     },
     
-    renderSiteIndex: function(){  
+    renderSiteIndex: function(callback){  
       var application = this;    
       var siteIndex = application.load(jQuery('script#admin-sites-index')).interpolate(Site.toMustache(), 'mustache');
-      siteIndex.replace('#sidebar');
+      siteIndex.replace('#editor').then(function(){
+        if(callback){ callback.call(this); }   
+      });
     }
   });
 
@@ -83,9 +85,19 @@ var Sites = Sammy(function (app) {
        
     request.loadSites(function(){    
       site = Site.find(request.params['id']); 
-      var editSite = request.load(jQuery('script#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
-      editSite.replace('#editor');  
-      request.renderSiteIndex(Site.all());
+      
+      var list = jQuery('#sites');
+      if(!list.length){
+        request.renderSiteIndex(function(){
+          jQuery('.site-form').html('');
+          var html = request.load(jQuery('script#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
+          html.replace('#site-form-' + site.id());
+        });
+      } else {
+        jQuery('.site-form').html('');
+        var html = request.load(jQuery('script#admin-sites-edit')).interpolate({ site: site.asJSON() }, 'mustache');
+        html.replace('#site-form-' + site.id());
+      }
     });
   });    
    

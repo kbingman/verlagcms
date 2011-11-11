@@ -27,6 +27,18 @@ describe Site do
       scan.subdomain.should == 'scans'
     end 
     
+    it 'should set the domain if none is sent' do 
+      scan = Factory.build(:site, :name => 'Daily Scans', :subdomain => 'scans', :group => @group) 
+      scan.valid?
+      scan.domain.should == 'scans.verlag.dev'
+    end
+    
+    it 'should set the domain if none is sent' do 
+      scan = Factory.build(:site, :name => 'Daily Scans', :subdomain => '', :domain => 'verlagcms.com', :group => @group) 
+      scan.valid?
+      scan.domain.should == 'verlagcms.com'
+    end
+    
     it 'should not strip dots' do
       scan = Factory.build(:site, :name => 'Daily Scans', :subdomain => 'daily.scans', :group => @group) 
       scan.valid?
@@ -90,6 +102,15 @@ describe Site do
     it 'should create a root page on creation' do  
       @new_site.root.should_not be_nil
     end  
+    
+    it 'should allow the subdomin to be blank' do 
+      @new_site.domain = 'verlagcms.com'
+      @new_site.save
+      
+      id = @new_site.id
+      site = Site.find(id)
+      site.domain.should == 'verlagcms.com'
+    end
     
   end
   

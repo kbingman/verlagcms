@@ -73,12 +73,12 @@ class Site
     
     before_validation :set_subdomain
     def set_subdomain
-      self.subdomain = self.subdomain.blank? ? sanitize(self.name) :sanitize(self.subdomain)
+      self.subdomain = self.subdomain.nil? ? sanitize(self.name) :sanitize(self.subdomain)
     end
     
     before_validation :set_domain_name
     def set_domain_name
-      self.domain_name = self.domain_name.blank? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain_name
+      self.domain_name = self.domain_name.nil? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain_name
     end
     
     def sanitize(text)

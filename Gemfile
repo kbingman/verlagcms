@@ -8,7 +8,7 @@ gem 'sinatra-advanced-routes'
 gem 'thin' 
 gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git' 
 gem 'rack-cache'
-# gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
+gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
 
 gem 'warden'
 gem 'bcrypt-ruby'

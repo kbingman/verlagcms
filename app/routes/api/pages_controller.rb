@@ -13,14 +13,14 @@ class Main
     # -------------------------------------------
     get '/pages/?' do
       per_page = params['limit'] || nil
-      collection = klass.by_site(current_site).paginate(:order => 'created_at DESC', :per_page => per_page, :page => params[:page])
+      collection = Page.by_site(current_site).paginate(:order => 'created_at DESC', :per_page => per_page, :page => params[:page])
       collection.to_json  
     end
     
     # Show page
     # -------------------------------------------
     get '/pages/:id/?' do
-      resource = klass.by_site(current_site).find params['id']
+      resource = Page.by_site(current_site).find params['id']
       if resource
         resource.to_json
       else

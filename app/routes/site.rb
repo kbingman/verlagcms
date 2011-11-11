@@ -64,10 +64,13 @@ class Main
   preview_route = get '/preview*' do   
     authenticate!
     path = params[:splat].first   
+    # TODO change method to current_site.find_by_path
     page = Page.find_by_path(path, current_site) 
     
     if page 
-      page.render(format, request)
+      page_view = Views::Page.new page, true
+      page_view.render()
+      # page.render(format, request)
     else   
       raise Sinatra::NotFound   
     end
@@ -80,6 +83,7 @@ class Main
     authenticate! unless current_site.published?    
          
     path = params[:splat].first
+    # TODO change method to current_site.find_by_path
     page = Page.find_by_path(path, current_site) if path
     
     if page 

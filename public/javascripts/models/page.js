@@ -17,6 +17,18 @@ var Page = Model('page', function() {
       return this.children().map(function(item){ return item.attr() });
     },
     
+    setPartContent: function(partName, content){
+      var parts = this.attr('contents');
+      var part;
+      jQuery.each(parts, function(i, p){
+        if(partName == p['name']){
+          p['content'] = content;
+          part = p;
+        }
+      });
+      return part;
+    },
+    
     getChildren: function(callback){
       var self = this;
       var url = '/admin/pages/' + self.id()  + '/children.json';   

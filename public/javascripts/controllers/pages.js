@@ -17,6 +17,7 @@ var Pages = Sammy(function (app) {
             if(callback){ callback.call(this); } 
           }); 
           application.trigger('set-active-page', page);
+          Editor.initialize();
         });
       }else{
         application.trigger('set-active-page', page);

@@ -10,14 +10,16 @@ class ImagePart < Part
   
   liquid_methods :name, :content, :render, :image_path
   
-  def path
+  def admin_path
    "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end
-  alias :admin_path :path
-  
+ 
+  def path
+    self.asset.image_path if self.asset
+  end
   
   def image_path
-    self.asset.image_path   
+    self.asset.image_path if self.asset
   end
   
   def as_json(options)
@@ -25,8 +27,8 @@ class ImagePart < Part
   end
   
   def render(edit=false)
-    ImageProxy.new(self, edit)
+    self.asset.image_path
+    # ImageProxy.new(self, edit)
   end
-  
   
 end

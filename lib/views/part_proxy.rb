@@ -1,21 +1,23 @@
 class PartProxy
 
-  def initialize page, request=nil
+  def initialize page, edit=nil
     @page = page 
-    @request = request
+    @edit = edit
   end  
   
   def test 
     'test'
   end
   
-  def part(method)
-    @page.parts.detect { |p| p.name == method.to_s } 
+  def part name
+    part = @page.parts.detect { |p| p.name == name.to_s } 
+    part.edit = true if part && @edit
+    part
   end
   
   def method_missing(method, *args, &block) 
     return super unless part(method)
-    part(method).render
+    part(method)
   end
   
   def respond_to?(method)

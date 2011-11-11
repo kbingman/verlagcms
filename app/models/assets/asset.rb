@@ -150,15 +150,15 @@ class Asset
   end
   
   def image_path(name='original')
-    "/images/#{name}/#{self.id}/#{self.file_name}" 
+    "/images/#{self.id}/#{self.file_name}" 
   end
   
   def thumb_path
-    image_path('thumbnail')
+    "/images/thumbnail/#{self.id}/#{self.file_name}" 
   end
   
   def icon_path
-    image_path('icon')
+    "/images/icon/#{self.id}/#{self.file_name}" 
   end   
   
   def id_string

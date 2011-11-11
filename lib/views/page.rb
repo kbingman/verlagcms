@@ -2,11 +2,12 @@ class Main
   module Views
     
     class Page < Mustache 
-      include ::ViewHelpers
+      include ViewHelpers
         
-      def initialize page, request = nil
+      def initialize page, edit = nil
         @page = page
         @site = page.site
+        @edit = edit
       end
       
       def template
@@ -24,9 +25,13 @@ class Main
       def site
         @site
       end
+      
+      def children
+        @page.children
+      end
 
       def data
-        PartProxy.new @page
+        PartProxy.new @page, @edit
       end
       
       def tree

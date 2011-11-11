@@ -5751,7 +5751,7 @@ Model.Base = (function() {
 })();
 
 Model.SinatraREST = function(klass, resource, methods) {
-	var PARAM_NAME_MATCHER = /:([\w\d]+)/g;
+  var PARAM_NAME_MATCHER = /:([\w\d]+)/g;
   var resource_param_names = (function() {
     var resource_param_names = []
     var param_name
@@ -5764,13 +5764,13 @@ Model.SinatraREST = function(klass, resource, methods) {
   })()
 
   return jQuery.extend({
-		path: function(model) {
+    path: function(model) {
       var path = resource;
       jQuery.each(resource_param_names, function(i, param) {
-				path = path.replace(":" + param, model.attributes[param]);
-			});
-			return path;
-		},
+        path = path.replace(":" + param, model.attributes[param]);
+      });
+      return path;
+    },
 
     create: function(model, callback) {
       return this.xhr('POST', this.create_path(model), model, callback);
@@ -8520,6 +8520,22 @@ var Asset = Model('asset', function() {
     //   return '/images/thumbnail/' + self.id() + '/' + self.attr('file_name');
     // },
     
+    load: function(callback){
+      var self = this;
+      var url = '/admin/assets/' + self.id()  + '.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          self.merge(results);    
+          callback.call(this);    
+        }
+      });
+    },
+    
     // Returns the current asset as json, including the query and query_path
     toMustache: function(query){
       var asset = this; 
@@ -8705,7 +8721,27 @@ var Folder = Model('folder', function() {
   this.persistence(Model.SinatraREST, '/admin/folders'), 
  
   this.include({
-
+    
+    loadAssets: function(callback) {
+      Asset.each(function(){ Asset.remove(this); });
+      var self = this;
+      var url = '/admin/folders/' + self.attr('id') + '/assets.json';
+      jQuery.ajax({
+        type: 'get',
+        url: url,
+        contentType: "application/json",
+        dataType: "json",
+        success: function(results) {
+          jQuery.each(results, function(i, assetData) {
+            var asset = new Asset({ id: assetData.id });
+            asset.merge(assetData);
+            Asset.add(asset);
+          });
+          if(callback){ callback.call(this); }
+        }
+      });
+    }
+    
   }),  
   
   this.extend({   
@@ -8724,17 +8760,60 @@ var Page = Model('page', function() {
   // Instance methods
   this.include({  
     
+    initialize: function() {
+      // Placeholder
+    },
+    
     children: function(){ 
       var children = [];
-      return Page.find_all_by_parent_id(this.id())
+      return Page.find_all_by_parent_id(this.id());
+    },
+    
+    childrenAsJSON: function(){ 
+      return this.children().map(function(item){ return item.attr() });
+    },
+    
+    setPartContent: function(partName, content){
+      var parts = this.attr('contents');
+      var part;
+      jQuery.each(parts, function(i, p){
+        if(partName == p['name']){
+          p['content'] = content;
+          part = p;
+        }
+      });
+      return part;
+    },
+    
+    getChildren: function(callback){
+      var self = this;
+      var url = '/admin/pages/' + self.id()  + '/children.json';   
+      
+      jQuery.ajax({
+        type: 'GET',
+        url: url,
+        // contentType: "application/json",
+        dataType: "json",                   
+        success: function(results) {    
+          $.each(results, function(i, data) {
+            var page = new Page({ id: data.id });
+            page.merge(data);
+            Page.add(page);
+          }); 
+          if(callback){ callback.call(this, results); }    
+        }
+      });
     },
     
     has_children: function(){  
-      var self = this;
-      if(self.children().all().length > 0){
+      if(this.children().all().length > 0){
         return true
       }
     }, 
+    
+    parent: function(){
+      return Page.find(this.attr('parent_id'));
+    },
     
     assets: function(){ 
       var self = this;
@@ -8779,30 +8858,6 @@ var Page = Model('page', function() {
         success: function(results) {    
           self.merge(results);    
           callback.call(this);    
-        }
-      });
-    }, 
-    
-    // TODO remove
-    // exatract this for general use...
-    saveRemote: function(params, callback){ 
-      var self = this;  
-      var url = '/admin/pages/' + this.id() + '.json';   
-
-      // self.save();
-      jQuery.ajax({
-        type: 'PUT',
-        url: url,
-        data: params ,
-        dataType: "json", 
-        success: function(results) {
-          if(results.errors){
-            alert(JSON.stringify(results.errors));
-             if(callback['error']){ callback['error'].call(this); }  
-          } else {
-            self.merge(results); 
-            if(callback['success']){ callback['success'].call(this); }
-          }
         }
       });
     }
@@ -9097,6 +9152,64 @@ var logger = {
 
 var Utilities = { 
   
+  // Adds the # to each link for use with IE and other older browsers
+  setNonHistoryLinks: function(){
+   if (!Modernizr.history) {     
+     jQuery('a').click(function(e){
+       e.preventDefault();
+       var el = this;
+       var href = jQuery(el).attr('href');
+       if(href && !href.match('http://') && !href.match(/^#/)){
+         console.log('#' + href);
+         document.location.hash = $(this).attr('#' + 'href');
+       }
+     });
+     // var search_form = jQuery('form#search-form');
+     // search_form.attr('action', '#' + search_form.attr('action'));
+   }
+
+  },
+  
+  // resizes and centers modals vertically. 
+  // Horizontal centering is handled with CSS...
+  loadModal: function(element, callback){
+    var self = this;
+    var container = jQuery(element);
+    if(!container.length){ return }
+
+    Loader.start();
+    var img = container.find('img');
+    
+    // setTimeout(function(){
+    if(container.height() == 0){
+      img.load(function(){
+        self.resizeModal(container, callback);
+      });
+    } else {
+      self.resizeModal(container, callback);
+    }
+    // }, 13);
+  },
+  
+  resizeModal: function(container, callback){
+    var width = container.width();
+    var height = container.height();
+    var ratio = width / height;
+    var docWidth = jQuery(window).width();
+    var docHeight = jQuery(window).height();
+    if(height > (docHeight - 40)){
+      container
+        .height(docHeight - 40)
+        .width((docHeight - 40) * ratio);
+    }else{
+      container.css({
+        'margin-top': (docHeight - height)/2
+      });
+    }
+    Loader.stop();
+    if(callback){ callback.call(this); }
+  },
+  
   notice: function(message, options){
     var options = options || {};
     var notice = jQuery('.notice');
@@ -9142,14 +9255,14 @@ var Utilities = {
   // Adds the '#' tag to all links if the history object is not available   
   // Temp. The zombie tests are failing with the history object...
   check_browser_version: function(){
-    if (!Modernizr.history) {     
-      jQuery('a').live('click', function(e){
-        e.preventDefault();
-        document.location.hash = $(this).attr('href');
-      });
-      var search_form = jQuery('form#search-form');
-      search_form.attr('action', '#' + search_form.attr('action'));
-    }
+    //if (!Modernizr.history) {     
+    //  jQuery('a').live('click', function(e){
+    //    e.preventDefault();
+    //    document.location.hash = $(this).attr('href');
+    //  });
+    //  var search_form = jQuery('form#search-form');
+    //  search_form.attr('action', '#' + search_form.attr('action'));
+    //}
   },
   
   formObserver: function(element){      
@@ -9165,6 +9278,9 @@ var Utilities = {
 
 var Loader = {
   start: function(element){
+    var element = jQuery('#loader');
+    if(!element.length){ return }
+    
     element.show();
     Loader.timer = setInterval(function(){
       var y = element.css('background-position-y').replace('px','');
@@ -9173,6 +9289,8 @@ var Loader = {
   },
   
   stop: function(element){
+    var element = jQuery('#loader');
+    if(!element.length){ return }
     element.hide();
     clearInterval(Loader.timer);
   }
@@ -9223,24 +9341,27 @@ var iFramer = {
     var self = this;
     if(!trigger.length) return;
     
-    Loader.start(loader_el);
+    Loader.start();
  
     trigger.load(function(){   
       var iframe = $(this);
 
-      var iFrameContent = iframe.contents();  
-      var editor = iFrameContent.find('span.part-editor');
-      var flags = editor.find('a'); 
+      var content = iframe.contents();  
+      // var editor = iFrameContent.find('span.part-editor');
+      // var flags = editor.find('a'); 
+      var areas = content.find('div.editable');
+      // Sets the editable parts so they can actually be editted live
+      areas.attr('contenteditable','true').css({'background': 'hsla(30, 17.7%, 61%, 0.3)' });
       
-      Loader.stop(loader_el); 
-      self.setEditFlags(editor); 
+      Loader.stop(); 
+      // self.setEditFlags(editor); 
       iframe.fadeIn('fast');
       
       // Sets preview links to change the sammy.js routes instead of the usual route
-      var internal_links = iFrameContent.find('a'); // iFrameContent.find('a[href^="/preview"]');
+      var internal_links = content.find('a'); // iFrameContent.find('a[href^="/preview"]');
       internal_links.click(function(e){
         var self = jQuery(this);
-        if(!self.hasClass('verlag-editor')){
+        // if(!self.hasClass('verlag-editor')){
           var link_path = self.attr('href').split('?')[0].replace('/preview','');
           var page = Page.find_by_path(link_path);
           if (page){
@@ -9249,18 +9370,18 @@ var iFramer = {
             history.pushState({path: page.attr('title')}, page.attr('title'), page.attr('admin_path'));
             // document.location.path = page.attr('admin_path');
           }
-        }
+        // }
       });
-      
-      flags.click(function(e){  
-        e.preventDefault();
-        window.top.trigger = $(this);
-        // TODO Use history object here
-        // window.top.location.hash = $(this).attr('href');  
-        var path = $(this).attr('href');  
-        history.pushState({part: path}, "Part", path);
-        // return false;
-      });
+      // 
+      // flags.click(function(e){  
+      //   e.preventDefault();
+      //   window.top.trigger = $(this);
+      //   // TODO Use history object here
+      //   // window.top.location.hash = $(this).attr('href');  
+      //   var path = $(this).attr('href');  
+      //   history.pushState({part: path}, "Part", path);
+      //   // return false;
+      // });
       
       if(callback){ callback.call(this); } 
     }); 
@@ -9396,10 +9517,11 @@ var Base = Sammy(function (app) {
  
   // Set Active Tab
   // ---------------------------------------------
-  app.bind('set-active-tab', function(request){
+  app.bind('set-active-tab', function(e, path){
     var tabs = jQuery('div#tabs a.tab');
-    // TODO make this a decent regex
-    var name = request.path.split('?')[0].split('/')[2];
+    // TODO make this a decent regex    
+    var name = path.split('?')[0].split('/')[2];
+    // var name = 'folders' ? 'assets' : name;
     var active_tab = jQuery('#' + name + '-tab');
     
     tabs.removeClass('active');
@@ -9506,7 +9628,10 @@ var Base = Sammy(function (app) {
   
   // Sets active tab
   app.before(function(request) {
-    // request.trigger('set-active-tab');
+    var path = request.path;
+    if(request && request.verb == 'get'){
+      request.trigger('set-active-tab', path);
+    }
   });
 
 });
@@ -9903,8 +10028,49 @@ var Assets = Sammy(function (app) {
     }
   });
   
-  // Asset Events
+  // Render Asset 
   // ------------------------------------------------------------------------------------------
+  app.bind('render-asset', function(e, asset, query){
+    var application = this; 
+    var editAsset = application.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
+    editAsset.appendTo('body').then(function(){
+      Utilities.loadModal('div#asset-editor', function(){
+        jQuery('div#asset-editor').fadeIn('fast'); 
+      });
+    });
+  });
+  
+  // Asset Index
+  // ---------------------------------------------
+  app.bind('render-index', function(e, query){
+    var application = this; 
+    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+    assetIndex.replace('#editor').then(function(){
+      // Sets uploader to multiple if browser supports it
+      // jQuery('#ajax_uploader').attr('multiple','multiple'); 
+    
+      // Triggers info popups
+      jQuery('a.info-icon').click(function(e){
+        e.preventDefault();
+        current_asset_id = this.id.split('-')[2];
+        application.trigger('show_info', { 'current_asset_id': current_asset_id });
+      });
+    
+      // Upload Form
+      jQuery('#ajax_uploader')
+        .attr('multiple','multiple')
+        .change(function(e){
+          jQuery(this).parents('form:first').submit();
+        });
+    
+      // Triggers remove popups
+      jQuery('a.remove-icon').click(function(e){
+        e.preventDefault();
+        current_asset_id = this.id.split('-')[2];
+        application.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
+      });
+    });
+  });
   
   // Show Asset Info popup
   // ---------------------------------------------
@@ -9944,39 +10110,22 @@ var Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   app.get('/admin/assets', function(request){ 
-    var query = request.params['query'];
-    var params = query ? { 'query': query } : {};   
+    jQuery('#overlay').remove();
+    var query = request.params['query'] ? request.params['query'] : '';
+    var params = { 'query': query };
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
 
     request.renderFolderTree();
-    
     Asset.searchAdmin(params, function(){  
-      var assetIndex = request.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
-      assetIndex.replace('#editor').then(function(){
-        // Sets uploader to multiple if browser supports it
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
-        
-        // Triggers info popups
-        jQuery('a.info-icon').click(function(e){
-          e.preventDefault();
-          current_asset_id = this.id.split('-')[2];
-          request.trigger('show_info', { 'current_asset_id': current_asset_id });
-        });
-        
-        // Triggers remove popups
-        jQuery('a.remove-icon').click(function(e){
-          e.preventDefault();
-          current_asset_id = this.id.split('-')[2];
-          request.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
-        });
-      });
+      request.trigger('render-index', query);
     });
   }); 
   
   // Show Folder
   // ---------------------------------------------
   app.get('/admin/folders/:id', function(request){ 
+    jQuery('#overlay').remove();
     var folderId = request.params['id'];
     var folder = Folder.find(folderId);
     request.renderFolderTree(function(){
@@ -9984,10 +10133,9 @@ var Assets = Sammy(function (app) {
       jQuery('#folder-' + folderId).addClass('active');
     });
     
-    var assets = Asset.find_by_folder_id(folderId);
-    var show = request.load(jQuery('script#admin-assets-index')).interpolate({ assets: []}, 'mustache');
-    show.replace('#editor').then(function(){
-      jQuery('#ajax_uploader').attr('multiple','multiple'); 
+    // var assets = Asset.find_all_by_folder_id(folderId);
+    folder.loadAssets(function(){
+      request.trigger('render-index', '');
     });
 
   });
@@ -10015,10 +10163,7 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
     
     this.send_files(files, params, function(){
-      var assetIndex = request.render('/templates/admin/assets/index.mustache', Asset.toMustache(params['query']));
-      assetIndex.replace('#editor').then(function(){
-        jQuery('#ajax_uploader').attr('multiple','multiple'); 
-      });
+      request.trigger('render-index', query);
     });
 
     return false; 
@@ -10027,33 +10172,47 @@ var Assets = Sammy(function (app) {
   // Edit Asset 
   // ---------------------------------------------  
   app.get('/admin/assets/:id/edit', function(request){
-    var query = request.params['query'] ? request.params['query'] : null; 
+    jQuery('#overlay').remove();
+    var query = request.params['query'] ? request.params['query'] : ''; 
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
-    var editAsset = request.load(jQuery('script#admin-assets-edit')).interpolate(asset.toMustacheWithNeighbors(query), 'mustache');
     
-    editAsset.replace('#editor').then(function(results){  
-      setTimeout(function(){
-        $('img.fade-in').fadeIn('slow'); 
-      }, 100);
-      Utilities.formObserver('.image-info input[type=text], .image-info textarea'); 
-    });                                                                           
-
-    // sets a flag so the the search results are not reloaded   
-    context.modal = false;  
+    if(asset) {
+      request.trigger('render-asset', asset, query);
+    } else {  
+      // Loads asset if the current collection does not contain it
+      Asset.searchAdmin(params, function(){  
+        var asset = Asset.find(request.params['id']);
+        request.trigger('render-index', query);
+        request.renderFolderTree();
+        request.trigger('render-asset', asset, query);
+      });
+    }                                                                         
   });
   
   // Update Asset
   // ---------------------------------------------  
   app.put('/admin/assets/:id', function(request){
-    var asset = Asset.find(request.params['id']);     
-  
-    asset.attr(request.params['asset']);
-    asset.save(function(success){   
-      if(success){
-        Utilities.notice('Successfully saved asset');   
-      }
-    });
+    var asset = Asset.find(request.params['id']);  
+    if(asset) {
+      asset.attr(request.params['asset']);
+      asset.save(function(success){   
+        if(success){
+          Utilities.notice('Successfully saved asset');   
+        }
+      });
+    } else {  
+      // Loads asset if the current collection does not contain it
+      asset = new Asset({ id: request.params['id'] });
+      asset.load(function(success){
+        asset.attr(request.params['asset']);
+        asset.save(function(success, results){   
+          if(success){
+            Utilities.notice('Successfully saved asset');   
+          }
+        });
+      });  
+    }
   });    
   
   // Delete Asset
@@ -10078,41 +10237,6 @@ var Pages = Sammy(function (app) {
   // ---------------------------------------------
   app.helpers({  
     
-    // Renders the Page tree
-    renderTree: function(page, active_page_id){ 
-      var application = this;
-      if(!jQuery('ul#pages').length){
-        var pageIndex = application.load(jQuery('script#admin-pages-index')).interpolate({ pages: [page.asJSON()] }, 'mustache');
-        // jQuery('#sidebar').hide();
-        pageIndex.replace('#sidebar').then(function(){   
-          jQuery('ul.page-children:first').attr('id', 'pages'); 
-          application.renderNode(page, active_page_id); 
-        });
-      }
-    },
- 
-    // Renders a single page node for each page, then renders the children as well
-    renderNode: function(page, active_page_id){ 
-      var application = this;
-      // This is a little slow, as it renders the children for each page. 
-      var pageNode = application.load(jQuery('script#admin-pages-node')).interpolate(page.children().toMustache(), 'mustache');
-      pageNode.appendTo('#page-' + page.id()).then(function(){
-        $('ul#pages ul.page-children').sortable({items:'li'}); //  toleranceElement: '> div'
-        page.children().each(function(child){ 
-          //  var active_page_id = document.location.pathname.split('/')[3]; 
-          if(child.id() == active_page_id){
-            application.trigger('set-active-page', child);
-          }
-          if(child.has_children() == true){ 
-            jQuery('#page-' + child.id()).addClass('open')
-            application.renderNode(child, active_page_id);  
-          }else{
-            // console.log('end ' + active_page_id)
-          }
-        });
-      });       
-    }, 
-    
     renderPagePreview: function(page, callback){
       var application = this;  
       if(!jQuery('div#preview-' + page.id()).length){
@@ -10126,6 +10250,7 @@ var Pages = Sammy(function (app) {
             if(callback){ callback.call(this); } 
           }); 
           application.trigger('set-active-page', page);
+          Editor.initialize();
         });
       }else{
         application.trigger('set-active-page', page);
@@ -10163,69 +10288,57 @@ var Pages = Sammy(function (app) {
         // TODO make an event
         if(callback){ callback.call(this); }
       });
+    }, 
+    
+    renderPageMenu: function(page){
+      var application = this;   
+      var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
+        pages: [page.asJSON()],
+        children: page.childrenAsJSON()
+      }, 'mustache');
+      pageNode.replace('#sidebar');
     }
     
   });
   
-  // renders the page index, only if that element is not found
-  app.bind('page-index', function(e){
-    var application = this; 
-    var pageId = document.location.pathname.split('/')[3];
-    application.renderTree(Page.root(), pageId);  
-  }); 
+  // Page Menu
+  // ---------------------------------------------
+  app.bind('show-page-menu', function(e, page){
+    var application = this;   
+    // Checks if the page has children that are not yet loaded.
+    // if this is the case, makes a json request, otherwise renders the menu
+    if(page.children().count() == 0 && page.attr('child_count') != 0){
+      console.log('ajax')
+      page.getChildren(function(){
+        application.renderPageMenu(page);
+      })
+    } else if(page.attr('child_count') != 0){
+      application.renderPageMenu(page);
+    } else {
+      // renders the parent menu if the page has no children at all
+      var page = page.parent();
+      application.renderPageMenu(page);
+    }
+
+  });
   
+  // Page Index
+  // ---------------------------------------------
+  // renders the page index, only if that element is not found
+  // app.bind('page-index', function(e){
+  //   var application = this; 
+  //   var pageId = document.location.pathname.split('/')[3];
+  //   if(!jQuery('ul.page-children').length){
+  //     application.renderTree(Page.root(), pageId);  
+  //   }
+  // }); 
+  
+  
+  // Set Active Page
+  // ---------------------------------------------
   app.bind('set-active-page', function(e, page){
     jQuery('li.node').removeClass('active');
     jQuery('li#page-' + page.id()).addClass('active');
-  });
-  
-  app.bind('toggle-children', function(e, el){
-    
-    var application = this;
-    var toggle = $(el);  
-    var parent_node = toggle.parents('li:first'); 
-    var page_id = el.id.split('-')[2];  
-    var page = Page.find(page_id)  
-    var active_page_cookie = jQuery.cookie('active_page_ids');
-    var active_page_ids = active_page_cookie ? active_page_cookie.split(',') : [];  
-
-    if(!parent_node.hasClass('open')){
-      active_page_ids.push(page_id);
-      parent_node.toggleClass('open');  
-      var now = new Date();
-      var start = now.getTime();  
-      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-    
-      // move to model
-      var url = '/admin/pages/' + page_id + '/children.json';    
-      jQuery.ajax({
-        type: 'GET',
-        url: url,
-        dataType: "json",                   
-        success: function(results) {    
-          jQuery.each(results, function(i, results) { 
-            var page = Page.find(results.id);
-            if(!page){
-              var page = new Page({ id: results.id });
-            }
-            page.merge(results);
-            Page.add(page);
-          });
-          application.renderNode(page, page);
-        }
-      });   
-    } else {    
-      parent_node.toggleClass('open'); 
-      var arr = new Array();
-      active_page_ids = jQuery.grep(active_page_ids, function(value) {
-        return value != page_id;
-      }); 
-      jQuery.cookie('active_page_ids', active_page_ids.join(','), { path: '/admin' }); 
-      page.children().each(function(child){
-        Page.remove(child);
-      }); 
-      jQuery('#page-' + page_id + ' ul').remove();
-    }
   });
   
   // Reload Page
@@ -10243,9 +10356,9 @@ var Pages = Sammy(function (app) {
   // Page Index
   // ---------------------------------------------  
   this.get('/admin/pages/?', function(request){  
-    // request.trigger('page-index');
+    // request.trigger('show-page-menu', Page.root());
     // jQuery('#editor').html('<h1 class="section">Pages</div>');     
-    var first = Page.first()
+    var first = Page.first();
     request.redirect(first.attr('admin_path'));       
   });
   
@@ -10302,8 +10415,9 @@ var Pages = Sammy(function (app) {
         request.renderPagePreview(page); 
       });
       page.save;
-    } 
-    request.trigger('page-index');
+    }
+    request.trigger('show-page-menu', page);
+    //request.trigger('page-index');
   });
   
   // Edit Page
@@ -10414,10 +10528,11 @@ var Parts = Sammy(function (app) {
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
-            var form = jQuery(this).parents('form:first');
-            jQuery('.progress').slideDown('slow',function(){
-              form.submit();
-            });
+            alert('HHH')
+            // var form = jQuery(this).parents('form:first');
+            // jQuery('.progress').slideDown('slow',function(){
+            //   form.submit();
+            // });
           });
         application.trigger('page-index');
       });
@@ -10730,7 +10845,8 @@ jQuery(document).ready(function () {
 
   // Grabs the keyboard shortcuts
   // Utilities.keyboard_nav();  
-  Utilities.check_browser_version();  
+  // Utilities.check_browser_version(); 
+  Utilities.setNonHistoryLinks(); 
   
   // ACE Save. Only works with the ACE editor windows
   var canon = require("pilot/canon");  
@@ -10760,6 +10876,13 @@ jQuery(document).ready(function () {
   jQuery('div#sidebar a').live('click', function(){
     Utilities.hideNotice();
   });
+  
+  // Resizes Modals on window resize
+  jQuery(window).resize(function(){
+    var container = jQuery('div#asset-editor'); 
+    Utilities.loadModal(container);
+  });
+
   
 });
 

@@ -27,7 +27,7 @@ class Main
     
     # Set default haml template
     def haml(template, options = {}, locals = {})
-      options[:layout] = :'layouts/application' unless options.include?(:layout)    
+      options[:layout] = :'layouts/admin' unless options.include?(:layout)    
       super(template, options, locals)
     end
     

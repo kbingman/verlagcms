@@ -4,7 +4,7 @@ class Site
   
   key :name, String # , :required => true #, :unique => true 
   key :subdomain #, String, :required => true #, :unique => true 
-  key :domain_name# , String, :required => true, :unique => true 
+  key :domain# , String, :required => true, :unique => true 
 
   many :pages
   many :assets
@@ -76,9 +76,9 @@ class Site
       self.subdomain = self.subdomain.nil? ? sanitize(self.name) :sanitize(self.subdomain)
     end
     
-    before_validation :set_domain_name
-    def set_domain_name
-      self.domain_name = self.domain_name.nil? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain_name
+    before_validation :set_domain
+    def set_domain
+      self.domain = self.domain.nil? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain
     end
     
     def sanitize(text)

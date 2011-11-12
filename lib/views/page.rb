@@ -44,7 +44,7 @@ class Main
       end
       
       def partial
-        PartialProxy.new self
+        PartialProxy.new @page
       end
 
     end

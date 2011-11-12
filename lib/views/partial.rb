@@ -1,7 +1,7 @@
 class Main
   module Views
 
-    class Partial < Page 
+    class Partial < Main::Views::Page 
 
       def initialize partial, page = nil
         @partial = partial

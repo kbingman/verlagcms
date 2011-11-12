@@ -1,8 +1,10 @@
+require './lib/views/view_helpers'
+
 class Main
   module Views
     
     class Page < Mustache 
-      # include ViewHelpers
+      include ViewHelpers
         
       def initialize page, edit = nil
         @page = page
@@ -41,10 +43,6 @@ class Main
 
       def users
         User.all
-      end
-      
-      def partial
-        PartialProxy.new @page
       end
 
     end

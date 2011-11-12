@@ -79,7 +79,7 @@ class Main
   # Site Pages
   # -------------------------------------------
   pages_route = get '*' do
-    cache_request(60) unless authenticated?
+    cache_request(60) # unless authenticated?
     authenticate! unless current_site.published?    
          
     path = params[:splat].first

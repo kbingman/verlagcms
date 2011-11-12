@@ -1,3 +1,5 @@
+require './lib/views/page'
+
 class Main
   module Views
 

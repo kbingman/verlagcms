@@ -13,8 +13,8 @@ class Main
     
     # Create
     # -------------------------------------------
-    post '/:model' do   
-      resource = klass.new(params[model.singularize.to_sym]) 
+    post '/users' do   
+      resource = User.new(params[model.singularize.to_sym]) 
       resource.sites << current_site
       if resource.save
         resource.to_json

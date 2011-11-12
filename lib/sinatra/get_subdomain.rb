@@ -9,26 +9,26 @@ module Sinatra
         request.subdomains.join('.')    
       end 
     
-      # def domain_name
-      #   request.env['HTTP_HOST']
-      # end
-      # 
-      # def current_site 
-      #   @current_site ||= Site.where('$or' => [{ :domain_name => domain_name }, { :subdomain => subdomain }]).first
-      #   if @current_site.nil?
-      #     @current_site ||= Site.first
-      #   else
-      #     @current_site
-      #   end 
-      # end
+      def domain_name
+        request.env['HTTP_HOST']
+      end
       
       def current_site 
-        if subdomain.blank? 
+        @current_site ||= Site.where('$or' => [{ :domain_name => domain_name }, { :subdomain => subdomain }]).first
+        if @current_site.nil?
           @current_site ||= Site.first
         else
-          @current_site ||= Site.find_by_subdomain(subdomain) 
+          @current_site
         end 
       end
+      
+      # def current_site 
+      #   if subdomain.blank? 
+      #     @current_site ||= Site.first
+      #   else
+      #     @current_site ||= Site.find_by_subdomain(subdomain) 
+      #   end 
+      # end
       
     end 
       

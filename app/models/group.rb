@@ -7,10 +7,6 @@ class Group < Part
   # many :users
   many :sites
   
-  validates :name, 
-    :uniqueness => true,
-    :presence => true
-  
   timestamps!
   
 end

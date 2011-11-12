@@ -44,6 +44,10 @@ class Main
       def users
         User.all
       end
+      
+      def partial
+        PartialProxy.new self
+      end
 
     end
   end

@@ -15,9 +15,7 @@ class Main
         @ssl ? 'https://secure.gravatar.com' : 'http://www.gravatar.com'
       end
       
-      def partial
-        PartialProxy.new self
-      end
+
     end
     
   end

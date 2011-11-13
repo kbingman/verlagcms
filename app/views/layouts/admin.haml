@@ -6,11 +6,6 @@
      
     // Ace
     %script{ :src => '/src/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
-    %script{ :src => '/src/theme-textmate.js', :type => 'text/javascript', :charset => 'utf-8' }
-    %script{ :src => '/src/mode-javascript.js', :type => 'text/javascript', :charset => 'utf-8' }
-    %script{ :src => '/src/mode-html.js', :type => 'text/javascript', :charset => 'utf-8' }
-    %script{ :src => '/src/mode-css.js', :type => 'text/javascript', :charset => 'utf-8' }
-    %script{ :src => '/src/mode-scss.js', :type => 'text/javascript', :charset => 'utf-8' }
     - if RACK_ENV != 'development'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else   
@@ -29,6 +24,14 @@
       %script{ :src => '/javascripts/vendor/sinatra-rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/jquery.cookie.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/sanskrit.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      
+      // Ace Themes and Modes
+      %script{ :src => '/src/theme-textmate.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/src/mode-javascript.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/src/mode-html.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/src/mode-css.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/src/mode-scss.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/src/mode-textile.js', :type => 'text/javascript', :charset => 'utf-8' }
       
       // Models
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }

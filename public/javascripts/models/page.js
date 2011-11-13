@@ -29,6 +29,30 @@ var Page = Model('page', function() {
       return part;
     },
     
+    findPartByName: function(name){
+      var parts = this.attr('contents');
+      var part;
+      jQuery.each(parts, function(i, p){
+        if(name == p['name']){
+          part = p;
+          return false;
+        }
+      });
+      return part;
+    },
+    
+    findPartById: function(id){
+      var parts = this.attr('contents');
+      var part;
+      jQuery.each(parts, function(i, p){
+        if(id == p['id']){
+          part = p;
+          return false;
+        }
+      });
+      return part;
+    },
+    
     getChildren: function(callback){
       var self = this;
       var url = '/admin/pages/' + self.id()  + '/children.json';   

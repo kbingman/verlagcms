@@ -3,6 +3,13 @@
   "vendor_dir": "public/javascripts/vendor",
   "bundles": { 
     "admin": [
+     "src/theme-textmate",
+     "src/mode-javascript",
+     "src/mode-html",
+     "src/mode-css",
+     "src/mode-scss",
+     "src/mode-textile",
+      
       "vendor/jquery-1.6.2.min", 
       "vendor/jquery-ui-1.8.16.custom",
       "vendor/sammy.min", 

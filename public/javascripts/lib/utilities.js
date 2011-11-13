@@ -228,6 +228,7 @@ var aceModes = {
   'css'        : require('ace/mode/css').Mode,
   'scss'       : require('ace/mode/scss').Mode,
   'sass'       : require('ace/mode/scss').Mode,
+  'textile'    : require('ace/mode/textile').Mode,
   'none'       : require('ace/mode/text').Mode
 }
 

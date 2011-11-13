@@ -18,9 +18,17 @@ var Parts = Sammy(function (app) {
       // jQuery('#page-tabs-' + page.id()).html('FIBBLE');
       editPart.replace('#page-tabs-' + page.id()).then(function(){
         
-        // TODO remove
-        var modal_editor = jQuery('.modal-editor');
-        modal_editor.fadeIn('fast');
+        // ACE editor
+        var mode = 'textile'; 
+        var editorMode = aceModes[mode];
+        window.editor = ace.edit('part-' + part.id() + '-content');
+        window.editor.setTheme('ace/theme/textmate');
+        window.editor.getSession().setMode(new editorMode);
+        window.editor.session.setUseWrapMode(true);
+        // Because Mustache screws up my inline mustache templates, I just set it manually, directly from the model
+        // This also eleminates the FUC
+        window.editor.getSession().setValue(part.attr('content'));
+    
         
         // Triggers Sanskrit editor
         // application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
@@ -66,9 +74,7 @@ var Parts = Sammy(function (app) {
     var iframe = $('iframe');
     var template = 'parts';
     var page = Page.find(request.params['page_id']);
-    console.log(page)
     var part = page.parts().find(request.params['id']);
-    console.log(part)
 
     // if (iframe.length) {
     //   request.renderPageEditor(page, function(){
@@ -144,6 +150,10 @@ var Parts = Sammy(function (app) {
     // Updates part
     var parts = page.attr('contents'); 
     var length = parts.length;
+    
+    // Sets the part content to the ACE editor value
+    request.params['part']['content'] = window.editor.getSession().getValue();
+    
     // TODO Find by id method for part?
     // Or just make parts their own objects...
     for (var i=0, l=length; i<l; ++i ){
@@ -158,15 +168,20 @@ var Parts = Sammy(function (app) {
         p.save();
       }
     }
-    
+     
     // The page needs to be saved, as parts are embedded. Not sure if this is a good idea
     page.save(function(success, result){
       if(success){
         Utilities.setTimestamp();  
-        Utilities.notice(p.attr('name') + ' saved'); // 
+        Utilities.notice(p.attr('name') + ' saved'); 
+    
+        // ACE editor
+        window.editor.getSession().setUseSoftTabs(true);
+        window.editor.getSession().setTabSize(2);
+        window.editor.getSession().setMode(new editorMode);
         
-        request.trigger('reload-page', page);
-        request.redirect(page.attr('admin_path'));
+        // request.trigger('reload-page', page);
+        // request.redirect(page.attr('admin_path'));
       } 
     });
   });

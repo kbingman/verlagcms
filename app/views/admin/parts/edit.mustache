@@ -1,5 +1,4 @@
 {{#part}}  
-  {{ name }} <span class="timestamp">{{ timestamp }}</span>
   <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-page">
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
@@ -8,11 +7,12 @@
       <input type="hidden" name="base_id" id="base-{{id}}" value="{{base_page_id}}" class="hidden" />
     </div>
     
-    <div class="field">
-      <textarea type="text" name="part[content]" id="part-{{id}}-content" class="textarea sanskrit">{{content}}</textarea>
+    <div class="field"> 
+      <pre id="part-{{id}}-content" class="textile"></pre>
+      <!--textarea type="text" name="part[content]" id="part-{{id}}-content" class="textarea sanskrit">{{content}}</textarea-->
     </div>
     
-    <div class="actions">
+    <div class="buttons">
       <input type="submit" value="Save" class="button html-only" />
       <a href="/admin/pages/{{page_id}}" class="cancel verlag-editor">Cancel</a>
     </div>

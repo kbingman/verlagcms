@@ -1,3 +1,5 @@
+require './app/models/template.rb'
+
 class Layout < Template
   
   many :part_types 

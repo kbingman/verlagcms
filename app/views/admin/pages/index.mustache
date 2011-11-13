@@ -5,7 +5,9 @@
   <li class="node level-{{level}}" id="page-{{id}}"> 
     <div class="item">
       <span class="title" style="padding-left: {{padding}}px;"> 
-         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
+         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a> 
+         <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
+         <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
       </span>
       <span class="count">
         Page type goes here
@@ -19,6 +21,8 @@
         <div class="item">
           <span class="title" style="padding-left: {{padding}}px;"> 
              <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
+             <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
+             <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
           </span>
           <span class="count">
             {{child_count}} Children

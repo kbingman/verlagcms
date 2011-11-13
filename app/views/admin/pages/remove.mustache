@@ -1,4 +1,4 @@
-<div class="modal-strip fade-in">
+<div class="small-modal">
 {{#page}}   
   <h2>Remove Page</h2>
   <form method="post" action="/admin/pages/{{id}}" enctype="multipart/form-data" id="remove-part">
@@ -10,7 +10,7 @@
     </div>
     <div class="buttons">
       <input type="submit" value="Delete" class="button html-only" />
-      <a href="#/pages" class="cancel">Cancel</a>
+      <a href="/admin/pages" class="cancel">Cancel</a>
     </div>
   </form>  
 {{/page}}

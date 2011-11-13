@@ -257,7 +257,7 @@ var Pages = Sammy(function (app) {
     page.destroy(function(success){  
       if(success){
         jQuery('#page-' + page.id()).remove();
-        request.redirect('#/pages');
+        request.redirect('/admin/pages');
       }
     }); 
   });  

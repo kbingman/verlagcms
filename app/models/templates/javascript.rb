@@ -1,3 +1,5 @@
+require './app/models/template.rb'
+
 class Javascript < Template 
   
   key :filter, String

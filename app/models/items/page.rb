@@ -1,3 +1,5 @@
+require './app/models/parts/part.rb'
+
 class Page
   include MongoMapper::Document
   include Canable::Ables

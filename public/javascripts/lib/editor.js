@@ -8,6 +8,9 @@ var Editor = {
       var cmd = jQuery(this).data('cmd');
       var bool = false;
       var value = jQuery(this).data('value');
+      if (value == 'promptUser'){
+        value = prompt(jQuery(this).data('text'));
+      }
       var iframe = jQuery('iframe')[0];
       if(cmd){
         iframe.contentDocument.execCommand(cmd, bool, value);

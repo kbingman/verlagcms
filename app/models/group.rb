@@ -1,4 +1,4 @@
-class Group < Part
+class Group
   include MongoMapper::Document
   
   # TODO add custom validation

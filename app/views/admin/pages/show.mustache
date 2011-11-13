@@ -8,13 +8,13 @@
     {{title}}
     <a class="toggle-page-editor edit" href="{{admin_path}}/edit">Edit</a>
   </h1>
-  <form id="testForm"><input type="button" value="Cut" data-cmd=="cut" />
+  <form id="testForm">
     <input type="button" value="Bold" data-cmd="bold" />
     <input type="button" value="Italic" data-cmd="italic" />
     <input type="button" value="Underline" data-cmd="underline" />
     <span class="separator">|</span>
-    <input type="button" value="Undo" data-cmd="undo" />
-    <input type="button" value="Redo" data-cmd="redo" />
+    <input type="button" value="&lt;a&gt;" data-cmd="createLink" data-value="promptUser" data-text="URL of link?" />
+    <input type="button" value="&lt;img /&gt;" data-cmd="insertimage" data-value="promptUser" data-text="enter an image path" />
     <span class="separator">|</span>
     <input type="button" value="&lt;sub&gt;" data-cmd="subscript" />
     <input type="button" value="&lt;sup&gt;" data-cmd="superscript" />

@@ -5,49 +5,51 @@ require 'bundler/setup'
 
 Bundler.setup
 
-# Monk and Sinatra
+# # Monk and Sinatra
 require 'monk/glue'
-require 'sinatra/base' 
-require 'sinatra/advanced_routes'  
+# require 'sinatra/base' 
+# require 'sinatra/advanced_routes'  
 require 'sinatra/namespace'   
-
-# Warden / Login
+# 
+# # Warden / Login
 require 'warden'
 require 'bcrypt'
-
-# Sinatra Extensions
+# 
+# # Sinatra Extensions
 require './lib/sinatra/basic_auth'
 require './lib/sinatra/respond_to'  
 require './lib/sinatra/logger' 
 require './lib/sinatra/images' 
 require './lib/sinatra/get_subdomain' 
-# require './lib/sinatra/rest_controller'
-
-# Mongo stuff
+require './lib/rack/subdomains'
+require './lib/hunt/search_all'
+# # require './lib/sinatra/rest_controller'
+# 
+# # Mongo stuff
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
 require 'canable'
-
-# Rack
+# 
+# # Rack
+require 'memcached'
 require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
-
-# Templating
+# 
+# # Templating
 require 'mustache/sinatra'
 require 'haml' 
 require 'liquid' 
 require 'RedCloth' 
 require 'rabl'
-require 'active_support/core_ext'
-require 'active_support/inflector'
-require 'builder'
-# require 'jim'
+# require 'active_support/core_ext'
+# require 'active_support/inflector'
+# require 'builder'
+# # require 'jim'
+# 
+# # require './lib/rack/raw_upload'
 
-# require './lib/rack/raw_upload'
-require './lib/rack/subdomains'
-require './lib/hunt/search_all'
 
 class Main < Monk::Glue
 
@@ -71,9 +73,11 @@ class Main < Monk::Glue
   register Rabl
   
   # Rack Middleware 
+  $cache = Memcached.new
   use Rack::Cache,
     :verbose => false,
-    :metastore => 'file:tmp/cache/meta', 
+    :metastore => $cache,
+    # :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
@@ -89,8 +93,8 @@ class Main < Monk::Glue
   register Sinatra::RespondTo  
   register Sinatra::Images 
   register Sinatra::GetSubdomain 
-  register Sinatra::AdvancedRoutes 
-  register Mustache::Sinatra
+  # register Sinatra::AdvancedRoutes 
+  # register Mustache::Sinatra
   Rabl.register!
 
   configure do
@@ -119,8 +123,8 @@ end
 # Models
 
 # These need to be required first or Page blows up...
-require root_path('app/models/templates/template.rb')
-require root_path('app/models/parts/part.rb')
+# require root_path('app/models/templates/template.rb')
+
 
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
@@ -146,7 +150,6 @@ Dir[root_path('app/routes/api/*.rb')].each do |file|
 end
 
 # Load site and assets route. 
-require root_path('app/routes/assets.rb') 
 require root_path('app/routes/site.rb')
 
 # Loud Mustache Views
@@ -160,9 +163,9 @@ Dir[root_path('app/views/**/*.rb')].each do |file|
 end
 
 # Load all lib liquid files.
-Dir[root_path('app/liquid/**/*.rb')].each do |file|
-  require file
-end  
+# Dir[root_path('app/liquid/**/*.rb')].each do |file|
+#   require file
+# end  
 
 if defined? Encoding
   Encoding.default_external = Encoding::UTF_8

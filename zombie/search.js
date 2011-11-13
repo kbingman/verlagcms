@@ -1,14 +1,13 @@
 var zombie = require("zombie");
 var assert = require("assert");
 
-
 // Welcome page
 // Load the page from localhost
 zombie.visit("http://localhost:4567/", function (err, browser, status) {
   // Browser Title
   assert.equal(browser.text("title"), "The Daily Scan – Home");
   
-  // Make sure we have an element with the ID brains.
+  // Make sure we have an element with the ID container.
   assert.ok(browser.querySelector("#container"));
 });
 

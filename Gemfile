@@ -4,7 +4,7 @@ gem 'rack', '~> 1.3.4'
 gem 'sinatra', '1.3.1' 
 gem 'tilt', '~> 1.3' 
 gem 'sinatra-namespace', :path => 'vendor/sinatra-namespace' #, :git => 'https://github.com/rkh/sinatra-namespace.git' 
-gem 'sinatra-advanced-routes'
+# gem 'sinatra-advanced-routes'
 gem 'thin' 
 gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git' 
 gem 'rack-cache'
@@ -38,11 +38,14 @@ gem 'RedCloth'
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
+gem 'memcached'
 gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
-gem 'rake'
-gem 'thor'   
 
-# gem 'jim', :git => 'https://github.com/quirkey/jim.git'
+group :development do
+  gem 'rake'
+  gem 'thor'   
+  gem 'jim', :git => 'https://github.com/quirkey/jim.git'
+end
 
 group :test do
   gem 'rack-test'

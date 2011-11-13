@@ -15,11 +15,11 @@ class ImagePart < Part
   end
  
   def path
-    self.asset.image_path if self.asset
+    self.asset ? self.asset.image_path : '/images/missing.png'
   end
   
   def image_path
-    self.asset.image_path if self.asset
+    self.asset ? self.asset.image_path : '/images/missing.png'
   end
   
   def editor

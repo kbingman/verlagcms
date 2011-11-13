@@ -77,15 +77,15 @@ var Utilities = {
     Loader.start();
     var img = container.find('img');
     
-    // setTimeout(function(){
-    if(container.height() == 0){
-      img.load(function(){
+    setTimeout(function(){
+      if(container.height() < 20){
+        img.load(function(){
+          self.resizeModal(container, callback);
+        });
+      } else {
         self.resizeModal(container, callback);
-      });
-    } else {
-      self.resizeModal(container, callback);
-    }
-    // }, 13);
+      }
+    }, 13);
   },
   
   resizeModal: function(container, callback){

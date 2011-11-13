@@ -23,18 +23,17 @@ var Parts = Sammy(function (app) {
         modal_editor.fadeIn('fast');
         
         // Triggers Sanskrit editor
-        application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
+        // application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
         
         // For image parts only. Otherwise ignored
         application.trigger('set_asset_links');
         jQuery('#ajax_uploader')
           .attr('multiple','multiple')
           .change(function(e){
-            alert('HHH')
-            // var form = jQuery(this).parents('form:first');
-            // jQuery('.progress').slideDown('slow',function(){
-            //   form.submit();
-            // });
+            var form = jQuery(this).parents('form:first');
+            jQuery('.progress').slideDown('slow',function(){
+              form.submit();
+            });
           });
         application.trigger('page-index');
       });
@@ -71,17 +70,21 @@ var Parts = Sammy(function (app) {
     var part = page.parts().find(request.params['id']);
     console.log(part)
 
-    if (iframe.length) {
-      request.renderPageEditor(page, function(){
-        request.renderPart(part, page, template);
-      });
-    } else {
-      request.renderPagePreview(page, function(){
-        request.renderPageEditor(page, function(){
-          request.renderPart(part, page, template);
-        });
-      }); 
-    }
+    // if (iframe.length) {
+    //   request.renderPageEditor(page, function(){
+    //     request.renderPart(part, page, template);
+    //   });
+    // } else {
+    //   request.renderPagePreview(page, function(){
+    //     request.renderPageEditor(page, function(){
+    //       request.renderPart(part, page, template);
+    //     });
+    //   }); 
+    // }
+    request.trigger('show-page-menu', page);
+    request.renderPageEditor(page, function(){
+      request.renderPart(part, page, template);
+    });
   });
   
   // Remove this
@@ -94,17 +97,21 @@ var Parts = Sammy(function (app) {
     var iframe = $('iframe');
     
     Asset.searchAdmin({ 'limit': '24' }, function(){ 
-      if (iframe.length) {
-        request.renderPageEditor(page, function(){
-          request.renderPart(part, page, template);
-        });
-      } else {
-        request.renderPagePreview(page, function(){
-          request.renderPageEditor(page, function(){
-            request.renderPart(part, page, template);
-          });
-        }); 
-      }
+      // if (iframe.length) {
+      //   request.renderPageEditor(page, function(){
+      //     request.renderPart(part, page, template);
+      //   });
+      // } else {
+      //   request.renderPagePreview(page, function(){
+      //     request.renderPageEditor(page, function(){
+      //       request.renderPart(part, page, template);
+      //     });
+      //   }); 
+      // }
+      request.trigger('show-page-menu', page);
+      request.renderPageEditor(page, function(){
+        request.renderPart(part, page, template);
+      });
     });
   });
   

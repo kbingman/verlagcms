@@ -27,7 +27,8 @@
       "models/user",
       
       "lib/utilities",  
-      "lib/editor",  
+      "lib/editor",
+      "lib/iframer",  
       
       "controllers/base",  
       "controllers/sites",  

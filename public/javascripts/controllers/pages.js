@@ -30,7 +30,7 @@ var Pages = Sammy(function (app) {
         var pageEditor = application.load(jQuery('script#admin-pages-edit')).interpolate({ 
           page: page.asJSON()
         }, 'mustache');  
-        pageEditor.appendTo('body').then(function(){  
+        pageEditor.replace('#editor').then(function(){  
           // TODO make an event
           jQuery('li.node').removeClass('active');
           jQuery('#page-' + page.id()).addClass('active');
@@ -191,18 +191,22 @@ var Pages = Sammy(function (app) {
   // ---------------------------------------------
   this.get('/admin/pages/:id/edit/?', function(request){  
     var page = Page.find(request.params['id']); 
-    if(jQuery('#preview-' + page.id()).length){
-      request.renderPageEditor(page, function(){
-        request.renderPageProperties(page);
-      });
-    } else {
-      request.renderPagePreview(page, function(){
-        request.renderPageEditor(page, function(){
-          request.renderPageProperties(page);
-        });
-      }); 
-      request.trigger('page-index');
-    }    
+    // if(jQuery('#preview-' + page.id()).length){
+    //   request.renderPageEditor(page, function(){
+    //     request.renderPageProperties(page);
+    //   });
+    // } else {
+    //   request.renderPagePreview(page, function(){
+    //     request.renderPageEditor(page, function(){
+    //       request.renderPageProperties(page);
+    //     });
+    //   }); 
+    //   request.trigger('page-index');
+    // }
+    request.renderPageEditor(page, function(){
+      request.renderPageProperties(page);
+    });  
+    request.trigger('show-page-menu', page);  
   }); 
     
   

@@ -36,7 +36,7 @@ class Main
   # CSS Templates 
   # -------------------------------------------
   css_route = get '/css/:name' do 
-    cache_request
+    cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
     css = Stylesheet.by_site(current_site).find_by_name(name)  
     if css    
@@ -49,7 +49,7 @@ class Main
   # Javascript Templates
   # -------------------------------------------
   js_route = get '/js/:name' do
-    cache_request
+    cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
     if js    
@@ -80,7 +80,7 @@ class Main
   # -------------------------------------------
   pages_route = get '*' do
     authenticate! unless current_site.published?   
-    cache_request # unless authenticated?
+    cache_request(60) # unless authenticated?
      
     path = params[:splat].first
     # TODO change method to current_site.find_by_path

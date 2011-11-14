@@ -19,7 +19,7 @@ class Upload < Template
   end
   
   def mode
-    'file'
+    'upload'
   end
   
   
@@ -28,6 +28,10 @@ class Upload < Template
   end
   
   protected
+    before_validation :set_name
+    def set_name
+      self.name ||= File.basename self.file_name, '.*'
+    end
 
   
 end

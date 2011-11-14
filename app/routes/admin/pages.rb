@@ -67,6 +67,7 @@ class Main
       # Update page
       # -------------------------------------------
       put '/:id' do
+        Verlag::Cache.clear
         page = Page.by_site(current_site).find(params['id']) 
         # enforce_update_permission(page) 
         

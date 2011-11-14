@@ -23,6 +23,7 @@ class Main
       # Update 
       # -------------------------------------------
       put '/:id' do
+        Verlag::Cache.clear
         resource = Template.by_site(current_site).find params['id']
         # resource = klass.find params['id']   
         enforce_update_permission(resource)

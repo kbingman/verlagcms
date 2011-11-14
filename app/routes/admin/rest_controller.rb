@@ -64,6 +64,7 @@ class Main
     # Update 
     # -------------------------------------------
     put '/:model/:id' do
+      Verlag::Cache.clear
       resource = klass.by_site(current_site).find params['id']
       # resource = klass.find params['id']   
       # enforce_update_permission(resource)

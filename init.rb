@@ -48,7 +48,7 @@ require 'rabl'
 # require 'builder'
 # # require 'jim'
 # 
-# # require './lib/rack/raw_upload'
+require './lib/verlag/cache'
 
 
 class Main < Monk::Glue
@@ -74,7 +74,7 @@ class Main < Monk::Glue
   
   # Rack Middleware 
   $cache = Memcached.new
-  use Rack::Cache,
+  use Verlag::Cache,
     :verbose => false,
     :metastore => $cache,
     # :metastore => 'file:tmp/cache/meta', 

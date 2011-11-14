@@ -31,13 +31,12 @@ class Main
     admin_route = get '/' do   
       admin_haml :'admin/index'  
     end  
-    
-
   end
   
   # CSS Templates 
   # -------------------------------------------
   css_route = get '/css/:name' do 
+    cache_request
     name = "#{params[:name]}.#{format.to_s}"
     css = Stylesheet.by_site(current_site).find_by_name(name)  
     if css    
@@ -50,6 +49,7 @@ class Main
   # Javascript Templates
   # -------------------------------------------
   js_route = get '/js/:name' do
+    cache_request
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
     if js    

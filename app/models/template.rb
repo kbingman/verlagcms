@@ -21,6 +21,14 @@ class Template
   
   attr_accessible :content, :name  
   
+  def admin_path
+    "/admin/templates/#{self.id}"
+  end
+  
+  def path
+    nil
+  end
+  
   def klass
     self.class.name
   end
@@ -34,7 +42,7 @@ class Template
   end
   
   def as_json(options)
-    super(:methods => [:klass, :class_name, :mode, :part_types, :layout?])
+    super(:methods => [:klass, :class_name, :mode, :part_types, :layout?, :admin_path, :path])
   end 
   
 

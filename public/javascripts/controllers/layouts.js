@@ -19,7 +19,8 @@ var Layouts = Sammy(function (app) {
         layouts: Layout.find_all_by_class('Layout').map(function(item){ return item.attributes }), 
         partials: Layout.find_all_by_class('Partial').map(function(item){ return item.attributes }), 
         javascripts: Layout.find_all_by_class('Javascript').map(function(item){ return item.attributes }),
-        stylesheets: Layout.find_all_by_class('Stylesheet').map(function(item){ return item.attributes }) 
+        stylesheets: Layout.find_all_by_class('Stylesheet').map(function(item){ return item.attributes }),
+        files: Layout.find_all_by_class('Upload').map(function(item){ return item.attributes }) 
       }, 'mustache');
       layoutIndex.replace('#sidebar');
     },  
@@ -69,9 +70,12 @@ var Layouts = Sammy(function (app) {
   // ---------------------------------------------
   this.get('/admin/templates/new/:klass', function(request){    
     var displayContents = $('<div />').attr({'id': 'new-page-container', 'class': 'small-modal'});
-    
+    var klass = request.params['klass'];
     if ($('#modal').length == 0){ Galerie.open(displayContents); } 
-    var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ klass: request.params['klass']}, 'mustache'); 
+    var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ 
+      klass: klass,
+      file: klass == 'file' ? true : false
+    }, 'mustache'); 
     newLayout.replace('#new-page-container');       
     request.renderLayoutIndex(Layout.all());  
   });  

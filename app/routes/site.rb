@@ -35,7 +35,8 @@ class Main
   
   # CSS Templates 
   # -------------------------------------------
-  css_route = get '/css/:name' do 
+  # css_route = 
+  get '/css/:name' do 
     cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
     css = Stylesheet.by_site(current_site).find_by_name(name)  
@@ -48,7 +49,8 @@ class Main
   
   # Javascript Templates
   # -------------------------------------------
-  js_route = get '/js/:name' do
+  # js_route = 
+  get '/js/:name' do
     cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
@@ -61,7 +63,8 @@ class Main
   
   # Site Preview
   # -------------------------------------------
-  preview_route = get '/preview*' do   
+  # preview_route = 
+  get '/preview*' do   
     authenticate!
     path = params[:splat].first   
     # TODO change method to current_site.find_by_path
@@ -78,7 +81,8 @@ class Main
   
   # Site Pages
   # -------------------------------------------
-  pages_route = get '*' do
+  # pages_route = 
+  get '*' do
     authenticate! unless current_site.published?   
     cache_request(60) # unless authenticated?
      
@@ -94,6 +98,8 @@ class Main
     end
     # page.template.content
   end    
+  
+
   
   error 404 do   
     # TODO Build custom pages

@@ -28,6 +28,10 @@ class Main
         @site
       end
       
+      def global
+        self
+      end
+      
       def children
         @page.children
       end
@@ -46,7 +50,7 @@ class Main
       end
       
       def partial
-        PartialProxy.new self
+        PartialProxy.new @page
       end
 
     end

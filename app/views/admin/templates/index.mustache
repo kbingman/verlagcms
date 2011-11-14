@@ -5,7 +5,7 @@
       <li class="layout" id="layout-{{id}}"> 
         <div class="item"> 
           <span class="title"> 
-             <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
+             <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
           </span> 
           <span class="modify">                 
             <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
@@ -21,7 +21,7 @@
     <li class="layout" id="layout-{{id}}">
       <div class="item"> 
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
           <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
@@ -37,7 +37,7 @@
     <li class="layout" id="layout-{{id}}">
       <div class="item">
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
           <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
@@ -53,7 +53,7 @@
     <li class="layout" id="layout-{{id}}">
       <div class="item"> 
         <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="/admin/templates/{{id}}/edit">{{name}}</a>       
+           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
         </span> 
         <span class="modify">                 
           <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
@@ -61,5 +61,23 @@
       </div>
     </li>
   {{/partials}}     
+  </ul>
+  
+  <h2>File <span class="modify"><a href="/admin/templates/new/file">+</a></span></h2>
+  <ul>
+  {{#files}} 
+    <li class="file" id="file-{{id}}">
+      <div class="item"> 
+        <span class="title"> 
+           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
+        </span> 
+        <span class="modify">                 
+          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
+        </span> 
+        <br />
+        {{path}}
+      </div>
+    </li>
+  {{/files}}     
   </ul>
 </div>

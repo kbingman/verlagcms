@@ -20,7 +20,9 @@ require './lib/sinatra/basic_auth'
 require './lib/sinatra/respond_to'  
 require './lib/sinatra/logger' 
 require './lib/sinatra/images' 
+require './lib/sinatra/files'
 require './lib/sinatra/get_subdomain' 
+
 require './lib/rack/subdomains'
 require './lib/hunt/search_all'
 # # require './lib/sinatra/rest_controller'
@@ -49,6 +51,7 @@ require 'rabl'
 # # require 'jim'
 # 
 require './lib/verlag/cache'
+
 
 
 class Main < Monk::Glue

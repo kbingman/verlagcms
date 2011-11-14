@@ -1,3 +1,5 @@
+require './app/models/parts/part.rb'
+
 class ImagePart < Part
   include MongoMapper::EmbeddedDocument
   

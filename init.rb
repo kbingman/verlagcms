@@ -32,7 +32,7 @@ require 'hunt'
 require 'canable'
 # 
 # # Rack
-# require 'memcached'
+require 'memcached'
 require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
@@ -73,11 +73,11 @@ class Main < Monk::Glue
   register Rabl
   
   # Rack Middleware 
-  # $cache = Memcached.new
+  $cache = Memcached.new
   use Rack::Cache,
     :verbose => false,
-    # :metastore => $cache,
-    :metastore => 'file:tmp/cache/meta', 
+    :metastore => $cache,
+    # :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',

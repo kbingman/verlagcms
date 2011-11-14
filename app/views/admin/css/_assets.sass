@@ -6,6 +6,9 @@
   :overflow auto   
   :top 46px
   :bottom 0
+  li:hover
+    .remove-icon
+      :display block 
   li
     :position relative
     :float left
@@ -29,9 +32,15 @@
       :font
         :weight 500
     .remove-icon
+      :display none
       :position absolute
-      :bottom 4px
+      :top 4px
       :left 4px
+      :height 27px
+      :width 27px
+      :text-indent -10000px
+      :background 
+        :image url(/images/icons/delete.png)
     .info-icon
       :position absolute
       :bottom 4px

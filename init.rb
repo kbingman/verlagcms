@@ -72,13 +72,15 @@ class Main < Monk::Glue
   # Not sure if this is the correct syntax
   register Rabl
   
-  # Rack Middleware 
-  $cache = Memcached.new
-  use Verlag::Cache,
-    :verbose => false,
-    :metastore => $cache,
-    # :metastore => 'file:tmp/cache/meta', 
-    :entitystore => 'file:tmp/cache/body'       
+  # Rack Cache
+  if RACK_ENV != 'development'
+    $cache = Memcached.new
+    use Verlag::Cache,
+      :verbose => true,
+      :metastore => $cache,
+      # :metastore => 'file:tmp/cache/meta', 
+      :entitystore => 'file:tmp/cache/body'       
+  end
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week

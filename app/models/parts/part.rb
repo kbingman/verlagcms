@@ -30,7 +30,7 @@ class Part
       # r += "<span>Edit #{self.name}</span></a></span>"
       # r += !self.content.blank? ? "#{RedCloth.new(self.content).to_html}" : 'Add Content Here'
       # r
-      r =  "<div class='editable part #{self.name}' id='#{self.name}_part'>"
+      r =  "<div class='editable part #{self.name} textile' id='#{self.name}_part'>"
       r += self.content.blank? ? '' : RedCloth.new(self.content).to_html 
       r += '</div>'
     else

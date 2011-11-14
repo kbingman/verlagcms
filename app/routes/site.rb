@@ -79,9 +79,9 @@ class Main
   # Site Pages
   # -------------------------------------------
   pages_route = get '*' do
-    cache_request(60) # unless authenticated?
-    authenticate! unless current_site.published?    
-         
+    authenticate! unless current_site.published?   
+    cache_request # unless authenticated?
+     
     path = params[:splat].first
     # TODO change method to current_site.find_by_path
     page = Page.find_by_path(path, current_site) if path

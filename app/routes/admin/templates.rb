@@ -1,6 +1,31 @@
 class Main    
   
   module Admin 
+    module Files 
+      
+      # Create file
+      # -------------------------------------------
+      post '' do 
+         
+        template = Upload.new 
+        template.file = params[:template][:file][:tempfile]
+        # template.name = params[:template][:file][:filename]
+        template.file_name = params[:template][:file][:filename]
+        template.site = current_site
+        
+        if template.save
+          respond_to do |format|
+            format.html { redirect("#{template.admin_path}/edit") }
+            format.json { template.to_json }
+          end
+        else   
+          logger.info(template.errors.inspect)  
+          { :errors => template.errors }.to_json
+        end
+      end
+      
+    end
+    
     module Templates 
       
       # Create layout

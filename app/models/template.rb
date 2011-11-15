@@ -26,7 +26,7 @@ class Template
   end
   
   def path
-    nil
+    false
   end
   
   def klass

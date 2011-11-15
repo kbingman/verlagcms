@@ -75,6 +75,14 @@ jQuery(document).ready(function () {
     var container = jQuery('div#asset-editor'); 
     Utilities.loadModal(container);
   });
+  
+  // Events
+  // TODO Organize all live events into a central spot 
+  // and bind them with sammy events
+  jQuery('a.insert-file').live('click', function(e){ 
+    e.preventDefault();
+    window.editor.insert($(this).attr('href')); 
+  });
 
   
 });

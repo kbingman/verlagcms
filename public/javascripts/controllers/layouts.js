@@ -74,7 +74,7 @@ var Layouts = Sammy(function (app) {
     if ($('#modal').length == 0){ Galerie.open(displayContents); } 
     var newLayout = request.load(jQuery('#admin-templates-new')).interpolate({ 
       klass: klass,
-      file: klass == 'file' ? true : false
+      file: klass == 'upload' ? true : false
     }, 'mustache'); 
     newLayout.replace('#new-page-container');       
     request.renderLayoutIndex(Layout.all());  

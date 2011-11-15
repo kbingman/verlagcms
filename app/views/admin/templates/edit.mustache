@@ -10,17 +10,17 @@
       <!--label for="layout_name">Name</label-->
       <input type="text" id="layout_name" name="layout[name]" value="{{name}}" class="textfield" />
     </div> 
-    {{# content }}
+    {{^ path }}
     <div class="code">   
       <pre id="layout_content" class="{{mode}}"></pre>
       <noscript><textarea id="textarea_content" class="{{mode}}"></textarea></noscript>
     </div>     
-    {{/ content }}
-    {{^ content }}
+    {{/ path }}
+    {{# path }}
     <div class="image">   
       <img src="{{path}}" alt="{{name}}" />
     </div>     
-    {{/ content }}
+    {{/ path }}
     
     <div class="buttons"> 
       <div class="field"> 

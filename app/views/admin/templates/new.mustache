@@ -1,6 +1,6 @@
 <h1>New {{klass}}</h1>  
 
-<form action="/admin/templates" method= "post">  
+<form {{^ file }}action="/admin/templates"{{/ file }} {{# file }}action="/admin/files" enctype="multipart/form-data" {{/ file }}method= "post">  
   <div class="hidden">
     <input type="hidden" id="page_parent_id" name="template[klass]" value="{{klass}}" class="hidden" />   
   </div>
@@ -11,7 +11,7 @@
   </div>
   {{/ file }}
   {{# file }}
-  <div class="field">   
+  <div class="field"> 
     <label for="page_title">File</label>
     <input type="file" id="template_file" name="template[file]" value="" class="textfield" />  
   </div>

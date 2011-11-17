@@ -70,27 +70,13 @@ var Assets = Sammy(function (app) {
     assetIndex.replace('#editor').then(function(){
       // Sets uploader to multiple if browser supports it
       // jQuery('#ajax_uploader').attr('multiple','multiple'); 
-    
-      // Triggers info popups
-      jQuery('a.info-icon').click(function(e){
-        e.preventDefault();
-        current_asset_id = this.id.split('-')[2];
-        application.trigger('show_info', { 'current_asset_id': current_asset_id });
-      });
-    
-      // Upload Form
+      
+      // Upload Asset Form
       jQuery('#ajax_uploader')
         .attr('multiple','multiple')
-        .change(function(e){
+        .live('change', function(e){
           jQuery(this).parents('form:first').submit();
         });
-    
-      // Triggers remove popups
-      jQuery('a.remove-icon').click(function(e){
-        e.preventDefault();
-        current_asset_id = this.id.split('-')[2];
-        application.trigger('show_remove_dialog', { 'current_asset_id': current_asset_id });
-      });
     });
   });
   
@@ -143,24 +129,6 @@ var Assets = Sammy(function (app) {
       request.trigger('render-index', query);
     });
   }); 
-  
-  // Show Folder
-  // ---------------------------------------------
-  app.get('/admin/folders/:id', function(request){ 
-    jQuery('#overlay').remove();
-    var folderId = request.params['id'];
-    var folder = Folder.find(folderId);
-    request.renderFolderTree(function(){
-      jQuery('ul#folders li').removeClass('active');
-      jQuery('#folder-' + folderId).addClass('active');
-    });
-    
-    // var assets = Asset.find_all_by_folder_id(folderId);
-    folder.loadAssets(function(){
-      request.trigger('render-index', '');
-    });
-
-  });
   
   // New Assets
   // ---------------------------------------------

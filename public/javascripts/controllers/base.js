@@ -104,7 +104,10 @@ var Base = Sammy(function (app) {
     var iframe =jQuery('#page-iframe-' + page.id());
     if (iframe.length){
       var message = 'This page has been changed. Click here to reload.';
-      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { 'persist': true, 'class': 'warning' });
+      Utilities.notice('<a class="page-reload" href="' + page.attr('admin_path') + '">' + message + '</span>', { 
+        'persist': true, 
+        'class': 'warning' 
+      });
     }
   });
   
@@ -119,34 +122,23 @@ var Base = Sammy(function (app) {
     // Utilities.notice('Updated layout');
   });
   
-  // Initialize Sanskrit Editor
+  // Image Browser
   // ---------------------------------------------
-  app.bind('sanskrit', function(e, element){
-    if(!element.length){ return }
-    
-    var textareas = element.find('textarea.sanskrit');
-    // textareas.hide();
-    textareas.each(function(i, t){
-      var editor = new Sanskrit(t, {
-        toolbar: {
-          // onEm: function(){
-          //   alert('image goes here!') 
-          // },
-          actions: {
-            'strong': 'B', 
-            'em': 'I', 
-            'ins': 'ins', 
-            'del': 'del', 
-            'link': 'link', 
-            'unlink': 'unlink',
-            'textile': 'Textile'
-          }  
-        }
-      }); 
+  app.bind('image-browser', function(e, href){
+    var application = this,
+    page_id = href.split('/')[3],
+    part_id = href.split('/')[5],
+    page = Page.find(page_id),
+    part = page.findPartById(part_id),
+    params = { 'limit': 12, 'page': 1 };
+
+    Asset.searchAdmin(params, function(){
+      var index = application.load(jQuery('script#admin-image_parts-index')).interpolate({ 
+        assets: Asset.asJSON(), 
+        count: Asset.count()
+      }, 'mustache');
+      index.appendTo('body');
     });
-    setTimeout(function(){
-      textareas.fadeIn('fast');
-    }, 420);
   });
   
   // Sidebar Toggle
@@ -176,7 +168,7 @@ var Base = Sammy(function (app) {
         toggle.animate({'left':width}, 200).toggleClass('open');
       }
 
-    })
+    });
   });
   
   // Before Filters

@@ -8,6 +8,13 @@ GIT
       tilt (~> 1.1, != 1.3.0)
 
 GIT
+  remote: https://github.com/bogn/mongo_mapper_acts_as_tree.git
+  revision: 064ecbcc009e729e720962818f1ffc3b9e150d9a
+  specs:
+    mongo_mapper_acts_as_tree (0.3.3)
+      mongo_mapper (>= 0.9)
+
+GIT
   remote: https://github.com/defunkt/mustache.git
   revision: d5ad1f164c6c4b24efd197c8ab739e3bf65a21ae
   specs:
@@ -227,6 +234,7 @@ DEPENDENCIES
   mongo (= 1.3)
   mongo_ext
   mongo_mapper!
+  mongo_mapper_acts_as_tree!
   monk-glue!
   mustache!
   rabl!

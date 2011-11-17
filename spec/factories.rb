@@ -33,7 +33,7 @@ end
 
 Factory.define :page do |f|
   f.title  { Faker::Name.first_name }  
-  f.association :layout
+  # f.association :layout
   # f.association :site
 end  
 

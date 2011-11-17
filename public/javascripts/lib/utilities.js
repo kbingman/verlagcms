@@ -80,27 +80,46 @@ var Utilities = {
     setTimeout(function(){
       if(container.height() < 20){
         img.load(function(){
-          self.resizeModal(container, callback);
+          self.resizeModal(img, container, callback);
         });
       } else {
-        self.resizeModal(container, callback);
+        self.resizeModal(img, container, callback);
       }
     }, 13);
   },
   
-  resizeModal: function(container, callback){
-    var width = container.width();
-    var height = container.height();
-    var ratio = width / height;
-    var docWidth = jQuery(window).width();
-    var docHeight = jQuery(window).height();
-    if(height > (docHeight - 40)){
+  resizeModal: function(img, container, callback){
+    var temp_img = img.clone(),
+     width = temp_img[0].width,
+     height = temp_img[0].height,
+     ratio = width / height,
+     docWidth = jQuery(window).width(),
+     docHeight = jQuery(window).height();
+     
+    if(container.height() > (docHeight - 40)){
+      img
+        .height(docHeight - 40)
+        .width((docHeight - 40) * ratio);
       container
         .height(docHeight - 40)
         .width((docHeight - 40) * ratio);
-    }else{
+    } 
+    
+    if(container.width() > (docWidth - 40)){
+      img
+        .height((docWidth - 40) / ratio)
+        .width(docWidth - 40);
+      container
+        .height((docWidth - 40) / ratio)
+        .width(docWidth - 40);
       container.css({
-        'margin-top': (docHeight - height)/2
+        'margin-top': (docHeight - ((docWidth - 40) / ratio))/2
+      });
+    } 
+    if(container.width() < (docWidth - 40) && container.height() < (docHeight - 40)) {
+      container.css({
+        'width': width + 'px',
+        'margin-top': (docHeight - container.height())/2
       });
     }
     Loader.stop();

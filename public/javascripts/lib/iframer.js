@@ -30,11 +30,16 @@ var iFramer = {
           var page = Page.find_by_path(link_path);
           if (page){
             e.preventDefault();
-            // TODO This whole thing needs to be moved to sammy to have access to the routes
-            history.pushState({path: page.attr('title')}, page.attr('title'), page.attr('admin_path'));
-            // document.location.path = page.attr('admin_path');
+            Pages.setLocation(page.attr('admin_path'));
           }
         // }
+      });
+      
+      var image_links = content.find('a.insert-image');
+      image_links.click(function(e){
+        e.preventDefault();
+        var href = jQuery(this).attr('href');
+        Base.trigger('image-browser', href);
       });
       // 
       // flags.click(function(e){  

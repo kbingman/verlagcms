@@ -26,12 +26,7 @@ var Users = Sammy(function (app) {
       });
     }
   });
-
-  this.bind('run', function () {
-    context.modal = false;
-    context.refresh_pages = true; 
-  }); 
-  
+    
   // User Index
   // ---------------------------------------------
   this.get('/admin/users', function(request){  

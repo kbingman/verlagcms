@@ -26,7 +26,7 @@ class ImagePart < Part
   
   def editor
     if self.edit
-      '<p>insert widget goes here<p>'
+      "<div class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>"
     end
   end
   

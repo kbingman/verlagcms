@@ -57,6 +57,10 @@ class Site
     self.root.branch(page) 
   end
   
+  def find_by_path(path)
+    self.root.find_by_path(path)
+  end
+  
   # liquid_methods :name, :root, :children 
   
   # Permissions

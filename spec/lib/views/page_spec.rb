@@ -27,7 +27,12 @@ describe "lib/views/page" do
       @page_view.page.should == @root
     end
     
+    it "returns the global page" do
+      @page_view.global.should == @root
+    end
+    
     it "returns the body part for the current page" do
+      pending 'change to body part'
       @page_view.data.body.should == @root.data.body
     end
     

@@ -14,9 +14,7 @@
       "vendor/modernizr-1.7.min", 
       "vendor/js-model-0.10.1", 
       "vendor/sinatra-rest",  
-      "vendor/codemirror",
       "vendor/jquery.cookie",
-      "vendor/sanskrit",
 
       "models/asset",
       "models/folder",  
@@ -28,12 +26,14 @@
       
       "lib/utilities",  
       "lib/editor",
+      "lib/events",
       "lib/iframer",  
       
       "controllers/base",  
       "controllers/sites",  
       "controllers/layouts",    
       "controllers/assets",
+      "controllers/folders",
       "controllers/pages",
       "controllers/parts",
       "controllers/users",

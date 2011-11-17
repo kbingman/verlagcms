@@ -23,6 +23,7 @@ gem 'bson_ext', '1.3'
 gem 'hunt', :path => 'vendor/hunt'
 gem 'fast-stemmer', '~> 1.0'
 gem 'joint', :git => 'https://github.com/jnunemaker/joint.git'
+gem 'mongo_mapper_acts_as_tree', :git => 'https://github.com/bogn/mongo_mapper_acts_as_tree.git'
 gem 'bin', :git => 'https://github.com/jnunemaker/bin.git'
 gem 'canable', :path => 'vendor/canable'
 

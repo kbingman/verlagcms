@@ -11,6 +11,12 @@ class Page
   searches :title, :tags  
   before_save :index_search_terms  
   
+  plugin MongoMapper::Plugins::ActsAsTree
+  key :parent_id, ObjectId
+  # belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id  
+  # many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
+  acts_as_tree :order => :slug
+  
   
   # Attributes
   # ----------------------------------------
@@ -25,9 +31,7 @@ class Page
   key :asset_ids, Array
   many :assets, :in => :asset_ids
   
-  key :parent_id, ObjectId
-  belongs_to :parent, :class_name => 'Page', :foreign_key => :parent_id  
-  many :children, :class_name => 'Page', :dependent => :destroy, :foreign_key => :parent_id
+  
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
@@ -40,6 +44,8 @@ class Page
 
   timestamps!
   userstamps!
+  
+  attr_accessor :active
   
   # Permissions
   # ----------------------------------------
@@ -124,6 +130,10 @@ class Page
     self.level * 12
   end   
   
+  def ancestor_ids
+    self.ancestors.collect{ |a| a.id.to_s }
+  end
+  
   def class_name
     self.class.to_s
   end
@@ -144,7 +154,8 @@ class Page
   end  
   
   def branch(page=nil)
-    active = page == self ? true : false
+    self.active = page == self ? true : false
+    
     { 
       :title => self.title,
       :slug => self.slug,

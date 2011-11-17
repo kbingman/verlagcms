@@ -24,6 +24,7 @@ describe "lib/views/part_proxy" do
     end
     
     it "should return the 'body' content" do
+      pending 'change to body part'
       @proxy.body.should == @root.data.body
     end
     

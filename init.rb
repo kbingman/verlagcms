@@ -31,6 +31,7 @@ require './lib/hunt/search_all'
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
+require 'mongo_mapper_acts_as_tree'
 require 'canable'
 # 
 # # Rack
@@ -76,14 +77,14 @@ class Main < Monk::Glue
   register Rabl
   
   # Rack Cache
-  if RACK_ENV != 'development'
-    $cache = Memcached.new
-    use Verlag::Cache,
-      :verbose => true,
-      :metastore => $cache,
-      # :metastore => 'file:tmp/cache/meta', 
-      :entitystore => 'file:tmp/cache/body'       
-  end
+  # if RACK_ENV != 'development'
+  #   $cache = Memcached.new
+  #   use Verlag::Cache,
+  #     :verbose => true,
+  #     :metastore => $cache,
+  #     # :metastore => 'file:tmp/cache/meta', 
+  #     :entitystore => 'file:tmp/cache/body'       
+  # end
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week

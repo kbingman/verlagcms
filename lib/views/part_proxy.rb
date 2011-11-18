@@ -5,11 +5,7 @@ class PartProxy
     @edit = edit
   end  
   
-  def test 
-    'test'
-  end
-  
-  def part name
+  def part(name)
     part = @page.parts.detect { |p| p.name == name.to_s } 
     part.edit = true if part && @edit
     part
@@ -20,9 +16,10 @@ class PartProxy
     part(method)
   end
   
+  # This needs to return true for any of the above methods to work.
   def respond_to?(method)
-    # This needs to return true for any of the above methods to work.
-    part(method) || method.to_s == 'test' ? true : false
+    return super unless part(method)
+    part(method)
   end
 
 end

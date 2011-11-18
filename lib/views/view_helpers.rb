@@ -16,18 +16,6 @@ class Main
         @ssl ? 'https://secure.gravatar.com' : 'http://www.gravatar.com'
       end
       
-      # Returns true if the local page matches the global page
-      def if_self
-        @global_page.id == self[:id]
-      end
-      
-      # Returns true if the local page matches the global page
-      def if_ancestor_or_self
-        local_page_id = self[:id].to_s
-        ids = @global_page.ancestor_ids + [@global_page.id.to_s]
-        ids.include?(local_page_id)
-      end
-
     end
     
   end

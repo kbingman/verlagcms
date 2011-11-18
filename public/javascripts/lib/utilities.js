@@ -94,7 +94,9 @@ var Utilities = {
      height = temp_img[0].height,
      ratio = width / height,
      docWidth = jQuery(window).width(),
-     docHeight = jQuery(window).height();
+     docHeight = jQuery(window).height(),
+     margins = 40;
+     
      
     if(container.height() > (docHeight - 40)){
       img
@@ -248,7 +250,8 @@ var aceModes = {
   'scss'       : require('ace/mode/scss').Mode,
   'sass'       : require('ace/mode/scss').Mode,
   'textile'    : require('ace/mode/textile').Mode,
-  'none'       : require('ace/mode/text').Mode
+  // 'partial'    : require('ace/mode/scss').Mode,
+  'none'       : require('ace/mode/scss').Mode
 }
 
 

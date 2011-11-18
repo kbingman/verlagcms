@@ -20,6 +20,10 @@ class ImagePart < Part
     self.asset ? self.asset.image_path : '/images/missing.png'
   end
   
+  def title
+    self.asset.title if self.asset
+  end
+  
   def image_path
     self.asset ? self.asset.image_path : '/images/missing.png'
   end
@@ -35,7 +39,8 @@ class ImagePart < Part
   end
   
   def render(edit=false)
-    self.asset.image_path
+    "<img src='#{self.path}' alt='#{self.title}' />"
+    # self.asset.image_path
     # ImageProxy.new(self, edit)
   end
   

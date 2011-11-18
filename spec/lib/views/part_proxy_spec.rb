@@ -15,14 +15,6 @@ describe "lib/views/part_proxy" do
   
   context 'parts' do  
     
-    it "should respond to 'test'" do
-      @proxy.respond_to?(:test).should == true
-    end
-    
-    it "should return test for test" do
-      @proxy.test.should == 'test'
-    end
-    
     it "should return the 'body' content" do
       pending 'change to body part'
       @proxy.body.should == @root.data.body

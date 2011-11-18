@@ -6,6 +6,10 @@ describe "lib/views/page" do
     @group =  Factory(:group)
     @site = Factory(:site, :group => @group)
     @root = @site.root
+    
+    @layout = @root.layout
+    @layout.content = '<html></html>'
+    @layout.save
   end
   
   after(:all) do
@@ -19,16 +23,11 @@ describe "lib/views/page" do
     end
     
     it "returns a template" do
-      pending 'needs to have a real default template'
-      @page_view.template == ''
+      @page_view.template.should == '<html></html>'
     end
     
     it "returns the current page" do
       @page_view.page.should == @root
-    end
-    
-    it "returns the global page" do
-      @page_view.global.should == @root
     end
     
     it "returns the body part for the current page" do
@@ -44,12 +43,12 @@ describe "lib/views/page" do
       @page_view.page.path.should == @root.path
     end
     
-    it "returns the site" do
-       @page_view.site.should == @site
+    it "returns the path for the current page" do
+      @page_view.page.slug.should == @root.slug
     end
     
-    it "returns the site tree" do 
-       @page_view.tree.should == @site.tree
+    it "returns the site" do
+       @page_view.site.should == @site
     end
     
   end

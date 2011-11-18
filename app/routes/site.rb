@@ -39,9 +39,22 @@ class Main
   get '/css/:name' do 
     cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
-    css = Stylesheet.by_site(current_site).find_by_name(name)  
-    if css    
-      css.render 
+    stylesheet = Stylesheet.by_site(current_site).find_by_name(name)  
+    if stylesheet    
+      stylesheet_view = Views::Stylesheet.new stylesheet
+      # move to model?
+      unless stylesheet.filter == 'none'
+        begin
+          Sass::Engine.new(stylesheet_view.render, { 
+            :style => :compact, 
+            :syntax => stylesheet.filter.to_sym 
+          }).render
+        rescue Sass::SyntaxError
+          "Syntax Error at line #{$!.sass_line}: " + $!.to_s
+        end    
+      else
+        stylesheet_view.render
+      end
     else
       raise Sinatra::NotFound   
     end
@@ -55,7 +68,9 @@ class Main
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
     if js    
-      js.render 
+      # js.render 
+      js_view = Views::Javascript.new js
+      js_view.render()
     else
       raise Sinatra::NotFound   
     end

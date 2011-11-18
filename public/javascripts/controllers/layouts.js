@@ -30,9 +30,11 @@ var Layouts = Sammy(function (app) {
       var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
         layout: layout.asJSON(),
         filters: [
-          { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
+          // { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'none') ? 'selected="selected"' : '') },
+          { name: 'CSS', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
           { name: 'Sass', value: 'sass', selected: ((layout.attr('filter') == 'sass') ? 'selected="selected"' : '') }, 
-          { name: 'Scss', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') }
+          { name: 'SCSS', value: 'scss', selected: ((layout.attr('filter') == 'scss') ? 'selected="selected"' : '') },
+          { name: 'Partial', value: 'none', selected: ((layout.attr('filter') == 'none') ? 'selected="selected"' : '') }
         ]
       }, 'mustache');    
       editLayout.replace('#editor').then(function(){

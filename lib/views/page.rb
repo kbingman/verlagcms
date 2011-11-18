@@ -1,5 +1,6 @@
 require './lib/views/view_helpers'
-require './lib/views/finder_proxy'
+require './lib/views/find_page_proxy'
+require './lib/views/if_path_proxy'
 
 class Main
   module Views
@@ -13,13 +14,20 @@ class Main
         @edit = edit
       end
       
-      # determines the template
+      # Loads the template from the db
       def template
         @global_page.layout.content
       end
       
+      # Partial
+      # ----------------------------------------------------
+      def partial(name)
+        part = @site.templates.first :conditions => { :name => name, :_type => 'Partial' }
+        part.content if part
+      end
+      
       # Global Methods
-      # -----------------------------------------------------------------------------
+      # ----------------------------------------------------
       # the methods below all refer to the current page
       # you can use any of them without any nesting
       # for example {{ title }} will return the title of the current page
@@ -69,16 +77,31 @@ class Main
       end
       
       def find
-        FinderProxy.new @site
+        FindPageProxy.new @site
       end
       
-      def partial
-        PartialProxy.new @global_page
+      def if_path_matches
+        IfPathProxy.new @page
       end
       
       def users
         @site.users
       end
+      
+      # Conditionals
+      # ----------------------------------------------------
+      # Returns true if the local page matches the global page
+      def if_self
+        @global_page.id == self[:id]
+      end
+      
+      # Returns true if the local page or any of its ancestors match the global page
+      def if_ancestor_or_self
+        local_page_id = self[:id].to_s
+        ids = @global_page.ancestor_ids + [@global_page.id.to_s]
+        ids.include?(local_page_id)
+      end
+
 
     end
   end

@@ -133,18 +133,18 @@ describe Page do
         @child.layout.should_not be_nil
       end
       
-      it 'should respond to render' do
-        @child.should respond_to(:render)
-      end   
-      
-      it 'should render the page (html)' do
-        pending
-        @child.render(:html).should == '<h1>Child</h1>'
-      end   
-      
-      it 'should render the page (json)' do
-        @child.render(:json).should == @child.to_json
-      end
+      # it 'should respond to render' do
+      #   @child.should respond_to(:render)
+      # end   
+      # 
+      # it 'should render the page (html)' do
+      #   pending
+      #   @child.render(:html).should == '<h1>Child</h1>'
+      # end   
+      # 
+      # it 'should render the page (json)' do
+      #   @child.render(:json).should == @child.to_json
+      # end
     end  
     
     describe 'branch' do

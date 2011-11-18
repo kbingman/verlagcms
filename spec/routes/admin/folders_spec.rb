@@ -22,7 +22,6 @@ describe "routes/admin/folders" do
       end
     
       it 'should be successful' do
-        puts @parent_folder.inspect
         do_get    
         last_response.should be_ok
       end

@@ -120,7 +120,7 @@ var Utilities = {
     } 
     if(container.width() < (docWidth - 40) && container.height() < (docHeight - 40)) {
       container.css({
-        'width': width + 'px',
+        'width': (container.height() * ratio) + 'px',
         'margin-top': (docHeight - container.height())/2
       });
     }

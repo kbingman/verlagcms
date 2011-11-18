@@ -58,6 +58,7 @@ var Assets = Sammy(function (app) {
     editAsset.appendTo('body').then(function(){
       Utilities.loadModal('div#asset-editor', function(){
         jQuery('div#asset-editor').fadeIn('fast'); 
+        window.modal = true;
       });
     });
   });
@@ -70,7 +71,7 @@ var Assets = Sammy(function (app) {
     assetIndex.replace('#editor').then(function(){
       // Sets uploader to multiple if browser supports it
       // jQuery('#ajax_uploader').attr('multiple','multiple'); 
-      
+    
       // Upload Asset Form
       jQuery('#ajax_uploader')
         .attr('multiple','multiple')
@@ -125,9 +126,12 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
 
     request.renderFolderTree();
-    Asset.searchAdmin(params, function(){  
-      request.trigger('render-index', query);
-    });
+    if(!window.modal){
+      window.modal = false;
+      Asset.searchAdmin(params, function(){  
+        request.trigger('render-index', query);
+      });
+    }
   }); 
   
   // New Assets

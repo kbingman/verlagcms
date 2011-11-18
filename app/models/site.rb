@@ -2,9 +2,9 @@ class Site
   include MongoMapper::Document
   include Canable::Ables
   
-  key :name, String # , :required => true #, :unique => true 
-  key :subdomain #, String, :required => true #, :unique => true 
-  key :domain# , String, :required => true, :unique => true 
+  key :name, String, :required => true, :unique => true 
+  key :subdomain, String, :required => true, :unique => true 
+  key :domain, String, :required => true, :unique => true 
 
   many :pages
   many :assets
@@ -77,12 +77,12 @@ class Site
     
     before_validation :set_subdomain
     def set_subdomain
-      self.subdomain = self.subdomain.nil? ? sanitize(self.name) :sanitize(self.subdomain)
+      self.subdomain = self.subdomain.blank? ? sanitize(self.name) : sanitize(self.subdomain)
     end
     
     before_validation :set_domain
     def set_domain
-      self.domain = self.domain.nil? ? "#{self.subdomain}.#{monk_settings(:domain)}" : self.domain
+      self.domain = self.domain.blank? ? "#{self.subdomain}.#{monk_settings(:domain)}" : sanitize(self.domain)
     end
     
     def sanitize(text)

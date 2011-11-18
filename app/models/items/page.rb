@@ -153,17 +153,10 @@ class Page
     ])
   end  
   
-  def branch(page=nil)
-    self.active = page == self ? true : false
-    
-    { 
-      :title => self.title,
-      :slug => self.slug,
-      :parent_id => self.parent_id,
-      :path => self.path,
-      :children => self.children.collect{ |c| c.branch(page) }, 
-      :active => active
-    }
+  # Temp replace with render method
+  def html
+    page_view = Main::Views::Page.new self
+    page_view.render()
   end
   
   # Tags

@@ -133,11 +133,38 @@ var Base = Sammy(function (app) {
     params = { 'limit': 12, 'page': 1 };
 
     Asset.searchAdmin(params, function(){
-      var index = application.load(jQuery('script#admin-image_parts-index')).interpolate({ 
+      var html = application.load(jQuery('script#admin-image_parts-index')).interpolate({ 
         assets: Asset.asJSON(), 
-        count: Asset.count()
+        part: part.attributes
       }, 'mustache');
-      index.appendTo('body');
+      html.appendTo('body').then(function(){
+        jQuery('ul.assets .image a').click(function(e){
+          e.preventDefault();
+          var target_src = jQuery(e.currentTarget).find('img').attr('src');
+          var target_id = jQuery(e.currentTarget).attr('id').split('-')[2];
+          var iframe = jQuery('iframe#page-iframe-' + page.id());
+          var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
+
+          // Sets new image src. This may not be entirely reliable...
+          var new_src = img.attr('src').replace(img.attr('src').split('?')[0], target_src);
+          img.attr('src', new_src);
+          
+          jQuery('#overlay').fadeOut('fast', function(){
+            jQuery(this).remove();
+          });
+          
+          page.setPartAttributes('image', { 
+            'asset_id': target_id,
+            'path': new_src
+          });
+          page.save();
+          
+          console.log(page.attr('contents'))
+         
+          return false;
+        }); 
+      });
+
     });
   });
   

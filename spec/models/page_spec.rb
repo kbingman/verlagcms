@@ -147,51 +147,51 @@ describe Page do
       # end
     end  
     
-    describe 'branch' do
-      it 'should return the required attributes for a site map' do
-        @child.branch.should == {
-          :title      => @child.title,
-          :slug       => @child.slug,
-          :parent_id  => @child.parent_id,
-          :path       => @child.path,
-          :children   => [], 
-          :active     => false
-        }
-      end
-      
-      it 'should return the required attributes for the active page' do
-        @child.branch(@child).should == {
-          :title      => @child.title,
-          :slug       => @child.slug,
-          :parent_id  => @child.parent_id,
-          :path       => @child.path,
-          :children   => [], 
-          :active     => true
-        }
-      end
-      
-      it 'should build a page tree for the root page' do 
-        @root.branch.should == {
-          :title      => @root.title,
-          :slug       => @root.slug,
-          :parent_id  => @root.parent_id,
-          :path       => @root.path,
-          :children   => [{:title=>"Page with Parts",
-             :slug=>"page-with-parts",
-             :parent_id=>BSON::ObjectId('4eb8de6873c44faa66000008'),
-             :path=>"/page-with-parts/",
-             :children=>[],
-             :active=>false},
-            {:title=>"Child",
-             :slug=>"child",
-             :parent_id=>BSON::ObjectId('4eb8de6873c44faa66000008'),
-             :path=>"/child/",
-             :children=>[],
-             :active=>false}],
-          :active     => true
-        }
-      end
-    end
+    # describe 'branch' do
+    #   it 'should return the required attributes for a site map' do
+    #     @child.branch.should == {
+    #       :title      => @child.title,
+    #       :slug       => @child.slug,
+    #       :parent_id  => @child.parent_id,
+    #       :path       => @child.path,
+    #       :children   => [], 
+    #       :active     => false
+    #     }
+    #   end
+    #   
+    #   it 'should return the required attributes for the active page' do
+    #     @child.branch(@child).should == {
+    #       :title      => @child.title,
+    #       :slug       => @child.slug,
+    #       :parent_id  => @child.parent_id,
+    #       :path       => @child.path,
+    #       :children   => [], 
+    #       :active     => true
+    #     }
+    #   end
+    #   
+    #   it 'should build a page tree for the root page' do 
+    #     @root.branch.should == {
+    #       :title      => @root.title,
+    #       :slug       => @root.slug,
+    #       :parent_id  => @root.parent_id,
+    #       :path       => @root.path,
+    #       :children   => [{:title=>"Page with Parts",
+    #          :slug=>"page-with-parts",
+    #          :parent_id=>BSON::ObjectId('4eb8de6873c44faa66000008'),
+    #          :path=>"/page-with-parts/",
+    #          :children=>[],
+    #          :active=>false},
+    #         {:title=>"Child",
+    #          :slug=>"child",
+    #          :parent_id=>BSON::ObjectId('4eb8de6873c44faa66000008'),
+    #          :path=>"/child/",
+    #          :children=>[],
+    #          :active=>false}],
+    #       :active     => true
+    #     }
+    #   end
+    # end
     
     describe 'api' do
       #TODO

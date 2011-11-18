@@ -17,12 +17,14 @@ var Page = Model('page', function() {
       return this.children().map(function(item){ return item.attr() });
     },
     
-    setPartContent: function(partName, content){
+    setPartAttributes: function(partName, attributes){
       var parts = this.attr('contents');
       var part;
       jQuery.each(parts, function(i, p){
         if(partName == p['name']){
-          p['content'] = content;
+          if(attributes['content']){ p['content'] = attributes['content']; }
+          if(attributes['asset_id']){ p['asset_id'] = attributes['asset_id']; }
+          if(attributes['path']){ p['path'] = attributes['path']; }
           part = p;
         }
       });

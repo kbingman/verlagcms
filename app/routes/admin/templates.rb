@@ -37,7 +37,10 @@ class Main
         template.site = current_site
         
         if template.save
-          template.to_json
+          respond_to do |format|
+            format.html { }
+            format.json { template.to_json }
+          end
         else   
           logger.info(template.errors.inspect)  
           { :errors => template.errors }.to_json

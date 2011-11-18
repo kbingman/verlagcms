@@ -30,8 +30,7 @@ var Editor = {
       });
       jQuery.each(parts, function(name, content){
         content = Editor.textilize(content);
-        page.setPartContent(name, content);
-        console.log(content)
+        page.setPartAttributes(name, { 'content': content });
       });
       page.save();
       

@@ -7,7 +7,8 @@ describe "routes/admin/assets" do
     teardown
     build_complete_site 
     setup_site                   
-    @asset = Factory(:asset, :site_id => @site.id)   
+    @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
+    @asset = Factory(:asset, :site_id => @site.id, :file => @file)   
     @assets = [@asset]
   end 
   

@@ -12,7 +12,7 @@ class Main
       end
       
       get '/assets' do
-        assets = Asset.by_site(current_site).all(:limit => 2)
+        assets = Asset.by_site(current_site).all
         r = []
         # TODO RABL goes here
         assets.each do |asset|

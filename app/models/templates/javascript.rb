@@ -8,5 +8,10 @@ class Javascript < Template
   def mode
     'javascript'
   end  
+  
+  def render
+    js_view = Main::Views::Javascript.new self
+    js_view.render()
+  end
 
 end

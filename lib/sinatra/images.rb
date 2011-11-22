@@ -7,9 +7,8 @@ module Sinatra
       
       app.get '/templates/files/:id/:filename.?:ext?' do
 
-        # cache_request(3600 * 24) # 24 Hour cache 
-        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
-        # 
+        cache_request(3600 * 24 * 30) # 30 day cache 
+        # response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
         begin
           file = Upload.find params[:id]
 
@@ -23,8 +22,9 @@ module Sinatra
       end
       
       app.get '/images/:id/:filename' do
-        # cache_request(3600 * 24) # 24 Hour cache 
-        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
+        # cache_request(3600 * 24) # 24 Hour cache
+        cache_control :public, :max_age => 3600 * 24
+        etag Digest::MD5.hexdigest(params.to_s)
         
         h = params['h']
         w =  params['w']
@@ -33,11 +33,16 @@ module Sinatra
 
         begin
           asset = Asset.find params[:id]
-          image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
-
           status 200 
           content_type(asset.file_type)
-          image.to_blob
+          
+          if params['h'] || params['w']
+            image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
+            image.to_blob
+          else
+            asset.file.read
+          end
+          
         rescue BSON::InvalidObjectId
           status 404 
           haml :'site/404'

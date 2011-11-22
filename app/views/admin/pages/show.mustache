@@ -5,10 +5,17 @@
 
 <div class="toolbar">   
   <h1 id="page-title-{{id}}">
-    {{title}}
-    <a class="toggle-page-editor edit" href="{{admin_path}}/edit">Edit</a>
+    {{ title }}
   </h1>
-  <form id="testForm">
+  <ul class="tabs">
+    <li><a class="tab active" href="{{admin_path}}">preview</a></li>
+    <li><a class="tab" href="{{admin_path}}/edit">properties</a></li>
+    <!-- TODO Temp!! change this back to parts -->
+    {{# contents }}
+      <li><a class="tab {{ name }}-tab" href="{{admin_path}}/edit">{{ name }}</a></li>
+    {{/ contents }}
+  </ul>
+  <form id="editor-buttons">
     <input type="button" value="Bold" data-cmd="bold" />
     <input type="button" value="Italic" data-cmd="italic" />
     <input type="button" value="Underline" data-cmd="underline" />

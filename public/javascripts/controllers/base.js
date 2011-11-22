@@ -139,8 +139,8 @@ var Base = Sammy(function (app) {
       }, 'mustache');
       html.appendTo('body').then(function(){
         jQuery('ul.assets .image a').click(function(e){
-          e.preventDefault();
-          var target_src = jQuery(e.currentTarget).find('img').attr('src');
+          // e.preventDefault();
+          var target_src = jQuery(e.currentTarget).find('img').attr('src').split('?')[0];
           var target_id = jQuery(e.currentTarget).attr('id').split('-')[2];
           var iframe = jQuery('iframe#page-iframe-' + page.id());
           var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
@@ -157,7 +157,7 @@ var Base = Sammy(function (app) {
             'asset_id': target_id,
             'path': new_src
           });
-          page.save();
+          // page.save();
           
           console.log(page.attr('contents'))
          

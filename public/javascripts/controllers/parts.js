@@ -29,7 +29,8 @@ var Parts = Sammy(function (app) {
         // This also eleminates the FUC
         window.editor.getSession().setValue(part.attr('content'));
     
-        
+        jQuery('.toolbar a.tab').removeClass('active');
+        jQuery('.toolbar a.' + part.attr('name') + '-tab').addClass('active');
         // Triggers Sanskrit editor
         // application.trigger('sanskrit', jQuery('#page-tabs-' + page.id()));
         

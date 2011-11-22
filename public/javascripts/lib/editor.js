@@ -1,8 +1,8 @@
 var Editor = {
   
   initialize: function(){
-    var buttons = jQuery('#testForm input[type=button]');
-    var save = jQuery('#testForm input#save');
+    var buttons = jQuery('#editor-buttons input[type=button]');
+    var save = jQuery('#editor-buttons input#save');
     buttons.click(function(){
       // alert(jQuery(this).attr('id'));
       var cmd = jQuery(this).data('cmd');

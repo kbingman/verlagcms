@@ -1,60 +1,18 @@
 class Main   
   include Canable::Enforcers 
   
-  # Admin Mustache Templates 
-  # -------------------------------------------
-  template_route = get '/templates' do  
-    authenticate!
-    cache_request  
-    @files = Dir[root_path('app/views/admin/**/*.mustache')]
-    partial :'layouts/js_templates' 
-  end
-
-  # Site admin interface  
-  # -------------------------------------------  
-  module Admin    
-    before do
-      # TODO better way to override authorization
-      authenticate! unless request.path.match(/^\/admin\/css\//)
-  
-      # Redirects if no site is found
-      # unless current_site   
-      #   redirect '/admin/' 
-      # end 
-    end  
-    
-    # Redirects to '/admin/' so that the page hash looks pretty     
-    get '' do
-      redirect '/admin/'
-    end
-    
-    admin_route = get '/' do   
-      admin_haml :'admin/index'  
-    end  
-  end
-  
   # CSS Templates 
   # -------------------------------------------
   # css_route = 
   get '/css/:name' do 
-    cache_request(60)
     name = "#{params[:name]}.#{format.to_s}"
     stylesheet = Stylesheet.by_site(current_site).find_by_name(name)  
-    if stylesheet    
-      stylesheet_view = Views::Stylesheet.new stylesheet
-      # move to model?
-      unless stylesheet.filter == 'none'
-        begin
-          Sass::Engine.new(stylesheet_view.render, { 
-            :style => :compact, 
-            :syntax => stylesheet.filter.to_sym 
-          }).render
-        rescue Sass::SyntaxError
-          "Syntax Error at line #{$!.sass_line}: " + $!.to_s
-        end    
-      else
-        stylesheet_view.render
-      end
+    
+    if stylesheet   
+      cache_control :public, :max_age => 2 * 60
+      etag Digest::MD5.hexdigest(stylesheet.updated_at.to_s)  
+      
+      stylesheet.render
     else
       raise Sinatra::NotFound   
     end
@@ -64,13 +22,15 @@ class Main
   # -------------------------------------------
   # js_route = 
   get '/js/:name' do
-    cache_request(60)
+    # cache_request(300)
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
+    
     if js    
-      # js.render 
-      js_view = Views::Javascript.new js
-      js_view.render()
+      cache_control :public, :max_age => 2 * 60
+      etag Digest::MD5.hexdigest(js.updated_at.to_s)
+      
+      js.render 
     else
       raise Sinatra::NotFound   
     end
@@ -83,11 +43,10 @@ class Main
     authenticate!
     path = params[:splat].first   
     # TODO change method to current_site.find_by_path
-    page = Page.find_by_path(path, current_site) 
+    page = current_site.find_by_path(path) if path
     
     if page 
-      page_view = Views::Page.new page, true
-      page_view.render()
+      page.render({edit: true})
       # page.render(format, request)
     else   
       raise Sinatra::NotFound   
@@ -99,15 +58,16 @@ class Main
   # pages_route = 
   get '*' do
     authenticate! unless current_site.published?   
-    cache_request(60) # unless authenticated?
-     
+    
     path = params[:splat].first
-    # TODO change method to current_site.find_by_path
-    page = Page.find_by_path(path, current_site) if path
+    page = current_site.find_by_path(path) if path
     
     if page 
-      page_view = Views::Page.new page
-      page_view.render()
+      # cache_request(60) # unless authenticated?
+      cache_control :public, :max_age => 2 * 60
+      etag Digest::MD5.hexdigest(page.updated_at.to_s)
+      
+      page.render
     else   
       raise Sinatra::NotFound   
     end

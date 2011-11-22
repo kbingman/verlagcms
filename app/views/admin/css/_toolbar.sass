@@ -7,6 +7,27 @@
   // :border-bottom 3px solid #423d3a
   :background 
     :color #b8aea5
+  .tabs
+    :position absolute
+    :left 0
+    :bottom 0
+    :width 100%
+    :background 
+      :color $gray_beige
+    li
+      :float left
+      a 
+        :color white
+        :font-weight 500
+        :display block
+        :float left
+        :padding 6px 10px
+        :text-decoration none
+        :background 
+          :color $gray_beige
+      a.active
+        :background 
+          :color #a5a2a1 
   h1
     :color white
     :padding 8px 0 0 12px
@@ -18,7 +39,10 @@
     :text-transform lowercase
     :font
       :size 0.5em
-
+  form#editor-buttons
+    :position absolute
+    :left 0
+    :bottom -30px
   form.search-form
     :position absolute
     :right 0

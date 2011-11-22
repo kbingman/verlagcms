@@ -28,6 +28,14 @@ class ImagePart < Part
     self.asset ? self.asset.image_path : '/images/missing.png'
   end
   
+  def file_name
+    self.asset ? self.asset.file_name : 'missing.png'
+  end
+  
+  def title
+    self.asset ? self.asset.title : 'missing'
+  end
+  
   def editor
     if self.edit
       "<div class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>"
@@ -35,7 +43,7 @@ class ImagePart < Part
   end
   
   def as_json(options)
-    super(:methods => [:image_path, :asset, :path, :klass])
+    super(:methods => [:image_path, :asset, :path, :klass, :file_name, :title])
   end
   
   def render(edit=false)

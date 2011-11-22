@@ -6,6 +6,8 @@ describe "lib/views/page" do
     @group =  Factory(:group)
     @site = Factory(:site, :group => @group)
     @root = @site.root
+    @child1 = Factory(:page, :parent => @root)
+    @child2 = Factory(:page, :parent => @root)
     
     @layout = @root.layout
     @layout.content = '<html></html>'
@@ -49,6 +51,19 @@ describe "lib/views/page" do
     
     it "returns the site" do
        @page_view.site.should == @site
+    end
+    
+    it "returns the children" do
+      @page_view.children.length.should == 2 #[ @child1, @child2 ]
+    end
+    
+    it "returns the children with the correct limit" do
+      pending 'needs a find order, or it sometimes fails'
+      @page_view.children_limit_1.should == [ @child1 ] 
+    end
+    
+    it "returns the correct number of children" do
+      @page_view.children_limit_1.length.should == 1
     end
     
   end

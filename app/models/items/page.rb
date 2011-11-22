@@ -153,9 +153,9 @@ class Page
     ])
   end  
   
-  # Temp replace with render method
-  def html
-    page_view = Main::Views::Page.new self
+  def render(options={})
+    edit = options[:edit] || false
+    page_view = Main::Views::Page.new self, edit
     page_view.render()
   end
   

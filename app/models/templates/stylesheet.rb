@@ -12,21 +12,18 @@ class Stylesheet < Template
   attr_accessible :filter 
   
   def render(options={}) 
-    # template = Liquid::Template.parse(self.content)
-    # rendered_content = template.render({
-    #   'site' => SiteDrop.new(self.site, nil), 
-    #   'registers' => { 'site_id' => self.site_id.to_s }
-    # })
+    stylesheet_view = Main::Views::Stylesheet.new self
     unless self.filter == 'none'
       begin
-        options[:style] = :compact unless options[:style] 
-        options[:syntax] = self.filter.to_sym
-        Sass::Engine.new(self.content, options).render
+        Sass::Engine.new(stylesheet_view.render, { 
+          :style => :compact, 
+          :syntax => self.filter.to_sym 
+        }).render
       rescue Sass::SyntaxError
         "Syntax Error at line #{$!.sass_line}: " + $!.to_s
       end    
     else
-      self.content
+      stylesheet_view.render
     end
   end
   

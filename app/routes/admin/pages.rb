@@ -67,7 +67,6 @@ class Main
       # Update page
       # -------------------------------------------
       put '/:id' do
-        Verlag::Cache.clear
         page = Page.by_site(current_site).find(params['id']) 
         # enforce_update_permission(page) 
         
@@ -86,6 +85,7 @@ class Main
         end
                 
         if page.update_attributes(params['page'])
+          Verlag::Cache.clear
           respond_to do |format|
             format.html { redirect("/admin/pages/#{page.id}/edit") }
             format.json { page.to_json }

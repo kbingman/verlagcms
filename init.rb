@@ -51,8 +51,6 @@ require 'rabl'
 # require 'builder'
 # # require 'jim'
 # 
-require './lib/verlag/cache'
-
 
 
 class Main < Monk::Glue
@@ -78,12 +76,12 @@ class Main < Monk::Glue
   
   # Rack Cache
   # if RACK_ENV != 'development'
-  #   $cache = Memcached.new
-  #   use Verlag::Cache,
-  #     :verbose => true,
-  #     :metastore => $cache,
-  #     # :metastore => 'file:tmp/cache/meta', 
-  #     :entitystore => 'file:tmp/cache/body'       
+    $cache = Memcached.new
+    use Rack::Cache,
+      :verbose => true,
+      :metastore => $cache,
+      # :metastore => 'file:tmp/cache/meta', 
+      :entitystore => 'file:tmp/cache/body'       
   # end
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
@@ -155,8 +153,11 @@ Dir[root_path('app/routes/api/*.rb')].each do |file|
   require file
 end
 
+# Load admin
+require root_path('app/routes/admin.rb')
 # Load site and assets route. 
 require root_path('app/routes/site.rb')
+
 
 # Loud Mustache Views
 Dir[root_path('./lib/views/*.rb')].each do |file|

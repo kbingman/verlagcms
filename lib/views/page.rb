@@ -54,8 +54,8 @@ class Main
       end
       
       # children of the current page
-      def children
-        @global_page.children
+      def children(options={})
+        @global_page.children.all options
       end
       
       # current site
@@ -101,7 +101,19 @@ class Main
         ids = @global_page.ancestor_ids + [@global_page.id.to_s]
         ids.include?(local_page_id)
       end
-
+      
+      # Meta Methods
+      # ----------------------------------------------------
+      def method_missing(method, *args, &block) 
+        return super unless method.to_s =~ /^children_limit_(\d+)/
+        self.children({ :limit => $1 })
+      end
+      
+      # This needs to return true for any of the above methods to work.
+      def respond_to?(method) 
+        return super unless method.to_s.match(/^children_limit_(\d+)/)
+        true
+      end
 
     end
   end

@@ -1,1 +1,0 @@
-An Example Sinatra Extension

@@ -8,7 +8,8 @@ gem 'sinatra-namespace', :path => 'vendor/sinatra-namespace' #, :git => 'https:/
 gem 'thin' 
 gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git' 
 gem 'rack-cache'
-gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
+# gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
+# gem 'hike' ,'~> 1.2.1'
 
 gem 'warden'
 gem 'bcrypt-ruby'
@@ -20,7 +21,7 @@ gem 'mongo_ext', :require => 'mongo'
 gem 'mongo', '1.3'
 gem 'bson', '1.3'
 gem 'bson_ext', '1.3'  
-gem 'hunt', :path => 'vendor/hunt'
+gem 'hunt', :git => 'https://github.com/jnunemaker/hunt.git'
 gem 'fast-stemmer', '~> 1.0'
 gem 'joint', :git => 'https://github.com/jnunemaker/joint.git'
 gem 'mongo_mapper_acts_as_tree', :git => 'https://github.com/bogn/mongo_mapper_acts_as_tree.git'
@@ -39,8 +40,11 @@ gem 'RedCloth'
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
-gem 'memcached'
 gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
+
+group :production do 
+  gem 'memcached'
+end
 
 group :development do
   gem 'rake'

@@ -22,8 +22,8 @@ module Sinatra
       end
       
       app.get '/images/:id/:filename' do
-        # cache_request(3600 * 24) # 24 Hour cache
-        cache_control :public, :max_age => 3600 * 24
+        cache_request(3600 * 24) # 24 Hour cache
+        # cache_control :public, :max_age => 3600 * 24
         etag Digest::MD5.hexdigest(params.to_s)
         
         h = params['h']

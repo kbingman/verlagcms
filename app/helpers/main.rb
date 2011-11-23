@@ -45,9 +45,9 @@ class Main
             
     # Page Caching using Rack Cache or Varnish
     def cache_request(timeout=600)
-      # unless RACK_ENV == 'development'
+      unless RACK_ENV == 'development'
         response['Cache-Control'] = "max-age=#{timeout}, public" 
-      # end
+      end
     end 
      
     # Delivers a page without any page cache. Forces the browser to reload.

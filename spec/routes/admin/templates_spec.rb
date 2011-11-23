@@ -50,7 +50,7 @@ describe "routes/templates" do
     context 'json' do   
       def do_post
         @template_name = Faker::Name.first_name
-        post '/admin/templates.json', :template => { :name => @template_name, :klass => 'layout' }
+        post '/admin/templates.json', :layout => { :name => @template_name, :klass => 'layout' }
       end
     
       it 'should be successful' do

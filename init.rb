@@ -39,7 +39,7 @@ require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
 require 'rack/no_varnish'
-require 'memcached'
+# require 'memcached'
 # 
 # # Templating
 require 'mustache/sinatra'
@@ -80,11 +80,11 @@ class Main < Monk::Glue
   $cache = Memcached.new
   use Rack::Cache,
     :verbose => true,
-    :metastore => $cache,
-    # :metastore => 'file:tmp/cache/meta', 
+    # :metastore => $cache,
+    :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   # end
-  use Rack::NoVarnish
+  # use Rack::NoVarnish
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week

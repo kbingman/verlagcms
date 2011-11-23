@@ -22,12 +22,12 @@ class Main
   # -------------------------------------------
   # js_route = 
   get '/js/:name' do
-    # cache_request(300)
+    cache_request(300)
     name = "#{params[:name]}.#{format.to_s}"
     js = Javascript.by_site(current_site).find_by_name(name) 
     
     if js    
-      cache_control :public, :max_age => 2 * 60
+      # cache_control :public, :max_age => 2 * 60
       etag Digest::MD5.hexdigest(js.updated_at.to_s)
       
       js.render 
@@ -60,14 +60,14 @@ class Main
     authenticate! unless current_site.published?   
     
     activity = Activity.first :order => 'created_at DESC'
-    # etag Digest::MD5.hexdigest(activity.created_at.to_s)
+    etag Digest::MD5.hexdigest(activity.created_at.to_s)
     
     path = params[:splat].first
     page = current_site.find_by_path(path) if path
     
     if page 
       # cache_request(60) # unless authenticated?
-      cache_control :public, :max_age => 2 * 60
+      cache_control :public, :max_age => 5 * 60
       # etag Digest::MD5.hexdigest(page.updated_at.to_s)
       
       page.render

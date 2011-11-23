@@ -53,19 +53,26 @@ describe "routes/users" do
   context 'POST create' do
         
     context 'json' do   
-      def do_post
-        post '/admin/users.json', :template => { :name => 'Template', :site_id => @site.id, :klass => 'user' }
+      def do_post(params)
+        params[:site_id] = @site.id 
+        params
+        post '/admin/users.json', :user => params
       end
     
       it 'should be successful' do
-        do_post
+        do_post({ :name => 'John' })
         last_response.should be_ok
       end
       
       it 'should set the content header to json' do
-        do_post
+        do_post({ :name => 'John1' })
         last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end 
+      
+      it 'should include the name in the json' do  
+        do_post({ :name => 'John2' })
+        last_response.body.should include('John2')
+      end
     end
     
   end  
@@ -87,7 +94,7 @@ describe "routes/users" do
         last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
       
-      it 'should include pages in the json' do  
+      it 'should include the name in the json' do  
         do_put
         last_response.body.should include('Rename')
       end  

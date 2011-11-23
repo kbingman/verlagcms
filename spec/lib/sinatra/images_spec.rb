@@ -22,7 +22,7 @@ describe "lib/images" do
     
     it "should correctly set the cache headers" do
       get "/images/display/#{@asset.id}/#{@asset.file_name}"
-      last_response.headers['Cache-Control'].should == 'max-age=86400, public'
+      last_response.headers['Cache-Control'].should == 'public, max-age=86400'
     end
       
     it "should respond to /images/display" do

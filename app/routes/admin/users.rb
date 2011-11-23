@@ -14,7 +14,7 @@ class Main
     # Create
     # -------------------------------------------
     post '/users' do   
-      resource = User.new(params[model.singularize.to_sym]) 
+      resource = User.new(params['user']) 
       resource.sites << current_site
       if resource.save
         resource.to_json

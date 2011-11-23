@@ -42,8 +42,10 @@ gem 'rack-flash'
 gem 'rack-cache'
 gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
 
+gem 'memcached'
+
 group :production do 
-  # gem 'memcached'
+  
 end
 
 group :development do

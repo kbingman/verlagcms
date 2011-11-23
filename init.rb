@@ -39,7 +39,7 @@ require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
 require 'rack/no_varnish'
-# require 'memcached'
+require 'memcached'
 # 
 # # Templating
 require 'mustache/sinatra'

@@ -48,7 +48,8 @@ end
 
 group :development do
   gem 'rake'
-  gem 'thor'   
+  gem 'thor'  
+  gem 'monk' 
   gem 'jim', :git => 'https://github.com/quirkey/jim.git'
 end
 

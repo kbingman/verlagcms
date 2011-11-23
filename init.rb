@@ -40,9 +40,11 @@ require 'rack/request'
 require 'rack/raw_upload'
 require 'rack/no_varnish'
 
-if RACK_ENV == 'production'
-  require 'memcached'
-end
+# if RACK_ENV == 'production'
+#   
+# end
+
+require 'memcached'
 # 
 # # Templating
 require 'mustache/sinatra'

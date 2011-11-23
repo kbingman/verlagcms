@@ -21,7 +21,7 @@ class Main
       # TDOO this needs to be a class or something...
       if request.request_method == 'PUT'
         Dir[File.join(root_path('tmp/cache/body'), "*")].each{ |file| FileUtils.rm_rf(file) }
-        $cache.flush
+        $cache.flush unless $cache.nil?
       end
   
       # Redirects if no site is found

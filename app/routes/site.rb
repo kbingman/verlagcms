@@ -59,13 +59,16 @@ class Main
   get '*' do
     authenticate! unless current_site.published?   
     
+    activity = Activity.first :order => 'created_at DESC'
+    # etag Digest::MD5.hexdigest(activity.created_at.to_s)
+    
     path = params[:splat].first
     page = current_site.find_by_path(path) if path
     
     if page 
       # cache_request(60) # unless authenticated?
       cache_control :public, :max_age => 2 * 60
-      etag Digest::MD5.hexdigest(page.updated_at.to_s)
+      # etag Digest::MD5.hexdigest(page.updated_at.to_s)
       
       page.render
     else   

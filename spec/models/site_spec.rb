@@ -71,18 +71,7 @@ describe Site do
     it 'should find the root page' do
       @site.root.should_not be_nil
     end  
-    
-    it 'returns a site tree' do 
-      @site.tree.should == {
-        :title => "Root", 
-        :slug => "/", 
-        :parent_id => nil, 
-        :path => "/", 
-        :children => [], 
-        :active => true
-      } 
-    end
-    
+
   end  
   
   context 'defaults' do 

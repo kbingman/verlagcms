@@ -39,11 +39,6 @@ require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
 require 'rack/no_varnish'
-
-# if RACK_ENV == 'production'
-#   
-# end
-
 require 'memcached'
 # 
 # # Templating
@@ -81,14 +76,14 @@ class Main < Monk::Glue
   register Rabl
   
   # Rack Cache
-  if RACK_ENV != 'development'
-    $cache = Memcached.new
-    use Rack::Cache,
-      :verbose => true,
-      :metastore => $cache,
-      # :metastore => 'file:tmp/cache/meta', 
-      :entitystore => 'file:tmp/cache/body'       
-  end
+  # if RACK_ENV != 'development'
+  $cache = Memcached.new
+  use Rack::Cache,
+    :verbose => true,
+    :metastore => $cache,
+    # :metastore => 'file:tmp/cache/meta', 
+    :entitystore => 'file:tmp/cache/body'       
+  # end
   use Rack::NoVarnish
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',

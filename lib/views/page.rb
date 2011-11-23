@@ -38,6 +38,10 @@ class Main
         @global_page
       end
       
+      def date
+        Time.now.to_s
+      end
+      
       # title of the current page
       def title
         @global_page.title

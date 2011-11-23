@@ -3,6 +3,10 @@ class Activity
   include MongoMapper::Document
   # plugin MongoMapper::Plugins::IdentityMap
   
+  def self.initialize
+    puts 'hey'
+  end
+  
   key :loggable_type, String 
   key :loggable_id, ObjectId
   

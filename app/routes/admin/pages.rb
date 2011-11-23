@@ -85,7 +85,6 @@ class Main
         end
                 
         if page.update_attributes(params['page'])
-          Verlag::Cache.clear
           respond_to do |format|
             format.html { redirect("/admin/pages/#{page.id}/edit") }
             format.json { page.to_json }

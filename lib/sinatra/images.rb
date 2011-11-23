@@ -51,7 +51,10 @@ module Sinatra
       
       app.get '/images/:size/:id/:filename' do
         # cache_request(3600 * 24) # 24 Hour cache 
-        response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
+        # response['Cache-Control'] = "max-age=#{3600 * 24}, public"  
+        
+        cache_control :public, :max_age => 3600 * 24
+        etag Digest::MD5.hexdigest(params.to_s)  
         
         h, w, crop = [nil, nil, {}]
         monk_settings(:images).each do |key, value|  

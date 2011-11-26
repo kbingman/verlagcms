@@ -79,6 +79,7 @@ class Main
         
         # HACK!! TODO move parts out of page....
         if params['page']['contents'] && !params['page']['contents'].kind_of?(Array)
+          puts params['page']['contents']
           parts = []
           params['page']['contents'].each{|k,v| parts << v if v }
           params['page']['parts'] = parts

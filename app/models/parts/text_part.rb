@@ -32,7 +32,7 @@ class TextPart < Part
   end
   
   def as_json(options)
-    super(:methods => [:path, :klass, :admin_path, :file_name, :title])
+    super(:methods => [:admin_path, :file_name, :title])
   end
     
 end

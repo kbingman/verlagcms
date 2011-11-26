@@ -9,11 +9,13 @@
     <span class="count">
       {{child_count}} Children
     </span>
-    <ul class="page-children">
-      {{#children}}
-        {{> node }}
-      {{/children}}
-    </ul>
     {{/ children? }}
   </div>
+  {{# children? }}
+  <ul class="page-children">
+    {{#children}}
+      {{> node }}
+    {{/children}}
+  </ul>
+  {{/ children? }}
 </li>

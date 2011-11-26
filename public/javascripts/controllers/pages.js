@@ -59,9 +59,17 @@ var Pages = Sammy(function (app) {
     
     renderPageMenu: function(page){
       var application = this;   
+      var root = Page.root();
+      var pages = Page.all();
+      var pageJSON = [];
+      jQuery.each(pages, function(i, p){
+        var attr = p.attributes;
+        attr['children'] = p.childrenAsJSON();
+      });
+      
       var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
-        pages: [page.asJSON()],
-        children: page.childrenAsJSON()
+        root: root.asJSON(),
+        partials: { node: jQuery('script#admin-pages-node').html() }
       }, 'mustache');
       pageNode.replace('#sidebar');
     }

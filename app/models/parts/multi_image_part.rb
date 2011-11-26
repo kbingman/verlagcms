@@ -10,8 +10,6 @@ class MultiImagePart < Part
   key :asset_ids, Array
   many :assets, :in => :asset_ids
   
-  liquid_methods :name, :content, :render, :image_path, :assets, :id
-  
   def path
    "/pages/#{self.page_id}/image_parts/#{self.id}" 
   end

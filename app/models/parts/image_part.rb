@@ -10,8 +10,6 @@ class ImagePart < Part
   key :asset_id, ObjectId 
   belongs_to :asset, :foreign_key => :asset_id
   
-  liquid_methods :name, :content, :render, :image_path
-  
   def admin_path
    "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end
@@ -30,10 +28,6 @@ class ImagePart < Part
   
   def file_name
     self.asset ? self.asset.file_name : 'missing.png'
-  end
-  
-  def title
-    self.asset ? self.asset.title : 'missing'
   end
   
   def editor

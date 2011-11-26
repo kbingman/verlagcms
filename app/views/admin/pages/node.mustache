@@ -1,14 +1,19 @@
-1<ul class="page-children">
-  {{#pages}}
-  <li class="node level-{{level}}" id="page-{{id}}"> 
-    <div class="item">
-      <span class="title" style="padding-left: {{padding}}px;"> 
-         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
-      </span>
-      <span class="count">
-        {{child_count}} Children
-      </span>
-    </div>
-  </li>  
- {{/pages}}
-</ul>
+<li class="node level-{{level}}" id="page-{{id}}"> 
+  <div class="item">
+    <span class="title" style="padding-left: {{padding}}px;"> 
+       <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
+       <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
+       <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
+    </span>
+    {{# children? }}
+    <span class="count">
+      {{child_count}} Children
+    </span>
+    <ul class="page-children">
+      {{#children}}
+        {{> node }}
+      {{/children}}
+    </ul>
+    {{/ children? }}
+  </div>
+</li>

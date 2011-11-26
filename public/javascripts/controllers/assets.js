@@ -6,19 +6,6 @@ var Assets = Sammy(function (app) {
   // ---------------------------------------------  
   app.helpers({  
     
-    // Renders the Folder tree
-    renderFolderTree: function(callback){ 
-      var application = this;
-      if(!jQuery('ul#folders').length){
-        var index = application.load(jQuery('script#admin-folders-index')).interpolate({ folders: Folder.asJSON() }, 'mustache');
-        index.replace('#sidebar').then(function(){
-          if(callback){ callback.call(this); }  
-        });
-      } else {
-        if(callback){ callback.call(this); }  
-      }
-    },
-    
     // Sends each file to the server in turn, instead of all at once...
     send_files: function(files, params, callback){
       var application = this;
@@ -33,17 +20,18 @@ var Assets = Sammy(function (app) {
             jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
           },
           success: function(asset){ 
+            if(callback){ callback.call(this, asset); }  
             // var assetItem = application.render('/templates/admin/assets/asset.mustache', { asset: asset.attr() });
             // assetItem.prependTo('#assets');
-            counter = counter + 1;    
-            if(counter == files.length){
-             // This needs to be fixed, as it sends another request to the server that isn't really needed...
-             // I could simply fix the ordering or something...
-             
-             Asset.searchAdmin(params, function(){ 
-               if(callback){ callback.call(this); }  
-             });
-            }
+            // counter = counter + 1;    
+            // if(counter == files.length){
+            //  // This needs to be fixed, as it sends another request to the server that isn't really needed...
+            //  // I could simply fix the ordering or something...
+            //  
+            //  Asset.searchAdmin(params, function(){ 
+            //    if(callback){ callback.call(this); }  
+            //  });
+            // }
           }
         });     
       }
@@ -66,8 +54,13 @@ var Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   app.bind('render-index', function(e, query){
-    var application = this; 
-    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate(Asset.toMustache(query), 'mustache');
+    var application = this;       
+    var assetPartial = jQuery('script#admin-assets-asset').html();
+    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate({
+      assets: Asset.toMustache(query),   
+      query: query,
+      partials: { asset: assetPartial }
+    }, 'mustache');
     assetIndex.replace('#editor').then(function(){
       // Sets uploader to multiple if browser supports it
       // jQuery('#ajax_uploader').attr('multiple','multiple'); 
@@ -122,7 +115,7 @@ var Assets = Sammy(function (app) {
     jQuery('#overlay').remove();
     var query = request.params['query'] ? request.params['query'] : '';
     var params = { 'query': query };
-    params['limit'] = request.params['limit'] || 48;
+    params['limit'] = request.params['limit'] || 96;
     params['page'] = request.params['page'] || 1;
 
     request.renderFolderTree();
@@ -156,8 +149,10 @@ var Assets = Sammy(function (app) {
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
     
-    this.send_files(files, params, function(){
-      request.trigger('render-index', query);
+    this.send_files(files, params, function(asset){
+      console.log(asset.attr())
+     var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+     html.prependTo('#assets');
     });
 
     return false; 
@@ -218,7 +213,7 @@ var Assets = Sammy(function (app) {
        
     asset.destroy(function(success){   
       if(success){  
-        Utilities.notice('Successfully saved asset'); 
+        Utilities.notice('Asset removed'); 
         request.redirect('/admin/assets' + query_path);    
       }
     });

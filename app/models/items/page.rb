@@ -187,6 +187,10 @@ class Page
     self.parts.collect{ |p| p.name } 
   end
   
+  def find_part_by_name(name)
+    self.parts.detect { |p| p.name.downcase == name.downcase } 
+  end
+  
   # Paths
   # ----------------------------------------   
   def path

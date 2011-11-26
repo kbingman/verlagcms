@@ -81,13 +81,10 @@ var Asset = Model('asset', function() {
     // returns a json array of all assets, including the query and query_path
     toMustache: function(query) {
       var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';
-      return {
-        assets: this.map(function(asset){ 
+      return this.map(function(asset){ 
           asset.merge({query_path: query_path, query: query}); 
           return asset.attr(); 
-        }), 
-        query: query
-      }
+        });
     }, 
     
     asJSON: function(){

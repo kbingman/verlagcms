@@ -6,6 +6,19 @@ var Sites = Sammy(function (app) {
   // ---------------------------------------------  
   this.helpers({
     
+    // Renders the Folder tree
+    renderFolderTree: function(callback){ 
+      var application = this;
+      if(!jQuery('ul#folders').length){
+        var index = application.load(jQuery('script#admin-folders-index')).interpolate({ folders: Folder.asJSON() }, 'mustache');
+        index.replace('#sidebar').then(function(){
+          if(callback){ callback.call(this); }  
+        });
+      } else {
+        if(callback){ callback.call(this); }  
+      }
+    }
+    
   });
 
   // Show Folder

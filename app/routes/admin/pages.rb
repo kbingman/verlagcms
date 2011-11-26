@@ -3,7 +3,7 @@ class Main
   module Admin 
     module Pages 
       
-      # page Index
+      # Page Index
       # -------------------------------------------
       get '/?' do
         # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 

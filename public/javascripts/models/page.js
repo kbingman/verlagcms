@@ -5,7 +5,7 @@ var Page = Model('page', function() {
   this.include({  
     
     initialize: function() {
-      // Placeholder
+      // this.attr('children', this.childrenAsJSON());
     },
     
     children: function(){ 
@@ -65,11 +65,16 @@ var Page = Model('page', function() {
         // contentType: "application/json",
         dataType: "json",                   
         success: function(results) {    
+          
           $.each(results, function(i, data) {
             var page = new Page({ id: data.id });
             page.merge(data);
             Page.add(page);
-          }); 
+          });
+          self.attr({
+            'children?' : true,
+            'children'  : self.childrenAsJSON()
+          });
           if(callback){ callback.call(this, results); }    
         }
       });

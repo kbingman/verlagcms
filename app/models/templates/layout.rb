@@ -15,7 +15,7 @@ class Layout < Template
         
     after_create :create_default_part_type
     def create_default_part_type
-      p = PartType.new :name => 'body', :kind => 'Part'
+      p = PartType.new :name => 'body', :kind => 'TextPart'
       p.layout = self 
       p.save 
       self.part_types << p

@@ -58,13 +58,13 @@ var Pages = Sammy(function (app) {
     }, 
     
     renderPageMenu: function(page){
-      var application = this;   
-      var root = Page.root();
-      var pages = Page.all();
-      var pageJSON = [];
+      var application = this,
+        root = Page.root(),
+        pages = Page.all(),
+        pageJSON = [];
+        
       jQuery.each(pages, function(i, p){
-        var attr = p.attributes;
-        attr['children'] = p.childrenAsJSON();
+        p.attr('children', p.childrenAsJSON());
       });
       
       var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
@@ -83,18 +83,28 @@ var Pages = Sammy(function (app) {
     // Checks if the page has children that are not yet loaded.
     // if this is the case, makes a json request, otherwise renders the menu
     if(page.children().count() == 0 && page.attr('child_count') != 0){
-      console.log('ajax')
       page.getChildren(function(){
         application.renderPageMenu(page);
       })
     } else if(page.attr('child_count') != 0){
       application.renderPageMenu(page);
-    } else {
-      // renders the parent menu if the page has no children at all
-      var page = page.parent();
-      application.renderPageMenu(page);
-    }
+    } 
+    // else {
+    //   // renders the parent menu if the page has no children at all
+    //   var page = page.parent();
+    //   application.renderPageMenu(page);
+    // }
 
+  });
+  
+  // Open Hidden Children
+  // ---------------------------------------------
+  app.bind('open-page-children', function(e, page_id){
+    var application = this,
+      parent = Page.find(page_id);
+      children = parent.children().all();
+
+    application.trigger('show-page-menu', parent);
   });
   
   // Page Index

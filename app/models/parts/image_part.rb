@@ -10,10 +10,6 @@ class ImagePart < Part
   key :asset_id, ObjectId 
   belongs_to :asset, :foreign_key => :asset_id
   
-  def klass
-    self.class.to_s.downcase.pluralize
-  end
-  
   def admin_path
    "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end

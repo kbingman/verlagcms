@@ -190,7 +190,23 @@ var Utilities = {
     //     form.submit();
     //   }, 800);
     // });
-  }  
+  },
+  
+  unique: function (a) {
+    tmp = [];
+    for(i=0;i<a.length;i++){
+      if(!Utilities.contains(tmp, a[i])){
+        tmp.length+=1;
+        tmp[tmp.length-1]=a[i];
+      }
+    }
+    return tmp;
+  },
+
+  contains: function(a, e) {
+    for(j=0;j<a.length;j++)if(a[j]==e)return true;
+    return false;
+  }
   
 } 
 
@@ -253,31 +269,6 @@ var aceModes = {
   // 'partial'    : require('ace/mode/scss').Mode,
   'none'       : require('ace/mode/scss').Mode
 }
-
-
-
-// var TabControl = {
-//   initialize: function(element){
-//     var tabs = jQuery(element);  
-//     if(!tabs) return;
-//     var self = this; 
-//     tabs.each(function(i, tab){
-//       $(tab).hide();
-//     }); 
-//     tabs.first().show();   
-//     self.tabControl(jQuery('.tab-control'));
-//   },
-//   
-//   tabControl: function(element){  
-//     element.click(function(){  
-//       var partId = $(this).find('label').attr('for').split('-')[1];
-//       var tabId = 'tab-' + partId;   
-//       
-//       jQuery('.tab').hide(); 
-//       jQuery('#' + tabId).show();
-//     })
-//   }
-// }
 
 var delay = (function(){
   var timer = 0;

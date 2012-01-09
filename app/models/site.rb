@@ -7,9 +7,11 @@ class Site
   key :domain, String, :required => true, :unique => true 
 
   many :pages
+  many :items
   many :assets
-  many :templates   
   many :folders 
+  many :templates
+  many :layouts   
   
   key :group_id, ObjectId #, :required => true
   belongs_to :group, :foreign_key => :group_id

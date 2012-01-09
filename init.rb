@@ -33,15 +33,15 @@ require 'joint'
 require 'hunt'
 require 'mongo_mapper_acts_as_tree'
 require 'canable'
-# 
-# # Rack
+
+# Rack
 require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
 require 'rack/no_varnish'
-require 'memcached'
-# 
-# # Templating
+# require 'memcached'
+
+# Templating
 require 'mustache/sinatra'
 require 'haml' 
 require 'liquid' 
@@ -77,7 +77,7 @@ class Main < Monk::Glue
   
   # Rack Cache
   # if RACK_ENV != 'development'
-  $cache = Memcached.new
+  # $cache = Memcached.new
   use Rack::Cache,
     :verbose => true,
     # :metastore => $cache,
@@ -105,7 +105,10 @@ class Main < Monk::Glue
 
   configure do
     mime_type :mustache, 'text/mustache' 
-    mime_type :'octet-stream', 'application/octet-stream' 
+    mime_type :'octet-stream', 'application/octet-stream'
+    mime_type :otf, 'application/font'
+    mime_type :ttf, 'application/font'
+    mime_type :woff, 'application/font' 
   end
 
   use Warden::Manager do |manager|

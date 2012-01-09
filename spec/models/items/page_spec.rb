@@ -156,7 +156,7 @@ describe Page do
       end   
       
       it 'should render the page (html)' do
-        pending
+        pending 'hmm, should we really test this in the manner?'
         @child.render().should == page_html
       end   
       # 

@@ -70,7 +70,16 @@ var Assets = Sammy(function (app) {
         .attr('multiple','multiple')
         .live('change', function(e){
           jQuery(this).parents('form:first').submit();
-        });
+        }); 
+        
+      // Draggable assets
+      jQuery('li.asset').draggable({   
+        revert: true,    
+        stack: '.asset', 
+        drag: function(){
+          console.log('hey')
+        }
+      })
     });
   });
   
@@ -142,7 +151,8 @@ var Assets = Sammy(function (app) {
   // ---------------------------------------------  
   app.post('/admin/assets', function(request){   
     var fileInput = document.getElementById('ajax_uploader');
-    var files = fileInput.files; 
+    var files = fileInput.files;  
+    // console.log(files)
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
     var params = query ? { 'query': query } : {}; 
@@ -150,9 +160,9 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
     
     this.send_files(files, params, function(asset){
-      console.log(asset.attr())
-     var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-     html.prependTo('#assets');
+      // console.log(asset.attr())
+      var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+      html.prependTo('#assets');
     });
 
     return false; 

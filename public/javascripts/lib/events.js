@@ -9,13 +9,11 @@ jQuery('span.opener').live('click', function(e){
     page_id = el.parents('li.node:first').attr('id').split('-')[1];
   
   if(!el.hasClass('open')){
-    jQuery(this).addClass('open')
+    el.addClass('open');
     Pages.trigger('open-page-children', page_id);
-    
-    // el.removeClass('closed');
   } else {
-    alert('hey')
-    jQuery(this).removeClass('open'); //.addClass('closed');
+    el.removeClass('open');
+    Pages.trigger('close-page-children', page_id);
   }
   
 });

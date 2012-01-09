@@ -1,6 +1,8 @@
 <li class="node level-{{level}}" id="page-{{id}}"> 
   <div class="item">
-    {{# child? }}{{# children? }}<span style="padding-left: {{padding}}px;" class="opener">+</span>{{/ children? }}{{/ child? }}
+    {{# child? }}{{# children? }}
+      <span style="padding-left: {{padding}}px;" class="opener{{# open? }} open {{/ open? }}">+</span>
+    {{/ children? }}{{/ child? }}
     <span class="title" style="padding-left: {{padding}}px;"> 
        <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
        <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
@@ -12,11 +14,11 @@
     </span>
     {{/ children? }}
   </div>
-  {{# children? }}
+  {{# open? }}{{# children? }}
   <ul class="page-children">
     {{#children}}
       {{> node }}
     {{/children}}
   </ul>
-  {{/ children? }}
+  {{/ children? }}{{/ open? }}
 </li>

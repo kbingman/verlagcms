@@ -143,13 +143,17 @@ class Page
     JSON.parse(self.parts.to_json)
   end
   
+  def open 
+    self.root?
+  end
+  
   # JSON API
   # ----------------------------------------
   def as_json(options)
     super(:only => [
       :title, :slug, :url, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id, :site_ids
     ], :methods => [
-      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :child_count, :contents
+      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :open?, :child_count, :contents
     ])
   end  
   

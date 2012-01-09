@@ -5,10 +5,13 @@ var iFramer = {
     var self = this;
     if(!trigger.length) return;
     
-    Loader.start();
- 
+    // console.log(trigger) 
+    // Loader.start(loader_el);
+    
+    // The load event is not always being fired...
     trigger.load(function(){   
-      var iframe = $(this);
+      var iframe = $(this);  
+      
 
       var content = iframe.contents();  
       // var editor = iFrameContent.find('span.part-editor');
@@ -17,10 +20,10 @@ var iFramer = {
       // Sets the editable parts so they can actually be editted live
       areas.attr('contenteditable','true').css({'background': 'hsla(30, 17.7%, 61%, 0.3)' });
       
-      Loader.stop(); 
+      // Loader.stop(loader_el); 
       // self.setEditFlags(editor); 
-      iframe.fadeIn('fast');
-      
+      // iframe.fadeIn('fast');           
+
       // Sets preview links to change the sammy.js routes instead of the usual route
       var internal_links = content.find('a'); // iFrameContent.find('a[href^="/preview"]');
       internal_links.click(function(e){

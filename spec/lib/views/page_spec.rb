@@ -33,8 +33,7 @@ describe "lib/views/page" do
     end
     
     it "returns the body part for the current page" do
-      pending 'change to body part'
-      @page_view.data.body.should == @root.data.body
+      @page_view.data.body.should == @root.find_part_by_name('body')
     end
     
     it "returns the title for the current page" do

@@ -1,7 +1,8 @@
 #editor    
   +positionable 
   :z-index 10
-  :left 300px
+  // :left 300px
+  :left 0
   &.open
     :left 24px
   // :overflow auto     
@@ -42,7 +43,8 @@
         :background white
   .buttons   
     +positionable
-    :right 0    
+    :right 0  
+    :left 300px  
     :top auto
     :height 80px 
     :border-top 1px solid #444
@@ -78,15 +80,15 @@
   #parts 
     :position absolute
     :bottom 0
-    :top 0
+    :top 72px
     :right 0                  
-    :width 200px   
+    :left 0  
     :border-left 1px solid #ccc     
     :background #ddd
     
-    #add-layout-part
-      :position absolute
-      :bottom 0
+    // #add-layout-part
+    //   :position absolute
+    //   :bottom 0
   
 #layout_content
   +positionable  

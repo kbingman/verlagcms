@@ -7,7 +7,7 @@
   <h1 id="page-title-{{id}}">
     {{ title }}
   </h1>
-  <ul class="tabs">
+  <ul class="tab-control">
     <li><a class="tab active" href="{{admin_path}}">preview</a></li>
     <li><a class="tab" href="{{admin_path}}/edit">properties</a></li>
     <!-- TODO Temp!! change this back to parts -->
@@ -32,7 +32,15 @@
     <input type="button" value="&lt;h2&gt;" data-cmd="formatblock" data-value="h2" />
     <input type="button" value="&lt;h3&gt;" data-cmd="formatblock" data-value="h3" />
     <!--input type="button" value="html" id="inserthtml" cmdValue="promptUser" promptText="Valid HTML snippet" /-->
-    <input type="button" value="save" id="save" />
+    <input type="button" value="save" id="save" /> 
+
   </form>
+</div>      
+
+<form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save"> 
+  <div class="buttons">
+    <input type="submit" id="save" value="Save" class="button" />   
+    <a href="/admin/pages/{{id}}">Cancel</a>
+  </div>  
 </div>
 {{/page}}

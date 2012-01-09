@@ -5,12 +5,17 @@
     <!--label for="layout_name">Name</label-->
     <input type="text" id="layout_name" name="layout[name]" value="{{name}}" class="textfield" />
   </div>
-  <ul class="tabs">
-    <li><a class="tab active" href="{{admin_path}}/edit">editor</a></li>
-    <li><a class="tab" href="{{admin_path}}/edit">properties</a></li>
+  <ul class="tab-control">
+    {{# layout? }}
+      <li><a class="tab active editor" href="#code-editor">editor</a></li>
+      <li><a class="tab properties" href="#parts">default parts</a></li>
+    {{/ layout? }}
+    {{^ layout? }}
+      <li><a href="#">&nbsp;</a></li>
+    {{/ layout? }}
   </ul>
-</div>
-<div id="code-editor" class="{{klass}} tab">
+</div>    
+<div id="code-editor" class="{{klass}} pane">
   
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 
@@ -25,7 +30,12 @@
     {{/ path }}
     {{# path }}
     <div class="image">   
-      <img src="{{path}}" alt="{{name}}" />
+      <h2>{{name}} ({{file_type}}): </h2>     
+      
+      <p><a href="{{path}}">{{path}}</a></p> 
+      {{# image }}
+        <img src="{{path}}" alt="{{title}}" />
+      {{/ image }}  
     </div>     
     {{/ path }}
     
@@ -44,18 +54,12 @@
 </form>  
 
 {{#layout?}}
-<div id="parts" style="display:none">
+<div id="parts" class="{{klass}} pane" style="display:none">
   <h1>Parts</h2>
   <ul>
-    <li>
-      <h2>page.title</h2>    
-    </li>
-    <li>
-      <h2>page.slug</h2>    
-    </li>  
     {{#part_types}}  
     <li>
-      <h2>page.data.{{name}}</h2>    
+      {{name}} - {{kind}} <a href="/admin/templates/{{template_id}}/part_types/{{id}}/remove">remove</a>    
     </li> 
     {{/part_types}}  
   </ul>

@@ -9,16 +9,6 @@ var Asset = Model('asset', function() {
   
   this.include({
     
-    // image_path: function(size){
-    //   var self = this;
-    //   return '/images/' + size + '/' + self.id() + '/' + self.attr('file_name');
-    // },
-    // 
-    // thumbnail_path: function(){
-    //   var self = this;
-    //   return '/images/thumbnail/' + self.id() + '/' + self.attr('file_name');
-    // },
-    
     load: function(callback){
       var self = this;
       var url = '/admin/assets/' + self.id()  + '.json';   

@@ -73,7 +73,8 @@ var Assets = Sammy(function (app) {
         }); 
         
       // Draggable assets
-      jQuery('li.asset').draggable({   
+      jQuery('li.asset').draggable({  
+        helper: 'clone', 
         revert: true,    
         stack: '.asset', 
         drag: function(){

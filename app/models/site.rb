@@ -93,10 +93,17 @@ class Site
     
     after_create :create_default_template
     def create_default_template
-       t = Layout.new :name => 'default'
-       t.site_id = self.id 
-       t.save   
-     end
+      t = Layout.new :name => 'default'
+      t.site_id = self.id 
+      t.save   
+    end
+    
+    after_create :create_default_folder
+    def create_default_folder
+      t = Folder.new :name => 'root'
+      t.site_id = self.id 
+      t.save   
+    end
     
     after_create :create_root
     def create_root

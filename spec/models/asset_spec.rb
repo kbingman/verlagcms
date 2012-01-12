@@ -117,9 +117,6 @@ describe Asset do
       @asset.icon_path.should == "/images/icon/#{@asset.id}/#{@asset.file_name}"
     end
     
-    it 'should respond_to render_image' do
-      @asset.should respond_to(:render_image)
-    end
   end
   
   describe 'Image Processing' do

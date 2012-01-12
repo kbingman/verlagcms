@@ -98,6 +98,7 @@ class Main < Monk::Glue
   register Sinatra::Logger 
   register Sinatra::RespondTo  
   register Sinatra::Images 
+  register Sinatra::Files 
   register Sinatra::GetSubdomain 
   # register Sinatra::AdvancedRoutes 
   # register Mustache::Sinatra

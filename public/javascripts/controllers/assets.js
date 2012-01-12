@@ -53,11 +53,14 @@ var Assets = Sammy(function (app) {
   
   // Asset Index
   // ---------------------------------------------
-  app.bind('render-index', function(e, query){
+  app.bind('render-index', function(e, options){
+    var query = options.query;
+    var folder_id = options.folder_id;
     var application = this;       
     var assetPartial = jQuery('script#admin-assets-asset').html();
     var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate({
-      assets: Asset.toMustache(query),   
+      assets: Asset.toMustache(query),  
+      folder_id: folder_id, 
       query: query,
       partials: { asset: assetPartial }
     }, 'mustache');
@@ -71,16 +74,46 @@ var Assets = Sammy(function (app) {
         .live('change', function(e){
           jQuery(this).parents('form:first').submit();
         }); 
-        
-      // Draggable assets
-      jQuery('li.asset').draggable({  
-        helper: 'clone', 
-        revert: true,    
-        stack: '.asset', 
-        drag: function(){
-          console.log('hey')
-        }
-      })
+      
+      application.trigger('set_draggable_assets');
+      application.trigger('set_droppable_folders');
+      
+    });
+  });
+  
+  // Draggable assets
+  // ---------------------------------------------
+  app.bind('set_draggable_assets', function(e){
+    jQuery('li.asset').draggable({  
+      revert: true,    
+      stack: '.asset' 
+      // start: function(){
+      //   // console.log('hey');
+      // }
+    });
+  });
+  
+  
+  // Droppable folders
+  // ---------------------------------------------
+  app.bind('set_droppable_folders', function(e){
+    jQuery('li.folder').droppable({  
+      hoverClass: 'active',
+      drop: function(e, ui){
+        var folder_id = e.target.id.split('-')[1];
+        var folder = Folder.find(folder_id);
+        var asset_id = ui.draggable[0].id.split('-')[1];
+        var asset = Asset.find(asset_id);
+        asset.attr('folder_id', folder_id);
+        ui.draggable.fadeOut('fast');
+        asset.save(function(success){
+          if(success){
+            Utilities.notice('Asset added to ' + folder.attr('name'));   
+          } else {
+            ui.draggable.fadeIn('fast');
+          }
+        });
+      }
     });
   });
   
@@ -123,18 +156,23 @@ var Assets = Sammy(function (app) {
   // ---------------------------------------------
   app.get('/admin/assets', function(request){ 
     jQuery('#overlay').remove();
-    var query = request.params['query'] ? request.params['query'] : '';
+    var query = request.params['query']; // ? request.params['query'] : '';
     var params = { 'query': query };
     params['limit'] = request.params['limit'] || 96;
     params['page'] = request.params['page'] || 1;
+    
+    if(query){
+      request.renderFolderTree();
+      if(!window.modal){
+        window.modal = false;
+        Asset.searchAdmin(params, function(){  
+          request.trigger('render-index', { query: query });
+        });
+      }
+   } else {
+     request.redirect(Folder.first().attr('admin_path'));
+   }
 
-    request.renderFolderTree();
-    if(!window.modal){
-      window.modal = false;
-      Asset.searchAdmin(params, function(){  
-        request.trigger('render-index', query);
-      });
-    }
   }); 
   
   // New Assets
@@ -153,12 +191,14 @@ var Assets = Sammy(function (app) {
   app.post('/admin/assets', function(request){   
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files;  
+    var folder_id = jQuery('#asset_folder_id');
     // console.log(files)
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
     var params = query ? { 'query': query } : {}; 
     params['limit'] = request.params['limit'] || 48;
     params['page'] = request.params['page'] || 1;
+    params['folder_id'] = folder_id;
     
     this.send_files(files, params, function(asset){
       // console.log(asset.attr())
@@ -183,7 +223,7 @@ var Assets = Sammy(function (app) {
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);
-        request.trigger('render-index', query);
+        request.trigger('render-index', { query: query });
         request.renderFolderTree();
         request.trigger('render-asset', asset, query);
       });

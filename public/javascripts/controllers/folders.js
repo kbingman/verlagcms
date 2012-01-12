@@ -40,16 +40,16 @@ var Folders = Sammy(function (app) {
   // ---------------------------------------------
   app.get('/admin/folders/:id', function(request){ 
     jQuery('#overlay').remove();
-    var folderId = request.params['id'];
-    var folder = Folder.find(folderId);
+    var folder_id = request.params['id'];
+    var folder = Folder.find(folder_id);
     request.renderFolderTree(function(){
       jQuery('ul#folders li').removeClass('active');
-      jQuery('#folder-' + folderId).addClass('active');
+      jQuery('#folder-' + folder_id).addClass('active');
     });
     
     // var assets = Asset.find_all_by_folder_id(folderId);
     folder.loadAssets(function(){
-      request.trigger('render-index', '');
+      request.trigger('render-index', { folder_id: folder.id() });
     });
   
   });  

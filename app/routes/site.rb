@@ -57,7 +57,7 @@ class Main
   # -------------------------------------------
   # pages_route = 
   get '*' do
-    authenticate! unless current_site.published?   
+    # authenticate! unless current_site.published?   
     
     activity = Activity.first :order => 'created_at DESC'
     etag Digest::MD5.hexdigest(activity.created_at.to_s)

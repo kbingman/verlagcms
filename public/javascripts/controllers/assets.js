@@ -10,9 +10,8 @@ var Assets = Sammy(function (app) {
     send_files: function(files, params, callback){
       var application = this;
       var counter = 0;
-      for(var i = 0; i < files.length; i++) {   
-        var file = files[i];
-        Asset.create(file, {
+      jQuery.each(files, function(i, file){
+        Asset.create({ file: file, folder_id: params['folder_id'] }, {
           before: function(uuid){
             jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
           },
@@ -21,20 +20,9 @@ var Assets = Sammy(function (app) {
           },
           success: function(asset){ 
             if(callback){ callback.call(this, asset); }  
-            // var assetItem = application.render('/templates/admin/assets/asset.mustache', { asset: asset.attr() });
-            // assetItem.prependTo('#assets');
-            // counter = counter + 1;    
-            // if(counter == files.length){
-            //  // This needs to be fixed, as it sends another request to the server that isn't really needed...
-            //  // I could simply fix the ordering or something...
-            //  
-            //  Asset.searchAdmin(params, function(){ 
-            //    if(callback){ callback.call(this); }  
-            //  });
-            // }
           }
-        });     
-      }
+        });   
+      });
     }
   });
   
@@ -71,7 +59,7 @@ var Assets = Sammy(function (app) {
       // Upload Asset Form
       jQuery('#ajax_uploader')
         .attr('multiple','multiple')
-        .live('change', function(e){
+        .bind('change', function(e){
           jQuery(this).parents('form:first').submit();
         }); 
       
@@ -144,8 +132,12 @@ var Assets = Sammy(function (app) {
     jQuery('.modal-strip').remove();
     if(!remove_modal.length){
       var removeAsset = this.load(jQuery('script#admin-assets-remove')).interpolate({ asset: asset.toMustache() }, 'mustache');
-      removeAsset.appendTo(asset_node).then(function(){
+      removeAsset.appendTo(jQuery('body')).then(function(){
         var modal_strip = jQuery('.modal-strip');
+        modal_strip.css({
+          top: asset_node.offset().top + (asset_node.height()/2),
+          left: asset_node.offset().left + (asset_node.width()/2)
+        })
         modal_strip.fadeIn('fast');
       });
     }
@@ -163,14 +155,12 @@ var Assets = Sammy(function (app) {
     
     if(query){
       request.renderFolderTree();
-      if(!window.modal){
-        window.modal = false;
-        Asset.searchAdmin(params, function(){  
-          request.trigger('render-index', { query: query });
-        });
-      }
+      Asset.searchAdmin(params, function(){  
+        request.trigger('render-index', { query: query });
+      });
    } else {
      request.redirect(Folder.first().attr('admin_path'));
+     // request.trigger('render-index', {});
    }
 
   }); 
@@ -191,7 +181,7 @@ var Assets = Sammy(function (app) {
   app.post('/admin/assets', function(request){   
     var fileInput = document.getElementById('ajax_uploader');
     var files = fileInput.files;  
-    var folder_id = jQuery('#asset_folder_id');
+    var folder_id = request.params['asset']['folder_id'];
     // console.log(files)
     var query = request.params['query'] ? request.params['query'] : null;
     var uploadForm = jQuery('form#new_asset');
@@ -260,12 +250,15 @@ var Assets = Sammy(function (app) {
   app.del('/admin/assets/:id', function(request){   
     var query = request.params['query'] ? request.params['query'] : null; 
     var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-    var asset = Asset.find(request.params['id']);  
+    var asset = Asset.find(request.params['id']); 
+    var folder_id = asset.attr('folder_id'); 
+    // var redirect_path = query ? '/admin/assets' + query_path : '/admin/folders/' + folder_id;
        
     asset.destroy(function(success){   
       if(success){  
         Utilities.notice('Asset removed'); 
-        request.redirect('/admin/assets' + query_path);    
+        jQuery('.modal-strip').remove();  
+        request.redirect('/admin/folders/' + folder_id); 
       }
     });
   });    

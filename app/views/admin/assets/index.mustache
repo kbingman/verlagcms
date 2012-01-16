@@ -4,11 +4,11 @@
     <form action="/admin/assets" enctype="multipart/form-data" class="upload-asset" method="post">
       <div class="hidden">
         <input name="limit" value="12" type="hidden" />
-        <input name="folder_id" id="asset_folder_id" value="{{folder_id}}" type="hidden" />
+        <input name="asset[folder_id]" id="asset_folder_id" value="{{folder_id}}" type="hidden" />
       </div>
       <div class="filefield">
         <div class="uploader">
-          <input id="ajax_uploader" name="file" type="file" />
+          <input id="ajax_uploader" name="asset[file]" type="file" />
         </div>
         <label for="ajax_uploader">Upload Images</label>
         <input type="submit" value="Save" class="button html-only" />

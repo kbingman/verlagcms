@@ -29,9 +29,14 @@ class Main
         # NOTE: For some reason Sinatra is not picking up the params here...
         # we need to get them directly with the rack request object
         data = params.empty? ? request.env["rack.request.form_hash"] : params
+        query_params = JSON.parse(request.env['HTTP_X_PARAMS'])
+        puts "query_params: #{query_params}"
+        data.merge!(query_params)
+        puts "Data: #{data}"
         
         asset = Asset.new(:file => data['file'][:tempfile])
-        asset.file_name = data['file'][:filename]    
+        asset.file_name = data['file'][:filename]   
+        asset.folder_id = data['folder_id']
         asset.site = current_site
         
         if asset.save

@@ -123,16 +123,17 @@ var Asset = Model('asset', function() {
     keys: {},
     
     // Ajax uploader code
-    create: function (file, callback) { 
-      var url = '/admin/assets.json';
-      Asset.callback = callback;
+    create: function (params, callback) { 
+      var file = params['file'],
+        url = '/admin/assets.json',
+        xhr = new XMLHttpRequest(),
+        uuid = Asset.generate_uuid(),
+        query_params = JSON.stringify({ 'folder_id': params['folder_id'] });
       
-      var xhr = new XMLHttpRequest();
-      var uuid = Asset.generate_uuid(); 
+      Asset.callback = callback;
       
       xhr.upload.uuid = uuid;
       xhr.upload.filename = file.name
-
       xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
       xhr.upload.addEventListener('progress', Asset.onprogressHandler);
       xhr.upload.addEventListener('load', Asset.onloadHandler, false);
@@ -142,6 +143,7 @@ var Asset = Model('asset', function() {
       xhr.open('POST', url, true);
       xhr.setRequestHeader("Content-Type", "application/octet-stream");
       xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.setRequestHeader("X-Params", query_params);
       xhr.setRequestHeader("X-File-Upload", "true");
       xhr.send(file);   
       if(callback['before']){ callback['before'].call(this, uuid); } 

@@ -84,8 +84,8 @@ describe Site do
       teardown
     end
     
-    it 'should create a default template on creation' do
-      @new_site.templates.first.should_not be_nil
+    it 'should create a default layout on creation' do
+      @new_site.layouts.first.should_not be_nil
     end
      
     it 'should create a root page on creation' do  

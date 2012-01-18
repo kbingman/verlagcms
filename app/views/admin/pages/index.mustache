@@ -1,36 +1,5 @@
-{{#pages}}
-{{#child?}}<a href="/admin/pages/{{parent_id}}">back</a>{{/child?}}
+{{#root}}
 <ul class="page-children" id="pages">
-
-  <li class="node level-{{level}}" id="page-{{id}}"> 
-    <div class="item">
-      <span class="title" style="padding-left: {{padding}}px;"> 
-         <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a> 
-         <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
-         <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
-      </span>
-      <span class="count">
-        Page type goes here
-      </span>
-    </div>
-{{/pages}}
-
-    <ul class="page-children" id="pages">
-      {{#children}}
-      <li class="node level-{{level}}" id="page-{{id}}"> 
-        <div class="item">
-          <span class="title" style="padding-left: {{padding}}px;"> 
-             <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
-             <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
-             <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
-          </span>
-          <span class="count">
-            {{child_count}} Children
-          </span>
-        </div>
-      </li>  
-     {{/children}}
-    </ul>
-  </li>
-  
+  {{> node }}
 </ul>  
+{{/root}}  

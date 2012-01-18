@@ -1,16 +1,18 @@
 <ul class="folders" id="folders">
   {{#folders}}
-  <li class="node" id="folder-{{id}}"> 
+  <li class="node folder" id="folder-{{id}}"> 
     <div class="item">
       <span class="title" style="padding-left: {{padding}}px;"> 
          <a id="edit-{{id}}" href="{{admin_path}}">{{name}}</a> 
          <!--(<a id="preview-{{id}}" class="preview" href="#/pages/{{id}}">preview</a>)-->     
       </span>
       <span class="modify">                 
-        <a title="Add Child" class="add-child" id="add-child-{{id}}"href="{{admin_path}}/new">+</a> 
+         
         <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="{{admin_path}}/remove">x</a> 
       </span>
     </div>
   </li>  
  {{/folders}}
-</ul>
+</ul>     
+
+<a title="Add Child" class="add-child" id="add-child-{{id}}"href="/admin/folders/new">New Folder</a>

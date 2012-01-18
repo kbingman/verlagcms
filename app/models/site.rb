@@ -7,9 +7,11 @@ class Site
   key :domain, String, :required => true, :unique => true 
 
   many :pages
+  many :items
   many :assets
-  many :templates   
   many :folders 
+  many :templates
+  many :layouts   
   
   key :group_id, ObjectId #, :required => true
   belongs_to :group, :foreign_key => :group_id
@@ -91,10 +93,17 @@ class Site
     
     after_create :create_default_template
     def create_default_template
-       t = Layout.new :name => 'default'
-       t.site_id = self.id 
-       t.save   
-     end
+      t = Layout.new :name => 'default'
+      t.site_id = self.id 
+      t.save   
+    end
+    
+    after_create :create_default_folder
+    def create_default_folder
+      t = Folder.new :name => 'root'
+      t.site_id = self.id 
+      t.save   
+    end
     
     after_create :create_root
     def create_root

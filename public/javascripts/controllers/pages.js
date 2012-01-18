@@ -5,23 +5,24 @@ var Pages = Sammy(function (app) {
   app.helpers({  
     
     renderPagePreview: function(page, callback){
-      var application = this;  
-      if(!jQuery('div#preview-' + page.id()).length){
+      var application = this;      
+     
+      // if(!jQuery('div#preview-' + page.id()).length){
         var showPage = application.load(jQuery('script#admin-pages-show')).interpolate({ 
           page: page.asJSON(),
           layouts: Layout.asLayoutJSON(page.attr('layout_id')),
           base_page_id: page.id()
         }, 'mustache');  
-        showPage.replace('#editor').then(function(){  
+        showPage.replace('#editor').then(function(){    
           iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
           application.trigger('set-active-page', page);
           Editor.initialize();
         });
-      }else{
-        application.trigger('set-active-page', page);
-      }
+      // }else{
+      //   application.trigger('set-active-page', page);
+      // }
     }, 
     
     renderPageEditor: function(page, callback){
@@ -58,10 +59,26 @@ var Pages = Sammy(function (app) {
     }, 
     
     renderPageMenu: function(page){
-      var application = this;   
+      var application = this,
+        root = Page.root(),
+        pages = Page.all(),
+        pageJSON = [],
+        activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
+      
+      // console.log(activePageIds)
+      // TODO Integrate into model? 
+      jQuery.each(pages, function(i, p){
+        var open = Page.root() == p || _.include(activePageIds, p.id())? true : false
+        p.attr({
+          'children': p.childrenAsJSON(),
+          'open?': open
+        });
+        // console.log(p.id() + ': ' + p.attr('open?'))
+      });
+      
       var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
-        pages: [page.asJSON()],
-        children: page.childrenAsJSON()
+        root: root.asJSON(),
+        partials: { node: jQuery('script#admin-pages-node').html() }
       }, 'mustache');
       pageNode.replace('#sidebar');
     }
@@ -75,8 +92,8 @@ var Pages = Sammy(function (app) {
     // Checks if the page has children that are not yet loaded.
     // if this is the case, makes a json request, otherwise renders the menu
     if(page.children().count() == 0 && page.attr('child_count') != 0){
-      console.log('ajax')
       page.getChildren(function(){
+        page.attr('open?', true);
         application.renderPageMenu(page);
       })
     } else if(page.attr('child_count') != 0){
@@ -87,6 +104,42 @@ var Pages = Sammy(function (app) {
       application.renderPageMenu(page);
     }
 
+  });
+  
+  // Open Hidden Children
+  // ---------------------------------------------
+  app.bind('open-page-children', function(e, page_id){
+    var application = this,
+      parent = Page.find(page_id),
+      node = jQuery('li#page-' + parent.id()),
+      activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
+    
+    parent.getChildren(function(){
+      parent.attr('open?', true);
+      parent.attr('children', parent.childrenAsJSON());
+      activePageIds.push(parent.id());
+      jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
+
+      var html = application.load(jQuery('script#admin-pages-children')).interpolate({
+        page: parent.asJSON(),
+        partials: { node: jQuery('script#admin-pages-node').html() }
+      }, 'mustache');
+
+      html.appendTo(node);
+    });
+  });
+  
+  // Close Children
+  // ---------------------------------------------
+  app.bind('close-page-children', function(e, page_id){
+    var application = this,
+      parent = Page.find(page_id),
+      node = jQuery('li#page-' + parent.id());
+      
+    node.find('ul.page-children').remove();
+    parent.children().each(function(child){
+      Page.remove(child)
+    })
   });
   
   // Page Index
@@ -173,7 +226,7 @@ var Pages = Sammy(function (app) {
  
     var page = Page.find(request.params['id']); 
     
-    if(page) {
+    if(page) {    
       request.renderPagePreview(page); 
     } else {  
       // Loads page if the current collection does not contain it
@@ -213,15 +266,12 @@ var Pages = Sammy(function (app) {
   // Update Page
   // ---------------------------------------------  
   this.put('/admin/pages/:page_id', function(request){  
-    var application = this;
-    var page_id = request.params['page_id'];
-    var page = Page.find(page_id);
+    var application = this,
+      page_id = request.params['page_id'],
+      page = Page.find(page_id),
+      updatedStamp = jQuery('span.timestamp').text();
     
     page.attr(request.params['page']); 
-    
-    var updatedStamp = jQuery('span.timestamp').text();
-    // console.log('Updated: ' + updatedStamp);
-    // console.log('Timestamp: ' + window.timestamp);
     
     if(!(updatedStamp < window.timestamp)){
       page.save(function(success, result){

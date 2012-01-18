@@ -26,9 +26,11 @@ var Layouts = Sammy(function (app) {
     },  
     
     renderLayout: function(layout){ 
-      var application = this;     
+      var application = this;        
+      
       var editLayout = application.load(jQuery('script#admin-templates-edit')).interpolate({ 
-        layout: layout.asJSON(),
+        layout: layout.asJSON(), 
+        image: layout.attr('file_type') && layout.attr('file_type').match('image') ? true : false,
         filters: [
           // { name: 'none', value: 'none', selected: ((layout.attr('filter') == 'none') ? 'selected="selected"' : '') },
           { name: 'CSS', value: 'none', selected: ((layout.attr('filter') == 'css') ? 'selected="selected"' : '') }, 
@@ -47,7 +49,13 @@ var Layouts = Sammy(function (app) {
         window.editor.session.setUseWrapMode(true);
         // Because Mustache screws up my liquid templates, I just set it manually, directly from the model
         // This also eleminates the FUC
-        window.editor.getSession().setValue(layout.attr('content'));
+        window.editor.getSession().setValue(layout.attr('content'));    
+        
+        jQuery('a.tab').click(function(e){  
+          e.preventDefault();
+          jQuery('.pane').hide();
+          jQuery(jQuery(this).attr('href')).show();
+        });
       });
     }
   });

@@ -35,10 +35,13 @@ class Main
       # -------------------------------------------
       get '/current/?' do
         @site = current_site
+        # active_page_ids = []
         active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
-        @pages = current_site.pages
+        puts active_page_ids
+        # current_site.pages
         # [current_site.root] 
-        # current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        # @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
+        @pages = current_site.pages.sort_by{ |p| p.created_at }
         
         respond_to do |format|
           # format.html { admin_haml :'admin/index' }

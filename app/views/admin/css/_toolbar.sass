@@ -1,9 +1,15 @@
 // asset toolbar, with upload and search functions    
 .toolbar
-  :width 100%
-  :position relative
+  // +positionable
+  // Needs to be fixed not absolute because of drag and drop issues with assets. 
+  // Maybe there is a better way.
+  :position fixed
+  :bottom auto
+  :left 300px
+  :right 0
   :height 72px
   :margin 0 0 6px 0
+  :z-index 22
   // :border-bottom 3px solid #423d3a
   :background 
     :color #b8aea5
@@ -22,7 +28,7 @@
     input:focus
       :background 
         :color hsla(0,100,100,0.2)
-  .tabs
+  .tab-control
     :position absolute
     :left 0
     :bottom 0

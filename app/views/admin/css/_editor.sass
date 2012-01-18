@@ -2,6 +2,7 @@
   +positionable 
   :z-index 10
   :left 300px
+  :overflow visible
   &.open
     :left 24px
   // :overflow auto     
@@ -17,7 +18,9 @@
     
   #code-editor 
     +positionable
+    :overflow auto
     :top 72px
+    :bottom 0
     :overflow hidden
     .tabs     
       :font-size 1.4em 
@@ -42,7 +45,8 @@
         :background white
   .buttons   
     +positionable
-    :right 0    
+    :right 0  
+    :left 0  
     :top auto
     :height 80px 
     :border-top 1px solid #444
@@ -59,6 +63,10 @@
       :top 6px   
       :padding-left 16px   
       :padding-right 16px
+  // .image
+  //   +positionable
+  //   :overflow auto
+  //   :bottom 80px
   .code 
     +positionable
     :bottom 80px
@@ -78,15 +86,15 @@
   #parts 
     :position absolute
     :bottom 0
-    :top 0
+    :top 72px
     :right 0                  
-    :width 200px   
+    :left 0  
     :border-left 1px solid #ccc     
     :background #ddd
     
-    #add-layout-part
-      :position absolute
-      :bottom 0
+    // #add-layout-part
+    //   :position absolute
+    //   :bottom 0
   
 #layout_content
   +positionable  

@@ -16,8 +16,7 @@ describe "lib/views/part_proxy" do
   context 'parts' do  
     
     it "should return the 'body' content" do
-      pending 'change to body part'
-      @proxy.body.should == @root.data.body
+      @proxy.body.should == @root.find_part_by_name('body')
     end
     
   end

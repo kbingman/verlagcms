@@ -16,7 +16,10 @@
     :cursor pointer
 #sidebar 
   // +box-shadow(0, 0, 6px, #555)
-  +positionable  
+  :position fixed
+  :top 42px
+  :left 0
+  :bottom 0 
   :right auto
   :line-height 1
   :padding 0
@@ -25,7 +28,7 @@
   :overflow-x hidden
   :background 
     :color #fff
-  :z-index 10
+  :z-index 1
   // Closed state of Sidebar
   &.closed
     :width 24px
@@ -76,7 +79,7 @@
           :color #bbb
           :height 16px
           :width 16px
-          :top 4px
+          :top 15px
           :left 3px
           :cursor pointer
         .title
@@ -103,6 +106,10 @@
       .item:hover
         // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
         :background hsla(0,0,0,0.1)
+      
+    li.level-2
+      :background 
+        :color #fff
     li.active 
       > .item
         // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset

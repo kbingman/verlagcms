@@ -2,28 +2,52 @@ require 'sinatra/base'
 
 module Sinatra                                   
   module Images  
-
-    def self.registered(app)  
+    module Helpers  
       
-      app.get '/templates/files/:id/:filename.?:ext?' do
-
-        cache_request(3600 * 24 * 30) # 30 day cache 
-        # response['Cache-Control'] = "max-age=#{3600 * 24}, public"    
-        begin
-          file = Upload.find params[:id]
-
-          status 200 
-          content_type(file.file_type)
-          file.file.read
-        rescue BSON::InvalidObjectId
-          status 404 
-          haml :'site/404'
-        end
+      def image_types 
+        types = {'vnd.ms-opentype' => 'font','pdf' => 'pdf'}
+        types
       end
       
+      def resize_image(image, width, height, options={})
+        # Needs to check for correct gravity, ie. North, South, East, West, Center
+        gravity = options[:gravity] ? options[:gravity].titlecase : 'Center'
+        gravity = 'Center' unless ['North', 'South', 'East', 'West', 'Center'].include?(gravity)
+        quality = options[:quality] || '72' 
+      
+        cols, rows = image[:dimensions]
+        if options[:crop] == true
+          image.combine_options do |cmd|
+            if width != cols || height != rows
+              scale = [width/cols.to_f, height/rows.to_f].max
+              cols = (scale * (cols + 0.5)).round
+              rows = (scale * (rows + 0.5)).round
+              cmd.resize "#{cols}x#{rows}"
+            end
+            cmd.gravity gravity
+            cmd.quality quality
+            cmd.extent "#{width}x#{height}" if cols != width || rows != height
+          end
+        else
+          image.combine_options do |cmd|
+            if width != cols || height != rows
+              cmd.resize("#{width}x#{height}")
+            end
+            cmd.quality quality
+          end
+        end
+        image = yield(image) if block_given?
+        image
+      end
+      
+    end 
+    
+    def self.registered(app)  
+      app.helpers Images::Helpers
+    
       app.get '/images/:id/:filename' do
-        cache_request(3600 * 24) # 24 Hour cache
-        # cache_control :public, :max_age => 3600 * 24
+        # cache_request(3600 * 24) # 24 Hour cache
+        cache_control :public, :max_age => 3600 * 24
         etag Digest::MD5.hexdigest(params.to_s)
         
         h = params['h']
@@ -34,10 +58,22 @@ module Sinatra
         begin
           asset = Asset.find params[:id]
           status 200 
-          content_type(asset.file_type)
-          
-          if params['h'] || params['w']
-            image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
+
+          if asset.file_type.match(/image/) && (params['h'] || params['w'])
+            content_type(asset.file_type)
+            # image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
+            image = MiniMagick::Image.read(asset.file.read)
+            image = resize_image(image, w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
+            image.to_blob
+          elsif params['h'] || params['w']
+            file_type = asset.file_type.split('/').last
+            icon_type = image_types[file_type]
+            
+            # Makes an icon for non image files
+            content_type 'image/png'
+            file = File.open(root_path("icons/#{icon_type}.png"));
+            image = MiniMagick::Image.read(file)
+            image = resize_image(image, w.to_i, h.to_i, {:crop => crop, :gravity => 'Center'})
             image.to_blob
           else
             asset.file.read
@@ -65,19 +101,26 @@ module Sinatra
 
         begin
           asset = Asset.find params[:id]
-          image = asset.render_image(w.to_i, h.to_i, {:crop => crop})
-
           status 200 
           content_type(asset.file_type)
-          image.to_blob
+          
+          if asset.file_type.match(/image/)
+            image = MiniMagick::Image.read(asset.file.read)
+            image = resize_image(image, w.to_i, h.to_i, {:crop => crop})
+            image.to_blob  
+          else
+            asset.file.read
+          end
+            
         rescue BSON::InvalidObjectId
           status 404 
           haml :'site/404'
         end
-      end
+      end      
 
     end
   end    
 
-  register Images 
+  register Images
+
 end

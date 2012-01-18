@@ -7,7 +7,6 @@ class PartType
   key :layout_id, ObjectId #, :required => true 
   belongs_to :layout, :foreign_key => :layout_id                         
   
-  liquid_methods :name
   
   # validates :name, :uniqueness => true
   

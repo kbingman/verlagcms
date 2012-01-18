@@ -10,8 +10,6 @@ class ImagePart < Part
   key :asset_id, ObjectId 
   belongs_to :asset, :foreign_key => :asset_id
   
-  liquid_methods :name, :content, :render, :image_path
-  
   def admin_path
    "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
   end
@@ -32,10 +30,6 @@ class ImagePart < Part
     self.asset ? self.asset.file_name : 'missing.png'
   end
   
-  def title
-    self.asset ? self.asset.title : 'missing'
-  end
-  
   def editor
     if self.edit
       "<div class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>"
@@ -43,7 +37,7 @@ class ImagePart < Part
   end
   
   def as_json(options)
-    super(:methods => [:image_path, :asset, :path, :klass, :file_name, :title])
+    super(:methods => [:image_path, :asset, :path, :file_name, :title])
   end
   
   def render(edit=false)

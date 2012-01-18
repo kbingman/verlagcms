@@ -4,7 +4,7 @@ $headline-fonts: 'Gotham', 'Helvetica Neue', 'arial', 'Helvetica', sans-serif
 
 // Colors 
 $beige_50: #b8aea5 // hsla(25,11,55,1)
-$beige_75: hsla(33,8,42,1) // #9d8f82 // 
+$beige_75: hsla(33,8,42,1) // #9d8f82 
 $beige_10: hsla(34,11,87,1) // #e4e1dd 
 
 $gray_beige: #777371 // hsla(20,3,45,1)
@@ -32,11 +32,12 @@ $gray_beige: #777371 // hsla(20,3,45,1)
 =positionable
   :position absolute
   :display block   
-  :overflow auto
+  :overflow-x visible
   :top 0
   :bottom 0
   :left 0
-  :right 0
+  :right 0 
+  :z-index 11
   
 =gradient($from, $to)
   :background-image -webkit-gradient(linear, left top, left bottom, from($from), to($to))

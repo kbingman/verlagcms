@@ -4,10 +4,11 @@
     <form action="/admin/assets" enctype="multipart/form-data" class="upload-asset" method="post">
       <div class="hidden">
         <input name="limit" value="12" type="hidden" />
+        <input name="asset[folder_id]" id="asset_folder_id" value="{{folder_id}}" type="hidden" />
       </div>
       <div class="filefield">
         <div class="uploader">
-          <input id="ajax_uploader" name="file" type="file" />
+          <input id="ajax_uploader" name="asset[file]" type="file" />
         </div>
         <label for="ajax_uploader">Upload Images</label>
         <input type="submit" value="Save" class="button html-only" />
@@ -15,7 +16,7 @@
     </form>
     <form action="/admin/assets" class="search-form" method="get">
       <div class="field">
-        <input class="textfield" id="search-query" name="query" type="text" value="{{query}}">
+        <input class="textfield" id="search-query" placeholder="Search" name="query" type="text" value="{{query}}">
         <input class="button search" type="submit" value="Search">
       </div>
     </form>
@@ -23,15 +24,7 @@
 
   <ul id="assets">
     {{#assets}}
-      <li id="asset-{{id}}">
-        <div class="image">
-          <a href="{{admin_path}}/edit{{query_path}}" id="edit-asset-{{id}}">
-            <img src="/images/{{id}}/{{file_name}}?w=240&h=180&c=t&g=North" alt="{{title}}" />
-          </a>
-        </div>
-        <p>{{title}}<br />
-        <a href="{{admin_path}}/remove" class="remove-icon" id="remove-asset-{{id}}">remove</a></p> 
-      </li>
+      {{> asset }}
     {{/assets}}
   </ul>
 </div>

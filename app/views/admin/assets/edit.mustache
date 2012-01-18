@@ -12,6 +12,9 @@
           <input type="hidden" name="_method" value="put" />
         </div>
         <div class="field">
+          Path: /images/{{id}}/{{file_name}}
+        </div>
+        <div class="field">
           <input type="text" name="asset[title]" id="asset_title" value="{{title}}" class="textfield" />
         </div> 
         <div class="field">
@@ -21,7 +24,7 @@
         <div class="actions">
           
           <!--input type="submit" value="Save and Continue" class="button html-only" /-->
-          <a href="/admin/assets{{query_path}}" class="cancel">Cancel</a>
+          <a href="/admin/folders/{{folder_id}}" class="cancel">Cancel</a>
           or
           <input type="submit" value="Save" class="button html-only" />
         </div>

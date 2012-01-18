@@ -50,6 +50,40 @@ class Monk < Thor
     puts `git push heroku master`
   end
   
+  # update Text Parts
+  # monk update_text_parts
+  desc "update_text_parts ENV", "updates all Parts to be TextParts"
+  def update_text_parts(env = ENV["RACK_ENV"] || "development")
+    require './init.rb'
+    ::Page.all.each do |p| 
+      p.parts.each do |part| 
+        puts "#{part.name}: #{part._type}"
+        if part._type == 'Part' || part._type == nil
+          part._type = 'TextPart'
+          part.save
+          puts 'updated'
+        end
+      end
+    end
+  end
+  
+  # update Text Parts Types
+  # monk update_text_parts
+  desc "update_text_parts ENV", "updates all Parts to be TextParts"
+  def update_text_part_types(env = ENV["RACK_ENV"] || "development")
+    require './init.rb'
+    ::Layout.all.each do |layout| 
+      layout.part_types.each do |part| 
+        puts "#{part.name}: #{part.kind}"
+        if part.kind == 'Part' || part.kind == nil
+          part.kind = 'TextPart'
+          part.save
+          puts 'updated'
+        end
+      end
+    end
+  end
+  
   # Bootstraps a new site and user 
   # monk bootstrap
   desc "bootstrap ENV", "Bootstraps a site and admin user"

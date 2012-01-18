@@ -14,6 +14,16 @@ class Main
         format.html { admin_haml :'admin/index' }
         format.json { collection.to_json }
       end
+    end  
+    
+    # Index
+    # -------------------------------------------
+    get '/:model/new/?' do
+      resource = klass.new(params[model.singularize.to_sym]) 
+      respond_to do |format|
+        format.html { admin_haml :'admin/index' }
+        format.json { resource.to_json }
+      end
     end
     
     # Create
@@ -21,7 +31,7 @@ class Main
     post '/:model' do   
       resource = klass.new(params[model.singularize.to_sym])
       # TODO may break some things 
-      klass.site = current_site
+      resource.site = current_site
       if resource.save
         resource.to_json
         respond_to do |format|

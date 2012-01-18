@@ -207,13 +207,15 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
     
+    
     if(asset) {
       request.trigger('render-asset', asset, query);
     } else {  
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);
-        request.trigger('render-index', { query: query });
+        console.log(asset.attr('folder_id'));
+        request.trigger('render-index', { folder_id: asset.attr('folder_id') });
         request.renderFolderTree();
         request.trigger('render-asset', asset, query);
       });

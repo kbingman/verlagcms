@@ -2,6 +2,8 @@
 {{ name }} <span class="timestamp">{{ timestamp }}</span>
 
   <h1>Selected Asset</h1>  
+  <a class='insert-image' href='{{admin_path}}/edit'>insert widget goes here</a>
+  
   <form method="post" action="#/pages/{{page_id}}/parts/{{id}}" enctype="multipart/form-data" id="edit-part">
     <div class="hidden">
       <input type="hidden" name="_method" value="put" /> 

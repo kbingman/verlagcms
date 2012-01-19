@@ -139,13 +139,17 @@ var Base = Sammy(function (app) {
       }, 'mustache');
       html.appendTo('body').then(function(){
         jQuery('ul.assets .image a').click(function(e){
-          // e.preventDefault();
+          e.preventDefault();
           var target = jQuery(e.currentTarget);
           var target_src = target.find('img').attr('src').split('?')[0];
           var asset_id = target.attr('id').split('-')[2];
           
           var iframe = jQuery('iframe#page-iframe-' + page.id());
-          var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
+          if(iframe.length){
+            var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
+          }else{
+            var img = jQuery('img[src^="' + part['path'] + '"]').first();
+          }
 
           // Sets new image src. This may not be entirely reliable...
           var new_src = img.attr('src').replace(img.attr('src').split('?')[0], target_src);
@@ -160,7 +164,6 @@ var Base = Sammy(function (app) {
             'path': new_src
           });
           page.save();
-          return false;
         }); 
       });
 

@@ -60,6 +60,13 @@ jQuery('a.close-modal-strip').live('click', function(e){
   });
 });
 
+// Triggers Asset browser
+jQuery('a.insert-image').live('click', function(e){
+  e.preventDefault();
+  var href = jQuery(this).attr('href');
+  Base.trigger('image-browser', href);
+});
+
 // Triggers Asset remove popups
 jQuery('a.remove-icon').live('click', function(e){
   e.preventDefault();

@@ -44,7 +44,7 @@ var Parts = Sammy(function (app) {
               form.submit();
             });
           });
-        application.trigger('page-index');
+        application.trigger('page-index');        
       });
     }
     

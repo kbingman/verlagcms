@@ -17,11 +17,11 @@ var Page = Model('page', function() {
       return this.children().map(function(item){ return item.attr() });
     },
     
-    setPartAttributes: function(partName, attributes){
+    setPartAttributes: function(part_id, attributes){
       var parts = this.attr('contents');
       var part;
       jQuery.each(parts, function(i, p){
-        if(partName == p['name']){
+        if(part_id == p['id']){
           if(attributes['content']){ p['content'] = attributes['content']; }
           if(attributes['asset_id']){ p['asset_id'] = attributes['asset_id']; }
           if(attributes['path']){ p['path'] = attributes['path']; }

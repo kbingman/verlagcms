@@ -5,6 +5,7 @@ class ImageProxy
   end  
   
   def path
+    'example'
   end
   
   # Possible tags: icon_path, thumbnail_path, splits the method name like the 

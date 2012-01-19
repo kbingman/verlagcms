@@ -32,7 +32,7 @@ class ImagePart < Part
   
   def editor
     if self.edit
-      "<div class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>"
+      "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>"
     end
   end
   

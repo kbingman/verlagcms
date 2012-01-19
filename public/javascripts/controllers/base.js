@@ -140,8 +140,10 @@ var Base = Sammy(function (app) {
       html.appendTo('body').then(function(){
         jQuery('ul.assets .image a').click(function(e){
           // e.preventDefault();
-          var target_src = jQuery(e.currentTarget).find('img').attr('src').split('?')[0];
-          var target_id = jQuery(e.currentTarget).attr('id').split('-')[2];
+          var target = jQuery(e.currentTarget);
+          var target_src = target.find('img').attr('src').split('?')[0];
+          var asset_id = target.attr('id').split('-')[2];
+          
           var iframe = jQuery('iframe#page-iframe-' + page.id());
           var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
 
@@ -153,14 +155,11 @@ var Base = Sammy(function (app) {
             jQuery(this).remove();
           });
           
-          page.setPartAttributes('image', { 
-            'asset_id': target_id,
+          page.setPartAttributes(part_id, { 
+            'asset_id': asset_id,
             'path': new_src
           });
-          // page.save();
-          
-          console.log(page.attr('contents'))
-         
+          page.save();
           return false;
         }); 
       });

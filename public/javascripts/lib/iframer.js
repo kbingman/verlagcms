@@ -11,12 +11,11 @@ var iFramer = {
     // The load event is not always being fired...
     trigger.load(function(){   
       var iframe = $(this);  
-      
-
       var content = iframe.contents();  
+      var areas = content.find('div.editable');
       // var editor = iFrameContent.find('span.part-editor');
       // var flags = editor.find('a'); 
-      var areas = content.find('div.editable');
+      
       // Sets the editable parts so they can actually be editted live
       areas.attr('contenteditable','true').css({'background': 'hsla(30, 17.7%, 61%, 0.3)' });
       

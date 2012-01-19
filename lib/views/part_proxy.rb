@@ -6,7 +6,7 @@ class PartProxy
   end  
   
   def part(name)
-    part = @page.parts.detect { |p| p.name == name.to_s } 
+    part = @page.parts.detect { |p| p.name.match(/^#{name.to_s}$/i) } 
     part.edit = true if part && @edit
     part
   end

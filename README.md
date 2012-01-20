@@ -10,12 +10,22 @@ todo
     {{# children }}
       [ page tokens ]
     {{/ children }}  
+    {{# children }}
+      returns true if no children are present
+    {{/ children }}
     {{# if_self }}  
       (returns if true)
     {{/ if_self }}  
     {{# if_ancestor_or_self }}
       (returns if true)
     {{/ if_ancestor_or_self }}  
+    {{^ if_self }}  
+      (returns if false)
+    {{/ if_self }}  
+    {{^ if_ancestor_or_self }}
+      (returns if false)
+    {{/ if_ancestor_or_self }}  
+    
   {{/ page }} 
   
   {{# data }}

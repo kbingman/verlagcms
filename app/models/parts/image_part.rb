@@ -29,6 +29,7 @@ class ImagePart < Part
   def file_name
     self.asset ? self.asset.file_name : 'missing.png'
   end
+  alias :filename :file_name
   
   def editor
     if self.edit
@@ -41,7 +42,13 @@ class ImagePart < Part
   end
   
   def render(edit=false)
-    "<img src='#{self.path}' alt='#{self.title}' />"
+    result = ""
+    if self.edit
+      result += "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>\n"
+    end
+    
+    result += "<img src='#{self.path}' alt='#{self.title}' />"
+    result
     # self.asset.image_path
     # ImageProxy.new(self, edit)
   end

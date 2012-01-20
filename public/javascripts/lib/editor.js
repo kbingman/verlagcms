@@ -25,12 +25,12 @@ var Editor = {
       var parts = {};
       iframe.contents().find('div.editable').each(function(){
         var self = jQuery(this);
-        var name = self.attr('id').split('_')[0];
-        parts[name] = self.html();
+        var id = self.attr('id').split('-')[1];
+        parts[id] = self.html();
       });
-      jQuery.each(parts, function(name, content){
+      jQuery.each(parts, function(id, content){
         content = Editor.textilize(content);
-        page.setPartAttributes(name, { 'content': content });
+        page.setPartAttributes(id, { 'content': content });
       });
       page.save();
       

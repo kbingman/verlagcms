@@ -5,41 +5,26 @@ require './lib/views/if_path_proxy'
 class Main
   module Views
     
-    class Page < Mustache 
+    class Part < Mustache 
       include ViewHelpers
         
-      def initialize page, edit = nil
-        @global_page = page
-        @site = page.site
+      def initialize part, edit = nil
+        @part = part
+        @global_page = part.page
+        @site = part.page.site
         @edit = edit
       end
       
       # Loads the template from the db
       def template
-        @global_page.layout.content
+        @part.content
       end
       
       # Partial
       # ----------------------------------------------------
       def partial(name)
-        part = name.to_s.split('_').first
-        if part == 'data'
-          part_name = name.to_s.split('_')[1]
-          method = name.to_s.split('_')[2]
-          puts "Method: #{method}"
-          part = @global_page.find_part_by_name(part_name)
-          
-          if part && method
-            part.edit = @edit
-            part.send(method)
-          elsif part
-            part.edit = @edit
-            part.render
-          end
-        else
-          partial = @site.templates.first :conditions => { :name => name, :_type => 'Partial' }
-          partial.content if partial
-        end
+        partial = @site.templates.first :conditions => { :name => name, :_type => 'Partial' }
+        partial.content if partial
       end
       
       # Global Methods
@@ -91,10 +76,6 @@ class Main
       
       # Proxy Methods
       # ----------------------------------------------------
-      
-      def data
-        PartProxy.new @global_page, @edit
-      end
       
       def find
         FindPageProxy.new @site

@@ -8,6 +8,8 @@ class Part
   key :page_id, ObjectId
   belongs_to :page
   
+  # embedded_in :page
+  
   attr_accessor :edit
   
   # validates :name, :uniqueness => true
@@ -15,7 +17,7 @@ class Part
   liquid_methods :name, :content, :render, :id 
   
   def admin_path
-   "/admin/pages/#{self.page_id}/parts/#{self.id}" 
+   "/admin/pages/#{self.page.id}/parts/#{self.id}" 
   end
     
   def klass

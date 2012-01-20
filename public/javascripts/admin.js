@@ -6197,11 +6197,11 @@ var Page = Model('page', function() {
       return this.children().map(function(item){ return item.attr() });
     },
     
-    setPartAttributes: function(partName, attributes){
+    setPartAttributes: function(part_id, attributes){
       var parts = this.attr('contents');
       var part;
       jQuery.each(parts, function(i, p){
-        if(partName == p['name']){
+        if(part_id == p['id']){
           if(attributes['content']){ p['content'] = attributes['content']; }
           if(attributes['asset_id']){ p['asset_id'] = attributes['asset_id']; }
           if(attributes['path']){ p['path'] = attributes['path']; }
@@ -6863,12 +6863,12 @@ var Editor = {
       var parts = {};
       iframe.contents().find('div.editable').each(function(){
         var self = jQuery(this);
-        var name = self.attr('id').split('_')[0];
-        parts[name] = self.html();
+        var id = self.attr('id').split('-')[1];
+        parts[id] = self.html();
       });
-      jQuery.each(parts, function(name, content){
+      jQuery.each(parts, function(id, content){
         content = Editor.textilize(content);
-        page.setPartAttributes(name, { 'content': content });
+        page.setPartAttributes(id, { 'content': content });
       });
       page.save();
       
@@ -6966,6 +6966,13 @@ jQuery('a.close-modal-strip').live('click', function(e){
   });
 });
 
+// Triggers Asset browser
+jQuery('a.insert-image').live('click', function(e){
+  e.preventDefault();
+  var href = jQuery(this).attr('href');
+  Base.trigger('image-browser', href);
+});
+
 // Triggers Asset remove popups
 jQuery('a.remove-icon').live('click', function(e){
   e.preventDefault();
@@ -6986,12 +6993,11 @@ var iFramer = {
     // The load event is not always being fired...
     trigger.load(function(){   
       var iframe = $(this);  
-      
-
       var content = iframe.contents();  
+      var areas = content.find('div.editable');
       // var editor = iFrameContent.find('span.part-editor');
       // var flags = editor.find('a'); 
-      var areas = content.find('div.editable');
+      
       // Sets the editable parts so they can actually be editted live
       areas.attr('contenteditable','true').css({'background': 'hsla(30, 17.7%, 61%, 0.3)' });
       
@@ -7194,10 +7200,16 @@ var Base = Sammy(function (app) {
       html.appendTo('body').then(function(){
         jQuery('ul.assets .image a').click(function(e){
           // e.preventDefault();
-          var target_src = jQuery(e.currentTarget).find('img').attr('src').split('?')[0];
-          var target_id = jQuery(e.currentTarget).attr('id').split('-')[2];
+          var target = jQuery(e.currentTarget);
+          var target_src = target.find('img').attr('src').split('?')[0];
+          var asset_id = target.attr('id').split('-')[2];
+          
           var iframe = jQuery('iframe#page-iframe-' + page.id());
-          var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
+          if(iframe.length){
+            var img = iframe.contents().find('img[src^="' + part['path'] + '"]').first();
+          }else{
+            var img = jQuery('img[src^="' + part['path'] + '"]').first();
+          }
 
           // Sets new image src. This may not be entirely reliable...
           var new_src = img.attr('src').replace(img.attr('src').split('?')[0], target_src);
@@ -7207,14 +7219,11 @@ var Base = Sammy(function (app) {
             jQuery(this).remove();
           });
           
-          page.setPartAttributes('image', { 
-            'asset_id': target_id,
+          page.setPartAttributes(part_id, { 
+            'asset_id': asset_id,
             'path': new_src
           });
-          // page.save();
-          
-          console.log(page.attr('contents'))
-         
+          page.save();
           return false;
         }); 
       });
@@ -8344,7 +8353,7 @@ var Parts = Sammy(function (app) {
               form.submit();
             });
           });
-        application.trigger('page-index');
+        application.trigger('page-index');        
       });
     }
     

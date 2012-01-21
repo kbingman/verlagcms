@@ -175,6 +175,7 @@ var Asset = Model('asset', function() {
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
+        response.uuid = evt.target.upload.uuid;
 
         if(Asset.callback['success']){ Asset.callback['success'].call(this, response); }   
       }

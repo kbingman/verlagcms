@@ -205,16 +205,11 @@ var Assets = Sammy(function (app) {
         html.appendTo('#assets');
       },
       progress: function(uuid, percent){
-        console.log(uuid)
-        console.log(percent)
-        
-        if(percent == 100){
-          setTimeout(function(){
-            jQuery('li#asset-' + uuid).remove();
-          }, 420)
-        }
+        // console.log(uuid)
+        // console.log(percent)
       },
       success: function(asset){
+        jQuery('li#asset-' + asset.attr('uuid')).remove();
         var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
         html.appendTo('ul#assets');
       }

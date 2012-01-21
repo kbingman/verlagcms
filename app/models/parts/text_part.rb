@@ -2,9 +2,9 @@ require './app/models/parts/part.rb'
 
 class TextPart < Part
   
-  def admin_path
-   "/admin/pages/#{self.page_id}/parts/#{self.id}" 
-  end
+  # def admin_path
+  #  "/admin/pages/#{self.page.id}/parts/#{self.id}" 
+  # end
 
   def render
     if self.edit == true 

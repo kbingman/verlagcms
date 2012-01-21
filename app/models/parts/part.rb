@@ -24,6 +24,19 @@ class Part
     self.class.to_s.underscore.pluralize
   end
   
+  def render
+    if self.edit == true 
+      # This is used for the inline editor, setting a small flag with the edit page / part path
+      r =  "<div class='editable part #{self.name} textile' id='part-#{self.id}'>"
+      r += self.content.blank? ? '<p>&nbsp;</p>' : self.content
+      r += '</div>'
+    else
+      r = self.content.blank? ? '<p>&nbsp;</p>' : self.content
+    end
+    r
+  end
+  
+  
   def as_json(options)
     super(:methods => [:path, :klass, :admin_path, :file_name])
   end

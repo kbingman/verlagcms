@@ -11,7 +11,7 @@ class MultiImagePart < Part
   many :assets, :in => :asset_ids
   
   def path
-   "/pages/#{self.page_id}/image_parts/#{self.id}" 
+   "/pages/#{self.page.id}/image_parts/#{self.id}" 
   end
   alias :admin_path :path
   

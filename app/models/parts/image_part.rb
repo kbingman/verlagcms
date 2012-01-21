@@ -11,7 +11,7 @@ class ImagePart < Part
   belongs_to :asset, :foreign_key => :asset_id
   
   def admin_path
-   "/admin/pages/#{self.page_id}/image_parts/#{self.id}" 
+   "/admin/pages/#{self.page.id}/image_parts/#{self.id}" 
   end
  
   def path

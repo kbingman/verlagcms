@@ -10,16 +10,34 @@ var Assets = Sammy(function (app) {
     send_files: function(files, params, callback){
       var application = this;
       var counter = 0;
+      var loading_template = application.load(jQuery('script#admin-assets-loading'));
+      var asset_template = application.load(jQuery('script#admin-assets-asset'))
+      
       jQuery.each(files, function(i, file){
-        Asset.create({ file: file, folder_id: params['folder_id'] }, {
-          before: function(uuid){
-            jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
+
+        asset = new Asset({
+          file_name: file.fileName,
+          folder_id: params['folder_id']
+        });
+          
+        asset.upload(file, {
+          before: function(asset){
+            var html = loading_template.interpolate({
+              uuid: asset.attr('uuid'),
+              title: asset.attr('file_name').split('.')[0]
+            }, 'mustache');
+            html.appendTo('#assets');
+            
+            // jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
           },
-          progress: function(uuid, percent){
-            jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
-          },
+          // progress: function(uuid, percent){
+          //   jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
+          // },
           success: function(asset){ 
-            if(callback){ callback.call(this, asset); }  
+            Asset.add(asset);
+            var html = asset_template.interpolate(asset.attr(), 'mustache');
+            html.replace('#asset-' + asset.attr('uuid'));
+            // if(callback){ callback.call(this, asset); }  
           }
         });   
       });
@@ -192,8 +210,8 @@ var Assets = Sammy(function (app) {
     
     this.send_files(files, params, function(asset){
       // console.log(asset.attr())
-      var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-      html.prependTo('#assets');
+      // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+      // html.prependTo('#assets');
     });
 
     return false; 

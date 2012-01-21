@@ -10,34 +10,22 @@ var Assets = Sammy(function (app) {
     send_files: function(files, params, callback){
       var application = this;
       var counter = 0;
-      var loading_template = application.load(jQuery('script#admin-assets-loading'));
-      var asset_template = application.load(jQuery('script#admin-assets-asset'))
-      
-      jQuery.each(files, function(i, file){
 
-        asset = new Asset({
-          file_name: file.fileName,
-          folder_id: params['folder_id']
-        });
-          
-        asset.upload(file, {
+      jQuery.each(files, function(i, file){
+        Asset.upload({file: file, folder_id: params.folder_id}, {
           before: function(asset){
-            var html = loading_template.interpolate({
-              uuid: asset.attr('uuid'),
-              title: asset.attr('file_name').split('.')[0]
-            }, 'mustache');
-            html.appendTo('#assets');
-            
-            // jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
+            if(callback['before']){ callback['before'].call(this, asset); }  
           },
-          // progress: function(uuid, percent){
-          //   jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
-          // },
-          success: function(asset){ 
+          progress: function(uuid, percent){
+            if(callback['progress']){ callback['progress'].call(this, uuid, percent); } 
+            // jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
+          },
+          success: function(response){ 
+            asset = new Asset();
+            asset.merge(response)
             Asset.add(asset);
-            var html = asset_template.interpolate(asset.attr(), 'mustache');
-            html.replace('#asset-' + asset.attr('uuid'));
-            // if(callback){ callback.call(this, asset); }  
+            
+            if(callback['success']){ callback['success'].call(this, asset); }  
           }
         });   
       });
@@ -208,10 +196,28 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
     params['folder_id'] = folder_id;
     
-    this.send_files(files, params, function(asset){
-      // console.log(asset.attr())
-      // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-      // html.prependTo('#assets');
+    this.send_files(files, params, {
+      before: function(asset){
+        var html = request.load(jQuery('script#admin-assets-loading')).interpolate({
+          uuid: asset.uuid,
+          title: asset.file_name.split('.')[0]
+        }, 'mustache');
+        html.appendTo('#assets');
+      },
+      progress: function(uuid, percent){
+        console.log(uuid)
+        console.log(percent)
+        
+        if(percent == 100){
+          setTimeout(function(){
+            jQuery('li#asset-' + uuid).remove();
+          }, 420)
+        }
+      },
+      success: function(asset){
+        var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+        html.appendTo('ul#assets');
+      }
     });
 
     return false; 
@@ -232,7 +238,6 @@ var Assets = Sammy(function (app) {
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);
-        console.log(asset.attr('folder_id'));
         request.trigger('render-index', { folder_id: asset.attr('folder_id') });
         request.renderFolderTree();
         request.trigger('render-asset', asset, query);

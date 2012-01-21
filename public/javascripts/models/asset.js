@@ -9,9 +9,9 @@ var Asset = Model('asset', function() {
   
   this.include({
     
-    initialize: function(){
-      this.attr('uuid', Asset.generate_uuid());
-    },
+    // initialize: function(){
+    //   this.attr('uuid', Asset.generate_uuid());
+    // },
     
     load: function(callback){
       var self = this;
@@ -49,35 +49,6 @@ var Asset = Model('asset', function() {
       return {
         'asset': assetAttr
       }
-    }, 
-    
-    // Uploads a file using ajax to an existing asset
-    upload: function(file, callback){
-      
-      var self = this,
-        url = '/admin/assets.json',
-        xhr = new XMLHttpRequest(),
-        query_params = JSON.stringify({ 'folder_id': self.attr('folder_id') });
-      
-      // Hack?
-      Asset.callback = callback;
-      
-      xhr.upload.uuid = self.attr('uuid');
-      console.log(self.attr('uuid'))
-      xhr.upload.filename = file.name;
-      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
-      xhr.upload.addEventListener('progress', Asset.onprogressHandler);
-      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
-      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
-      
-      // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-      xhr.open('POST', url, true);
-      xhr.setRequestHeader("Content-Type", "application/octet-stream");
-      xhr.setRequestHeader("X-File-Name", file.name);
-      xhr.setRequestHeader("X-Params", query_params);
-      xhr.setRequestHeader("X-File-Upload", "true");
-      xhr.send(file);   
-      if(callback['before']){ callback['before'].call(this, self); } 
     }
         
   }), 
@@ -153,6 +124,36 @@ var Asset = Model('asset', function() {
       });
     }, 
     
+    // Uploads a file using ajax to an existing asset
+    upload: function(params, callback){
+      
+      var self = this,
+        file = params['file'],
+        url = '/admin/assets.json',
+        xhr = new XMLHttpRequest(),
+        uuid = self.generate_uuid(),
+        query_params = JSON.stringify({ 'folder_id': params['folder_id'] });
+  
+      // Hack?
+      Asset.callback = callback;
+      
+      xhr.upload.uuid = uuid;
+      xhr.upload.filename = file.name;
+      xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
+      xhr.upload.addEventListener('progress', Asset.onprogressHandler);
+      xhr.upload.addEventListener('load', Asset.onloadHandler, false);
+      xhr.addEventListener('readystatechange', Asset.onreadystatechangeHandler, false);  
+      
+      // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader("Content-Type", "application/octet-stream");
+      xhr.setRequestHeader("X-File-Name", file.name);
+      xhr.setRequestHeader("X-Params", query_params);
+      xhr.setRequestHeader("X-File-Upload", "true");
+      xhr.send(file);   
+      if(callback['before']){ callback['before'].call(this, {uuid: uuid, file_name: file.name}); } 
+    },    
+    
     onloadstartHandler: function(evt) {
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
     },
@@ -173,13 +174,9 @@ var Asset = Model('asset', function() {
       
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
-        
         var response = JSON.parse(evt.target.responseText);
-        // var asset = new Asset({ id: response.id }); 
-        asset.merge(response);
-        // Asset.add(asset); 
 
-        if(Asset.callback['success']){ Asset.callback['success'].call(this, asset); }   
+        if(Asset.callback['success']){ Asset.callback['success'].call(this, response); }   
       }
     },
     

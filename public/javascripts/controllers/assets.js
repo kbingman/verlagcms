@@ -209,8 +209,10 @@ var Assets = Sammy(function (app) {
         // console.log(percent)
       },
       success: function(asset){
-        jQuery('li#asset-' + asset.attr('uuid')).remove();
-        var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+        
+        var html = Mustache.to_html(jQuery('script#admin-assets-asset').html(), asset.attr());
+        jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
+        // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
         html.appendTo('ul#assets');
       }
     });
@@ -267,18 +269,17 @@ var Assets = Sammy(function (app) {
   
   // Delete Asset
   // ---------------------------------------------  
-  app.del('/admin/assets/:id', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null; 
-    var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-    var asset = Asset.find(request.params['id']); 
+  app.del('/admin/assets/:id', function(request){    
+    var asset_id = request.params['id'];
+    var asset = Asset.find(asset_id); 
     var folder_id = asset.attr('folder_id'); 
-    // var redirect_path = query ? '/admin/assets' + query_path : '/admin/folders/' + folder_id;
-       
+     
+    jQuery('li#asset-' + asset_id).fadeOut('fast');
+    jQuery('.modal-strip').remove();  
+    
     asset.destroy(function(success){   
       if(success){  
         Utilities.notice('Asset removed'); 
-        jQuery('.modal-strip').remove();  
-        request.redirect('/admin/folders/' + folder_id); 
       }
     });
   });    

@@ -5,7 +5,10 @@ module Sinatra
     module Helpers  
       
       def image_types 
-        types = {'vnd.ms-opentype' => 'font','pdf' => 'pdf'}
+        types = {
+          'vnd.ms-opentype' => 'font',
+          'x-font-ttf' => 'font',
+          'pdf' => 'pdf'}
         types
       end
       
@@ -59,7 +62,7 @@ module Sinatra
           asset = Asset.find params[:id]
           status 200 
 
-          if asset.file_type.match(/image/) && (params['h'] || params['w'])
+          if asset.file_type.match(/image/) && !asset.file_type.match(/svg/) && (params['h'] || params['w'])
             content_type(asset.file_type)
             # image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
             image = MiniMagick::Image.read(asset.file.read)
@@ -67,7 +70,9 @@ module Sinatra
             image.to_blob
           elsif params['h'] || params['w']
             file_type = asset.file_type.split('/').last
-            icon_type = image_types[file_type]
+            
+            puts('file_type ' + file_type)
+            icon_type = image_types[file_type].blank? ? 'file' : image_types[file_type]
             
             # Makes an icon for non image files
             content_type 'image/png'

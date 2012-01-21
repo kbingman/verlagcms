@@ -108,6 +108,7 @@ class Main < Monk::Glue
     mime_type :mustache, 'text/mustache' 
     mime_type :'octet-stream', 'application/octet-stream'
     mime_type :otf, 'application/font'
+    mime_type :eot, 'application/font'
     mime_type :ttf, 'application/font'
     mime_type :woff, 'application/font' 
   end

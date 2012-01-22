@@ -2,6 +2,15 @@
   "bundle_dir": "public/javascripts/",
   "vendor_dir": "public/javascripts/vendor",
   "bundles": { 
+    "ace": [
+      "src/ace",
+      "src/theme-textmate",
+      "src/mode-javascript",
+      "src/mode-html",
+      "src/mode-css",
+      "src/mode-scss",
+      "src/mode-textile"
+    ],
     "admin": [      
       "vendor/jquery-1.6.2.min", 
       "vendor/jquery-ui-1.8.16.custom",

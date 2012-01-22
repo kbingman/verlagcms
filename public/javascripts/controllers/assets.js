@@ -48,31 +48,32 @@ var Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   app.bind('render-index', function(e, options){
-    var query = options.query;
-    var folder_id = options.folder_id;
-    var application = this;       
-    var assetPartial = jQuery('script#admin-assets-asset').html();
-    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate({
+    var query = options.query,
+      folder_id = options.folder_id,
+      application = this,  
+      assetPartial = jQuery('script#admin-assets-asset').html(),
+      html;
+
+    html = application.load(jQuery('script#admin-assets-index')).interpolate({
       assets: Asset.toMustache(query),  
       folder_id: folder_id, 
       query: query,
       partials: { asset: assetPartial }
     }, 'mustache');
-    assetIndex.replace('#editor').then(function(){
-      // Sets uploader to multiple if browser supports it
-      // jQuery('#ajax_uploader').attr('multiple','multiple'); 
     
-      // Upload Asset Form
+    html.replace('#editor').then(function(){
+      // Sets uploader to multiple if browser supports it
       jQuery('#ajax_uploader')
         .attr('multiple','multiple')
         .bind('change', function(e){
           jQuery(this).parents('form:first').submit();
         }); 
-      
+    
       application.trigger('set_draggable_assets');
       application.trigger('set_droppable_folders');
-      
     });
+    window.modal = false;
+
   });
   
   // Draggable assets
@@ -81,9 +82,6 @@ var Assets = Sammy(function (app) {
     jQuery('li.asset').draggable({  
       revert: true,    
       stack: '.asset' 
-      // start: function(){
-      //   // console.log('hey');
-      // }
     });
   });
   
@@ -228,6 +226,8 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
     
+    // Keeps index from reloading
+    window.modal = true;
     
     if(asset) {
       request.trigger('render-asset', asset, query);

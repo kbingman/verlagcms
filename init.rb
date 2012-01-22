@@ -12,16 +12,14 @@ def root_path(*args)
 end
 
 require 'rubygems'  
-require 'bundler/setup' 
 
-Bundler.setup
-
-# Monk and Sinatra
-# require 'monk/glue'
+# Sinatra
 require 'sinatra/base'   
 require 'sinatra/namespace' 
 require 'sinatra/reloader' 
 require 'sinatra/content_for'
+# require 'sinatra/respond_with'
+# require 'sinatra/config_file'
 
 # Warden / Login
 require 'warden'
@@ -64,7 +62,7 @@ require 'rabl'
 require 'yaml'
 
 def monk_settings(key)
-  $monk_settings ||= YAML.load_file(root_path("config", "settings.yml"))[RACK_ENV.to_sym]
+  $monk_settings ||= YAML.load_file(root_path('config', 'settings.yml'))[RACK_ENV.to_sym]
 
   unless $monk_settings.include?(key)
     message = "No setting defined for #{key.inspect}."

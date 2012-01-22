@@ -5956,6 +5956,10 @@ var Asset = Model('asset', function() {
   
   this.include({
     
+    // initialize: function(){
+    //   this.attr('uuid', Asset.generate_uuid());
+    // },
+    
     load: function(callback){
       var self = this;
       var url = '/admin/assets/' + self.id()  + '.json';   
@@ -5993,6 +5997,7 @@ var Asset = Model('asset', function() {
         'asset': assetAttr
       }
     }
+        
   }), 
   
   this.extend({
@@ -6002,7 +6007,6 @@ var Asset = Model('asset', function() {
         return this.attr('folder_id') == folder_id
       });
     },
-    
     
     // returns a json array of all assets, including the query and query_path
     toMustache: function(query) {
@@ -6065,22 +6069,23 @@ var Asset = Model('asset', function() {
           callback.call(this);
         }
       });
-    },
+    }, 
     
-    keys: {},
-    
-    // Ajax uploader code
-    create: function (params, callback) { 
-      var file = params['file'],
+    // Uploads a file using ajax to an existing asset
+    upload: function(params, callback){
+      
+      var self = this,
+        file = params['file'],
         url = '/admin/assets.json',
         xhr = new XMLHttpRequest(),
-        uuid = Asset.generate_uuid(),
+        uuid = self.generate_uuid(),
         query_params = JSON.stringify({ 'folder_id': params['folder_id'] });
-      
+  
+      // Hack?
       Asset.callback = callback;
       
       xhr.upload.uuid = uuid;
-      xhr.upload.filename = file.name
+      xhr.upload.filename = file.name;
       xhr.upload.addEventListener('loadstart', Asset.onloadstartHandler, false);
       xhr.upload.addEventListener('progress', Asset.onprogressHandler);
       xhr.upload.addEventListener('load', Asset.onloadHandler, false);
@@ -6093,8 +6098,8 @@ var Asset = Model('asset', function() {
       xhr.setRequestHeader("X-Params", query_params);
       xhr.setRequestHeader("X-File-Upload", "true");
       xhr.send(file);   
-      if(callback['before']){ callback['before'].call(this, uuid); } 
-    },  
+      if(callback['before']){ callback['before'].call(this, {uuid: uuid, file_name: file.name}); } 
+    },    
     
     onloadstartHandler: function(evt) {
       // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
@@ -6116,13 +6121,10 @@ var Asset = Model('asset', function() {
       
       // readyState 4 means that the request is finished
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
-        
         var response = JSON.parse(evt.target.responseText);
-        var asset = new Asset({ id: response.id }); 
-        asset.merge(response);
-        Asset.add(asset); 
+        response.uuid = evt.target.upload.uuid;
 
-        if(Asset.callback['success']){ Asset.callback['success'].call(this, asset); }   
+        if(Asset.callback['success']){ Asset.callback['success'].call(this, response); }   
       }
     },
     
@@ -7652,16 +7654,22 @@ var Assets = Sammy(function (app) {
     send_files: function(files, params, callback){
       var application = this;
       var counter = 0;
+
       jQuery.each(files, function(i, file){
-        Asset.create({ file: file, folder_id: params['folder_id'] }, {
-          before: function(uuid){
-            jQuery('.progress').append('<p id="progress-' + uuid + '">' + file.name + '<span class="percentage"></span></p>');
+        Asset.upload({file: file, folder_id: params.folder_id}, {
+          before: function(asset){
+            if(callback['before']){ callback['before'].call(this, asset); }  
           },
           progress: function(uuid, percent){
-            jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
+            if(callback['progress']){ callback['progress'].call(this, uuid, percent); } 
+            // jQuery('#progress-' + uuid + ' .percentage').text(' ' + percent + '%');
           },
-          success: function(asset){ 
-            if(callback){ callback.call(this, asset); }  
+          success: function(response){ 
+            asset = new Asset();
+            asset.merge(response)
+            Asset.add(asset);
+            
+            if(callback['success']){ callback['success'].call(this, asset); }  
           }
         });   
       });
@@ -7684,31 +7692,32 @@ var Assets = Sammy(function (app) {
   // Asset Index
   // ---------------------------------------------
   app.bind('render-index', function(e, options){
-    var query = options.query;
-    var folder_id = options.folder_id;
-    var application = this;       
-    var assetPartial = jQuery('script#admin-assets-asset').html();
-    var assetIndex = application.load(jQuery('script#admin-assets-index')).interpolate({
+    var query = options.query,
+      folder_id = options.folder_id,
+      application = this,  
+      assetPartial = jQuery('script#admin-assets-asset').html(),
+      html;
+
+    html = application.load(jQuery('script#admin-assets-index')).interpolate({
       assets: Asset.toMustache(query),  
       folder_id: folder_id, 
       query: query,
       partials: { asset: assetPartial }
     }, 'mustache');
-    assetIndex.replace('#editor').then(function(){
-      // Sets uploader to multiple if browser supports it
-      // jQuery('#ajax_uploader').attr('multiple','multiple'); 
     
-      // Upload Asset Form
+    html.replace('#editor').then(function(){
+      // Sets uploader to multiple if browser supports it
       jQuery('#ajax_uploader')
         .attr('multiple','multiple')
         .bind('change', function(e){
           jQuery(this).parents('form:first').submit();
         }); 
-      
+    
       application.trigger('set_draggable_assets');
       application.trigger('set_droppable_folders');
-      
     });
+    window.modal = false;
+
   });
   
   // Draggable assets
@@ -7717,9 +7726,6 @@ var Assets = Sammy(function (app) {
     jQuery('li.asset').draggable({  
       revert: true,    
       stack: '.asset' 
-      // start: function(){
-      //   // console.log('hey');
-      // }
     });
   });
   
@@ -7832,10 +7838,25 @@ var Assets = Sammy(function (app) {
     params['page'] = request.params['page'] || 1;
     params['folder_id'] = folder_id;
     
-    this.send_files(files, params, function(asset){
-      // console.log(asset.attr())
-      var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-      html.prependTo('#assets');
+    this.send_files(files, params, {
+      before: function(asset){
+        var html = request.load(jQuery('script#admin-assets-loading')).interpolate({
+          uuid: asset.uuid,
+          title: asset.file_name.split('.')[0]
+        }, 'mustache');
+        html.appendTo('#assets');
+      },
+      progress: function(uuid, percent){
+        // console.log(uuid)
+        // console.log(percent)
+      },
+      success: function(asset){
+        
+        var html = Mustache.to_html(jQuery('script#admin-assets-asset').html(), asset.attr());
+        jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
+        // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
+        html.appendTo('ul#assets');
+      }
     });
 
     return false; 
@@ -7849,6 +7870,8 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
     
+    // Keeps index from reloading
+    window.modal = true;
     
     if(asset) {
       request.trigger('render-asset', asset, query);
@@ -7856,7 +7879,6 @@ var Assets = Sammy(function (app) {
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);
-        console.log(asset.attr('folder_id'));
         request.trigger('render-index', { folder_id: asset.attr('folder_id') });
         request.renderFolderTree();
         request.trigger('render-asset', asset, query);
@@ -7891,18 +7913,17 @@ var Assets = Sammy(function (app) {
   
   // Delete Asset
   // ---------------------------------------------  
-  app.del('/admin/assets/:id', function(request){   
-    var query = request.params['query'] ? request.params['query'] : null; 
-    var query_path = query ? '?' + decodeURIComponent(jQuery.param({'query': query})) : '';  
-    var asset = Asset.find(request.params['id']); 
+  app.del('/admin/assets/:id', function(request){    
+    var asset_id = request.params['id'];
+    var asset = Asset.find(asset_id); 
     var folder_id = asset.attr('folder_id'); 
-    // var redirect_path = query ? '/admin/assets' + query_path : '/admin/folders/' + folder_id;
-       
+     
+    jQuery('li#asset-' + asset_id).fadeOut('fast');
+    jQuery('.modal-strip').remove();  
+    
     asset.destroy(function(success){   
       if(success){  
         Utilities.notice('Asset removed'); 
-        jQuery('.modal-strip').remove();  
-        request.redirect('/admin/folders/' + folder_id); 
       }
     });
   });    
@@ -7949,6 +7970,7 @@ var Folders = Sammy(function (app) {
   // Show Folder
   // ---------------------------------------------
   app.get('/admin/folders/:id', function(request){ 
+    
     jQuery('#overlay').remove();
     var folder_id = request.params['id'];
     var folder = Folder.find(folder_id);
@@ -7957,11 +7979,13 @@ var Folders = Sammy(function (app) {
       jQuery('#folder-' + folder_id).addClass('active');
     });
     
-    // var assets = Asset.find_all_by_folder_id(folderId);
-    folder.loadAssets(function(){
-      request.trigger('render-index', { folder_id: folder.id() });
-    });
-  
+    if(!window.modal){
+      // var assets = Asset.find_all_by_folder_id(folderId);
+      folder.loadAssets(function(){
+        request.trigger('render-index', { folder_id: folder.id() });
+      }); 
+    }
+    window.modal = false;
   });  
   
   // Create Folder

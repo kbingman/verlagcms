@@ -39,6 +39,7 @@ var Folders = Sammy(function (app) {
   // Show Folder
   // ---------------------------------------------
   app.get('/admin/folders/:id', function(request){ 
+    
     jQuery('#overlay').remove();
     var folder_id = request.params['id'];
     var folder = Folder.find(folder_id);
@@ -47,11 +48,13 @@ var Folders = Sammy(function (app) {
       jQuery('#folder-' + folder_id).addClass('active');
     });
     
-    // var assets = Asset.find_all_by_folder_id(folderId);
-    folder.loadAssets(function(){
-      request.trigger('render-index', { folder_id: folder.id() });
-    });
-  
+    if(!window.modal){
+      // var assets = Asset.find_all_by_folder_id(folderId);
+      folder.loadAssets(function(){
+        request.trigger('render-index', { folder_id: folder.id() });
+      }); 
+    }
+    window.modal = false;
   });  
   
   // Create Folder

@@ -1,0 +1,4 @@
+.bundle
+*.rbc
+.rbx/*
+*.gem

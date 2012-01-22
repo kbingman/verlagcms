@@ -207,11 +207,12 @@ var Assets = Sammy(function (app) {
         // console.log(percent)
       },
       success: function(asset){
-        
         var html = Mustache.to_html(jQuery('script#admin-assets-asset').html(), asset.attr());
-        jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
-        // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-        html.appendTo('ul#assets');
+        var image = jQuery('<img />').attr('src', '/images/' + asset.id() + '/' + asset.attr('file_name'));
+        
+        image.load(function(){
+          jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
+        });
       }
     });
 

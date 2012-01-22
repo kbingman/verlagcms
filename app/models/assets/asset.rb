@@ -170,7 +170,7 @@ class Asset
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:only => [:id, :created_at, :file_name,  :folder_id, :title], :methods => [:tag_list, :admin_path]) #:artist_id, 
+    super(:only => [:id, :created_at, :file_name,  :folder_id, :title], :methods => [:tag_list, :admin_path, :image_path]) #:artist_id, 
   end
   
   # Tags

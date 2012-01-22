@@ -1,7 +1,7 @@
 class Main    
   
-  module Admin 
-    module Files 
+  namespace '/admin' do
+    namespace '/files' do
       
       # Create file
       # -------------------------------------------
@@ -26,13 +26,13 @@ class Main
       
     end
     
-    module Templates 
+    namespace '/templates' do
       
       # Create layout
       # -------------------------------------------
       post '' do 
         klass = params[:layout][:klass].titlecase.constantize
-        logger.debug("Klass: #{klass}")   
+        # logger.debug("Klass: #{klass}")   
         template = klass.new(params[:layout]) 
         template.site = current_site
         
@@ -42,7 +42,7 @@ class Main
             format.json { template.to_json }
           end
         else   
-          logger.info(template.errors.inspect)  
+          # logger.info(template.errors.inspect)  
           { :errors => template.errors }.to_json
         end
       end

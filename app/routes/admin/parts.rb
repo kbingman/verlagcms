@@ -1,7 +1,7 @@
 class Main   
   
-  module Admin 
-    module Pages 
+  namespace '/admin' do
+    namespace '/pages' do
       
       # Edit Page Parts
       # -------------------------------------------

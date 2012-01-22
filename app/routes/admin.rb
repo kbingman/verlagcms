@@ -12,7 +12,7 @@ class Main
   
   # Site admin interface  
   # -------------------------------------------  
-  module Admin    
+  namespace '/admin' do   
     before do
       # TODO better way to override authorization
       authenticate! unless request.path.match(/^\/admin\/css\//)

@@ -4,7 +4,7 @@ class Main
   # Override these by simply adding a matching route above them
   # -------------------------------------------
   
-  module Admin 
+  namespace '/admin' do
       
     # Index
     # -------------------------------------------

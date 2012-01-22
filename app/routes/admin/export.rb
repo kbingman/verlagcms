@@ -1,7 +1,7 @@
 class Main    
   
-  module Admin  
-    module Export  
+  namespace '/admin' do 
+    namespace '/export' do
       
       get '/?' do
         respond_to do |format|

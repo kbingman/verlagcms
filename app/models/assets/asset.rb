@@ -41,8 +41,6 @@ class Asset
   
   timestamps!   
   
-  liquid_methods :title, :image_path, :thumb_path, :find, :id_string, :tag_list
-  
   # Valiations
   # ----------------------------------------
   # validates :title, :uniqueness => { :scope => :site_id }

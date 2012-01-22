@@ -14,8 +14,6 @@ class Part
   
   # validates :name, :uniqueness => true
   
-  liquid_methods :name, :content, :render, :id 
-  
   def admin_path
    "/admin/pages/#{self.page.id}/parts/#{self.id}" 
   end

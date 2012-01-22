@@ -1,36 +1,44 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
+RACK_ENV = ENV['RACK_ENV'] ||= 'development' unless defined? RACK_ENV
+# ROOT_DIR = $0 unless defined? ROOT_DIR
+
+# Helper method for file references.
+#
+# @param args [Array] Path components relative to ROOT_DIR.
+# @example Referencing a file in config called settings.yml:
+#   root_path("config", "settings.yml")
+def root_path(*args)
+  File.join(ROOT_DIR, *args)
+end
 
 require 'rubygems'  
 require 'bundler/setup' 
 
 Bundler.setup
 
-# # Monk and Sinatra
-require 'monk/glue'
-# require 'sinatra/base' 
-# require 'sinatra/advanced_routes'  
-require 'sinatra/namespace'   
-# 
-# # Warden / Login
+# Monk and Sinatra
+# require 'monk/glue'
+require 'sinatra/base'   
+require 'sinatra/namespace' 
+require 'sinatra/reloader' 
+
+# Warden / Login
 require 'warden'
 require 'bcrypt'
-# 
-# # Sinatra Extensions
+
+# Sinatra Extensions
 require './lib/sinatra/basic_auth'
-require './lib/sinatra/respond_to'  
-require './lib/sinatra/logger' 
+require './lib/sinatra/respond_to' 
 require './lib/sinatra/images' 
 require './lib/sinatra/files'
 require './lib/sinatra/get_subdomain' 
-
 require './lib/rack/subdomains'
-require './lib/hunt/search_all'
-# # require './lib/sinatra/rest_controller'
-# 
+
 # # Mongo stuff
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
+require './lib/hunt/search_all'
 require 'mongo_mapper_acts_as_tree'
 require 'canable'
 
@@ -44,7 +52,6 @@ require 'rack/no_varnish'
 # Templating
 require 'mustache/sinatra'
 require 'haml' 
-require 'liquid' 
 require 'RedCloth' 
 require 'rabl'
 # require 'active_support/core_ext'
@@ -53,8 +60,29 @@ require 'rabl'
 # # require 'jim'
 # 
 
+require 'yaml'
 
-class Main < Monk::Glue
+def monk_settings(key)
+  $monk_settings ||= YAML.load_file(root_path("config", "settings.yml"))[RACK_ENV.to_sym]
+
+  unless $monk_settings.include?(key)
+    message = "No setting defined for #{key.inspect}."
+    # defined?(logger) ? logger.warn(message) : $stderr.puts(message)
+  end
+
+  $monk_settings[key]
+end
+
+class Main < Sinatra::Base
+
+  set :dump_errors, true
+  set :logging, true
+  set :methodoverride, true
+  set :raise_errors, Proc.new { test? }
+  set :root, root_path
+  set :run, Proc.new { $0 == app_file }
+  set :show_exceptions, Proc.new { development? }
+  set :static, true
 
   set :app_file, __FILE__    
   set :views, root_path('app', 'views') 
@@ -92,17 +120,20 @@ class Main < Monk::Glue
   
   # use Jim::Rack, :bundle_uri => '/js/'
   
-  # Extensions    
-  register Sinatra::Namespace  
+  # Extensions     
+  register Sinatra::Namespace
+  register Sinatra::RespondTo 
+  # register Sinatra::Logger  
   register Sinatra::BasicAuth 
-  register Sinatra::Logger 
-  register Sinatra::RespondTo  
   register Sinatra::Images 
   register Sinatra::Files 
   register Sinatra::GetSubdomain 
-  # register Sinatra::AdvancedRoutes 
-  # register Mustache::Sinatra
+
   Rabl.register!
+  
+  configure :development do
+    register Sinatra::Reloader
+  end
 
   configure do
     mime_type :mustache, 'text/mustache' 
@@ -128,7 +159,7 @@ if ENV['MONGOHQ_URL']
 else
   puts "Using local database" 
   MongoMapper.database = monk_settings(:mongo)[:database]
-  MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil, :logger => logger)
+  MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil)# , :logger => logger
 end
 
 # Models

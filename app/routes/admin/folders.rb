@@ -1,7 +1,7 @@
 class Main   
   
-  module Admin 
-    module Folders 
+  namespace '/admin' do
+    namespace '/folders' do
       
       # Assets by folder
       # -------------------------------------------

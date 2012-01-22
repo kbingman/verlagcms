@@ -74,10 +74,7 @@ class Main
     else   
       raise Sinatra::NotFound   
     end
-    # page.template.content
   end    
-  
-
   
   error 404 do   
     # TODO Build custom pages
@@ -89,7 +86,7 @@ class Main
     # Error logging
     e = request.env['sinatra.error']
     info = "Application error\n#{e}\n#{e.backtrace.join("\n")}"
-    logger.error info
+    # logger.error info
     haml :'errors/500'     
   end
   

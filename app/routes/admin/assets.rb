@@ -1,7 +1,7 @@
 class Main    
   
-  module Admin  
-    module Assets  
+  namespace '/admin' do 
+    namespace '/assets' do
       
       # Asset Index
       # -------------------------------------------

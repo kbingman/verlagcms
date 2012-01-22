@@ -1,7 +1,7 @@
 class Main    
   
-  module Admin 
-    module Sites
+  namespace '/admin' do
+    namespace '/sites' do
       
       # site Index
       # -------------------------------------------

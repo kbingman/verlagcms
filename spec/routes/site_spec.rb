@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/site" do
+describe 'routes/site' do
   include Rack::Test::Methods   
   
   before(:all) do  

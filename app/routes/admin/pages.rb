@@ -1,7 +1,7 @@
 class Main    
   
-  module Admin 
-    module Pages 
+  namespace '/admin' do
+    namespace '/pages' do
       
       # Page Index
       # -------------------------------------------
@@ -91,7 +91,6 @@ class Main
             format.json { page.to_json }
           end 
         else
-          logger.debug "Page errors: #{page.errors}"
           respond_to do |format|
             format.html { redirect("/admin/pages/#{page.id}/edit") }
             format.json do

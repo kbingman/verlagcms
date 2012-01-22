@@ -1,5 +1,5 @@
 class Main 
-  module Admin 
+  namespace '/admin' do 
   
     get '/css/:stylesheet' do 
       cache_request(3600) # One Hour cache    

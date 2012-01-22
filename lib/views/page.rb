@@ -26,7 +26,7 @@ class Main
         if part == 'data'
           part_name = name.to_s.split('_')[1]
           method = name.to_s.split('_')[2]
-          puts "Method: #{method}"
+          # puts "Method: #{method}"
           part = @global_page.find_part_by_name(part_name)
           
           if part && method

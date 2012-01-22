@@ -1,8 +1,8 @@
 class Main
   helpers do
     def enforce_update_permission(resource)
-      logger.debug('update')
-      logger.debug("Canable: #{current_user.can_update?(resource)}")
+      # logger.debug('update')
+      # logger.debug("Canable: #{current_user.can_update?(resource)}")
       raise Canable::Transgression unless current_user.can_update?(resource)
     end
     

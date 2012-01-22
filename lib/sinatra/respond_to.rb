@@ -42,7 +42,7 @@ module Sinatra
         # HACK until I figure out what is sending this...      
         ext = ext == 'x-www-form-urlencoded' ? 'html' : ext 
         
-        self.format = (ext || options.default_content_type).to_sym
+        self.format = (ext || settings.default_content_type).to_sym
         content_type format 
       end
           

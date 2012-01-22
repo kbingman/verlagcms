@@ -1,13 +1,11 @@
 source "http://rubygems.org"
 
-gem 'rack', '~> 1.3.4' 
+gem 'rack', '~> 1.4.0' 
 gem 'sinatra', '1.3.1' 
 gem 'tilt', '~> 1.3' 
-gem 'sinatra-namespace', :path => 'vendor/sinatra-namespace' #, :git => 'https://github.com/rkh/sinatra-namespace.git' 
-# gem 'sinatra-advanced-routes'
+gem 'sinatra-contrib', :git => 'https://github.com/sinatra/sinatra-contrib.git' 
 gem 'thin' 
-gem 'monk-glue', :git => 'https://github.com/monkrb/glue.git' 
-gem 'rack-cache'
+
 # gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
 # gem 'hike' ,'~> 1.2.1'
 
@@ -16,7 +14,6 @@ gem 'bcrypt-ruby'
 
 # Mongomapper and plugins
 gem 'mongo_mapper', :git => 'https://github.com/jnunemaker/mongomapper.git'
-# gem 'mongo_mapper', :path => 'vendor/mongomapper'
 gem 'mongo_ext', :require => 'mongo'
 gem 'mongo', '1.3'
 gem 'bson', '1.3'
@@ -34,15 +31,12 @@ gem 'haml'
 gem 'sass'
 gem 'rabl', :git => 'https://github.com/nesquena/rabl.git'
 gem 'mustache', :git => 'https://github.com/defunkt/mustache.git'
-gem 'liquid' 
 gem 'RedCloth' 
 
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
 gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
-
-gem 'memcached'
 
 group :production do 
   

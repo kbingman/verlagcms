@@ -3,7 +3,7 @@ class Main
   # Public API for Assets
   # -------------------------------------------
   
-  module Api 
+  namespace '/api' do
     
     helpers do
   

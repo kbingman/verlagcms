@@ -1,7 +1,7 @@
 class Main   
   
-  module Admin 
-    module Templates
+  namespace '/admin' do
+    namespace '/templates' do
 
       # Create Page Type 
       # -------------------------------------------

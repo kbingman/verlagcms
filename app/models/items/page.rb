@@ -71,41 +71,6 @@ class Page
   scope :all_roots, lambda { where(:parent_id => nil) } 
   scope :by_site,  lambda { |site| where(:site_id => site.id) } 
   
-   
-  # Liquid Stuff
-  # ----------------------------------------
-  # def data request = nil 
-  #   DataProxy.new self, request
-  # end
-  # 
-  # def recent request = nil 
-  #   RecentProxy.new self
-  # end
-  # 
-  # def to_liquid
-  #   PageDrop.new(self)
-  # end
-  
-  # def render format='html', request=nil 
-  #   if format.to_s == 'json'  
-  #     self.to_json
-  #   else 
-  #     template = Liquid::Template.parse(self.layout.content)
-  #     template.render({
-  #       'page' => PageDrop.new(self, request), 
-  #       'site' => SiteDrop.new(self.site, request), 
-  #       'request' => RequestDrop.new(request),  
-  #       # TOTO move this into a page subclass?
-  #       'search' => SearchDrop.new(self.site, request),
-  #       'registers' => { 'page_id' => self.id.to_s, 'site_id' => self.site_id.to_s }
-  #     })
-  #   end
-  # end
-  # liquid_methods :title, :path, :assets, :children, :data, :parts 
-  # def to_liquid request = nil   
-  #   PageDrop.new self, request
-  # end
-  
   
   # Page Tree
   # ----------------------------------------

@@ -1,5 +1,5 @@
 class Main    
-  module Admin  
+  namespace '/admin' do
       
     # Activity Index
     # -------------------------------------------

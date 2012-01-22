@@ -3,7 +3,7 @@ source "http://rubygems.org"
 gem 'rack', '~> 1.4.0' 
 gem 'sinatra', '1.3.1' 
 gem 'tilt', '~> 1.3' 
-gem 'sinatra-contrib', :git => 'https://github.com/sinatra/sinatra-contrib.git' 
+gem 'sinatra-contrib' #, :git => 'https://github.com/sinatra/sinatra-contrib.git' 
 gem 'thin' 
 
 # gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'

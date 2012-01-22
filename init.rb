@@ -21,6 +21,7 @@ Bundler.setup
 require 'sinatra/base'   
 require 'sinatra/namespace' 
 require 'sinatra/reloader' 
+require 'sinatra/content_for'
 
 # Warden / Login
 require 'warden'
@@ -128,6 +129,9 @@ class Main < Sinatra::Base
   register Sinatra::Images 
   register Sinatra::Files 
   register Sinatra::GetSubdomain 
+  
+  # Helpers  
+  helpers Sinatra::ContentFor
 
   Rabl.register!
   

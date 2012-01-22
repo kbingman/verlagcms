@@ -63,7 +63,7 @@
         
       
     -# This is where the mustache templates are rendered  
-    = content :head
+    = yield_content :head
 
 
   %body
@@ -82,7 +82,7 @@
             -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
             %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
             %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
-        = content :header
+        = yield_content :header
       #content 
         = yield  
         %noscript

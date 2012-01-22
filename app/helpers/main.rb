@@ -78,14 +78,14 @@ class Main
     end
     
     # Provides content_for and matching content tags for sinatra views
-    def content_for(key, &block)
-      @content ||= {}
-      @content[key] = capture_haml(&block)
-    end
-    
-    def content(key)
-      @content && @content[key]
-    end  
+    # def content_for(key, &block)
+    #   @content ||= {}
+    #   @content[key] = capture_haml(&block)
+    # end
+    # 
+    # def content(key)
+    #   @content && @content[key]
+    # end  
     
     def sidebar_toggled?
       request.cookies['sidebar_toggled']

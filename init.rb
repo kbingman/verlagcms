@@ -33,7 +33,7 @@ require './lib/sinatra/files'
 require './lib/sinatra/get_subdomain' 
 require './lib/rack/subdomains'
 
-# # Mongo stuff
+# Mongo stuff
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'

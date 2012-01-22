@@ -157,7 +157,7 @@ class Asset
   end   
   
   def ext
-    self.file_name.split('.').last
+    self.file_name.split('.').last if self.file_name
   end
   
   def is_image

@@ -6,8 +6,9 @@ describe Asset do
     teardown      
     @group = Factory(:group)
     @site = Factory(:site, :group => @group)
+    @folder = Factory(:folder, :site => @site)
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id) 
+    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id, :folder_id => @folder.id) 
     @asset.save  
   end
   
@@ -44,10 +45,10 @@ describe Asset do
         :file_name => @asset.file_name,
         :ext => @asset.ext,
         :id => @asset.id.to_s, 
-        :folder_id => nil, 
+        :folder_id => @folder.id, 
         :is_image => true,
         :image_path => "/images/#{@asset.id}/#{@asset.file_name}",
-        :admin_path => "/admin/assets/#{@asset.id}",
+        :admin_path => "/admin/folders/#{@folder.id}/assets/#{@asset.id}",
         :created_at => @asset.created_at
       }.to_json)
     end

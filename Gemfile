@@ -18,7 +18,7 @@ gem 'mongo_ext', :require => 'mongo'
 gem 'mongo', '1.3'
 gem 'bson', '1.3'
 gem 'bson_ext', '1.3'  
-gem 'hunt', :git => 'https://github.com/jnunemaker/hunt.git'
+gem 'hunt', '~> 0.4'  #:git => 'https://github.com/jnunemaker/hunt.git'
 gem 'fast-stemmer', '~> 1.0'
 gem 'joint', '~> 0.6.0' # :git => 'https://github.com/jnunemaker/joint.git'
 gem 'mongo_mapper_acts_as_tree', '~> 0.3.3' # :git => 'https://github.com/bogn/mongo_mapper_acts_as_tree.git'
@@ -29,14 +29,14 @@ gem 'mini_magick'
 
 gem 'haml'  
 gem 'sass'
-gem 'rabl', :git => 'https://github.com/nesquena/rabl.git'
-gem 'mustache', :git => 'https://github.com/defunkt/mustache.git'
+gem 'rabl', '~> 0.3.0' # :git => 'https://github.com/nesquena/rabl.git'
+gem 'mustache', '~> 0.99.4' # :git => 'https://github.com/defunkt/mustache.git'
 gem 'RedCloth' 
 
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
-gem 'rack-raw-upload', :git => 'https://github.com/newbamboo/rack-raw-upload.git'
+gem 'rack-raw-upload', :path => 'vendor/rack-raw-upload'
 
 group :production do 
   

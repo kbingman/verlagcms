@@ -12,14 +12,15 @@ def root_path(*args)
 end
 
 require 'rubygems'  
+require 'bundler/setup' 
+Bundler.setup
 
-# Sinatra
+# Monk and Sinatra
+# require 'monk/glue'
 require 'sinatra/base'   
 require 'sinatra/namespace' 
 require 'sinatra/reloader' 
 require 'sinatra/content_for'
-# require 'sinatra/respond_with'
-# require 'sinatra/config_file'
 
 # Warden / Login
 require 'warden'
@@ -33,7 +34,7 @@ require './lib/sinatra/files'
 require './lib/sinatra/get_subdomain' 
 require './lib/rack/subdomains'
 
-# Mongo stuff
+# # Mongo stuff
 require 'mongo_mapper'
 require 'joint'
 require 'hunt'
@@ -62,7 +63,7 @@ require 'rabl'
 require 'yaml'
 
 def monk_settings(key)
-  $monk_settings ||= YAML.load_file(root_path('config', 'settings.yml'))[RACK_ENV.to_sym]
+  $monk_settings ||= YAML.load_file(root_path("config", "settings.yml"))[RACK_ENV.to_sym]
 
   unless $monk_settings.include?(key)
     message = "No setting defined for #{key.inspect}."
@@ -128,7 +129,7 @@ class Main < Sinatra::Base
   register Sinatra::Files 
   register Sinatra::GetSubdomain 
   
-  # Helpers  
+  # H  
   helpers Sinatra::ContentFor
 
   Rabl.register!

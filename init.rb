@@ -46,7 +46,6 @@ require 'canable'
 require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
-require 'rack/no_varnish'
 # require 'memcached'
 
 # Templating
@@ -129,7 +128,7 @@ class Main < Sinatra::Base
   register Sinatra::Files 
   register Sinatra::GetSubdomain 
   
-  # H  
+  # Helpers
   helpers Sinatra::ContentFor
 
   Rabl.register!

@@ -57,6 +57,31 @@ var Folders = Sammy(function (app) {
     window.modal = false;
   });  
   
+  
+  // Edit Asset 
+  // ---------------------------------------------  
+  app.get('/admin/folders/:folder_id/assets/:id/edit', function(request){
+    jQuery('#overlay').remove();
+    var folder = Folder.find(request.params['folder_id']);  
+    var asset = Asset.find(request.params['id']);
+
+    // Keeps index from reloading
+    window.modal = true;
+    
+    if(asset) {
+      request.trigger('render-asset', asset);
+    } else {  
+      // Loads asset if the current collection does not contain it
+      folder.loadAssets(function(){
+        asset = Asset.find(request.params['id']);
+        
+        request.renderFolderTree();
+        request.trigger('render-index', { folder_id: folder.id() });
+        request.trigger('render-asset', asset);
+      }); 
+    }                                                                         
+  });
+  
   // Create Folder
   // ---------------------------------------------  
   this.post('/admin/folders', function(request){

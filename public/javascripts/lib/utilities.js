@@ -75,17 +75,32 @@ var Utilities = {
     if(!container.length){ return }
 
     Loader.start();
+
     var img = container.find('img');
-    
-    setTimeout(function(){
-      if(container.height() < 20){
-        img.load(function(){
+    if(img.length){
+      setTimeout(function(){
+        if(container.height() < 20){
+          img.load(function(){
+            self.resizeModal(img, container, callback);
+          });
+        } else {
           self.resizeModal(img, container, callback);
-        });
-      } else {
-        self.resizeModal(img, container, callback);
-      }
-    }, 13);
+        }
+      }, 13);
+    } else {
+      // if there is no image. This needs to move to a function
+      var docWidth = jQuery(window).width();
+      var docHeight = jQuery(window).height();
+      
+      container.css({
+        'width': '640px',
+        'height': '480px',
+        'margin-top': (docHeight - 540)/2 + 'px'
+      });
+      Loader.stop();
+      if(callback){ callback.call(this); }
+    }
+
   },
   
   resizeModal: function(img, container, callback){

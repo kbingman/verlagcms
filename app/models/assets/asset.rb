@@ -24,9 +24,6 @@ class Asset
   key :site_id, ObjectId, :required => true
   belongs_to :site, :foreign_key => :site_id 
   scope :by_site, lambda { |site| where(:site_id => site.id) }
-
-  # key :story_id, ObjectId
-  # belongs_to :story, :foreign_key => :story_id
   
   key :folder_id, ObjectId
   belongs_to :folder, :foreign_key => :folder_id
@@ -147,7 +144,7 @@ class Asset
   #   end
   # end
   
-  def image_path(name='original')
+  def image_path
     "/images/#{self.id}/#{self.file_name}" 
   end
   
@@ -159,18 +156,29 @@ class Asset
     "/images/icon/#{self.id}/#{self.file_name}" 
   end   
   
+  def ext
+    self.file_name.split('.').last
+  end
+  
+  def is_image
+    self.file_type.match(/image/) && !self.file_type.match(/svg/) ? true : false
+  end
+  
   def id_string
     self.id.to_s
   end
   
   def admin_path
-    "/admin/assets/#{self.id}"
+    "/admin/folders/#{self.folder_id}/assets/#{self.id}"
   end
   
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:only => [:id, :created_at, :file_name,  :folder_id, :title], :methods => [:tag_list, :admin_path, :image_path]) #:artist_id, 
+    super(
+      :only => [ :id, :created_at, :file_name,  :folder_id, :title ], 
+      :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
+    )
   end
   
   # Tags

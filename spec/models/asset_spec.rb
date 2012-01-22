@@ -42,8 +42,11 @@ describe Asset do
         :title => "Image",
         :tag_list =>'tag1, tag2', 
         :file_name => @asset.file_name,
+        :ext => @asset.ext,
         :id => @asset.id.to_s, 
         :folder_id => nil, 
+        :is_image => true,
+        :image_path => "/images/#{@asset.id}/#{@asset.file_name}",
         :admin_path => "/admin/assets/#{@asset.id}",
         :created_at => @asset.created_at
       }.to_json)
@@ -103,6 +106,14 @@ describe Asset do
     
     it 'should set the image type' do
       @asset.file_type.should == 'image/jpeg'
+    end
+    
+    it 'returns a file extension' do
+      @asset.ext.should == 'jpg'
+    end
+    
+    it 'returns whether the file is an image (resizable)' do
+      @asset.is_image.should == true
     end
     
     it 'should have an image path' do

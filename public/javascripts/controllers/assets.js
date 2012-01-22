@@ -227,12 +227,15 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
     
+    
     // Keeps index from reloading
     window.modal = true;
     
     if(asset) {
+      
       request.trigger('render-asset', asset, query);
     } else {  
+      alert('hey')
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);

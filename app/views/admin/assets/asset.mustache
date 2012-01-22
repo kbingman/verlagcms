@@ -1,7 +1,12 @@
 <li id="asset-{{id}}" class="asset">
   <div class="image">
     <a href="{{admin_path}}/edit{{query_path}}" id="edit-asset-{{id}}">
-      <img src="/images/{{id}}/{{file_name}}?w=240&amp;h=180&amp;c=t&amp;g=North" alt="{{title}}" />
+    {{# is_image }}
+      <img src="{{image_path}}?w=240&amp;h=180&amp;c=t&amp;g=North" alt="{{title}}" />
+    {{/ is_image }}
+    {{^ is_image }}
+      {{ ext }}
+    {{/ is_image }}
     </a>
   </div>
   <p>{{title}}<br />

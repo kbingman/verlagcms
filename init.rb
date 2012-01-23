@@ -74,15 +74,6 @@ end
 
 class Main < Sinatra::Base
 
-  set :dump_errors, true
-  set :logging, true
-  set :methodoverride, true
-  set :raise_errors, Proc.new { test? }
-  set :root, root_path
-  set :run, Proc.new { $0 == app_file }
-  set :show_exceptions, Proc.new { development? }
-  set :static, true
-
   set :app_file, __FILE__    
   set :views, root_path('app', 'views') 
   set :sass, { 
@@ -98,6 +89,16 @@ class Main < Sinatra::Base
     :views     => 'app/views/',
     :templates => 'app/views/'
   }
+  
+  set :dump_errors, true
+  set :logging, true
+  set :methodoverride, true
+  set :raise_errors, Proc.new { test? }
+  set :root, root_path
+  set :run, Proc.new { $0 == app_file }
+  set :show_exceptions, Proc.new { development? }
+  set :static, true
+  
   
   # Not sure if this is the correct syntax
   register Rabl

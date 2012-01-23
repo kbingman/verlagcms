@@ -1,5 +1,5 @@
-require './app/models/parts/part.rb'
-require './app/models/assets/asset.rb'
+require root_path('app/models/parts/part.rb')    
+require root_path('app/models/assets/asset.rb')    
 
 class ImagePart < Part
   include MongoMapper::EmbeddedDocument

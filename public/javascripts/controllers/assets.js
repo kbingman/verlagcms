@@ -79,9 +79,15 @@ var Assets = Sammy(function (app) {
   // Draggable assets
   // ---------------------------------------------
   app.bind('set_draggable_assets', function(e){
-    jQuery('li.asset').draggable({  
-      revert: true,    
-      stack: '.asset' 
+    // jQuery('li.asset').draggable({  
+    //   revert: true,    
+    //   stack: '.asset' 
+    // });
+    
+    jQuery('ul#assets').sortable({
+      stop: function(event, ui) { 
+        console.log(ui.serialize());
+      }
     });
   });
   

@@ -1,4 +1,4 @@
-require './app/models/parts/part.rb'
+require root_path('app/models/parts/part.rb')
 
 class Page
   include MongoMapper::Document

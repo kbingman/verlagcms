@@ -169,7 +169,7 @@ end
 # These need to be required first or Page blows up...
 # require root_path('app/models/templates/template.rb')
 
-
+require root_path('app/models/assets/asset.rb')
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
   require file

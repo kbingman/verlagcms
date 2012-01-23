@@ -17,6 +17,11 @@ GIT
       capybara (>= 1.0.0, < 1.2)
 
 PATH
+  remote: vendor/glue
+  specs:
+    monk-glue (0.0.1)
+
+PATH
   remote: vendor/rack-raw-upload
   specs:
     rack-raw-upload (1.0.11)
@@ -180,6 +185,7 @@ DEPENDENCIES
   mongo_mapper (~> 0.9.2)
   mongo_mapper_acts_as_tree (~> 0.3.3)
   monk
+  monk-glue!
   mustache (~> 0.99.4)
   rabl (~> 0.3.0)
   rack (~> 1.4.0)

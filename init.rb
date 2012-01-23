@@ -16,7 +16,7 @@ require 'bundler/setup'
 Bundler.setup
 
 # Monk and Sinatra
-# require 'monk/glue'
+require 'monk/glue'
 require 'sinatra/base'   
 require 'sinatra/namespace' 
 require 'sinatra/reloader' 

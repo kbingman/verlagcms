@@ -1,4 +1,4 @@
-require './app/models/template.rb'
+require root_path('app/models/template.rb') 
 
 class Javascript < Template 
   

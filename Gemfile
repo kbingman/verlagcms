@@ -5,6 +5,7 @@ gem 'sinatra', '1.3.1'
 gem 'tilt', '~> 1.3' 
 gem 'sinatra-contrib', '1.3.1' 
 gem 'thin' 
+gem 'monk-glue', :path => 'vendor/glue'      
 
 # gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
 # gem 'hike' ,'~> 1.2.1'

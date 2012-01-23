@@ -77,18 +77,16 @@ class Main < Sinatra::Base
   set :app_file, __FILE__    
   set :views, root_path('app', 'views') 
   set :sass, { 
-    :cache => RACK_ENV == 'development' ? false : true, 
+    :cache => true, 
     :cache_location => './tmp/sass-cache',
-    :style => RACK_ENV == 'development' ? :compact : :compressed,
-    :css_location => root_path('public') }
+    :style => :compact,
+    :css_location => root_path('public') 
+  }
   set :haml, { 
     :format => :html5, 
-    :ugly => RACK_ENV == 'development' ? false : true } 
+    :ugly => true 
+  } 
   set :default_content_type, :html
-  set :mustache, {
-    :views     => 'app/views/',
-    :templates => 'app/views/'
-  }
   
   set :dump_errors, true
   set :logging, true

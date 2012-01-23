@@ -169,6 +169,7 @@ end
 # require root_path('app/models/templates/template.rb')
 
 require root_path('app/models/assets/asset.rb')
+require root_path('app/models/parts/part.rb')
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
   require file

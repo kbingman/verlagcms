@@ -27,7 +27,6 @@ class Main
         end
       end
       
-      
     end
   end
   

@@ -1,3 +1,5 @@
+require './app/models/items/page.rb'
+
 class Part
   include MongoMapper::EmbeddedDocument
   

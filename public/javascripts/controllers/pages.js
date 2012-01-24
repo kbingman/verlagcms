@@ -67,14 +67,14 @@ var Pages = Sammy(function (app) {
       
       // console.log(activePageIds)
       // TODO Integrate into model? 
-      jQuery.each(pages, function(i, p){
-        var open = Page.root() == p || _.include(activePageIds, p.id())? true : false
-        p.attr({
-          'children': p.childrenAsJSON(),
-          'open?': open
-        });
-        // console.log(p.id() + ': ' + p.attr('open?'))
-      });
+      // jQuery.each(pages, function(i, p){
+      //  var open = Page.root() == p || _.include(activePageIds, p.id())? true : false
+      //  p.attr({
+      //    'children': p.childrenAsJSON(),
+      //    'open?': open
+      //  });
+      //  // console.log(p.id() + ': ' + p.attr('open?'))
+      //});
       
       var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
         root: root.asJSON(),
@@ -89,20 +89,22 @@ var Pages = Sammy(function (app) {
   // ---------------------------------------------
   app.bind('show-page-menu', function(e, page){
     var application = this;   
+    
+    application.renderPageMenu(page);
     // Checks if the page has children that are not yet loaded.
     // if this is the case, makes a json request, otherwise renders the menu
-    if(page.children().count() == 0 && page.attr('child_count') != 0){
-      page.getChildren(function(){
-        page.attr('open?', true);
-        application.renderPageMenu(page);
-      })
-    } else if(page.attr('child_count') != 0){
-      application.renderPageMenu(page);
-    } else {
-      // renders the parent menu if the page has no children at all
-      var page = page.parent();
-      application.renderPageMenu(page);
-    }
+    // if(page.children().count() == 0 && page.attr('child_count') != 0){
+    //   page.getChildren(function(){
+    //     page.attr('open?', true);
+    //     application.renderPageMenu(page);
+    //   })
+    // } else if(page.attr('child_count') != 0){
+    //   application.renderPageMenu(page);
+    // } else {
+    //   // renders the parent menu if the page has no children at all
+    //   var page = page.parent();
+    //   application.renderPageMenu(page);
+    // }
 
   });
   
@@ -225,6 +227,8 @@ var Pages = Sammy(function (app) {
     jQuery('.modal-editor').remove();
  
     var page = Page.find(request.params['id']); 
+    
+    alert('Page count: ' + Page.count());
     
     if(page) {    
       request.renderPagePreview(page); 

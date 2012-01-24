@@ -28,10 +28,9 @@ class Page
   
   many :parts, :class_name => 'Part', :dependent => :destroy 
    
+  # TODO Depracated please remove
   key :asset_ids, Array
   many :assets, :in => :asset_ids
-  
-  
   
   key :site_id, ObjectId, :required => true 
   belongs_to :site, :foreign_key => :site_id 
@@ -116,9 +115,9 @@ class Page
   # ----------------------------------------
   def as_json(options)
     super(:only => [
-      :title, :slug, :url, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id, :site_ids
+      :title, :slug, :path, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id
     ], :methods => [
-      :path, :admin_path, :class_name, :padding, :assets, :assets_list, :tag_list, :root?, :children?, :child?, :open?, :child_count, :contents
+      :path, :admin_path, :class_name, :padding, :tag_list, :root?, :children, :children?, :child?, :open?, :child_count, :contents
     ])
   end  
   
@@ -139,6 +138,7 @@ class Page
     self.tags = new_tags.uniq
   end
   
+  # TODO Depracated please remove
   # Assets
   # ----------------------------------------
   def assets_list

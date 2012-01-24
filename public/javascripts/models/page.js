@@ -6,16 +6,31 @@ var Page = Model('page', function() {
     
     initialize: function() {
       // this.attr('children', this.childrenAsJSON());
+      console.log(this.id() + ': ')
+      console.log(this)
     },
     
-    children: function(){ 
-      var children = [];
-      return Page.find_all_by_parent_id(this.id());
+    children: function(){
+      var self = this;
+      jQuery.each(self.attr('children'),function(i, c){ 
+        p = new Page(c); 
+        Page.add(p);
+      });
     },
     
-    childrenAsJSON: function(){ 
-      return this.children().map(function(item){ return item.attr() });
-    },
+    // children: function(){ 
+    //   var self = this;
+    //   var children = self.attr('children');
+    //   jQuery.each(children, function(i, child){
+    //     console.log(self.id() + ': child_id: ' + child.id);
+    //   });
+    //   
+    //   return Page.find_all_by_parent_id(this.id());
+    // },
+    // 
+    // childrenAsJSON: function(){ 
+    //   return this.children().map(function(item){ return item.attr() });
+    // },
     
     setPartAttributes: function(part_id, attributes){
       var parts = this.attr('contents');

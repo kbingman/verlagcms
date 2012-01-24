@@ -212,7 +212,34 @@ describe Page do
     # end
     
     describe 'api' do
-      #TODO
+      
+      before(:all) do
+        @json = JSON.parse({ 
+          :id           => @root.id,
+          :title        => 'Root',
+          :slug         => '/', 
+          :path         => '/', 
+          :parent_id    => nil, 
+          :class_name   => 'Page', 
+          :layout_id    => 1,
+          :children     => @root.children,
+          :created_at   => @root.created_at,
+          :updated_at   => @root.updated_at,
+          :admin_path   => "/admin/pages/#{@root.id}", 
+          :padding      => 0, 
+          :level        => 0, 
+          :tag_list     => '', 
+          :root?        => true, 
+          :child?       => false, 
+          :open?        => true, 
+          :child_count  => 2, 
+          :contents     => @root.parts
+        }.to_json)
+      end
+      
+      it 'returns a json hash for the page' do
+        JSON.parse(@root.to_json).should == @json
+      end
     end  
     
     describe '#parts' do    

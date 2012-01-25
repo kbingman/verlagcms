@@ -111,14 +111,39 @@ class Page
     self.root?
   end
   
+  def child_pages
+    self.children.as_json
+  end
+  
   # JSON API
   # ----------------------------------------
   def as_json(options)
-    super(:only => [
-      :title, :slug, :path, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id
-    ], :methods => [
-      :path, :admin_path, :class_name, :padding, :tag_list, :root?, :children, :children?, :child?, :open?, :child_count, :contents
-    ])
+    {
+      :id           => self.id,
+      :title        => self.title,
+      :slug         => self.slug, 
+      :path         => self.path, 
+      :admin_path   => self.admin_path, 
+      :level        => self.level,
+      :padding      => self.padding, # remove
+      :parent_id    => self.parent_id,
+      :layout_id    => self.layout_id,
+      :updated_at   => self.updated_at,
+      :created_at   => self.created_at,
+      :root?        => self.parent.nil? ? true : false,
+      :child?       => self.parent.nil? ? false : true, 
+      :child_pages  => self.children.as_json, 
+      :children?    => self.children?, 
+      :open?        => self.children.empty? ? false : true, 
+      :child_count  => self.children.count, 
+      :contents     => self.parts.as_json
+    }
+
+    # super(:only => [
+    #   :title, :slug, :path, :id, :level, :parent_id, :class_name, :created_at, :updated_at, :layout_id
+    # ], :methods => [
+    #   :path, :admin_path, :class_name, :padding, :tag_list, :root?, :child_pages, :children?, :child?, :open?, :child_count, :contents
+    # ])
   end  
   
   def render(options={})

@@ -26,7 +26,12 @@ jQuery(document).ready(function () {
     jQuery.ajax({
       url: '/admin/sites/current.json',
       success: function(results){
-        Updater.setup(results.pages, Page);
+        // Updater.setup(results.pages, Page);
+        var root = new Page({ id: results.root.id });  
+        root.merge(results.root);
+        Page.add(root);
+        root.children();
+        
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);
         Updater.setup(results.folders, Folder);
@@ -56,3 +61,10 @@ jQuery(document).ready(function () {
   });
   
 });
+
+function children(page){
+  var p = new Page({ id: page.id });  
+  p.merge(page);
+  Page.add(p);
+  p.children();
+}

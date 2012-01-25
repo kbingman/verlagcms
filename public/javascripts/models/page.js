@@ -6,31 +6,47 @@ var Page = Model('page', function() {
     
     initialize: function() {
       // this.attr('children', this.childrenAsJSON());
-      console.log(this.id() + ': ')
-      console.log(this)
     },
     
     children: function(){
-      var self = this;
-      jQuery.each(self.attr('children'),function(i, c){ 
-        p = new Page(c); 
-        Page.add(p);
+      var self = this, 
+        p;
+        
+      jQuery.each(self.attr('child_pages'),function(i, c){ 
+        p = Page.find(c.id);
+        if(!p){
+          p = new Page(c); 
+          Page.add(p);
+          console.log('makeing')
+        }
+        p.children();
       });
+      return Page.find_all_by_parent_id(this.id());
     },
     
-    // children: function(){ 
-    //   var self = this;
-    //   var children = self.attr('children');
-    //   jQuery.each(children, function(i, child){
-    //     console.log(self.id() + ': child_id: ' + child.id);
-    //   });
+    set_children: function(callback){
+      var self = this, 
+        children = Page.select(function() {
+          return this.attr('parent_id') == self.id()
+        }).all(),
+        children_as_json = [];
+      
+      jQuery.each(children, function(i, c){
+        c.set_children(function(){
+          children_as_json.push(c.asJSON());
+        });
+      });
+      self.merge({ 
+        'children?': children_as_json.length ? true : false,
+        'child_count': children_as_json.length,
+        'child_pages': children_as_json 
+      });
+      if(callback){ callback.call(this); }
+    },
+    
+    // test_function: function(callback){
     //   
-    //   return Page.find_all_by_parent_id(this.id());
-    // },
-    // 
-    // childrenAsJSON: function(){ 
-    //   return this.children().map(function(item){ return item.attr() });
-    // },
+    // }
     
     setPartAttributes: function(part_id, attributes){
       var parts = this.attr('contents');
@@ -105,19 +121,19 @@ var Page = Model('page', function() {
       return Page.find(this.attr('parent_id'));
     },
     
-    assets: function(){ 
-      var self = this;
-      var assets = self.attr('assets'); 
-      var length = assets.length;                                 
-      
-      for (var i=0, l=length; i<l; ++i ){
-        var asset_data = assets[i];
-        var asset = new Asset({ id: asset_data.id });  
-        asset.merge(asset_data);
-        Asset.add(asset);
-      } 
-      return Asset;
-    },
+    // assets: function(){ 
+    //   var self = this;
+    //   var assets = self.attr('assets'); 
+    //   var length = assets.length;                                 
+    //   
+    //   for (var i=0, l=length; i<l; ++i ){
+    //     var asset_data = assets[i];
+    //     var asset = new Asset({ id: asset_data.id });  
+    //     asset.merge(asset_data);
+    //     Asset.add(asset);
+    //   } 
+    //   return Asset;
+    // },
     
     parts: function(){
       var self = this;
@@ -146,7 +162,8 @@ var Page = Model('page', function() {
         // contentType: "application/json",
         dataType: "json",                   
         success: function(results) {    
-          self.merge(results);    
+          self.merge(results);   
+          Page.add(self); 
           callback.call(this);    
         }
       });
@@ -174,6 +191,37 @@ var Page = Model('page', function() {
         return this.attr('parent_id') == null
       });
     }, 
+    
+    // rebuild_tree: function(callback){
+    //   var root = Page.root();
+    //   root.set_children(function(){
+    //     if(callback){ callback.call(this); }
+    //   });
+    // }, 
+    
+    site_map: function(callback){
+      root = Page.root();
+      this.test_function(root, callback);
+    },
+    
+    test_function: function(page, callback){
+      // console.log(page.attr('title'));
+      // console.log(page.children());
+      children = Page.select(function() {
+        return this.attr('parent_id') == page.id()
+      }).all(),
+      
+      console.log(children)
+      if(children.length == 0){
+        if(callback){ callback.call(this); }
+      } 
+      jQuery.each(children, function(i, c){
+        // console.log(c.attr('title'));
+        c.parent().set_children();
+        // console.log(c.parent().attr('child_pages'));
+        Page.test_function(c, callback);
+      });
+    },
     
     find_by_parent_id: function(parent_id){
       return this.detect(function(){

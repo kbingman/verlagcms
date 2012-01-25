@@ -56,93 +56,61 @@ var Pages = Sammy(function (app) {
         // TODO make an event
         if(callback){ callback.call(this); }
       });
-    }, 
-    
-    renderPageMenu: function(page){
-      var application = this,
-        root = Page.root(),
-        pages = Page.all(),
-        pageJSON = [],
-        activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
-      
-      // console.log(activePageIds)
-      // TODO Integrate into model? 
-      // jQuery.each(pages, function(i, p){
-      //  var open = Page.root() == p || _.include(activePageIds, p.id())? true : false
-      //  p.attr({
-      //    'children': p.childrenAsJSON(),
-      //    'open?': open
-      //  });
-      //  // console.log(p.id() + ': ' + p.attr('open?'))
-      //});
-      
-      var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
-        root: root.asJSON(),
-        partials: { node: jQuery('script#admin-pages-node').html() }
-      }, 'mustache');
-      pageNode.replace('#sidebar');
     }
     
   });
   
-  // Page Menu
+  // Page Index
   // ---------------------------------------------
-  app.bind('show-page-menu', function(e, page){
-    var application = this;   
-    
-    application.renderPageMenu(page);
-    // Checks if the page has children that are not yet loaded.
-    // if this is the case, makes a json request, otherwise renders the menu
-    // if(page.children().count() == 0 && page.attr('child_count') != 0){
-    //   page.getChildren(function(){
-    //     page.attr('open?', true);
-    //     application.renderPageMenu(page);
-    //   })
-    // } else if(page.attr('child_count') != 0){
-    //   application.renderPageMenu(page);
-    // } else {
-    //   // renders the parent menu if the page has no children at all
-    //   var page = page.parent();
-    //   application.renderPageMenu(page);
-    // }
+  app.bind('page-index', function(e, page){
+    var application = this,
+      root = Page.root(),
+      activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
 
+    Page.site_map();    
+    var html = application.load(jQuery('script#admin-pages-index')).interpolate({
+      root: root.asJSON(),
+      partials: { node: jQuery('script#admin-pages-node').html() }
+    }, 'mustache');
+    console.log('fibble2')
+    html.replace('#sidebar');
   });
   
   // Open Hidden Children
   // ---------------------------------------------
-  app.bind('open-page-children', function(e, page_id){
-    var application = this,
-      parent = Page.find(page_id),
-      node = jQuery('li#page-' + parent.id()),
-      activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
-    
-    parent.getChildren(function(){
-      parent.attr('open?', true);
-      parent.attr('children', parent.childrenAsJSON());
-      activePageIds.push(parent.id());
-      jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
-
-      var html = application.load(jQuery('script#admin-pages-children')).interpolate({
-        page: parent.asJSON(),
-        partials: { node: jQuery('script#admin-pages-node').html() }
-      }, 'mustache');
-
-      html.appendTo(node);
-    });
-  });
-  
-  // Close Children
-  // ---------------------------------------------
-  app.bind('close-page-children', function(e, page_id){
-    var application = this,
-      parent = Page.find(page_id),
-      node = jQuery('li#page-' + parent.id());
-      
-    node.find('ul.page-children').remove();
-    parent.children().each(function(child){
-      Page.remove(child)
-    })
-  });
+  // app.bind('open-page-children', function(e, page_id){
+  //   var application = this,
+  //     parent = Page.find(page_id),
+  //     node = jQuery('li#page-' + parent.id()),
+  //     activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
+  //   
+  //   parent.getChildren(function(){
+  //     parent.attr('open?', true);
+  //     parent.attr('children', parent.childrenAsJSON());
+  //     activePageIds.push(parent.id());
+  //     jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
+  // 
+  //     var html = application.load(jQuery('script#admin-pages-children')).interpolate({
+  //       page: parent.asJSON(),
+  //       partials: { node: jQuery('script#admin-pages-node').html() }
+  //     }, 'mustache');
+  // 
+  //     html.appendTo(node);
+  //   });
+  // });
+  // 
+  // // Close Children
+  // // ---------------------------------------------
+  // app.bind('close-page-children', function(e, page_id){
+  //   var application = this,
+  //     parent = Page.find(page_id),
+  //     node = jQuery('li#page-' + parent.id());
+  //     
+  //   node.find('ul.page-children').remove();
+  //   parent.children().each(function(child){
+  //     Page.remove(child)
+  //   })
+  // });
   
   // Page Index
   // ---------------------------------------------
@@ -213,8 +181,7 @@ var Pages = Sammy(function (app) {
       var response = JSON.parse(results.responseText);   
       if(response.errors){
         alert(JSON.stringify(response));  
-      }else{  
-        Utilities.notice('Successfully created page');
+      }else{ 
         request.redirect(response.admin_path);
       }
     });
@@ -228,7 +195,7 @@ var Pages = Sammy(function (app) {
  
     var page = Page.find(request.params['id']); 
     
-    alert('Page count: ' + Page.count());
+    // alert('Page count: ' + Page.count());
     
     if(page) {    
       request.renderPagePreview(page); 
@@ -238,32 +205,19 @@ var Pages = Sammy(function (app) {
       page.load(function(){
         request.renderPagePreview(page); 
       });
-      page.save;
+      // page.save;
     }
-    request.trigger('show-page-menu', page);
-    //request.trigger('page-index');
+    request.trigger('page-index', page);
   });
   
   // Edit Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/edit/?', function(request){  
     var page = Page.find(request.params['id']); 
-    // if(jQuery('#preview-' + page.id()).length){
-    //   request.renderPageEditor(page, function(){
-    //     request.renderPageProperties(page);
-    //   });
-    // } else {
-    //   request.renderPagePreview(page, function(){
-    //     request.renderPageEditor(page, function(){
-    //       request.renderPageProperties(page);
-    //     });
-    //   }); 
-    //   request.trigger('page-index');
-    // }
     request.renderPageEditor(page, function(){
       request.renderPageProperties(page);
     });  
-    request.trigger('show-page-menu', page);  
+    request.trigger('page-index', page);  
   }); 
     
   
@@ -310,11 +264,16 @@ var Pages = Sammy(function (app) {
   // Destroy Page
   // ---------------------------------------------
   this.del('/admin/pages/:id', function(request){    
-    var page = Page.find(request.params['id']);               
+    var page = Page.find(request.params['id']); 
+    console.log('HEY')
+    console.log(page)
+    Page.remove(page);              
       
     page.destroy(function(success){  
       if(success){
-        jQuery('#page-' + page.id()).remove();
+        
+        // jQuery('#page-' + page.id()).remove();
+        // TODO remove
         request.redirect('/admin/pages');
       }
     }); 

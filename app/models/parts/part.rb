@@ -1,5 +1,3 @@
-require root_path('app/models/items/page.rb')
-
 class Part
   include MongoMapper::EmbeddedDocument
   

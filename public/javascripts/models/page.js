@@ -17,7 +17,6 @@ var Page = Model('page', function() {
         if(!p){
           p = new Page(c); 
           Page.add(p);
-          console.log('makeing')
         }
         p.children();
       });
@@ -43,10 +42,6 @@ var Page = Model('page', function() {
       });
       if(callback){ callback.call(this); }
     },
-    
-    // test_function: function(callback){
-    //   
-    // }
     
     setPartAttributes: function(part_id, attributes){
       var parts = this.attr('contents');
@@ -192,35 +187,24 @@ var Page = Model('page', function() {
       });
     }, 
     
-    // rebuild_tree: function(callback){
-    //   var root = Page.root();
-    //   root.set_children(function(){
-    //     if(callback){ callback.call(this); }
-    //   });
-    // }, 
-    
     site_map: function(callback){
-      root = Page.root();
-      this.test_function(root, callback);
+      var root = Page.root();
+      Page.node(root, callback);
     },
     
-    test_function: function(page, callback){
-      // console.log(page.attr('title'));
-      // console.log(page.children());
-      children = Page.select(function() {
+    node: function(page, callback){
+      var children = Page.select(function() {
         return this.attr('parent_id') == page.id()
-      }).all(),
+      }).all();
       
-      console.log(children)
+      jQuery.each(children, function(i, c){
+        c.parent().set_children();
+        Page.node(c, callback);
+      });
+      
       if(children.length == 0){
         if(callback){ callback.call(this); }
       } 
-      jQuery.each(children, function(i, c){
-        // console.log(c.attr('title'));
-        c.parent().set_children();
-        // console.log(c.parent().attr('child_pages'));
-        Page.test_function(c, callback);
-      });
     },
     
     find_by_parent_id: function(parent_id){

@@ -8,13 +8,14 @@ jQuery('span.opener').live('click', function(e){
   var el = jQuery(this),
     page_id = el.parents('li.node:first').attr('id').split('-')[1];
   
-  if(!el.hasClass('open')){
-    el.addClass('open');
-    Pages.trigger('open-page-children', page_id);
-  } else {
-    el.removeClass('open');
-    Pages.trigger('close-page-children', page_id);
-  }
+  Pages.trigger('open-page-children', page_id);
+  // if(!el.hasClass('open')){
+  //   el.addClass('open');
+  //   Pages.trigger('open-page-children', page_id);
+  // } else {
+  //   el.removeClass('open');
+  //   Pages.trigger('close-page-children', page_id);
+  // }
   
 });
 

@@ -152,11 +152,12 @@ end
 
 # Connect to mongodb
 if ENV['MONGOHQ_URL']
-  puts "Running on MongoHQ" 
+  puts 'Running on MongoHQ' 
   MongoMapper.config = { RACK_ENV => {'uri' => ENV['MONGOHQ_URL']} }
   MongoMapper.connect(RACK_ENV)
 else
-  puts "Using local database" 
+  puts 'Using local database' 
+  puts RACK_ENV
   MongoMapper.database = monk_settings(:mongo)[:database]
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil)# , :logger => logger
 end

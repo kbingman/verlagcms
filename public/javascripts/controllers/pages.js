@@ -72,35 +72,39 @@ var Pages = Sammy(function (app) {
       root: root.asJSON(),
       partials: { node: jQuery('script#admin-pages-node').html() }
     }, 'mustache');
-    console.log('fibble2')
     html.replace('#sidebar');
   });
   
   // Open Hidden Children
   // ---------------------------------------------
-  // app.bind('open-page-children', function(e, page_id){
-  //   var application = this,
-  //     parent = Page.find(page_id),
-  //     node = jQuery('li#page-' + parent.id()),
-  //     activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
-  //   
-  //   parent.getChildren(function(){
-  //     parent.attr('open?', true);
-  //     parent.attr('children', parent.childrenAsJSON());
-  //     activePageIds.push(parent.id());
-  //     jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
-  // 
-  //     var html = application.load(jQuery('script#admin-pages-children')).interpolate({
-  //       page: parent.asJSON(),
-  //       partials: { node: jQuery('script#admin-pages-node').html() }
-  //     }, 'mustache');
-  // 
-  //     html.appendTo(node);
-  //   });
-  // });
-  // 
-  // // Close Children
-  // // ---------------------------------------------
+  app.bind('open-page-children', function(e, page_id){
+    var application = this,
+      parent = Page.find(page_id),
+      node = jQuery('li#page-' + parent.id()),
+      child_list = node.find('ul:first'),
+      activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
+      
+      alert('hey')
+    console.log(child_list.is_visible)
+    child_list.toggle()
+    
+    // parent.getChildren(function(){
+    //   parent.attr('open?', true);
+    //   parent.attr('children', parent.childrenAsJSON());
+    //   activePageIds.push(parent.id());
+    //   jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
+    // 
+    //   var html = application.load(jQuery('script#admin-pages-children')).interpolate({
+    //     page: parent.asJSON(),
+    //     partials: { node: jQuery('script#admin-pages-node').html() }
+    //   }, 'mustache');
+    // 
+    //   html.appendTo(node);
+    // });
+  });
+  
+  // Close Children
+  // ---------------------------------------------
   // app.bind('close-page-children', function(e, page_id){
   //   var application = this,
   //     parent = Page.find(page_id),

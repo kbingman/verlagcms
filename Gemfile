@@ -39,6 +39,8 @@ gem 'rack-flash'
 gem 'rack-cache'
 gem 'rack-raw-upload', :path => 'vendor/rack-raw-upload'
 
+gem 'dalli'
+
 group :production do 
   
 end

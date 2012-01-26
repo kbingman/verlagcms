@@ -6190,13 +6190,39 @@ var Page = Model('page', function() {
       // this.attr('children', this.childrenAsJSON());
     },
     
-    children: function(){ 
-      var children = [];
+    children: function(){
+      var self = this, 
+        p;
+        
+      jQuery.each(self.attr('child_pages'),function(i, c){ 
+        p = Page.find(c.id);
+        if(!p){
+          p = new Page(c); 
+          Page.add(p);
+        }
+        p.children();
+      });
       return Page.find_all_by_parent_id(this.id());
     },
     
-    childrenAsJSON: function(){ 
-      return this.children().map(function(item){ return item.attr() });
+    set_children: function(callback){
+      var self = this, 
+        children = Page.select(function() {
+          return this.attr('parent_id') == self.id()
+        }).all(),
+        children_as_json = [];
+      
+      jQuery.each(children, function(i, c){
+        c.set_children(function(){
+          children_as_json.push(c.asJSON());
+        });
+      });
+      self.merge({ 
+        'children?': children_as_json.length ? true : false,
+        'child_count': children_as_json.length,
+        'child_pages': children_as_json 
+      });
+      if(callback){ callback.call(this); }
     },
     
     setPartAttributes: function(part_id, attributes){
@@ -6272,19 +6298,19 @@ var Page = Model('page', function() {
       return Page.find(this.attr('parent_id'));
     },
     
-    assets: function(){ 
-      var self = this;
-      var assets = self.attr('assets'); 
-      var length = assets.length;                                 
-      
-      for (var i=0, l=length; i<l; ++i ){
-        var asset_data = assets[i];
-        var asset = new Asset({ id: asset_data.id });  
-        asset.merge(asset_data);
-        Asset.add(asset);
-      } 
-      return Asset;
-    },
+    // assets: function(){ 
+    //   var self = this;
+    //   var assets = self.attr('assets'); 
+    //   var length = assets.length;                                 
+    //   
+    //   for (var i=0, l=length; i<l; ++i ){
+    //     var asset_data = assets[i];
+    //     var asset = new Asset({ id: asset_data.id });  
+    //     asset.merge(asset_data);
+    //     Asset.add(asset);
+    //   } 
+    //   return Asset;
+    // },
     
     parts: function(){
       var self = this;
@@ -6313,7 +6339,8 @@ var Page = Model('page', function() {
         // contentType: "application/json",
         dataType: "json",                   
         success: function(results) {    
-          self.merge(results);    
+          self.merge(results);   
+          Page.add(self); 
           callback.call(this);    
         }
       });
@@ -6341,6 +6368,26 @@ var Page = Model('page', function() {
         return this.attr('parent_id') == null
       });
     }, 
+    
+    site_map: function(callback){
+      var root = Page.root();
+      Page.node(root, callback);
+    },
+    
+    node: function(page, callback){
+      var children = Page.select(function() {
+        return this.attr('parent_id') == page.id()
+      }).all();
+      
+      jQuery.each(children, function(i, c){
+        c.parent().set_children();
+        Page.node(c, callback);
+      });
+      
+      if(children.length == 0){
+        if(callback){ callback.call(this); }
+      } 
+    },
     
     find_by_parent_id: function(parent_id){
       return this.detect(function(){
@@ -6635,17 +6682,32 @@ var Utilities = {
     if(!container.length){ return }
 
     Loader.start();
+
     var img = container.find('img');
-    
-    setTimeout(function(){
-      if(container.height() < 20){
-        img.load(function(){
+    if(img.length){
+      setTimeout(function(){
+        if(container.height() < 20){
+          img.load(function(){
+            self.resizeModal(img, container, callback);
+          });
+        } else {
           self.resizeModal(img, container, callback);
-        });
-      } else {
-        self.resizeModal(img, container, callback);
-      }
-    }, 13);
+        }
+      }, 13);
+    } else {
+      // if there is no image. This needs to move to a function
+      var docWidth = jQuery(window).width();
+      var docHeight = jQuery(window).height();
+      
+      container.css({
+        'width': '640px',
+        'height': '480px',
+        'margin-top': (docHeight - 540)/2 + 'px'
+      });
+      Loader.stop();
+      if(callback){ callback.call(this); }
+    }
+
   },
   
   resizeModal: function(img, container, callback){
@@ -6916,13 +6978,14 @@ jQuery('span.opener').live('click', function(e){
   var el = jQuery(this),
     page_id = el.parents('li.node:first').attr('id').split('-')[1];
   
-  if(!el.hasClass('open')){
-    el.addClass('open');
-    Pages.trigger('open-page-children', page_id);
-  } else {
-    el.removeClass('open');
-    Pages.trigger('close-page-children', page_id);
-  }
+  Pages.trigger('open-page-children', page_id);
+  // if(!el.hasClass('open')){
+  //   el.addClass('open');
+  //   Pages.trigger('open-page-children', page_id);
+  // } else {
+  //   el.removeClass('open');
+  //   Pages.trigger('close-page-children', page_id);
+  // }
   
 });
 
@@ -7723,9 +7786,15 @@ var Assets = Sammy(function (app) {
   // Draggable assets
   // ---------------------------------------------
   app.bind('set_draggable_assets', function(e){
-    jQuery('li.asset').draggable({  
-      revert: true,    
-      stack: '.asset' 
+    // jQuery('li.asset').draggable({  
+    //   revert: true,    
+    //   stack: '.asset' 
+    // });
+    
+    jQuery('ul#assets').sortable({
+      stop: function(event, ui) { 
+        console.log(ui.serialize());
+      }
     });
   });
   
@@ -7851,11 +7920,12 @@ var Assets = Sammy(function (app) {
         // console.log(percent)
       },
       success: function(asset){
-        
         var html = Mustache.to_html(jQuery('script#admin-assets-asset').html(), asset.attr());
-        jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
-        // var html = request.load(jQuery('script#admin-assets-asset')).interpolate(asset.attr(), 'mustache');
-        html.appendTo('ul#assets');
+        var image = jQuery('<img />').attr('src', '/images/' + asset.id() + '/' + asset.attr('file_name'));
+        
+        image.load(function(){
+          jQuery('li#asset-' + asset.attr('uuid')).replaceWith(html);
+        });
       }
     });
 
@@ -7870,12 +7940,15 @@ var Assets = Sammy(function (app) {
     var params = query ? { 'query': request.params['query']} : {};   
     var asset = Asset.find(request.params['id']);
     
+    
     // Keeps index from reloading
     window.modal = true;
     
     if(asset) {
+      
       request.trigger('render-asset', asset, query);
     } else {  
+      alert('hey')
       // Loads asset if the current collection does not contain it
       Asset.searchAdmin(params, function(){  
         var asset = Asset.find(request.params['id']);
@@ -7988,6 +8061,31 @@ var Folders = Sammy(function (app) {
     window.modal = false;
   });  
   
+  
+  // Edit Asset 
+  // ---------------------------------------------  
+  app.get('/admin/folders/:folder_id/assets/:id/edit', function(request){
+    jQuery('#overlay').remove();
+    var folder = Folder.find(request.params['folder_id']);  
+    var asset = Asset.find(request.params['id']);
+
+    // Keeps index from reloading
+    window.modal = true;
+    
+    if(asset) {
+      request.trigger('render-asset', asset);
+    } else {  
+      // Loads asset if the current collection does not contain it
+      folder.loadAssets(function(){
+        asset = Asset.find(request.params['id']);
+        
+        request.renderFolderTree();
+        request.trigger('render-index', { folder_id: folder.id() });
+        request.trigger('render-asset', asset);
+      }); 
+    }                                                                         
+  });
+  
   // Create Folder
   // ---------------------------------------------  
   this.post('/admin/folders', function(request){
@@ -8070,54 +8168,28 @@ var Pages = Sammy(function (app) {
         // TODO make an event
         if(callback){ callback.call(this); }
       });
-    }, 
-    
-    renderPageMenu: function(page){
-      var application = this,
-        root = Page.root(),
-        pages = Page.all(),
-        pageJSON = [],
-        activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
-      
-      // console.log(activePageIds)
-      // TODO Integrate into model? 
-      jQuery.each(pages, function(i, p){
-        var open = Page.root() == p || _.include(activePageIds, p.id())? true : false
-        p.attr({
-          'children': p.childrenAsJSON(),
-          'open?': open
-        });
-        // console.log(p.id() + ': ' + p.attr('open?'))
-      });
-      
-      var pageNode = application.load(jQuery('script#admin-pages-index')).interpolate({
-        root: root.asJSON(),
-        partials: { node: jQuery('script#admin-pages-node').html() }
-      }, 'mustache');
-      pageNode.replace('#sidebar');
     }
     
   });
   
-  // Page Menu
+  // Page Index
   // ---------------------------------------------
-  app.bind('show-page-menu', function(e, page){
-    var application = this;   
-    // Checks if the page has children that are not yet loaded.
-    // if this is the case, makes a json request, otherwise renders the menu
-    if(page.children().count() == 0 && page.attr('child_count') != 0){
-      page.getChildren(function(){
-        page.attr('open?', true);
-        application.renderPageMenu(page);
-      })
-    } else if(page.attr('child_count') != 0){
-      application.renderPageMenu(page);
-    } else {
-      // renders the parent menu if the page has no children at all
-      var page = page.parent();
-      application.renderPageMenu(page);
-    }
+  app.bind('page-index', function(e, page){
+    var application = this,
+      root = Page.root(),
+      child_list, 
+      activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
 
+    Page.site_map();    
+    var html = application.load(jQuery('script#admin-pages-index')).interpolate({
+      root: root.asJSON(),
+      partials: { node: jQuery('script#admin-pages-node').html() }
+    }, 'mustache');
+    html.replace('#sidebar').then(function(){
+      child_list = jQuery('li#page-' + page.id()).parents('ul:first'); // give this an id...
+      console.log(child_list)
+      child_list.show();
+    });
   });
   
   // Open Hidden Children
@@ -8126,35 +8198,40 @@ var Pages = Sammy(function (app) {
     var application = this,
       parent = Page.find(page_id),
       node = jQuery('li#page-' + parent.id()),
+      child_list = node.find('ul:first'),
       activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
+      
+    console.log(child_list.is_visible);
     
-    parent.getChildren(function(){
-      parent.attr('open?', true);
-      parent.attr('children', parent.childrenAsJSON());
-      activePageIds.push(parent.id());
-      jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
-
-      var html = application.load(jQuery('script#admin-pages-children')).interpolate({
-        page: parent.asJSON(),
-        partials: { node: jQuery('script#admin-pages-node').html() }
-      }, 'mustache');
-
-      html.appendTo(node);
-    });
+    child_list.toggle().toggleClass('open');
+    
+    // parent.getChildren(function(){
+    //   parent.attr('open?', true);
+    //   parent.attr('children', parent.childrenAsJSON());
+    //   activePageIds.push(parent.id());
+    //   jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
+    // 
+    //   var html = application.load(jQuery('script#admin-pages-children')).interpolate({
+    //     page: parent.asJSON(),
+    //     partials: { node: jQuery('script#admin-pages-node').html() }
+    //   }, 'mustache');
+    // 
+    //   html.appendTo(node);
+    // });
   });
   
   // Close Children
   // ---------------------------------------------
-  app.bind('close-page-children', function(e, page_id){
-    var application = this,
-      parent = Page.find(page_id),
-      node = jQuery('li#page-' + parent.id());
-      
-    node.find('ul.page-children').remove();
-    parent.children().each(function(child){
-      Page.remove(child)
-    })
-  });
+  // app.bind('close-page-children', function(e, page_id){
+  //   var application = this,
+  //     parent = Page.find(page_id),
+  //     node = jQuery('li#page-' + parent.id());
+  //     
+  //   node.find('ul.page-children').remove();
+  //   parent.children().each(function(child){
+  //     Page.remove(child)
+  //   })
+  // });
   
   // Page Index
   // ---------------------------------------------
@@ -8225,8 +8302,7 @@ var Pages = Sammy(function (app) {
       var response = JSON.parse(results.responseText);   
       if(response.errors){
         alert(JSON.stringify(response));  
-      }else{  
-        Utilities.notice('Successfully created page');
+      }else{ 
         request.redirect(response.admin_path);
       }
     });
@@ -8240,6 +8316,8 @@ var Pages = Sammy(function (app) {
  
     var page = Page.find(request.params['id']); 
     
+    // alert('Page count: ' + Page.count());
+    
     if(page) {    
       request.renderPagePreview(page); 
     } else {  
@@ -8248,32 +8326,19 @@ var Pages = Sammy(function (app) {
       page.load(function(){
         request.renderPagePreview(page); 
       });
-      page.save;
+      // page.save;
     }
-    request.trigger('show-page-menu', page);
-    //request.trigger('page-index');
+    request.trigger('page-index', page);
   });
   
   // Edit Page
   // ---------------------------------------------
   this.get('/admin/pages/:id/edit/?', function(request){  
     var page = Page.find(request.params['id']); 
-    // if(jQuery('#preview-' + page.id()).length){
-    //   request.renderPageEditor(page, function(){
-    //     request.renderPageProperties(page);
-    //   });
-    // } else {
-    //   request.renderPagePreview(page, function(){
-    //     request.renderPageEditor(page, function(){
-    //       request.renderPageProperties(page);
-    //     });
-    //   }); 
-    //   request.trigger('page-index');
-    // }
     request.renderPageEditor(page, function(){
       request.renderPageProperties(page);
     });  
-    request.trigger('show-page-menu', page);  
+    request.trigger('page-index', page);  
   }); 
     
   
@@ -8320,11 +8385,16 @@ var Pages = Sammy(function (app) {
   // Destroy Page
   // ---------------------------------------------
   this.del('/admin/pages/:id', function(request){    
-    var page = Page.find(request.params['id']);               
+    var page = Page.find(request.params['id']); 
+    console.log('HEY')
+    console.log(page)
+    Page.remove(page);              
       
     page.destroy(function(success){  
       if(success){
-        jQuery('#page-' + page.id()).remove();
+        
+        // jQuery('#page-' + page.id()).remove();
+        // TODO remove
         request.redirect('/admin/pages');
       }
     }); 
@@ -8686,7 +8756,12 @@ jQuery(document).ready(function () {
     jQuery.ajax({
       url: '/admin/sites/current.json',
       success: function(results){
-        Updater.setup(results.pages, Page);
+        // Updater.setup(results.pages, Page);
+        var root = new Page({ id: results.root.id });  
+        root.merge(results.root);
+        Page.add(root);
+        root.children();
+        
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);
         Updater.setup(results.folders, Folder);
@@ -8716,4 +8791,11 @@ jQuery(document).ready(function () {
   });
   
 });
+
+function children(page){
+  var p = new Page({ id: page.id });  
+  p.merge(page);
+  Page.add(p);
+  p.children();
+}
 

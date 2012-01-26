@@ -65,6 +65,7 @@ var Pages = Sammy(function (app) {
   app.bind('page-index', function(e, page){
     var application = this,
       root = Page.root(),
+      child_list, 
       activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
 
     Page.site_map();    
@@ -72,7 +73,11 @@ var Pages = Sammy(function (app) {
       root: root.asJSON(),
       partials: { node: jQuery('script#admin-pages-node').html() }
     }, 'mustache');
-    html.replace('#sidebar');
+    html.replace('#sidebar').then(function(){
+      child_list = jQuery('li#page-' + page.id()).parents('ul:first'); // give this an id...
+      console.log(child_list)
+      child_list.show();
+    });
   });
   
   // Open Hidden Children
@@ -84,9 +89,9 @@ var Pages = Sammy(function (app) {
       child_list = node.find('ul:first'),
       activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
       
-      alert('hey')
-    console.log(child_list.is_visible)
-    child_list.toggle()
+    console.log(child_list.is_visible);
+    
+    child_list.toggle().toggleClass('open');
     
     // parent.getChildren(function(){
     //   parent.attr('open?', true);

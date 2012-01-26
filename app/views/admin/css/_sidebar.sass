@@ -70,7 +70,7 @@
         // +box-shadow(0, 0, 4px, #000)
         :position relative
         :margin 0 0
-        :padding 9px 18px
+        :padding 2px 18px
         // :border solid #222
         :border-width 0 0 1px 0
         // :background #333
@@ -107,7 +107,11 @@
       .item:hover
         // :-webkit-box-shadow rgba(0,0,0,1) 0px 0px 4px inset
         :background hsla(0,0,0,0.1)
-      
+    li.level-1
+      ul
+        :display none
+      ul.open
+        :display block
     // li.level-2
     //   :background 
     //     :color #fff

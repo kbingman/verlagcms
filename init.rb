@@ -33,6 +33,7 @@ require './lib/sinatra/images'
 require './lib/sinatra/files'
 require './lib/sinatra/get_subdomain' 
 require './lib/rack/subdomains'
+# require './lib/rack/no_varnish'
 
 # # Mongo stuff
 require 'mongo_mapper'
@@ -46,7 +47,7 @@ require 'canable'
 require 'rack/cache'
 require 'rack/request' 
 require 'rack/raw_upload'
-# require 'memcached'
+require 'dalli'
 
 # Templating
 require 'mustache/sinatra'
@@ -101,11 +102,10 @@ class Main < Monk::Glue
   
   # Rack Cache
   # if RACK_ENV != 'development'
-  # $cache = Memcached.new
   use Rack::Cache,
     :verbose => true,
-    # :metastore => $cache,
-    :metastore => 'file:tmp/cache/meta', 
+    :metastore => "memcached://localhost:11211/meta",
+    # :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   # end
   # use Rack::NoVarnish

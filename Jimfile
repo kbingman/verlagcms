@@ -3,7 +3,7 @@
   "vendor_dir": "public/javascripts/vendor",
   "bundles": { 
     "ace": [
-      "src/ace",
+      "src/ace.min",
       "src/theme-textmate",
       "src/mode-javascript",
       "src/mode-html",

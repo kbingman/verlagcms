@@ -21,7 +21,7 @@
       "vendor/sammy.json",  
       "vendor/mustache",
       "vendor/sammy.mustache",
-      "vendor/modernizr-1.7.min", 
+      "vendor/modernizr.custom.92436", 
       "vendor/js-model-0.10.1", 
       "vendor/sinatra-rest",  
       "vendor/jquery.cookie",

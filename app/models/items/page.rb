@@ -111,9 +111,9 @@ class Page
     self.root?
   end
   
-  def child_pages
-    self.children.as_json
-  end
+  # def child_pages
+  #   self.children.as_json
+  # end
   
   # JSON API
   # ----------------------------------------
@@ -132,7 +132,7 @@ class Page
       :created_at   => self.created_at,
       :root?        => self.parent.nil? ? true : false,
       :child?       => self.parent.nil? ? false : true, 
-      :child_pages  => self.children.as_json, 
+      # :child_pages  => self.children.as_json, 
       :children?    => self.children?, 
       :open?        => self.children.empty? ? false : true, 
       :child_count  => self.children.count, 

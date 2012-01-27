@@ -41,12 +41,13 @@
     
     <div class="buttons"> 
       <div class="field"> 
-        <select id="layout-filter" class="select" name="layout[filter]"> 
+        <input type="submit" id="save-layout" value="Save" class="save button" /> 
+        <select class="select" name="layout[filter]"> 
           {{#filters}}
           <option value="{{value}}" {{selected}}>{{name}}</option>
           {{/filters}}
         </select>
-        <input type="submit" id="save-layout" value="Save" class="button" />    
+ 
       </div>
     </div>
   

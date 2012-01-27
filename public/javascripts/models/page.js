@@ -12,22 +12,20 @@ var Page = Model('page', function() {
       var self = this, 
         p;
         
-      jQuery.each(self.attr('child_pages'),function(i, c){ 
-        p = Page.find(c.id);
-        if(!p){
-          p = new Page(c); 
-          Page.add(p);
-        }
-        p.children();
-      });
+      // jQuery.each(self.attr('child_pages'),function(i, c.id){ 
+      //   p = Page.find(c.id);
+      //   if(!p){
+      //     p = new Page(c); 
+      //     Page.add(p);
+      //   }
+      //   p.children();
+      // });
       return Page.find_all_by_parent_id(this.id());
     },
     
     set_children: function(callback){
       var self = this, 
-        children = Page.select(function() {
-          return this.attr('parent_id') == self.id()
-        }).all(),
+        children = self.children().all(),
         children_as_json = [];
       
       jQuery.each(children, function(i, c){
@@ -36,10 +34,18 @@ var Page = Model('page', function() {
         });
       });
       self.merge({ 
-        'children?': children_as_json.length ? true : false,
-        'child_count': children_as_json.length,
-        'child_pages': children_as_json 
+        // 'children?': children_as_json.length ? true : false,
+        // 'child_count': children_as_json.length,
+        'children': children_as_json 
       });
+      
+      // if(self.attr('child_count') == 0){
+      //   self.merge({ 
+      //     'children?': children_as_json.length ? true : false,
+      //     'child_count': children_as_json.length
+      //   });
+      // }
+
       if(callback){ callback.call(this); }
     },
     

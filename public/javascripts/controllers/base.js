@@ -65,15 +65,15 @@ var Base = Sammy(function (app) {
     // Start the sidebar toggle
     application.trigger('toggle-sidebar');
     // TODO This needs to be abstracted or a css class or both...
-    // if(jQuery.cookie('toggle-sidebar') == 'closed'){
-    //   var sidebar = jQuery('div#sidebar');
-    //   var editor =  jQuery('div#editor');
-    //   var toggle = jQuery('div#toggle');
-    //   
-    //   sidebar.css({'width':'24px'}).toggleClass('closed');
-    //   editor.css({'left':'24px'});
-    //   toggle.css({'left':'24px'});
-    // }
+    if(jQuery.cookie('toggle-sidebar') == 'closed'){
+      var sidebar = jQuery('div#sidebar');
+      var editor =  jQuery('div#editor');
+      var toggle = jQuery('div#toggle');
+      
+      sidebar.toggleClass('closed');
+      editor.css({'left':'0'});
+      toggle.css({'left':'0'});
+    }
   });
  
   // Set Active Tab
@@ -184,7 +184,7 @@ var Base = Sammy(function (app) {
         var width = '300';
         jQuery.cookie('sidebar_toggled', '');
       } else {
-        var width = '24';
+        var width = '0';
         jQuery.cookie('sidebar_toggled', 'closed');
       }
       if(!Modernizr.cssanimations){
@@ -192,7 +192,13 @@ var Base = Sammy(function (app) {
         editor.animate({'left':width}, 200).toggleClass('open');
         toggle.animate({'left':width}, 200).toggleClass('open');
       }else{
-        console.log('Move.js goes here')
+        console.log('Move.js goes here');
+        // sidebar.css({
+        //   '-webkit-transform': 'width(0)',
+        //   '-moz-transform': 'width(0)',
+        //   'transform': 'width(0)',
+        //   '-webkit-transition': 'all 0.5s ease-in'
+        // });
         sidebar.animate({'width':width}, 200).toggleClass('closed');;
         editor.animate({'left':width}, 200).toggleClass('open');
         toggle.animate({'left':width}, 200).toggleClass('open');

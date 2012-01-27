@@ -1,12 +1,14 @@
+.editbar
+  +positionable
+  :bottom auto
+  :top 72px
+  :height 42px
+  :padding 3px 0
+    
 // asset toolbar, with upload and search functions    
 .toolbar
-  // +positionable
-  // Needs to be fixed not absolute because of drag and drop issues with assets. 
-  // Maybe there is a better way.
-  :position fixed
+  +positionable
   :bottom auto
-  :left 300px
-  :right 0
   :height 72px
   :margin 0 0 6px 0
   :z-index 22

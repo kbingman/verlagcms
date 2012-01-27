@@ -26,11 +26,11 @@ jQuery(document).ready(function () {
     jQuery.ajax({
       url: '/admin/sites/current.json',
       success: function(results){
-        // Updater.setup(results.pages, Page);
-        var root = new Page({ id: results.root.id });  
-        root.merge(results.root);
-        Page.add(root);
-        root.children();
+        Updater.setup(results.pages, Page);
+        // var root = new Page({ id: results.root.id });  
+        // root.merge(results.root);
+        // Page.add(root);
+        Page.root().children();
         
         Updater.setup(results.templates, Layout);
         // Updater.setup(results.assets, Asset);

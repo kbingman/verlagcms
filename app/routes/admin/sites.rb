@@ -36,13 +36,13 @@ class Main
       get '/current/?' do
         @site = current_site
         # active_page_ids = []
-        # active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+        active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
 
-        # current_site.pages
+        @pages = current_site.pages
         # @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
         # @pages = current_site.pages.sort_by{ |p| p.created_at }
         
-        @root = current_site.root 
+        # @root = current_site.root 
         
         respond_to do |format|
           # format.html { admin_haml :'admin/index' }

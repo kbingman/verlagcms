@@ -6,7 +6,7 @@
     <span class="title" style="padding-left: {{padding}}px;"> 
        <a id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
        <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
-       <a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>
+       {{^ root? }}<a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>{{/ root? }}
     </span>
     {{# children? }}
     <span class="count" style="padding-left: {{padding}}px;">
@@ -16,9 +16,9 @@
   </div>
   {{# children? }}
   <ul class="page-children">
-    {{# child_pages }}
+    {{# children }}
       {{> node }}
-    {{/ child_pages }}
+    {{/ children }}
   </ul>
   {{/ children? }}
 </li>

@@ -74,29 +74,11 @@ def monk_settings(key)
 end
 
 class Main < Monk::Glue
+  
+  # configure do
+  # 
+  # end
 
-  set :app_file, __FILE__    
-  set :views, root_path('app', 'views') 
-  set :sass, { 
-    :cache => RACK_ENV == 'development' ? false : true, 
-    :cache_location => './tmp/sass-cache',
-    :style => RACK_ENV == 'development' ? :compact : :compressed,
-    :css_location => root_path('public') }
-  set :haml, { 
-    :format => :html5, 
-    :ugly => RACK_ENV == 'development' ? false : true } 
-  set :default_content_type, :html
-  
-  # set :dump_errors, true
-  # set :logging, true
-  # set :methodoverride, true
-  # set :raise_errors, Proc.new { test? }
-  # set :root, root_path
-  # set :run, Proc.new { $0 == app_file }
-  # set :show_exceptions, Proc.new { development? }
-  # set :static, true
-  
-  
   # Not sure if this is the correct syntax
   register Rabl
   
@@ -141,6 +123,29 @@ class Main < Monk::Glue
     mime_type :eot, 'application/font'
     mime_type :ttf, 'application/font'
     mime_type :woff, 'application/font' 
+    
+    set :dump_errors, true
+    set :logging, true
+    set :methodoverride, true
+    set :raise_errors, Proc.new { test? }
+    set :root, root_path
+    set :run, Proc.new { $0 == app_file }
+    set :show_exceptions, Proc.new { development? }
+    set :static, true
+    
+    set :app_file, __FILE__    
+    set :views, root_path('app', 'views') 
+    set :sass, { 
+      :cache => false, 
+      :cache_location => './tmp/sass-cache',
+      :style => :compact,
+      :css_location => root_path('public') 
+    }
+    set :haml, { 
+      :format => :html5, 
+      :ugly => RACK_ENV == 'development' ? false : true 
+    } 
+    set :default_content_type, :html
   end
 
   use Warden::Manager do |manager|

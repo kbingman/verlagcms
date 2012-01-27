@@ -4,7 +4,7 @@
   :left 300px
   :overflow visible
   &.open
-    :left 24px
+    :left 0
   // :overflow auto     
   .section
     :color #ddd   
@@ -48,28 +48,24 @@
     :right 0  
     :left 0  
     :top auto
-    :height 80px 
-    :border-top 1px solid #444
+    :height 42px 
+    :background
+      :color #1b8fb8
     #layout-filter
-      :position absolute
-      :left 10px 
-      :top 10px     
-      :font-size 1.4em
+      :position static
       :display none
-    #save-layout
-      :position absolute
-      :right 20px 
-      // :left 90px
-      :top 6px   
+      :margin-left 10px 
+      :margin-top 10px     
+      :font-size 1.4em
+    .save
+      :margin-left 42px 
+      :margin-top 10px   
       :padding-left 16px   
       :padding-right 16px
-  // .image
-  //   +positionable
-  //   :overflow auto
-  //   :bottom 80px
+
   .code 
     +positionable
-    :bottom 80px
+    :bottom 42px
     textarea 
       :border none
       :padding 0    

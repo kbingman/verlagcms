@@ -75,8 +75,10 @@ var Pages = Sammy(function (app) {
     }, 'mustache');
     html.replace('#sidebar').then(function(){
       child_list = jQuery('li#page-' + page.id()).parents('ul:first'); // give this an id...
-      console.log(child_list)
-      child_list.show();
+      if(child_list.length){
+        console.log(child_list);
+        child_list.show();
+      }
     });
   });
   
@@ -191,6 +193,11 @@ var Pages = Sammy(function (app) {
       if(response.errors){
         alert(JSON.stringify(response));  
       }else{ 
+        count = parent.attr('child_count');
+        parent.merge({
+          'child_count': count + 1,
+          'children?': true
+        });
         request.redirect(response.admin_path);
       }
     });

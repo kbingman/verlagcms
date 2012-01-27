@@ -15,7 +15,10 @@
       <li><a class="tab {{ name }}-tab" href="{{admin_path}}/edit">{{ name }}</a></li>
     {{/ contents }}
   </ul>
-  <form id="editor-buttons">
+</div>  
+
+<form method= "post" class="command-save" id="editor-buttons">
+  <div class="editbar">
     <input type="button" value="Bold" data-cmd="bold" />
     <input type="button" value="Italic" data-cmd="italic" />
     <input type="button" value="Underline" data-cmd="underline" />
@@ -32,15 +35,14 @@
     <input type="button" value="&lt;h2&gt;" data-cmd="formatblock" data-value="h2" />
     <input type="button" value="&lt;h3&gt;" data-cmd="formatblock" data-value="h3" />
     <!--input type="button" value="html" id="inserthtml" cmdValue="promptUser" promptText="Valid HTML snippet" /-->
-    <input type="button" value="save" id="save" /> 
+    
+  </div>
 
-  </form>
-</div>      
-
-<form action="/admin/pages/{{id}}" method= "post" id="edit-page" class="command-save"> 
   <div class="buttons">
-    <input type="submit" id="save" value="Save" class="button" />   
-    <a href="/admin/pages/{{id}}">Cancel</a>
-  </div>  
-</div>
+    <input type="button" value="save" id="save" class="save button"/> 
+    <!--input type="submit" id="save" value="Save" class="save button" /-->   
+    <!-- input type="submit" id="save-page" value="Save and Continue" class="save button" /-->  
+  </div>
+</form>    
+
 {{/page}}

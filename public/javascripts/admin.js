@@ -6773,7 +6773,7 @@ var Utilities = {
   
   setTimestamp: function(){
     var now = new Date();
-    window.timestamp = now.getTime();
+    Verlag.timestamp = now.getTime();
   },
   
   keyboard_nav: function(){      
@@ -6867,7 +6867,7 @@ var Updater = {
     jQuery.ajax({
       url: '/admin/activity.json',
       type: 'POST',
-      data: { 'updated': window.timestamp },
+      data: { 'updated': Verlag.timestamp },
       success: function(data){
         jQuery.each(data.models, function(i, item){
           var object = Page.find(item.id);
@@ -6881,7 +6881,7 @@ var Updater = {
 }
 
 // Sets the ACE Editor modes depending on content type
-var aceModes = {
+var ace_modes = {
   'javascript' : require('ace/mode/javascript').Mode,
   'html'       : require('ace/mode/html').Mode,
   'css'        : require('ace/mode/css').Mode,
@@ -7150,7 +7150,7 @@ var Base = Sammy(function (app) {
       jQuery.ajax({
         url: '/admin/activity.json',
         type: 'POST',
-        data: { 'updated': window.timestamp },
+        data: { 'updated': Verlag.timestamp },
         success: function(data){ 
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 
@@ -7529,7 +7529,7 @@ var Layouts = Sammy(function (app) {
       editLayout.replace('#editor').then(function(){
         // ACE editor
         var mode = layout.attr('mode'); 
-        var editorMode = aceModes[mode];
+        var editorMode = ace_modes[mode];
         window.editor = ace.edit('layout_content');
         window.editor.setTheme('ace/theme/textmate');
         window.editor.getSession().setMode(new editorMode);
@@ -7619,7 +7619,7 @@ var Layouts = Sammy(function (app) {
         Utilities.notice('Successfully saved template');
         
         // ACE editor
-        var editorMode = aceModes[template.attr('mode')];
+        var editorMode = ace_modes[template.attr('mode')];
         window.editor.getSession().setUseSoftTabs(true);
         window.editor.getSession().setTabSize(2);
         window.editor.getSession().setMode(new editorMode);
@@ -8126,7 +8126,7 @@ var Pages = Sammy(function (app) {
           base_page_id: page.id()
         }, 'mustache');  
         showPage.replace('#editor').then(function(){    
-          iFramer.initialize('.preview iframe', function(){
+          Verlag.iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
           application.trigger('set-active-page', page);
@@ -8162,7 +8162,7 @@ var Pages = Sammy(function (app) {
         page: page.asJSON(),
         layouts: Layout.asLayoutJSON(page.attr('layout_id')),
         base_page_id: page.id(),
-        timestamp: window.timestamp
+        timestamp: Verlag.timestamp
       }, 'mustache');  
       pageProperties.replace('#page-tabs-' + page.id()).then(function(){  
         // TODO make an event
@@ -8352,7 +8352,7 @@ var Pages = Sammy(function (app) {
     
     page.attr(request.params['page']); 
     
-    if(!(updatedStamp < window.timestamp)){
+    if(!(updatedStamp < Verlag.timestamp)){
       page.save(function(success, result){
         if(success){   
           Utilities.setTimestamp();
@@ -8415,7 +8415,7 @@ var Parts = Sammy(function (app) {
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON(),
-        timestamp: window.timestamp
+        timestamp: Verlag.timestamp
       }, 'mustache');
       
       // jQuery('#page-tabs-' + page.id()).html('FIBBLE');
@@ -8423,7 +8423,7 @@ var Parts = Sammy(function (app) {
         
         // ACE editor
         var mode = 'textile'; 
-        var editorMode = aceModes[mode];
+        var editorMode = ace_modes[mode];
         window.editor = ace.edit('part-' + part.id() + '-content');
         window.editor.setTheme('ace/theme/textmate');
         window.editor.getSession().setMode(new editorMode);
@@ -8766,7 +8766,7 @@ jQuery(document).ready(function () {
         // Updater.setup(results.assets, Asset);
         Updater.setup(results.folders, Folder);
         Base.run();
-        window.timestamp = results.now;
+        Verlag.timestamp = results.now;
       }
     });
   }

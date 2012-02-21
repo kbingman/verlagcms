@@ -1,4 +1,4 @@
-var Pages = Sammy(function (app) {     
+Pages = Sammy(function (app) {     
 
   // Helper Methods 
   // ---------------------------------------------
@@ -14,11 +14,11 @@ var Pages = Sammy(function (app) {
           base_page_id: page.id()
         }, 'mustache');  
         showPage.replace('#editor').then(function(){    
-          iFramer.initialize('.preview iframe', function(){
+          Verlag.iFramer.initialize('.preview iframe', function(){
             if(callback){ callback.call(this); } 
           }); 
           application.trigger('set-active-page', page);
-          Editor.initialize();
+          Verlag.Editor.initialize();
         });
       // }else{
       //   application.trigger('set-active-page', page);
@@ -50,7 +50,7 @@ var Pages = Sammy(function (app) {
         page: page.asJSON(),
         layouts: Layout.asLayoutJSON(page.attr('layout_id')),
         base_page_id: page.id(),
-        timestamp: window.timestamp
+        timestamp: Verlag.timestamp
       }, 'mustache');  
       pageProperties.replace('#page-tabs-' + page.id()).then(function(){  
         // TODO make an event
@@ -91,6 +91,10 @@ var Pages = Sammy(function (app) {
       child_list = node.find('ul:first'),
       activePageIds = jQuery.cookie('active_page_ids') ? jQuery.cookie('active_page_ids').split(',') : [];
       
+    activePageIds.push(parent.id());
+    jQuery.cookie('active_page_ids', Utilities.unique(activePageIds).join(','), { path: '/admin' });
+    
+      
     console.log(child_list.is_visible);
     
     child_list.toggle().toggleClass('open');
@@ -112,16 +116,16 @@ var Pages = Sammy(function (app) {
   
   // Close Children
   // ---------------------------------------------
-  // app.bind('close-page-children', function(e, page_id){
-  //   var application = this,
-  //     parent = Page.find(page_id),
-  //     node = jQuery('li#page-' + parent.id());
-  //     
-  //   node.find('ul.page-children').remove();
-  //   parent.children().each(function(child){
-  //     Page.remove(child)
-  //   })
-  // });
+  app.bind('close-page-children', function(e, page_id){
+    var application = this,
+      parent = Page.find(page_id),
+      node = jQuery('li#page-' + parent.id());
+      
+    node.find('ul.page-children').hide();
+    // parent.children().each(function(child){
+    //   Page.remove(child)
+    // })
+  });
   
   // Page Index
   // ---------------------------------------------
@@ -247,7 +251,7 @@ var Pages = Sammy(function (app) {
     
     page.attr(request.params['page']); 
     
-    if(!(updatedStamp < window.timestamp)){
+    if(!(updatedStamp < Verlag.timestamp)){
       page.save(function(success, result){
         if(success){   
           Utilities.setTimestamp();

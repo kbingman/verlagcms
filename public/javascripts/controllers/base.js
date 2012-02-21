@@ -1,4 +1,4 @@
-var Base = Sammy(function (app) {   
+Verlag.Routes.Base = Sammy(function (app) {   
    
   app.debug = false; 
   app.use(Sammy.JSON); 
@@ -25,7 +25,7 @@ var Base = Sammy(function (app) {
       jQuery.ajax({
         url: '/admin/activity.json',
         type: 'POST',
-        data: { 'updated': window.timestamp },
+        data: { 'updated': Verlag.timestamp },
         success: function(data){ 
           jQuery.each(data.models, function(i, item){
             if(item.class_name == 'Page'){ 

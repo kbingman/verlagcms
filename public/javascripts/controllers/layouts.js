@@ -42,7 +42,7 @@ var Layouts = Sammy(function (app) {
       editLayout.replace('#editor').then(function(){
         // ACE editor
         var mode = layout.attr('mode'); 
-        var editorMode = aceModes[mode];
+        var editorMode = Verlag.ace_modes[mode];
         window.editor = ace.edit('layout_content');
         window.editor.setTheme('ace/theme/textmate');
         window.editor.getSession().setMode(new editorMode);
@@ -132,7 +132,7 @@ var Layouts = Sammy(function (app) {
         Utilities.notice('Successfully saved template');
         
         // ACE editor
-        var editorMode = aceModes[template.attr('mode')];
+        var editorMode = Verlag.ace_modes[template.attr('mode')];
         window.editor.getSession().setUseSoftTabs(true);
         window.editor.getSession().setTabSize(2);
         window.editor.getSession().setMode(new editorMode);

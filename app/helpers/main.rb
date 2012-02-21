@@ -66,12 +66,8 @@ class Main
       end
     end 
     
+    # Returns the mustache template as raw html so that we can use it on the client
     def js_template(source)
-      # sources.each do |source|
-      #   template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
-      #   dom_id = source.split('/').last.camelize
-      #   template.read.html_safe
-      # end
       template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
       dom_id = source.split('/').last.camelize
       template.read.html_safe

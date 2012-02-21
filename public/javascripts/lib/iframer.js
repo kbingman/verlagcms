@@ -1,30 +1,31 @@
-var iFramer = {       
+Verlag.iFramer = {       
   initialize: function(element, callback){   
-    var trigger = jQuery(element);  
+    var iframe = jQuery(element);  
     var loader_el = jQuery('#loader');
-    var self = this;
-    if(!trigger.length) return;
+    
+    if(!iframe.length) return;
+    // iframe.hide()
     
     // console.log(trigger) 
     // Loader.start(loader_el);
     
     // The load event is not always being fired...
-    trigger.load(function(){   
-      var iframe = $(this);  
+    iframe.load(function(){   
       var content = iframe.contents();  
       var areas = content.find('div.editable');
+      var internal_links = content.find('a'); // iFrameContent.find('a[href^="/preview"]');
       // var editor = iFrameContent.find('span.part-editor');
       // var flags = editor.find('a'); 
       
-      // Sets the editable parts so they can actually be editted live
-      areas.attr('contenteditable','true').css({'background': 'hsla(30, 17.7%, 61%, 0.3)' });
+      // Sets the editable parts so they can actually be edited live
+      areas.attr('contenteditable','true').css({'background': 'hsla(210, 77%, 90%, 0.4)' });
       
       // Loader.stop(loader_el); 
       // self.setEditFlags(editor); 
       // iframe.fadeIn('fast');           
 
       // Sets preview links to change the sammy.js routes instead of the usual route
-      var internal_links = content.find('a'); // iFrameContent.find('a[href^="/preview"]');
+      
       internal_links.click(function(e){
         var self = jQuery(this);
         // if(!self.hasClass('verlag-editor')){

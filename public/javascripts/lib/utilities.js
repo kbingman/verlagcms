@@ -166,7 +166,7 @@ var Utilities = {
   
   setTimestamp: function(){
     var now = new Date();
-    window.timestamp = now.getTime();
+    Verlag.timestamp = now.getTime();
   },
   
   keyboard_nav: function(){      
@@ -245,22 +245,14 @@ var Loader = {
   }
 }
 
-var Updater = {
-  
-  setup: function(data, model){
-    jQuery.each(data, function(i, item){
-      var object = new model({ id: item.id });  
-      object.merge(item);
-      model.add(object);
-    });
-  },
+Verlag.Updater = {
   
   update: function(){
     window.ninja = true;
     jQuery.ajax({
       url: '/admin/activity.json',
       type: 'POST',
-      data: { 'updated': window.timestamp },
+      data: { 'updated': Verlag.timestamp },
       success: function(data){
         jQuery.each(data.models, function(i, item){
           var object = Page.find(item.id);
@@ -271,18 +263,6 @@ var Updater = {
       }
     });
   }
-}
-
-// Sets the ACE Editor modes depending on content type
-var aceModes = {
-  'javascript' : require('ace/mode/javascript').Mode,
-  'html'       : require('ace/mode/html').Mode,
-  'css'        : require('ace/mode/css').Mode,
-  'scss'       : require('ace/mode/scss').Mode,
-  'sass'       : require('ace/mode/scss').Mode,
-  'textile'    : require('ace/mode/textile').Mode,
-  // 'partial'    : require('ace/mode/scss').Mode,
-  'none'       : require('ace/mode/scss').Mode
 }
 
 var delay = (function(){

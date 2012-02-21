@@ -36,7 +36,7 @@ class Main
     end
     
     admin_route = get '/' do   
-      admin_haml :'admin/index'  
+      admin_haml :'admin/index'
     end  
   end
   

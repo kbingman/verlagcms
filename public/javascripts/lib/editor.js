@@ -1,41 +1,43 @@
-var Editor = {
+Verlag.Editor = {
   
   initialize: function(){
-    var buttons = jQuery('#editor-buttons input[type=button]');
-    var save = jQuery('#editor-buttons input#save');
+    var self = this,
+      buttons = jQuery('#editor-buttons input[type=button]'),
+      save = jQuery('#editor-buttons input#save');
+    
     buttons.click(function(){
       // alert(jQuery(this).attr('id'));
-      var cmd = jQuery(this).data('cmd');
-      var bool = false;
-      var value = jQuery(this).data('value');
+      var cmd = jQuery(this).data('cmd'),
+        bool = false,
+        value = jQuery(this).data('value'),
+        iframe = jQuery('iframe')[0];
+      
       if (value == 'promptUser'){
         value = prompt(jQuery(this).data('text'));
       }
-      var iframe = jQuery('iframe')[0];
       if(cmd){
         iframe.contentDocument.execCommand(cmd, bool, value);
       }
     });
     
     save.click(function(){
-      var pathHash = document.location.pathname.split('/');
-      var id = pathHash[pathHash.length-1];
-      var page = Page.find(id);
-      var iframe = jQuery('iframe');
-      var parts = {};
+      var pathHash = document.location.pathname.split('/'),
+        id = pathHash[pathHash.length-1],
+        page = Page.find(id),
+        iframe = jQuery('iframe'),
+        parts = {};
+      
       iframe.contents().find('div.editable').each(function(){
-        var self = jQuery(this);
-        var id = self.attr('id').split('-')[1];
-        parts[id] = self.html();
+        var iframe = jQuery(this),
+         id = iframe.attr('id').split('-')[1];
+         
+        parts[id] = iframe.html();
       });
       jQuery.each(parts, function(id, content){
-        content = Editor.textilize(content);
+        content = self.textilize(content);
         page.setPartAttributes(id, { 'content': content });
       });
       page.save();
-      
-      // alert('Save me! ' + page.attr('title'));
-      
     });
   },
   

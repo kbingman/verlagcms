@@ -12,7 +12,7 @@ var Parts = Sammy(function (app) {
         part: part.asJSON(),
         page: page.asJSON(),
         assets: Asset.asJSON(),
-        timestamp: window.timestamp
+        timestamp: Verlag.timestamp
       }, 'mustache');
       
       // jQuery('#page-tabs-' + page.id()).html('FIBBLE');
@@ -20,7 +20,7 @@ var Parts = Sammy(function (app) {
         
         // ACE editor
         var mode = 'textile'; 
-        var editorMode = aceModes[mode];
+        var editorMode = Verlag.ace_modes[mode];
         window.editor = ace.edit('part-' + part.id() + '-content');
         window.editor.setTheme('ace/theme/textmate');
         window.editor.getSession().setMode(new editorMode);

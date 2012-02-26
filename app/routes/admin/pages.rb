@@ -6,10 +6,10 @@ class Main
       # Page Index
       # -------------------------------------------
       get '/?' do
-        # @pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
+        pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
         
-        active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
-        pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        # active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+        # pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
         respond_to do |format|
           format.html do  
             # @root = current_site.root
@@ -71,19 +71,19 @@ class Main
         # enforce_update_permission(page) 
         
         # This is a bit of a hack needed to get the parts to save when sent by jQuery / js-model
-        if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)
-          parts = []
-          params['page']['parts'].each{|k,v| parts << v if v }
-          params['page']['parts'] = parts
-        end
-        
-        # HACK!! TODO move parts out of page....
-        if params['page']['contents'] && !params['page']['contents'].kind_of?(Array)
-          puts params['page']['contents']
-          parts = []
-          params['page']['contents'].each{|k,v| parts << v if v }
-          params['page']['parts'] = parts
-        end
+        # if params['page']['parts'] && !params['page']['parts'].kind_of?(Array)
+        #   parts = []
+        #   params['page']['parts'].each{|k,v| parts << v if v }
+        #   params['page']['parts'] = parts
+        # end
+        # 
+        # # HACK!! TODO move parts out of page....
+        # if params['page']['contents'] && !params['page']['contents'].kind_of?(Array)
+        #   puts params['page']['contents']
+        #   parts = []
+        #   params['page']['contents'].each{|k,v| parts << v if v }
+        #   params['page']['parts'] = parts
+        # end
                 
         if page.update_attributes(params['page'])
           respond_to do |format|

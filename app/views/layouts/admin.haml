@@ -5,57 +5,46 @@
     %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }    
      
     // Ace
-    %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
+    // %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
    
     - if RACK_ENV != 'development'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
     - else   
       -# %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' } 
+    
+      // Verlag
       %script{ :src => '/javascripts/lib/verlag.js', :type => 'text/javascript', :charset => 'utf-8' }  
       
-      %script{ :src => '/javascripts/vendor/jquery-1.6.2.min.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/vendor/jquery-ui-1.8.16.custom.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/ui/jquery.ui.sortable.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/underscore-min.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/modernizr.custom.92436.js', :type => 'text/javascript', :charset => 'utf-8' }   
-      %script{ :src => '/javascripts/vendor/sammy.min.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/sammy.title.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/sammy.nested_params.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/sammy.json.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/mustache.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/sammy.mustache.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/js-model-0.10.1.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/vendor/sinatra-rest.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/jquery.cookie.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      // Libraries
+      %script{ :src => '/javascripts/vendor/jquery-1.7.1.min.js', :type => 'text/javascript', :charset => 'utf-8' }  
+      %script{ :src => '/javascripts/vendor/hogan.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/underscore.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/backbone.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/vendor/modernizr.custom.00537.js', :type => 'text/javascript', :charset => 'utf-8' }
 
       // Models
+      %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/models/user.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/models/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/folder.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/models/layout.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/models/part.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' }   
-      %script{ :src => '/javascripts/models/site.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/models/user.js', :type => 'text/javascript', :charset => 'utf-8' } 
       
-      %script{ :src => '/javascripts/lib/utilities.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/events.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/editor.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/lib/iframer.js', :type => 'text/javascript', :charset => 'utf-8' }
+      // Collections 
+      %script{ :src => '/javascripts/collections/pages.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/collections/folders.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/collections/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
       
-      // Controllers
-      %script{ :src => '/javascripts/controllers/base.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/controllers/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/controllers/folders.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/controllers/layouts.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/controllers/pages.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/controllers/parts.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/controllers/sites.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/controllers/users.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      // Views
+      %script{ :src => '/javascripts/views/page_index.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/page_preview.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/folder_index.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       
       // Main application script
-      %script{ :src => '/javascripts/lib/admin.js', :type => 'text/javascript', :charset => 'utf-8' }  
+      %script{ :src => '/javascripts/lib/modal.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/lib/router.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/application.js', :type => 'text/javascript', :charset => 'utf-8' }  
         
-      
     -# This is where the mustache templates are rendered  
     = yield_content :head
 
@@ -71,7 +60,7 @@
         - if authenticated?
           #tabs        
             %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
-            %a.tab{ :id => 'assets-tab', :href => '/admin/assets' } Images 
+            %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Images 
             %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
             -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
             %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 

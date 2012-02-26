@@ -5,7 +5,7 @@ class Main
       
       # Assets by folder
       # -------------------------------------------
-      get '/:folder_id/assets' do
+      get '/:folder_id/assets/?' do
         folder = Folder.find(params[:folder_id])
         assets = folder.assets
       
@@ -17,7 +17,7 @@ class Main
       
       # Edit asset by folder
       # -------------------------------------------
-      get '/:folder_id/assets/:id/edit' do
+      get '/:folder_id/assets/:id/?' do
         folder = Folder.find(params[:folder_id])
         assets = folder.assets
       

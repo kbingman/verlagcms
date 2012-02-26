@@ -1,18 +1,21 @@
-var User = Model('user', function() {
-  this.persistence(Model.SinatraREST, '/admin/users'), 
- 
-  this.include({
-
-  }),  
+Verlag.Model.User = Backbone.Model.extend({
   
-  this.extend({    
-    toMustache: function(query) {
-      return {
-        users: this.map(function(user){                           
-          return user.attr() 
-        })
-      }
-    } 
-  });
+  // Makes nice rails style json urls 
+  url: function() {
+    return '/admin/users/' + this.id + '.json';
+  },
+  
+  initialize: function() {
+    
+  },
+  
+  is_admin: function(){
+    return this.get('role').id >= 100;
+  },
+  
+  is_super_user: function(){
+    return this.get('role').id >= 101;
+  }
+  
   
 });

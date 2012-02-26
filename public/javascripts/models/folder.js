@@ -1,37 +1,25 @@
-var Folder = Model('folder', function() {
-  this.persistence(Model.SinatraREST, '/admin/folders'), 
- 
-  this.include({
-    
-    loadAssets: function(callback) {
-      Asset.each(function(){ Asset.remove(this); });
-      var self = this;
-      var url = '/admin/folders/' + self.attr('id') + '/assets.json';
-      jQuery.ajax({
-        type: 'get',
-        url: url,
-        contentType: "application/json",
-        dataType: "json",
-        success: function(results) {
-          jQuery.each(results, function(i, assetData) {
-            var asset = new Asset({ id: assetData.id });
-            asset.merge(assetData);
-            Asset.add(asset);
-          });
-          if(callback){ callback.call(this); }
-        }
-      });
-    }
-    
-  }),  
+Verlag.Model.Folder = Backbone.Model.extend({
   
-  this.extend({   
+  // Makes nice rails style json urls 
+  url: function() {
+    return '/admin/folders/' + this.id + '.json';
+  },
+  
+  initialize: function() {
     
-    // Returns a JSON object with all folders 
-    asJSON: function(){
-      return Folder.map(function(item){ return item.attr() });
-    }
-    
-  });
+  },
+  
+  fetch_assets: function(callback){
+    var self = this;
+    $.ajax({
+      url: '/admin/folders/' + self.id + '/assets.json',
+      success: function(response){
+        self.assets = new Verlag.Collection.Assets(response);
+        if(callback){
+          callback.call(this, response);
+        }
+      }
+    });
+  }
   
 });

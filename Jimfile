@@ -11,43 +11,33 @@
       "src/mode-scss",
       "src/mode-textile"
     ],
-    "admin": [      
-      "vendor/jquery-1.6.2.min", 
-      "vendor/jquery-ui-1.8.16.custom",
-      "vendor/underscore-min",
-      "vendor/sammy.min", 
-      "vendor/sammy.title",
-      "vendor/sammy.nested_params", 
-      "vendor/sammy.json",  
-      "vendor/mustache",
-      "vendor/sammy.mustache",
-      "vendor/modernizr.custom.92436", 
-      "vendor/js-model-0.10.1", 
-      "vendor/sinatra-rest",  
-      "vendor/jquery.cookie",
-
-      "models/asset",
-      "models/folder",  
+    "verlag": [      
+      "lib/verlag",
+      
+      "vendor/jquery-1.7.1.min", 
+      "vendor/hogan",
+      "vendor/underscore",
+      "vendor/backbone",
+      "vendor/modernizr.custom.00537",
+      
       "models/page",
-      "models/layout",  
-      "models/part",
-      "models/site", 
       "models/user",
+      "models/folder",
+      "models/asset",
       
-      "lib/utilities",  
-      "lib/editor",
-      "lib/events",
-      "lib/iframer",  
+      "collections/pages",
+      "collections/folders",
+      "collections/assets",
       
-      "controllers/base",  
-      "controllers/sites",  
-      "controllers/layouts",    
-      "controllers/assets",
-      "controllers/folders",
-      "controllers/pages",
-      "controllers/parts",
-      "controllers/users",
-      "lib/admin"
+      "views/page_index",
+      "views/page_preview",
+      "views/folder_index",
+      "views/folder",
+      "views/asset",
+      
+      "lib/modal",
+      "lib/router",
+      "application"
     ]
   }
 }

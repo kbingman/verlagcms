@@ -21,7 +21,7 @@ feature "Assets Index", %q{
   scenario "view the assets page" do 
     visit '/admin/'  
     click_link 'Images'        
-    current_path.should == '/admin/assets'
+    current_path.should == '/admin/folders'
     screen_shot_and_save_page('assets-index')   
                                     
     page.should have_content('Assets')

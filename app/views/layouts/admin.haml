@@ -2,6 +2,7 @@
 %html
   %head
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
+    %link{ :rel => 'stylesheet', :href => "/css/bootstrap.css", :type => 'text/css' }   
     %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }    
      
     // Ace
@@ -21,6 +22,7 @@
       %script{ :src => '/javascripts/vendor/underscore.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/backbone.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/vendor/modernizr.custom.00537.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/vendor/keymaster.min.js', :type => 'text/javascript', :charset => 'utf-8' } 
 
       // Models
       %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -39,10 +41,15 @@
       %script{ :src => '/javascripts/views/folder_index.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/design_index.js', :type => 'text/javascript', :charset => 'utf-8' }
       
-      // Main application script
+      // Lib
+      %script{ :src => '/javascripts/lib/editor.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/lib/iframe.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/lib/modal.js', :type => 'text/javascript', :charset => 'utf-8' } 
       %script{ :src => '/javascripts/lib/router.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      
+      // Main application script
       %script{ :src => '/javascripts/application.js', :type => 'text/javascript', :charset => 'utf-8' }  
         
     -# This is where the mustache templates are rendered  
@@ -51,21 +58,23 @@
 
   %body
     .wrapper
-      #header 
-        .notice
-        %h1
-          - if authenticated?
-            = current_user.email
-          %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
-        - if authenticated?
-          #tabs        
-            %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
-            %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Images 
-            %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
-            -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
-            %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
-            %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
-        = yield_content :header
+      %header.navbar.navbar-fixed-top
+        .navbar-inner
+          .container
+            %h1
+              - if authenticated?
+                = current_user.email
+              %a{ :href => "http://#{current_site.domain}/", :target => '_blank' }= current_site.name   
+            - if authenticated?
+              .nav      
+                %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
+                %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Images 
+                %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
+                -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
+                %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
+                %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
+            = yield_content :header
+            .notice
       #content 
         = yield  
         %noscript

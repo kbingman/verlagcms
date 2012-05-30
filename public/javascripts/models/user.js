@@ -15,7 +15,10 @@ Verlag.Model.User = Backbone.Model.extend({
   
   is_super_user: function(){
     return this.get('role').id >= 101;
-  }
+  },
   
+  admin_path: function(){
+    return '/admin/folders/' + this.id 
+  }
   
 });

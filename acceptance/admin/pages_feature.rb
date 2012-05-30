@@ -21,7 +21,7 @@ feature "Pages", %q{
   end
 
   scenario "view the page index" do
-    visit '/admin/'
+    visit '/admin/pages'
     click_link 'Pages'
     
     current_path.should == '/admin/pages'

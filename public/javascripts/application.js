@@ -13,19 +13,16 @@ $(document).ready(function(){
   });
   
   // Main navigation - perhaps needs to be moved to a view
-  $('div#tabs a.tab').bind('click', function(e){
+  $('div.nav a.tab').on('click', function(e){
     e.preventDefault();
     var href = $(this).attr('href');
     
     Verlag.router.navigate(href, { trigger: true });
   });  
   
-  // Modal links 
-  $('#overlay').live('click', function(e){
-    var href = $('a.cancel').attr('href');
-    if(e.target.id == 'overlay'){
-      Verlag.router.navigate(href, { trigger: true });
-    }
-  })
+  key('command+s, ctrl+s', function(){
+    console.log('Hijacked Command+S or Ctrl+S, damn!');
+    return false;
+  });
   
 });

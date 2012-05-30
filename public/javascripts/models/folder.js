@@ -20,6 +20,11 @@ Verlag.Model.Folder = Backbone.Model.extend({
         }
       }
     });
+  },
+  
+  admin_path: function(){
+    return '/admin/folders/' + this.id 
   }
+  
   
 });

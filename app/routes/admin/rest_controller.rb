@@ -74,12 +74,10 @@ class Main
     # Update 
     # -------------------------------------------
     put '/:model/:id' do
+      attributes = JSON.parse(request.body.read.to_s)
       resource = klass.by_site(current_site).find params['id']
-      # resource = klass.find params['id']   
-      # enforce_update_permission(resource)
-      # puts params[model.singularize.to_sym].inspect
       
-      if resource.update_attributes(params[model.singularize.to_sym])
+      if resource.update_attributes(attributes)
         respond_to do |format|
           format.html { redirect "/admin/#{model}/#{resource.id}/" }
           format.json { resource.to_json }

@@ -46,7 +46,7 @@ require 'canable'
 # Rack
 require 'rack/cache'
 require 'rack/request' 
-require 'rack/raw_upload'
+# require 'rack/raw_upload'
 require 'dalli'
 
 # Templating
@@ -94,8 +94,7 @@ class Main < Monk::Glue
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week
-  use Rack::RawUpload
-  
+  # use Rack::RawUpload
   # use Jim::Rack, :bundle_uri => '/js/'
   
   # Extensions     

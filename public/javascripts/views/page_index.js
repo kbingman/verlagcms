@@ -31,8 +31,8 @@ Verlag.View.PageIndex = Backbone.View.extend({
       id = href.split('/')[3];
     
     Verlag.router.navigate(href, { trigger: false });
-    Verlag.views.page_preview = new Verlag.View.PagePreview({ el: $('#editor') });
-    Verlag.views.page_preview.render(id);
+    var page_preview = new Verlag.View.PagePreview({ el: $('#editor') });
+    page_preview.render(id);
   }
 
 });

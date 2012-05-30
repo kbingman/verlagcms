@@ -38,8 +38,8 @@ class Main
         # active_page_ids = []
         active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
 
-        @pages = current_site.pages
-        # @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
+        # @pages = current_site.pages
+        @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
         # @pages = current_site.pages.sort_by{ |p| p.created_at }
         
         # @root = current_site.root 

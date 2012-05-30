@@ -8,7 +8,8 @@ Verlag.Router = Backbone.Router.extend({
     'admin/pages/:id':                     'show_page',
     'admin/folders':                       'folders_index',
     'admin/folders/:id':                   'show_folder',
-    'admin/folders/:folder_id/assets/:id': 'show_asset'
+    'admin/folders/:folder_id/assets/:id': 'show_asset',
+    'admin/templates':                     'templates_index'
   },
   
   show_index: function(){
@@ -44,12 +45,17 @@ Verlag.Router = Backbone.Router.extend({
   show_asset: function(folder_id, id){
     var index_view = new Verlag.View.AssetIndex({ el: $('#sidebar') });
     var folder_view = new Verlag.View.Folder({ el: $('#editor') });
-    var asset_view = new Verlag.View.Asset({ el: $('body') });
     
     index_view.render();
     folder_view.render(folder_id, function(){
+      var asset_view = new Verlag.View.Asset();
       asset_view.render(folder_id, id);
     });
+  },
+  
+  templates_index: function(){
+    var design_index = new Verlag.View.DesignIndex({ el: $('#sidebar') });
+    design_index.render();
   }
   
 });

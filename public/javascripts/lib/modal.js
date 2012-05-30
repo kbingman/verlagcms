@@ -43,7 +43,7 @@ Verlag.resizeModal = function(img, container, callback){
    margins = 40;
      
      
-  if(container.height() > (docHeight - 40)){
+  if(container.height() >= (docHeight - 40)){
     img
       .height(docHeight - 40)
       .width((docHeight - 40) * ratio);
@@ -52,7 +52,7 @@ Verlag.resizeModal = function(img, container, callback){
       .width((docHeight - 40) * ratio);
   } 
     
-  if(container.width() > (docWidth - 40)){
+  if(container.width() >= (docWidth - 40)){
     img
       .height((docWidth - 40) / ratio)
       .width(docWidth - 40);

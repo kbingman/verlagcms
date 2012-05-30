@@ -30,6 +30,10 @@ Verlag.Model.Page = Backbone.Model.extend({
     
     attr['children'] = self.children_to_json()
     return attr;
+  },
+  
+  admin_path: function(){
+    return '/admin/pages/' + this.id 
   }
   
 });

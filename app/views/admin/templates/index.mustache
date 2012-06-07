@@ -1,82 +1,19 @@
 <div id="layouts">
-  <h2>Layouts <span class="modify"><a href="/admin/templates/new/layout">+</a></span></h2> 
+{{# templates }}
+  <h2>{{ title }} <span class="modify"><a href="/admin/design/new/layout">+</a></span></h2> 
   <ul>
-    {{#layouts}} 
+    {{# models }}
       <li class="layout" id="layout-{{id}}"> 
         <div class="item"> 
           <span class="title"> 
-             <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
+             <a id id="edit-layout-{{id}}" href="{{admin_path}}">{{name}}</a>       
           </span> 
           <span class="modify">                 
-            <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
+            <a class="remove-layout" id="remove-layout-{{id}}" href="{{admin_path}}/{{id}}/remove">x</a> 
           </span>  
         </div>
       </li>  
-    {{/layouts}}  
+    {{/ models }}
   </ul>   
-
-  <h2>Stylesheets <span class="modify"><a href="/admin/templates/new/stylesheet">+</a></span></h2>  
-  <ul>     
-  {{#stylesheets}} 
-    <li class="layout" id="layout-{{id}}">
-      <div class="item"> 
-        <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
-        </span> 
-        <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
-        </span> 
-      </div>
-    </li>
-  {{/stylesheets}} 
-  </ul>
-
-  <h2>Javascripts <span class="modify"><a href="/admin/templates/new/javascript">+</a></span></h2>
-  <ul>
-  {{#javascripts}} 
-    <li class="layout" id="layout-{{id}}">
-      <div class="item">
-        <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
-        </span> 
-        <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
-        </span> 
-      </div>
-    </li>
-  {{/javascripts}}     
-  </ul>
-
-  <h2>Partials <span class="modify"><a href="/admin/templates/new/partial">+</a></span></h2>
-  <ul>
-  {{#partials}} 
-    <li class="layout" id="layout-{{id}}">
-      <div class="item"> 
-        <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
-        </span> 
-        <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
-        </span> 
-      </div>
-    </li>
-  {{/partials}}     
-  </ul>
-  
-  <h2>Files <span class="modify"><a href="/admin/templates/new/upload">+</a></span></h2>
-  <ul>
-  {{#files}} 
-    <li class="file" id="file-{{id}}">
-      <div class="item"> 
-        <span class="title"> 
-           <a id id="edit-layout-{{id}}" href="{{admin_path}}/edit">{{name}}</a>       
-        </span> 
-        <span class="modify">                 
-          <a class="remove-layout" id="remove-layout-{{id}}" href="/admin/templates/{{id}}/remove">x</a> 
-          <a class="insert-file" id="insert-file-{{id}}" href="{{path}}">+</a> 
-        </span> 
-      </div>
-    </li>
-  {{/files}}     
-  </ul>
+{{/ templates }}  
 </div>

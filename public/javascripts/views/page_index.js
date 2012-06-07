@@ -9,7 +9,8 @@ Verlag.View.PageIndex = Backbone.View.extend({
   },
 
   initialize: function() {
-    $(this.el).undelegate('a[rel="edit_page"]', 'click');
+    // $(this.el).undelegate('a[rel="edit_page"]', 'click');
+    $(this.el).undelegate();
   },
 
   render: function() {

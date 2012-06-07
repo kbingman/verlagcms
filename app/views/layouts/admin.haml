@@ -6,7 +6,7 @@
     %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }    
      
     // Ace
-    // %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
+    %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
    
     - if RACK_ENV != 'development'
       %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -29,11 +29,13 @@
       %script{ :src => '/javascripts/models/user.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/models/template.js', :type => 'text/javascript', :charset => 'utf-8' }
       
       // Collections 
       %script{ :src => '/javascripts/collections/pages.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/collections/folders.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/collections/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/collections/templates.js', :type => 'text/javascript', :charset => 'utf-8' }
       
       // Views
       %script{ :src => '/javascripts/views/page_index.js', :type => 'text/javascript', :charset => 'utf-8' }
@@ -42,6 +44,7 @@
       %script{ :src => '/javascripts/views/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/design_index.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/design_edit.js', :type => 'text/javascript', :charset => 'utf-8' }
       
       // Lib
       %script{ :src => '/javascripts/lib/editor.js', :type => 'text/javascript', :charset => 'utf-8' } 
@@ -68,9 +71,8 @@
             - if authenticated?
               .nav      
                 %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
-                %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Images 
+                %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Files 
                 %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
-                -# %a.tab{ :id => 'files-tab', :href => '/admin/assets' } Files 
                 %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
                 %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
             = yield_content :header

@@ -51,6 +51,7 @@ Verlag.View.Asset = Backbone.View.extend({
   
   update: function(e){
     e.preventDefault();
+    alert('hey')
     var self = this;
     var target = $(e.currentTarget);
     var tag_list = target.find('#asset_tag_list').val();

@@ -9,53 +9,71 @@ Verlag.Router = Backbone.Router.extend({
     'admin/folders':                       'folders_index',
     'admin/folders/:id':                   'show_folder',
     'admin/folders/:folder_id/assets/:id': 'show_asset',
-    'admin/templates':                     'templates_index'
+    'admin/templates':                        'templates_index',
+    'admin/templates/:id':                    'show_template'
   },
   
   show_index: function(){
-    console.log('started');
+    // console.log('started');
   },
   
   show_pages: function(){
-    Verlag.views.page_index = new Verlag.View.PageIndex({ el: $('#sidebar') });
-    Verlag.views.page_index.render();
+    if (Verlag.sidebar){
+      Verlag.sidebar.off();
+      Verlag.sidebar = null;
+    }
+    Verlag.sidebar = new Verlag.View.PageIndex({ el: $('#sidebar') });
+    Verlag.sidebar.render();
   },
   
   show_page: function(id){
-    var page_index = new Verlag.View.PageIndex({ el: $('#sidebar') });
-    var preview = new Verlag.View.PagePreview({ el: $('#editor') });
+    Verlag.sidebar = new Verlag.View.PageIndex({ el: $('#sidebar') });
+    Verlag.editor = new Verlag.View.PagePreview({ el: $('#editor') });
     
-    preview.render(id);
-    page_index.render();
+    Verlag.editor.render(id);
+    Verlag.sidebar.render();
   }, 
   
   folders_index: function(){
-    var index_view = new Verlag.View.AssetIndex({ el: $('#sidebar') });
-    index_view.render();
+    Verlag.sidebar = new Verlag.View.AssetIndex({ el: $('#sidebar') });
+    Verlag.sidebar.render();
   },
   
   show_folder: function(id){
-    var index_view = new Verlag.View.AssetIndex({ el: $('#sidebar') });
-    var folder_view = new Verlag.View.Folder({ el: $('#editor') });
+    Verlag.sidebar = new Verlag.View.AssetIndex({ el: $('#sidebar') });
+    Verlag.editor = new Verlag.View.Folder({ el: $('#editor') });
     
-    index_view.render();
-    folder_view.render(id);
+    Verlag.sidebar.render();
+    Verlag.editor.render(id);
   },
   
   show_asset: function(folder_id, id){
-    var index_view = new Verlag.View.AssetIndex({ el: $('#sidebar') });
-    var folder_view = new Verlag.View.Folder({ el: $('#editor') });
+    Verlag.sidebar = new Verlag.View.AssetIndex({ el: $('#sidebar') });
+    Verlag.editor= new Verlag.View.Folder({ el: $('#editor') });
     
-    index_view.render();
-    folder_view.render(folder_id, function(){
-      var asset_view = new Verlag.View.Asset();
+    Verlag.sidebar.render();
+    Verlag.editor.render(folder_id, function(){
+      var asset_view = new Verlag.View.Asset({ folder_id: folder_id, id: id });
       asset_view.render(folder_id, id);
     });
   },
   
   templates_index: function(){
-    var design_index = new Verlag.View.DesignIndex({ el: $('#sidebar') });
-    design_index.render();
+    Verlag.sidebar = new Verlag.View.DesignIndex();
+    Verlag.sidebar.render();
+  },
+  
+  show_template: function(id){
+    Verlag.sidebar = new Verlag.View.DesignIndex();
+    Verlag.sidebar.render();
+    
+    Verlag.editor = new Verlag.View.DesignEdit({ id: id });
+    Verlag.editor.render();
+  },
+  
+  cleanup: function(view){
+    view.off();
+    // view.remove();
   }
   
 });

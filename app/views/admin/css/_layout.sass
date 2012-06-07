@@ -9,10 +9,10 @@ body
   :height 100%  
   :overflow hidden
   
-h1, h2, h3, h4, h5, h6
-  :font-family $headline-fonts
-  :text-transform uppercase
-  :font-weight normal
+// h1, h2, h3, h4, h5, h6
+//   :font-family $headline-fonts
+//   :text-transform uppercase
+//   :font-weight normal
 
 p
   :min-height 1em
@@ -74,23 +74,10 @@ html
   h1
     :font-size 2em
     
-#login
-  +border-radius(5px)
-  :margin 42px auto 0 auto
-  :border 7px solid #444
-  :width 420px
-  :padding 20px
-  :background #ddd
-  form
-    label
-      :display inline-block
-      :width 6em
-    input.textfield
-      :width 14em
-    .field
-      :margin 0 0 6px 0
-    .buttons
-      :padding-left 6.2em      
+.login
+  :position relative
+  :margin 100px auto   
+  :width 500px
       
 .listing  
   +positionable

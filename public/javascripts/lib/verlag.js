@@ -40,6 +40,19 @@ Verlag.notify = function(message, options){
 Verlag.hide_notice = function(){
   jQuery('.notice').fadeOut('slow');    
 };
+
+// ACE Editor modes depending on content type
+Verlag.ace_modes = {
+  'javascript' : require('ace/mode/javascript').Mode,
+  'html'       : require('ace/mode/html').Mode,
+  'css'        : require('ace/mode/css').Mode,
+  'scss'       : require('ace/mode/scss').Mode,
+  'sass'       : require('ace/mode/scss').Mode,
+  'textile'    : require('ace/mode/textile').Mode,
+  // 'partial'    : require('ace/mode/scss').Mode,
+  'none'       : require('ace/mode/scss').Mode
+}
+
   
 
 

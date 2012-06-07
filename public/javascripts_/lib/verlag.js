@@ -1,7 +1,7 @@
 // Basic Namespace for the app
 // Creating a new instance of this object makes the correct calls
 // to instantiate all the models, editors, etc. 
-var Verlag = function(){
+var Verlag = (function(){
   
   if (!(this instanceof arguments.callee)){
     return new arguments.callee(arguments);
@@ -76,7 +76,7 @@ var Verlag = function(){
   }
   
   self.init();
-}
+}());
 
 // ACE Editor modes depending on content type
 Verlag.ace_modes = {
@@ -86,7 +86,6 @@ Verlag.ace_modes = {
   'scss'       : require('ace/mode/scss').Mode,
   'sass'       : require('ace/mode/scss').Mode,
   'textile'    : require('ace/mode/textile').Mode,
-  // 'partial'    : require('ace/mode/scss').Mode,
   'none'       : require('ace/mode/scss').Mode
 }
 

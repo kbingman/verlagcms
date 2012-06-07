@@ -1,6 +1,6 @@
 jQuery(document).ready(function () {
   
-  window.verlag = new Verlag();
+  window.verlag =  Verlag;
   
 });
 

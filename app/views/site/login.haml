@@ -1,12 +1,18 @@
-#login
+%section.login.well
   %h1 Login   
   
-  %form{ :action => '/login', :method => 'post' }
-    .field
-      %label Email
-      %input{ :type => 'text', :name => 'username', :value => @email }
-    .field    
-      %label Password
-      %input{ :type => 'password', :name => 'password' }  
-    .field    
-      %input{ :type => 'submit', :value => 'submit' }
+  %form.form-horizontal{ action: '/login', method: 'post' }
+    .control-group
+      %label.control-label{ for: 'username' } Email
+      .controls
+        %input{ type: 'text', name: 'username', value: @email, id: 'username' }
+    .control-group    
+      %label.control-label{ for: 'password' } Password
+      .controls
+        %input{ type: 'password', name: 'password', id: 'password' }  
+    .form-actions 
+      %button.btn.btn-primary{ type: 'submit' }
+        Login
+      
+      
+      

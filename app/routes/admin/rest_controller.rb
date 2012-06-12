@@ -29,11 +29,13 @@ class Main
     # Create
     # -------------------------------------------
     post '/:model' do   
-      resource = klass.new(params[model.singularize.to_sym])
+      attributes = JSON.parse(request.body.read.to_s)
+      resource = klass.new(attributes)
+      
       # TODO may break some things 
       resource.site = current_site
       if resource.save
-        resource.to_json
+        # resource.to_json
         respond_to do |format|
           format.html { redirect "/admin/#{model}" }
           format.json { resource.to_json }

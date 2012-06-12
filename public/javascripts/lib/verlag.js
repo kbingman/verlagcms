@@ -5,7 +5,6 @@ Verlag.Collection = {};
 Verlag.View = {};
 
 Verlag.collections = {};
-Verlag.views = {};
 Verlag.templates = {};
 
 // Precompile and cache a given template with Hogan.js

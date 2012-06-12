@@ -1,14 +1,22 @@
-<div id="new-folder-container" class="small-modal">
-  <h1>New Folder</h1>  
+<div id="overlay">
+  <div id="new-folder-container" class="modal">
+    <h1>New Folder</h1>  
+  
+    <form id="new-folder" method="post" class="form-horizontal">  
+      <fieldset>
+        
+      <div class="control-group">
+        <label class="control-label" for="folder-name">Name</label>
+         <div class="controls">
+           <input type="text" id="folder-name" name="folder[name]" value="" class="textfield" />  
+         </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn">Save</button>
+        <a href="/admin/assets" class="close">Cancel</a> 
+      </div>
+      </fieldset>
+    </form> 
 
-  <form action="/admin/folders" method= "post">  
-    <div class="field">   
-      <label for="folder_name">Name</label>
-      <input type="text" id="folder_name" name="folder[name]" value="" class="textfield" />  
-    </div>
-    <div class="buttons">
-      <input type="submit" id="folder_save" value="Save" class="button" /> 
-      <a href="/admin/assets" class="cancel">Cancel</a> 
-    </div>
-  </form> 
+  </div>
 </div>

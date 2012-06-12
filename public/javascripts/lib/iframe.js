@@ -26,17 +26,15 @@ Verlag.iFramer = {
 
       // Sets preview links to change the sammy.js routes instead of the usual route
       
-      // internal_links.click(function(e){
-      //   var self = jQuery(this);
-      //   // if(!self.hasClass('verlag-editor')){
-      //     var link_path = self.attr('href').split('?')[0].replace('/preview','');
-      //     var page = Page.find_by_path(link_path);
-      //     if (page){
-      //       e.preventDefault();
-      //       Pages.setLocation(page.attr('admin_path'));
-      //     }
-      //   // }
-      // });
+      internal_links.click(function(e){
+        var path = $(this).attr('href').split('?')[0].replace('/preview','');
+        var page = Verlag.pages.find_by_path(path);
+        
+        if (page){
+          e.preventDefault();
+          Verlag.router.navigate(page.get('admin_path'), { trigger: true });
+        }
+      });
       // 
       // var image_links = content.find('a.insert-image');
       // image_links.click(function(e){

@@ -3,9 +3,9 @@ $(document).ready(function(){
   $.ajax({
     url: '/admin/sites/current.json',
     success: function(response){
-      Verlag.collections.pages = new Verlag.Collection.Pages(response.pages);
-      Verlag.collections.folders = new Verlag.Collection.Folders(response.folders);
-      Verlag.collections.templates = new Verlag.Collection.Templates(response.templates);
+      Verlag.pages = new Verlag.Collection.Pages(response.pages);
+      Verlag.folders = new Verlag.Collection.Folders(response.folders);
+      Verlag.templates = new Verlag.Collection.Templates(response.templates);
       
       Verlag.current_user = new Verlag.Model.User(response.current_user);
       

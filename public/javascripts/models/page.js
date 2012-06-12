@@ -11,7 +11,7 @@ Verlag.Model.Page = Backbone.Model.extend({
   
   children: function(){
     var self = this,
-      children = Verlag.collections.pages.select(function(page){
+      children = Verlag.pages.select(function(page){
         return page.get('parent_id') == self.id;
       });
       

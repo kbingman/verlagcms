@@ -8,8 +8,9 @@ class Main
       get '/?' do
        # pages = params[:query] ? Page.search_all(@query).all(:order => 'created_at DESC') : Page.all(:order => 'created_at DESC') 
         
-        active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
-        pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        # active_page_ids = request.cookies['active_page_ids'] ? request.cookies['active_page_ids'].split(',') : nil
+        # pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
+        pages = current_site.pages
         
         respond_to do |format|
           format.html do  
@@ -42,18 +43,18 @@ class Main
       
       # Show
       # -------------------------------------------
-      get '/:id/?' do
-        @page = Page.by_site(current_site).find params['id']
-        if @page
-          respond_to do |format|
-            format.html { admin_haml :'admin/index' }
-            format.json { @page.to_json }
-            # format.json { render :rabl, :'admin/pages/show', :format => 'json' }
-          end
-        else
-          raise Sinatra::NotFound
-        end
-      end
+      # get '/:id/?' do
+      #   @page = Page.by_site(current_site).find params['id']
+      #   if @page
+      #     respond_to do |format|
+      #       format.html { admin_haml :'admin/index' }
+      #       format.json { @page.to_json }
+      #       # format.json { render :rabl, :'admin/pages/show', :format => 'json' }
+      #     end
+      #   else
+      #     raise Sinatra::NotFound
+      #   end
+      # end
       
       # Show page children
       # -------------------------------------------

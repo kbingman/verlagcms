@@ -6,13 +6,14 @@
          <a id="edit-{{id}}" href="{{admin_path}}" rel="show_folder">{{name}}</a> 
          <!--(<a id="preview-{{id}}" class="preview" href="#/pages/{{id}}">preview</a>)-->     
       </span>
+      <a title="Remove Folder" class="js-remove" data-id="{{ id }}" href="{{admin_path}}/remove">x</a> 
       <span class="modify">                 
          
-        <a title="Remove Page" class="remove-page" id="remove-page-{{id}}" href="{{admin_path}}/remove">x</a> 
+        
       </span>
     </div>
   </li>  
  {{/folders}}
 </ul>     
 
-<a title="Add Child" class="add-child" id="add-child-{{id}}"href="/admin/folders/new">New Folder</a>
+<a class="js-new-folder" id="add-child-{{id}}"href="/admin/folders/new">New Folder</a>

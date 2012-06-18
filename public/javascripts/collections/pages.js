@@ -2,7 +2,7 @@ Verlag.Collection.Pages = Backbone.Collection.extend({
   
   model: Verlag.Model.Page,
 
-  url: '/admin/pages.json',
+  url: '/admin/pages',
 
   initialize: function() {
   

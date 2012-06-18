@@ -12,19 +12,17 @@ Verlag.View.PagePreview = Backbone.View.extend({
     'click input#save': 'update'
   },
 
-  initialize: function() {
+  initialize: function(options) {
+    this.page = Verlag.pages.get(options.id);
     $(this.el).undelegate('input#save', 'click');
+    this.render();
   },
 
   render: function(id) {
-    var self = this,
-        page = Verlag.pages.get(id),
+    var page = this.page,
         template = Verlag.compile_template('admin-pages-show'),
-        data = { 
-          page: page.to_json()
-        };
-    
-    self.page = page;
+        data = { page: page.toJSON() };
+
     $(this.el).html(template.render(data));
     $('#sidebar li.node').removeClass('active')
     $('li#page-' + page.id).addClass('active');

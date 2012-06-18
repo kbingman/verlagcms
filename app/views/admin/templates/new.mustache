@@ -1,23 +1,17 @@
+{{# model }}
 <h1>New {{klass}}</h1>  
 
-<form {{^ file }}action="/admin/templates"{{/ file }} {{# file }}action="/admin/files" enctype="multipart/form-data" {{/ file }}method= "post">  
-  <div class="hidden">
-    <input type="hidden" id="page_parent_id" name="template[klass]" value="{{klass}}" class="hidden" />   
+<div class="hidden">
+  <input type="hidden" id="page_parent_id" name="klass" value="{{ klass }}" class="hidden" />   
+</div>
+
+<div class="control-group"> 
+  <label class="control-label" for="template-name">Name</label>
+  <div class="controls">
+    <input type="text" id="template-name" name="name" value="" class="textfield" />  
   </div>
-  {{^ file }}
-  <div class="field">   
-    <label for="page_title">Name</label>
-    <input type="text" id="page_title" name="template[name]" value="" class="textfield" />  
-  </div>
-  {{/ file }}
-  {{# file }}
-  <div class="field"> 
-    <label for="page_title">File</label>
-    <input type="file" id="template_file" name="template[file]" value="" class="textfield" />  
-  </div>
-  {{/ file }}
-  <div class="buttons">
-    <input type="submit" id="page_save" value="Save" class="button" /> 
-    <a href="/admin/templates" class="cancel">Cancel</a> 
-  </div>
-</form>
+</div>
+{{/ model }}
+
+
+

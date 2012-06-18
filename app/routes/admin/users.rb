@@ -14,7 +14,8 @@ class Main
     # Create
     # -------------------------------------------
     post '/users' do   
-      resource = User.new(params['user']) 
+      attributes = JSON.parse(request.body.read.to_s)
+      resource = User.new(attributes) 
       resource.sites << current_site
       if resource.save
         resource.to_json

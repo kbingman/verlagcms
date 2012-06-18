@@ -1,25 +1,34 @@
+{{# model }}
 <h1>New Page</h1>  
 
-<form action="/admin/pages/{{#parent}}{{id}}" method= "post">  
-  <div class="hidden">
-    <input type="hidden" id="page_parent_id" name="page[parent_id]" value="{{id}}" class="hidden" />   
-    {{/parent}}   
-  </div>
-  <div class="field">   
-    <label for="page_title">Title</label>
-    <input type="text" id="page_title" name="page[title]" value="" class="textfield" />  
-  </div>
-  <div class="select-boxes">
-    <label for="page_layout">Layout</label> 
-    <select id="page-layout" class="select" name="page[layout_id]"> 
-      {{#layouts}}
+<div class="hidden">
+  <input type="hidden" id="parent_id" name="parent_id" value="{{ parent_id }}" class="hidden" />   
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="page-title">Title</label>
+   <div class="controls">
+     <input type="text" id="page-title" name="title" value="" class="textfield" />  
+   </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="slug">Slug</label>
+   <div class="controls">
+     <input type="text" id="slug" name="slug" value="" class="textfield" />  
+   </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="page-layout">Layout</label> 
+  <div class="controls">
+    <select id="page-layout" class="select" name="layout_id"> 
+      {{# layouts }}
       <option value="{{id}}" {{selected}}>{{name}}</option>
-      {{/layouts}}
+      {{/ layouts }}
     </select>  
   </div>
-  <div class="buttons">
-    <input type="submit" id="page_save" value="Save" class="button" /> 
-    <a href="/admin/pages" class="cancel">Cancel</a> 
-  </div>
-</form> 
- 
+</div>
+{{/ model }}
+
+     

@@ -6,10 +6,16 @@ Verlag.View.DesignIndex = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click a': 'showTemplate'
+    'click a.js-show': 'show',
+    'click a.js-remove': 'remove',
+    'click a.js-new': 'new'
   },
 
   initialize: function() {
+    var self = this;
+    Verlag.templates.on('all', function(){
+      self.render();
+    });
     $(this.el).undelegate();
   },
   
@@ -17,21 +23,25 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     return {
       templates: [{
         title: 'Layouts',
+        klass: 'Layout',
         models: Verlag.templates.find_by_klass('Layout').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Partials',
+        klass: 'Partial',
         models: Verlag.templates.find_by_klass('Partial').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Stylesheets',
+        klass: 'Stylesheet',
         models: Verlag.templates.find_by_klass('Stylesheet').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Javascripts',
+        klass: 'Javascript',
         models: Verlag.templates.find_by_klass('Javascript').map(function(l){
           return l.toJSON()
         })
@@ -45,10 +55,36 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     $(this.el).html(template.render(this.data())); 
   },
   
-  showTemplate: function(e){
+  new: function(e){
+    e.preventDefault();
+    var klass = $(e.target).data('klass');
+    var template = new Verlag.Model.Template({
+      klass: klass,
+      content: ' '
+    });
+    
+    Verlag.modal = new Verlag.View.New({ 
+      model: template, 
+      collection: 'templates' 
+    });
+    
+  },
+  
+  show: function(e){
     e.preventDefault();
     var path = $(e.target).attr('href');
     Verlag.router.navigate(path, { trigger: true });
+  },
+  
+  remove: function(e){
+    e.preventDefault();
+    var template = Verlag.templates.get($(e.target).data('id'));
+    
+    Verlag.modal = new Verlag.View.Remove({ 
+      model: template, 
+      collection: 'templates' 
+    });
   }
+  
 
 });

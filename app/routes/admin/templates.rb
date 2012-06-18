@@ -6,9 +6,11 @@ class Main
       # Create layout
       # -------------------------------------------
       post '' do 
-        klass = params[:layout][:klass].titlecase.constantize
-        # logger.debug("Klass: #{klass}")   
-        template = klass.new(params[:layout]) 
+        attributes = JSON.parse(request.body.read.to_s)
+        
+        klass = attributes['klass'].titlecase.constantize
+
+        template = klass.new(attributes) 
         template.site = current_site
         
         if template.save

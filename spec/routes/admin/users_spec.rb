@@ -56,7 +56,8 @@ describe "routes/users" do
       def do_post(params)
         params[:site_id] = @site.id 
         params
-        post '/admin/users.json', :user => params
+
+        post '/admin/users.json', params.to_json
       end
     
       it 'should be successful' do
@@ -81,7 +82,7 @@ describe "routes/users" do
         
     context 'json' do   
       def do_put
-        put "/admin/users/#{@user.id}.json", :user => { :name => 'Rename' }
+        put "/admin/users/#{@user.id}.json", { name: 'Rename' }.to_json
       end
     
       it 'should be successful' do

@@ -8,7 +8,7 @@ describe "routes/admin/assets" do
     build_complete_site 
     setup_site                   
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Factory(:asset, :site_id => @site.id, :file => @file)   
+    @asset = Factory(:asset, site_id: @site.id, file: @file)   
     @assets = [@asset]
   end 
   
@@ -39,11 +39,11 @@ describe "routes/admin/assets" do
       end 
       
       it 'should not include assets from other sites' do   
-        @alien_site = Factory(:site, :name => 'Alien', :subdomain => 'alien', :group => @group)
+        @alien_site = Factory(:site, name: 'Alien', subdomain: 'alien', group: @group)
         @alien_asset = Factory(:asset, 
-          :site => @alien_site,
-          :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
-          :title => 'alien-image') 
+          site: @alien_site,
+          file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
+          title: 'alien-image') 
         do_get 
         last_response.body.should_not include(@alien_asset.to_json) 
       end 
@@ -55,7 +55,7 @@ describe "routes/admin/assets" do
     
     context 'html' do 
       def do_post
-        post "/admin/assets", :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => 'test_file.jpg' }
+        post "/admin/assets", file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')), file: { filename: 'test_file.jpg' }
       end
       
       it 'should be a redirect' do
@@ -66,7 +66,7 @@ describe "routes/admin/assets" do
     
     context 'json' do 
       def do_post
-        post "/admin/assets.json", :file => File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), :file => { :filename => '830px-Tieboardingcraft.jpg' }
+        post "/admin/assets.json", file: File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), file: { filename: '830px-Tieboardingcraft.jpg' }
       end
       
       it 'should be successful' do
@@ -91,7 +91,7 @@ describe "routes/admin/assets" do
           
     context 'json' do   
       def do_put
-        put "/admin/assets/#{@asset.id}.json", :asset => { :title => 'Really Awesome Image' }
+        put "/admin/assets/#{@asset.id}.json", { title: 'Really Awesome Image' }.to_json
       end
     
       it 'should be successful' do
@@ -116,10 +116,10 @@ describe "routes/admin/assets" do
 
     before(:each) do 
       @kill_me = Factory(:asset, 
-        :title => 'killme', 
-        :site_id => @site.id, 
-        :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
-        :title => 'kill_me.jpg')    
+        title: 'killme', 
+        site_id: @site.id, 
+        file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
+        title: 'kill_me.jpg')    
     end
 
     context 'json' do    

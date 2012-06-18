@@ -4,9 +4,9 @@
       <span style="padding-left: {{padding}}px;" class="opener{{# open? }} open {{/ open? }}">+</span>
     {{/ children? }}{{/ child? }}
     <span class="title" style="padding-left: {{padding}}px;"> 
-       <a rel="edit_page" id="edit-{{id}}" href="{{admin_path}}">{{title}}</a>  
-       <a id="add-child-{{id}}" class="add-child" href="{{admin_path}}/new">+</a>  
-       {{^ root? }}<a id="remove-{{id}}" class="remove" href="{{admin_path}}/remove">x</a>{{/ root? }}
+       <a class="js-show" id="edit-{{id}}" data-id="{{id}}" href="{{admin_path}}">{{title}}</a>  
+       <a class="js-new"  data-id="{{ id }}" href="{{admin_path}}/new">+</a>  
+       {{^ root? }}<a data-id="{{ id }}" class="js-remove" href="{{admin_path}}/remove">x</a>{{/ root? }}
     </span>
     {{# children? }}
     <span class="count" style="padding-left: {{padding}}px;">

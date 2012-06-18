@@ -36,12 +36,14 @@ Verlag.iFramer = {
         }
       });
       // 
-      // var image_links = content.find('a.insert-image');
-      // image_links.click(function(e){
-      //   e.preventDefault();
-      //   var href = jQuery(this).attr('href');
-      //   Base.trigger('image-browser', href);
-      // });
+      var image_links = content.find('a.insert-image');
+      image_links.click(function(e){
+        e.preventDefault();
+        
+        var path = jQuery(this).attr('href');
+        alert(path)
+        // Base.trigger('image-browser', href);
+      });
       
       if(callback){ callback.call(this); } 
     }); 

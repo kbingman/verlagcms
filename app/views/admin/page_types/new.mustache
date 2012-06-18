@@ -1,0 +1,21 @@
+{{# model }}
+<h1>New Page</h1>  
+
+<div class="control-group">
+  <label class="control-label" for="title">Name</label>
+   <div class="controls">
+     <input type="text" id="title" name="name" value="" class="textfield" />  
+   </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="layout">Layout</label> 
+  <div class="controls">
+    <select id="page-layout" class="select" name="layout_id"> 
+      {{# layouts }}
+      <option value="{{id}}" {{selected}}>{{name}}</option>
+      {{/ layouts }}
+    </select>  
+  </div>
+</div>
+{{/ model }}

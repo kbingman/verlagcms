@@ -34,8 +34,8 @@ class Main
     get '' do
       redirect '/admin/'
     end
-    
-    admin_route = get '/' do   
+  
+    get '/' do   
       admin_haml :'admin/index'
     end  
   end

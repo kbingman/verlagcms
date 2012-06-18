@@ -86,7 +86,7 @@ class Site
     end
     
     def sanitize(text)
-      text.gsub(/[^a-z0-9\-.]+/i, '-').gsub(/\-$/,'').downcase
+      ActiveSupport::Inflector.parameterize(text, '-')
     end    
     
     after_create :create_default_template

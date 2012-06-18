@@ -22,9 +22,24 @@ $(document).ready(function(){
     Verlag.router.navigate(href, { trigger: true });
   });  
   
-  key('command+s, ctrl+s', function(){
+  // Modal Events
+  $('#overlay').live('click', function(e){
+    e.preventDefault();
+    if(e.target.id == 'overlay'){
+      Verlag.closeModal();
+    }
+  });
+  
+  // Modal Events
+  $('a.close').live('click', function(e){
+    e.preventDefault();
+    Verlag.closeModal();
+  });
+  
+  Verlag.ace_settings()
+  key('command+s, ctrl+s', function(e){
+    e.preventDefault();
     console.log('Hijacked Command+S or Ctrl+S, damn!');
-    return false;
   });
   
 });

@@ -53,7 +53,7 @@ describe "routes/admin/pages" do
     context 'json' do   
       def do_post
         @name = Faker::Name.first_name
-        post "/admin/pages.json", :page => { :title => @name, :layout_id => @layout.id, :parent_id => @root.id }
+        post "/admin/pages.json", { title: @name, layout_id: @layout.id, parent_id: @root.id }.to_json
       end
     
       it 'should be successful' do
@@ -107,13 +107,13 @@ describe "routes/admin/pages" do
   context 'PUT update' do  
     
     before(:all) do
-      @alt_layout = Factory(:layout, :site_id => @site.id, :name => 'Alt')
+      @alt_layout = Factory(:layout, site_id: @site.id, name: 'Alt')
     end
           
     context 'json' do   
       def do_put
         @new_title = Faker::Name.first_name
-        put "/admin/pages/#{@page.id}.json", :page => { :title => @new_title, :layout_id => @alt_layout.id  }
+        put "/admin/pages/#{@page.id}.json", { title: @new_title, layout_id: @alt_layout.id  }.to_json
       end
     
       it 'should be successful' do

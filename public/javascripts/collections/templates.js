@@ -2,7 +2,7 @@ Verlag.Collection.Templates = Backbone.Collection.extend({
   
   model: Verlag.Model.Template,
 
-  // url: '/admin/templates.json',
+  url: '/admin/templates',
   
   // url: function(folder_id){
   //   return '/admin/folders/' + folder_id + '/assets.json'

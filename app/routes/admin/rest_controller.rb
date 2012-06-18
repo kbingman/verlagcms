@@ -5,6 +5,11 @@ class Main
   # -------------------------------------------
   
   namespace '/admin' do
+    
+    get '/settings' do
+      admin_haml :'admin/index'
+    end
+    
       
     # Index
     # -------------------------------------------

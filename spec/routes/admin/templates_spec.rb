@@ -50,7 +50,7 @@ describe "routes/templates" do
     context 'json' do   
       def do_post
         @template_name = Faker::Name.first_name
-        post '/admin/templates.json', :layout => { :name => @template_name, :klass => 'layout' }
+        post '/admin/templates.json', { name: @template_name, klass: 'layout' }.to_json
       end
     
       it 'should be successful' do
@@ -84,7 +84,7 @@ describe "routes/templates" do
         
     context 'json' do   
       def do_put
-        put "/admin/templates/#{@template.id}.json", :layout => { :name => 'Rename', :site_id => @site.id, :klass => 'layout' }
+        put "/admin/templates/#{@template.id}.json", { name: 'Rename', site_id: @site.id, klass: 'layout' }.to_json
       end
     
       it 'should be successful' do

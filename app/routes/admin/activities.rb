@@ -4,7 +4,7 @@ class Main
     # Activity Index
     # -------------------------------------------
     get '/activity/?' do  
-      collection = Activity.all :limit => 30, :order => ('created_at DESC')
+      collection = Activity.all :limit => 10, :order => ('created_at DESC')
       
       respond_to do |format|
         format.html { admin_haml :'admin/index' }

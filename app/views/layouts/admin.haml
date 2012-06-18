@@ -30,25 +30,29 @@
       %script{ :src => '/javascripts/models/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/models/template.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/models/page_type.js', :type => 'text/javascript', :charset => 'utf-8' }
+      
       
       // Collections 
       %script{ :src => '/javascripts/collections/pages.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/collections/folders.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/collections/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/collections/templates.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/collections/page_types.js', :type => 'text/javascript', :charset => 'utf-8' }
+      
       
       // Views
       %script{ :src => '/javascripts/views/pages/index.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/pages/show.js', :type => 'text/javascript', :charset => 'utf-8' }      
-      %script{ :src => '/javascripts/views/folders/show.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/folders/new.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/folders/index.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/assets/index.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/assets/show.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/design/index.js', :type => 'text/javascript', :charset => 'utf-8' }
       %script{ :src => '/javascripts/views/design/edit.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/remove/index.js', :type => 'text/javascript', :charset => 'utf-8' }
+      %script{ :src => '/javascripts/views/settings/index.js', :type => 'text/javascript', :charset => 'utf-8' } 
       
-      
+      %script{ :src => '/javascripts/views/shared/remove.js', :type => 'text/javascript', :charset => 'utf-8' } 
+      %script{ :src => '/javascripts/views/shared/new.js', :type => 'text/javascript', :charset => 'utf-8' }     
       
       // Lib
       %script{ :src => '/javascripts/lib/editor.js', :type => 'text/javascript', :charset => 'utf-8' } 
@@ -77,7 +81,8 @@
                 %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
                 %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Files 
                 %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
-                %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
+                %a.tab{ :id => 'users-tab', :href => '/admin/settings' } Settings 
+                // %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
                 %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
             = yield_content :header
             .notice

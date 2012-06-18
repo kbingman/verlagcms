@@ -19,6 +19,12 @@ Verlag.compile_template = function(template){
   }
 };
 
+Verlag.closeModal = function(){
+  $('#overlay').fadeOut('fast', function(){
+    $(this).remove();
+  });
+}
+
 Verlag.notify = function(message, options){
   var options = options || {};
   var klass = options['class'] || 'message';
@@ -39,6 +45,22 @@ Verlag.notify = function(message, options){
 Verlag.hide_notice = function(){
   jQuery('.notice').fadeOut('slow');    
 };
+
+// ACE Editor keyboard shortcuts
+Verlag.ace_settings = function(){
+  var canon = require('pilot/canon');  
+  canon.addCommand({
+    name: 'save',
+    bindKey: {
+      win: 'Ctrl-S',
+      mac: 'Command-S',
+      sender: 'editor'
+    },
+    exec: function() {
+      jQuery('form.command-save').submit();
+    }
+  });
+}
 
 // ACE Editor modes depending on content type
 Verlag.ace_modes = {

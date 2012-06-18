@@ -46,7 +46,7 @@ describe "routes/admin/sites" do
     context 'json' do   
       def do_post
         @site_name = Faker::Name.first_name
-        post '/admin/sites.json', :site => { :name => @site_name, :group_id => @group.id }
+        post '/admin/sites.json', { name: @site_name, group_id: @group.id }.to_json
       end
     
       it 'should be successful' do
@@ -75,7 +75,7 @@ describe "routes/admin/sites" do
         
     context 'json' do   
       def do_put
-        put "/admin/sites/#{@site.id}.json", :site => { :name => @new_name }
+        put "/admin/sites/#{@site.id}.json", { name: @new_name }.to_json
       end
     
       it 'should be successful' do

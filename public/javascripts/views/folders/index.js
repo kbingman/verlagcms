@@ -5,9 +5,9 @@ Verlag.View.FolderIndex = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click a[rel="show_folder"]': 'show_folder',
-    'click a.js-new-folder': 'new_folder',
-    'click a.js-remove': 'remove_folder'
+    'click a[rel="show_folder"]': 'show',
+    'click a.js-new-folder': 'new',
+    'click a.js-remove': 'remove'
   },
 
   initialize: function() {
@@ -25,30 +25,32 @@ Verlag.View.FolderIndex = Backbone.View.extend({
     $('#sidebar').html(template.render(data)); 
   },
   
-  show_folder: function(e){
+  show: function(e){
     e.preventDefault();
     var path = $(e.target).attr('href'),
       id = path.split('/')[3];
     
     Verlag.router.navigate(path, { trigger: false });
-    Verlag.editor = new Verlag.View.Folder();
-    Verlag.editor.render(id);
-  }, 
-  
-  new_folder: function(e){
-    e.preventDefault();
-    var path = $(e.target).attr('href')
+    Verlag.editor = new Verlag.View.Assets({ id: id });
     
-    Verlag.modal = new Verlag.View.NewFolder();
-    Verlag.modal.render();
   }, 
   
-  remove_folder: function(e){
+  new: function(e){
+    e.preventDefault();
+    var path = $(e.target).attr('href');
+    var model = new Verlag.Model.Folder();
+    
+    Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
+  }, 
+  
+  remove: function(e){
     e.preventDefault();
     var folder = Verlag.folders.get($(e.target).data('id'));
     
-    Verlag.modal = new Verlag.View.Remove({ model: folder });
-    Verlag.modal.render();
+    Verlag.modal = new Verlag.View.Remove({ 
+      model: folder, 
+      collection: 'folders' 
+    });
   }
   
 

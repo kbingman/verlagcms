@@ -44,7 +44,9 @@ Verlag.View.Asset = Backbone.View.extend({
     $('#overlay').fadeOut('fast', function(){
       $(this).remove();
     });
-    Verlag.router.navigate('/admin/folders/' + this.folder.id, { trigger: false });
+    Verlag.router.navigate(this.folder.get('admin_path'), { 
+      trigger: false 
+    });
   },
   
   update: function(e){

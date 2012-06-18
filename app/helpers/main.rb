@@ -8,7 +8,7 @@ class Main
     
     def klass 
       begin
-        @klass ||= model.singularize.titlecase.constantize if model 
+        @klass ||= model.singularize.camelize.constantize if model 
       rescue
         nil
       end

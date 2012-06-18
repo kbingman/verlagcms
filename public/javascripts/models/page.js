@@ -1,9 +1,11 @@
 Verlag.Model.Page = Backbone.Model.extend({
   
   // Makes nice rails style json urls 
-  url: function() {
-    return '/admin/pages/' + this.id + '.json';
-  },
+  // url: function() {
+  //   return '/admin/pages/' + this.id + '.json';
+  // },
+  
+  urlRoot: '/admin/pages',
   
   initialize: function() {
     
@@ -18,22 +20,17 @@ Verlag.Model.Page = Backbone.Model.extend({
     return new Verlag.Collection.Pages(children);
   },
   
-  children_to_json: function(){
+  childData: function(){
     return this.children().map(function(child){
-      return child.to_json();
+      return child.pageData();
     });
   },
   
-  to_json: function(){
-    var self = this,
-      attr = self.toJSON();
+  pageData: function(){
+    var attr = this.toJSON();
     
-    attr['children'] = self.children_to_json()
+    attr['children'] = this.childData();
     return attr;
-  },
-  
-  admin_path: function(){
-    return '/admin/pages/' + this.id 
   }
   
 });

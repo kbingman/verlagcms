@@ -5,35 +5,68 @@ Verlag.View.PageIndex = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click a[rel="edit_page"]': 'show_page_preview'
+    'click a.js-show': 'show',
+    'click a.js-remove': 'remove',
+    'click a.js-new': 'new'
   },
 
   initialize: function() {
-    // $(this.el).undelegate('a[rel="edit_page"]', 'click');
+    var self = this;
+    Verlag.pages.on('all', function(){
+      self.render()
+    });
+    
     $(this.el).undelegate();
+    this.render();
+  },
+  
+  data: function(){
+    return { 
+      root: Verlag.pages.root().pageData()
+    };
   },
 
   render: function() {
-    var root = Verlag.pages.root(),
-      template = Verlag.compile_template('admin-pages-index'),
-      partials = { 
-        node:  Verlag.compile_template('admin-pages-node') 
-      },
-      data = { 
-        root: root.to_json()
-      };
-      
-    $(this.el).html(template.render(data, partials));
+    var template = Verlag.compile_template('admin-pages-index'),
+        partials = { 
+         node:  Verlag.compile_template('admin-pages-node') 
+        };
+        
+    $(this.el).html(template.render(this.data(), partials));
   }, 
+
+  new: function(e){
+    e.preventDefault();
+    var id = $(e.target).data('id');
+    var parent = Verlag.pages.get(id);
+    var model = new Verlag.Model.Page({
+      parent_id: id
+    });
+    
+    parent.set({ 'children?': true, 'open?': true });
+    Verlag.modal = new Verlag.View.New({ 
+      model: model, 
+      collection: 'pages' 
+    });
+  },
   
-  show_page_preview: function(e){
+  show: function(e){
     e.preventDefault();
     var href = $(e.target).attr('href'),
       id = href.split('/')[3];
     
     Verlag.router.navigate(href, { trigger: false });
-    Verlag.editor = new Verlag.View.PagePreview({ el: $('#editor') });
-    Verlag.editor.render(id);
+    Verlag.editor = new Verlag.View.PagePreview({ id: id });
+  },
+  
+  remove: function(e){
+    e.preventDefault();
+    var page = Verlag.pages.get($(e.target).data('id'));
+    
+    Verlag.modal = new Verlag.View.Remove({ 
+      model: page, 
+      collection: 'pages' 
+    });
   }
 
 });

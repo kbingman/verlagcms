@@ -24,5 +24,4 @@ class PageType
       self.save 
     end
 
-  
 end

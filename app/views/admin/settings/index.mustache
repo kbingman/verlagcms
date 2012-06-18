@@ -1,0 +1,11 @@
+<h1>Settings</h1>
+
+<ul>
+{{# page_types }}
+<li>
+  {{ name }}
+  <a href="/admin/page_types/{{ id }}/remove" data-id="{{ id }}" class="js-remove">x</a>
+</li>
+{{/ page_types }}
+</ul>
+<a href="/admin/page_types/new" class="js-new">New Page Type</a>

@@ -26,35 +26,23 @@ class Main
       
       # Create page
       # -------------------------------------------
-      post '' do    
-        page = Page.new(params[:page]) 
+      post '' do 
+        attributes = JSON.parse(request.body.read.to_s)  
+        
+        page = Page.new(attributes) 
         page.site = current_site
         
         if page.save
-          respond_to do |format|
-            format.html { redirect('/admin/pages') }
-            format.json { page.to_json }
-          end 
+          page.to_json
+          # respond_to do |format|
+          #   format.html { redirect('/admin/pages') }
+          #   format.json { page.to_json }
+          # end 
         else
           puts page.errors.inspect
           { :errors => page.errors }
         end
       end
-      
-      # Show
-      # -------------------------------------------
-      # get '/:id/?' do
-      #   @page = Page.by_site(current_site).find params['id']
-      #   if @page
-      #     respond_to do |format|
-      #       format.html { admin_haml :'admin/index' }
-      #       format.json { @page.to_json }
-      #       # format.json { render :rabl, :'admin/pages/show', :format => 'json' }
-      #     end
-      #   else
-      #     raise Sinatra::NotFound
-      #   end
-      # end
       
       # Show page children
       # -------------------------------------------

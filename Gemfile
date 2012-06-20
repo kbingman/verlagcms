@@ -1,14 +1,11 @@
 source "http://rubygems.org"
 
 gem 'rack', '~> 1.4.0' 
-gem 'sinatra', '1.3.1' 
+gem 'sinatra', :require => 'sinatra/base'
 gem 'tilt', '~> 1.3' 
 gem 'sinatra-contrib', '1.3.1' 
+gem 'sinatra-namespace'
 gem 'thin' 
-gem 'monk-glue', :path => 'vendor/glue'      
-
-# gem 'sprockets', :git =>'git://github.com/sstephenson/sprockets.git'
-# gem 'hike' ,'~> 1.2.1'
 
 gem 'warden'
 gem 'bcrypt-ruby'
@@ -23,8 +20,8 @@ gem 'hunt', '~> 0.4'
 gem 'fast-stemmer', '~> 1.0'
 gem 'joint', '~> 0.6.0'
 gem 'mongo_mapper_acts_as_tree', '~> 0.3.3' 
-# gem 'bin', :git => 'https://github.com/jnunemaker/bin.git'
 gem 'canable', '~> 0.2.0' # :path => 'vendor/canable'
+
 
 gem 'mini_magick'
 
@@ -33,6 +30,9 @@ gem 'sass'
 gem 'rabl', '~> 0.3.0' 
 gem 'mustache', '~> 0.99.4'
 gem 'RedCloth' 
+
+gem 'sprockets', '~>2.0.2'
+gem 'uglifier', '~>1.0.3'
 
 gem 'json'
 gem 'rack-flash'
@@ -49,7 +49,7 @@ group :development do
   gem 'rake'
   gem 'thor'  
   gem 'monk' 
-  gem 'jim', :git => 'https://github.com/quirkey/jim.git'
+  gem 'guard-sprockets2'
 end
 
 group :test do

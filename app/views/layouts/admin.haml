@@ -2,67 +2,13 @@
 %html
   %head
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
-    %link{ :rel => 'stylesheet', :href => "/css/bootstrap.css", :type => 'text/css' }   
-    %link{ :rel => 'stylesheet', :href => "/admin/css/verlag.css", :type => 'text/css' }    
+
+    %link{ :rel => 'stylesheet', :href => "#{asset_path('application.css')}", :type => 'text/css' }   
      
     // Ace
-    %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' }
-   
-    - if RACK_ENV != 'development'
-      %script{ :src => '/javascripts/admin.min.js', :type => 'text/javascript', :charset => 'utf-8' }
-    - else   
-      -# %script{ :src => '/javascripts/admin.js', :type => 'text/javascript', :charset => 'utf-8' } 
+    // %script{ :src => "#{asset_path('ace.js')}", :type => 'text/javascript', :charset => 'utf-8' }
+    %script{ :src => "#{asset_path('application.js')}", :type => 'text/javascript', :charset => 'utf-8' }
     
-      // Verlag
-      %script{ :src => '/javascripts/lib/verlag.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      
-      // Libraries
-      %script{ :src => '/javascripts/vendor/jquery-1.7.1.min.js', :type => 'text/javascript', :charset => 'utf-8' }  
-      %script{ :src => '/javascripts/vendor/hogan.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/underscore.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/backbone.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/vendor/modernizr.custom.00537.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/vendor/keymaster.min.js', :type => 'text/javascript', :charset => 'utf-8' } 
-
-      // Models
-      %script{ :src => '/javascripts/models/page.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/user.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/folder.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/asset.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/template.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/models/page_type.js', :type => 'text/javascript', :charset => 'utf-8' }
-      
-      
-      // Collections 
-      %script{ :src => '/javascripts/collections/pages.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/collections/folders.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/collections/assets.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/collections/templates.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/collections/page_types.js', :type => 'text/javascript', :charset => 'utf-8' }
-      
-      
-      // Views
-      %script{ :src => '/javascripts/views/pages/index.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/pages/show.js', :type => 'text/javascript', :charset => 'utf-8' }      
-      %script{ :src => '/javascripts/views/folders/index.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/assets/index.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/assets/show.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/design/index.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/design/edit.js', :type => 'text/javascript', :charset => 'utf-8' }
-      %script{ :src => '/javascripts/views/settings/index.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      
-      %script{ :src => '/javascripts/views/shared/remove.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/views/shared/new.js', :type => 'text/javascript', :charset => 'utf-8' }     
-      
-      // Lib
-      %script{ :src => '/javascripts/lib/editor.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/lib/iframe.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/lib/modal.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      %script{ :src => '/javascripts/lib/router.js', :type => 'text/javascript', :charset => 'utf-8' } 
-      
-      // Main application script
-      %script{ :src => '/javascripts/application.js', :type => 'text/javascript', :charset => 'utf-8' }  
-        
     -# This is where the mustache templates are rendered  
     = yield_content :head
 
@@ -89,18 +35,18 @@
       #content 
         = yield  
         %noscript
-          -# #editor 
-          -#   %h1 You need to change a setting in your web browser</h1> 
-          -#   %p 
-          -#     This application requires a browser feature called <strong>JavaScript</strong>. All modern browsers support JavaScript. 
-          -#     You probably just need to change a setting in order to turn it on.
-          -#     
-          -#   %p 
-          -#     Please see: <a href="http://www.google.com/support/bin/answer.py?answer=23852">How to enable JavaScript in your browser</a>.
-          -#   -# %p  
-          -#   -#   If you use ad-blocking software, it may require you to allow JavaScript from basecamphq.com.
-          -#   %p  
-          -#     Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
+          #editor 
+            %h1 You need to change a setting in your web browser</h1> 
+            %p 
+              This application requires a browser feature called <strong>JavaScript</strong>. All modern browsers support JavaScript. 
+              You probably just need to change a setting in order to turn it on.
+              
+            %p 
+              Please see: <a href="http://www.google.com/support/bin/answer.py?answer=23852">How to enable JavaScript in your browser</a>.
+            -# %p  
+            -#   If you use ad-blocking software, it may require you to allow JavaScript from basecamphq.com.
+            %p  
+              Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
           
         
         

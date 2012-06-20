@@ -34,7 +34,7 @@ class Main
     # Create
     # -------------------------------------------
     post '/:model' do   
-      attributes = JSON.parse(request.body.read.to_s)
+      
       resource = klass.new(attributes)
       
       # TODO may break some things 

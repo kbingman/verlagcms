@@ -16,7 +16,7 @@ require 'bundler/setup'
 Bundler.setup
 
 # Monk and Sinatra
-require 'monk/glue'
+# require 'monk/glue'
 require 'sinatra/base'   
 require 'sinatra/namespace' 
 require 'sinatra/reloader' 
@@ -48,17 +48,13 @@ require 'rack/cache'
 require 'rack/request' 
 # require 'rack/raw_upload'
 require 'dalli'
+require 'sprockets'
 
 # Templating
 require 'mustache/sinatra'
 require 'haml' 
 require 'RedCloth' 
 require 'rabl'
-# require 'active_support/core_ext'
-# require 'active_support/inflector'
-# require 'builder'
-# # require 'jim'
-# 
 
 require 'yaml'
 
@@ -73,11 +69,22 @@ def monk_settings(key)
   $monk_settings[key]
 end
 
-class Main < Monk::Glue
+
+module AssetHelpers
+  def asset_path(source)
+    '/assets/' + settings.sprockets.find_asset(source).digest_path
+  end
+end
+
+
+class Main < Sinatra::Base
+  set :root, File.expand_path('../', __FILE__)
+  set :sprockets, Sprockets::Environment.new(root_path('app/assets'))
+  set :precompile, [ /\w+\.(?!js|css).+/, /(application|ace).(css|js)$/ ]
+  # set :precompile, [ /.*/ ]
+  set :assets_prefix, 'assets'
+  set :assets_path, File.join(root, 'public', assets_prefix)
   
-  # configure do
-  # 
-  # end
 
   # Not sure if this is the correct syntax
   register Rabl
@@ -95,7 +102,6 @@ class Main < Monk::Glue
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week
   # use Rack::RawUpload
-  # use Jim::Rack, :bundle_uri => '/js/'
   
   # Extensions     
   register Sinatra::Namespace
@@ -114,6 +120,22 @@ class Main < Monk::Glue
   configure :development do
     register Sinatra::Reloader
   end
+  
+  set :dump_errors, true
+  set :logging, true
+  set :methodoverride, true
+  set :raise_errors, Proc.new { test? }
+  set :run, Proc.new { $0 == app_file }
+  set :show_exceptions, Proc.new { development? }
+  set :static, true
+    
+  set :app_file, __FILE__    
+  set :views, File.join(root, 'app', 'views') 
+  set :haml, { 
+    format: :html5, 
+    ugly: RACK_ENV == 'development' ? false : true 
+  } 
+  set :default_content_type, :html
 
   configure do
     mime_type :mustache, 'text/mustache' 
@@ -123,29 +145,19 @@ class Main < Monk::Glue
     mime_type :ttf, 'application/font'
     mime_type :woff, 'application/font' 
     
-    set :dump_errors, true
-    set :logging, true
-    set :methodoverride, true
-    set :raise_errors, Proc.new { test? }
-    set :root, root_path
-    set :run, Proc.new { $0 == app_file }
-    set :show_exceptions, Proc.new { development? }
-    set :static, true
-    
-    set :app_file, __FILE__    
-    set :views, root_path('app', 'views') 
-    set :sass, { 
-      :cache => false, 
-      :cache_location => './tmp/sass-cache',
-      :style => :compact,
-      :css_location => root_path('public') 
-    }
-    set :haml, { 
-      :format => :html5, 
-      :ugly => RACK_ENV == 'development' ? false : true 
-    } 
-    set :default_content_type, :html
+    sprockets.append_path(File.join(root, 'app', 'assets', 'stylesheets'))
+    sprockets.append_path(File.join(root, 'app', 'assets', 'javascripts'))
+    sprockets.append_path(File.join(root, 'app', 'assets', 'images'))
+
+    sprockets.context_class.instance_eval do
+      include AssetHelpers
+    end
   end
+  
+  helpers do
+    include AssetHelpers
+  end
+  
 
   use Warden::Manager do |manager|
     manager.default_strategies :fibble

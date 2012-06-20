@@ -13,6 +13,10 @@ class Main
         nil
       end
     end
+    
+    def attributes
+      JSON.parse(request.body.read.to_s)
+    end
      
     # Basic Date formatting
     def format_date(date, format = "%d/%m/%Y")

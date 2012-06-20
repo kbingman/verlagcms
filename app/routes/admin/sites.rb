@@ -16,7 +16,7 @@ class Main
       # Create
       # -------------------------------------------
       post '' do   
-        resource = Site.new(params['site']) 
+        resource = Site.new(attributes) 
         
         # TODO move this to the view
         group = Group.first

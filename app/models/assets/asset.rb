@@ -196,7 +196,7 @@ class Asset
   
     before_validation :set_file_type
     def set_file_type
-      if fonts_extensions.include(self.ext) 
+      if fonts_extensions.include?(self.ext) 
         self.file_type = 'application/font'
       end
     end

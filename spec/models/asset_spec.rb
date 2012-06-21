@@ -114,6 +114,11 @@ describe Asset do
       @asset.ext.should == 'jpg'
     end
     
+    it 'returns a file type' do
+      @asset.file_type.should == 'image/jpeg'
+    end
+    
+    
     it 'returns whether the file is an image (resizable)' do
       @asset.is_image.should == true
     end

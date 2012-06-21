@@ -193,41 +193,21 @@ class Asset
   end
   
   private
-    
-    # def resize(image, width, height, options={})
-    #   # Needs to check for correct gravity, ie. North, South, East, West, Center
-    #   gravity = options[:gravity] ? options[:gravity].titlecase : 'Center'
-    #   gravity = 'Center' unless ['North', 'South', 'East', 'West', 'Center'].include?(gravity)
-    #   quality = options[:quality] || '72' 
-    #   
-    #   cols, rows = image[:dimensions]
-    #   if options[:crop] == true
-    #     image.combine_options do |cmd|
-    #       if width != cols || height != rows
-    #         scale = [width/cols.to_f, height/rows.to_f].max
-    #         cols = (scale * (cols + 0.5)).round
-    #         rows = (scale * (rows + 0.5)).round
-    #         cmd.resize "#{cols}x#{rows}"
-    #       end
-    #       cmd.gravity gravity
-    #       cmd.quality quality
-    #       cmd.extent "#{width}x#{height}" if cols != width || rows != height
-    #     end
-    #   else
-    #     image.combine_options do |cmd|
-    #       if width != cols || height != rows
-    #         cmd.resize("#{width}x#{height}")
-    #       end
-    #       cmd.quality quality
-    #     end
-    #   end
-    #   image = yield(image) if block_given?
-    #   image
-    # end     
+  
+    before_validation :set_file_type
+    def set_file_type
+      if fonts_extensions.include(self.ext) 
+        self.file_type = 'application/font'
+      end
+    end
     
     before_validation :set_title
     def set_title
       self.title ||= File.basename self.file_name, '.*'
+    end
+    
+    def fonts_extensions
+      ['eot', 'woff', 'ttf', 'otf']
     end
   
 end

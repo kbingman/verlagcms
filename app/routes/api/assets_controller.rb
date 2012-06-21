@@ -29,7 +29,7 @@ class Main
     # Show Asset
     # -------------------------------------------
     get '/assets/:id/?' do
-      resource = klass.by_site(current_site).find params['id']
+      resource = Asset.by_site(current_site).find params['id']
       if resource
         resource.to_json
       else

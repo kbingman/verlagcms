@@ -50,7 +50,7 @@ module Sinatra
     
       app.get '/images/:id/:filename' do
         # cache_request(3600 * 24) # 24 Hour cache
-        cache_control :public, :max_age => 3600 * 24
+        cache_control :public, max_age: 3600 * 24
         etag Digest::MD5.hexdigest(params.to_s)
         
         h = params['h']
@@ -66,7 +66,7 @@ module Sinatra
             content_type(asset.file_type)
             # image = asset.render_image(w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
             image = MiniMagick::Image.read(asset.file.read)
-            image = resize_image(image, w.to_i, h.to_i, {:crop => crop, :gravity => gravity})
+            image = resize_image(image, w.to_i, h.to_i, {crop: crop, gravity: gravity})
             image.to_blob
           else
             asset.file.read
@@ -82,7 +82,7 @@ module Sinatra
         # cache_request(3600 * 24) # 24 Hour cache 
         # response['Cache-Control'] = "max-age=#{3600 * 24}, public"  
         
-        cache_control :public, :max_age => 3600 * 24
+        cache_control :public, max_age: 3600 * 24
         etag Digest::MD5.hexdigest(params.to_s)  
         
         h, w, crop = [nil, nil, {}]
@@ -99,7 +99,7 @@ module Sinatra
           
           if asset.file_type.match(/image/)
             image = MiniMagick::Image.read(asset.file.read)
-            image = resize_image(image, w.to_i, h.to_i, {:crop => crop})
+            image = resize_image(image, w.to_i, h.to_i, {crop: crop})
             image.to_blob  
           else
             asset.file.read

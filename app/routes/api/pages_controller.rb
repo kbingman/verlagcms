@@ -6,7 +6,9 @@ class Main
   namespace '/api' do
     
     helpers do
-  
+      before do
+        content_type 'application/json'
+      end
     end
       
     # Page Index

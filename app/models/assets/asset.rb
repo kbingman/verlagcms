@@ -176,7 +176,7 @@ class Asset
   # ----------------------------------------
   def as_json(options)
     super(
-      :only => [ :id, :created_at, :file_name,  :folder_id, :title ], 
+      :only => [ :id, :created_at, :file_name,  :folder_id, :title, :file_type ], 
       :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
     )
   end

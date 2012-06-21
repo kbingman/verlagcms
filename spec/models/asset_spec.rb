@@ -43,6 +43,7 @@ describe Asset do
         :title => "Image",
         :tag_list =>'tag1, tag2', 
         :file_name => @asset.file_name,
+        :file_type => 'image/jpeg',
         :ext => @asset.ext,
         :id => @asset.id.to_s, 
         :folder_id => @folder.id, 

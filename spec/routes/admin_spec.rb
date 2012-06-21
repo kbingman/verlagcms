@@ -12,19 +12,22 @@ describe "routes/site" do
   context 'mustache templates' do
     
     it 'should include the admin/pages show template' do
-      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'show.mustache')))
+      pending
+      template = File.open(root_path(File.join('app/assets/templates/', 'admin', 'pages', 'show.mustache')))
       get '/templates' 
       last_response.body.should include(template.read.html_safe)
     end
     
     it 'should include the admin/pages index template' do
-      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'node.mustache')))
+      pending
+      template = File.open(root_path(File.join('app/assets/templates/', 'admin', 'pages', 'node.mustache')))
       get '/templates'
       last_response.body.should include(template.read.html_safe)
     end
     
     it 'should include the admin/pages edit template' do
-      template = File.open(root_path(File.join('app/views/', 'admin', 'pages', 'edit.mustache')))
+      pending
+      template = File.open(root_path(File.join('app/assets/templates  /', 'admin', 'pages', 'edit.mustache')))
       get '/templates' 
       last_response.body.should include(template.read.html_safe)
     end

@@ -1,0 +1,33 @@
+.preview {
+  /* @include positionable; */
+  position: absolute;
+  overflow: auto;
+  left: 0;
+  right: 0;
+  top: 102px; 
+  bottom: 42px;
+  z-index: 1;
+  
+  .loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  iframe {
+    position: relative;
+    margin-bottom: -3px;
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+}
+   
+
+  
+
+
+  
+ 
+    
+    
+  

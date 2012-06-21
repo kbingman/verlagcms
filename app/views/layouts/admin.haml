@@ -6,12 +6,11 @@
     %link{ :rel => 'stylesheet', :href => "#{asset_path('application.css')}", :type => 'text/css' }   
      
     // Ace
-    // %script{ :src => "#{asset_path('ace.js')}", :type => 'text/javascript', :charset => 'utf-8' }
+    %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' } 
     %script{ :src => "#{asset_path('application.js')}", :type => 'text/javascript', :charset => 'utf-8' }
     
     -# This is where the mustache templates are rendered  
     = yield_content :head
-
 
   %body
     .wrapper
@@ -47,8 +46,6 @@
             -#   If you use ad-blocking software, it may require you to allow JavaScript from basecamphq.com.
             %p  
               Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
-          
-        
         
     #loader
       

@@ -62,7 +62,7 @@ class Main
     # Embeds the mustache templates in a script tag, with the correct id
     def show_template(*sources)
       sources.map do |source|
-        template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
+        template = File.open(root_path(File.join('app/assets/templates/', "#{source}.mustache")))
         dom_id = source.split('/').last.dasherize
         haml :'layouts/_template', 
           { :layout => false }, 
@@ -72,20 +72,10 @@ class Main
     
     # Returns the mustache template as raw html so that we can use it on the client
     def js_template(source)
-      template = File.open(root_path(File.join('app/views/', "#{source}.mustache")))
+      template = File.open(root_path(File.join('app/assets/templates/', "#{source}.mustache")))
       dom_id = source.split('/').last.camelize
       template.read.html_safe
     end
-    
-    # Provides content_for and matching content tags for sinatra views
-    # def content_for(key, &block)
-    #   @content ||= {}
-    #   @content[key] = capture_haml(&block)
-    # end
-    # 
-    # def content(key)
-    #   @content && @content[key]
-    # end  
     
     def sidebar_toggled?
       request.cookies['sidebar_toggled']

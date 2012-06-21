@@ -4251,9 +4251,6 @@ html {
   background-color: rgba(38, 115, 38, 0.8);
   z-index: 101; }
 
-.message {
-  background-color: green; }
-
 .warning {
   background-color: orange; }
 
@@ -4388,15 +4385,11 @@ table {
     display: block; }
 
 .preview {
+  /* @include positionable; */
   position: absolute;
-  display: block;
   overflow: auto;
-  top: 0;
-  bottom: 0;
   left: 0;
   right: 0;
-  z-index: 11;
-  left: 0;
   top: 102px;
   bottom: 42px;
   z-index: 1; }

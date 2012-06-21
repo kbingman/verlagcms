@@ -68,13 +68,8 @@ Verlag.ace_modes = {
   'html'       : require('ace/mode/html').Mode,
   'css'        : require('ace/mode/css').Mode,
   'scss'       : require('ace/mode/scss').Mode,
-  'sass'       : require('ace/mode/scss').Mode,
+  // 'less'       : require('ace/mode/less').Mode,
   'textile'    : require('ace/mode/textile').Mode,
   // 'partial'    : require('ace/mode/scss').Mode,
   'none'       : require('ace/mode/scss').Mode
 }
-
-  
-
-
-  

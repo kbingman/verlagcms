@@ -1,6 +1,6 @@
 Verlag.View.PageIndex = Backbone.View.extend({
 
-  el: '#sidebar',
+  el: '#editor',
   tagName:  'div',
 
   // The DOM events specific to an item.
@@ -12,9 +12,9 @@ Verlag.View.PageIndex = Backbone.View.extend({
 
   initialize: function() {
     var self = this;
-    Verlag.pages.on('all', function(){
-      self.render()
-    });
+    // Verlag.pages.on('all', function(){
+    //   self.render()
+    // });
     
     $(this.el).undelegate();
     this.render();
@@ -33,6 +33,8 @@ Verlag.View.PageIndex = Backbone.View.extend({
         };
         
     $(this.el).html(template.render(this.data(), partials));
+    $('a.tab').removeClass('active');
+    $('a#pages-tab').addClass('active');
   }, 
 
   new: function(e){

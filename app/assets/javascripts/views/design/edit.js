@@ -16,6 +16,7 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     if(Verlag.aceEditor){
       Verlag.aceEditor.destroy();
     }
+    this.render();
   },
   
   data: function(){
@@ -30,13 +31,19 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     
     $(this.el).html(template.render(this.data())); 
     this.intitializeAce();
+    $('a.tab').removeClass('active');
+    $('a#templates-tab').addClass('active');
+    
+    
+    Verlag.sidebar = new Verlag.View.DesignIndex();
+    
   },
   
   intitializeAce: function(){
     var layout = this.layout,
         mode = layout.get('mode'),
         editorMode = Verlag.ace_modes[mode];
-    
+        
     Verlag.aceEditor = ace.edit('layout_content');
     Verlag.aceEditor.setTheme('ace/theme/textmate');
     Verlag.aceEditor.getSession().setMode(new editorMode);

@@ -1,41 +1,48 @@
 Verlag.View.FolderIndex = Backbone.View.extend({
 
-  el: '#sidebar',
+  el: '#editor',
   tagName:  'div',
 
   // The DOM events specific to an item.
   events: {
-    'click a[rel="show_folder"]': 'show',
-    'click a.js-new-folder': 'new',
-    'click a.js-remove': 'remove'
+    'click a.js-show': 'show',
+    'click a.js-new-folder': 'newFolder',
+    'click a.js-remove': 'remove',
+    'click a.js-new-asset': 'newAsset',
   },
 
   initialize: function() {
     Verlag.folders.on('all', this.render);
     $(this.el).undelegate();
+    this.render();
   },
 
   render: function() {
     var folders = Verlag.folders,
         template = Verlag.compile_template('admin-folders-index'),
+        partials = { 
+          toolbar: Verlag.compile_template('admin-assets-toolbar')
+        },
         data = { 
           folders: folders.toJSON()
         };
     
-    $('#sidebar').html(template.render(data)); 
+    $(this.el).html(template.render(data, partials)); 
+    $('a.tab').removeClass('active');
+    $('a#assets-tab').addClass('active');
   },
   
   show: function(e){
     e.preventDefault();
-    var path = $(e.target).attr('href'),
-      id = path.split('/')[3];
-    
+    var path = $(e.currentTarget).attr('href'),
+      id = $(e.currentTarget).data('id');
+      
     Verlag.router.navigate(path, { trigger: false });
     Verlag.editor = new Verlag.View.Assets({ id: id });
     
   }, 
   
-  new: function(e){
+  newFolder: function(e){
     e.preventDefault();
     var path = $(e.target).attr('href');
     var model = new Verlag.Model.Folder();
@@ -51,6 +58,12 @@ Verlag.View.FolderIndex = Backbone.View.extend({
       model: folder, 
       collection: 'folders' 
     });
+  },
+  
+  newAsset: function(e){
+    e.preventDefault();
+    
+    Verlag.modal = new Verlag.View.NewAsset({ id: null }); 
   }
   
 

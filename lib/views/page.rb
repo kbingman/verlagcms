@@ -121,7 +121,7 @@ class Main
         local_page_id = self[:id].to_s
         ids = @global_page.ancestor_ids + [@global_page.id.to_s]
         ids.include?(local_page_id)
-      end
+      end      
       
       # Meta Methods
       # ----------------------------------------------------

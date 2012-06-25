@@ -2,7 +2,6 @@
 %html
   %head
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
-
     %link{ :rel => 'stylesheet', :href => "#{asset_path('application.css')}", :type => 'text/css' }   
      
     // Ace
@@ -28,13 +27,13 @@
                 %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
                 %a.tab{ :id => 'users-tab', :href => '/admin/settings' } Settings 
                 // %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
-                %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
+                // %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
             = yield_content :header
             .notice
       #content 
         = yield  
         %noscript
-          #editor 
+          #editor.editor
             %h1 You need to change a setting in your web browser</h1> 
             %p 
               This application requires a browser feature called <strong>JavaScript</strong>. All modern browsers support JavaScript. 

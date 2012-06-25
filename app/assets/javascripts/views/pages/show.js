@@ -30,6 +30,9 @@ Verlag.View.PagePreview = Backbone.View.extend({
     Verlag.iFramer.initialize('.preview iframe', function(){
       Verlag.Editor.initialize();
     }); 
+    
+    $('a.tab').removeClass('active');
+    $('a#pages-tab').addClass('active');
   },
   
   update: function(e){

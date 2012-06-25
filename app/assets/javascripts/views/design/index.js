@@ -17,6 +17,7 @@ Verlag.View.DesignIndex = Backbone.View.extend({
       self.render();
     });
     $(this.el).undelegate();
+    this.render();
   },
   
   data: function(){
@@ -53,6 +54,8 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     var template = Verlag.compile_template('admin-templates-index');
     
     $(this.el).html(template.render(this.data())); 
+    $('a.tab').removeClass('active');
+    $('a#templates-tab').addClass('active');
   },
   
   new: function(e){
@@ -67,7 +70,6 @@ Verlag.View.DesignIndex = Backbone.View.extend({
       model: template, 
       collection: 'templates' 
     });
-    
   },
   
   show: function(e){

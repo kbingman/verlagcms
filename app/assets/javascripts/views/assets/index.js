@@ -4,7 +4,9 @@ Verlag.View.Assets = Backbone.View.extend({
   tagName:  'div',
 
   events: {
-    'click a[rel="show_asset"]': 'show',
+    'click a.js-show': 'show',
+    'click a.js-new-folder': 'newFolder',
+    'click a.js-new-asset': 'newAsset',
     'click a.js-remove': 'remove'
   },
 
@@ -30,7 +32,8 @@ Verlag.View.Assets = Backbone.View.extend({
     var self = this,
         template = Verlag.compile_template('admin-assets-index'),
         partials = { 
-          asset:  Verlag.compile_template('admin-assets-asset') 
+          asset:  Verlag.compile_template('admin-assets-asset'),
+          toolbar: Verlag.compile_template('admin-assets-toolbar')
         },
         data = { 
           folder: this.folder.toJSON(),
@@ -38,8 +41,8 @@ Verlag.View.Assets = Backbone.View.extend({
         };
     
     $(self.el).html(template.render(data, partials));
-    $('#sidebar li.node').removeClass('active');
-    $('li#folder-' + this.folder.id).addClass('active');
+    $('a.tab').removeClass('active');
+    $('a#assets-tab').addClass('active');
   }, 
   
   show: function(e){
@@ -61,6 +64,20 @@ Verlag.View.Assets = Backbone.View.extend({
       model: asset, 
       collection: 'assets' 
     });
+  },
+  
+  newFolder: function(e){
+    e.preventDefault();
+    var path = $(e.target).attr('href');
+    var model = new Verlag.Model.Folder();
+    
+    Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
+  }, 
+  
+  newAsset: function(e){
+    e.preventDefault();
+    
+    Verlag.modal = new Verlag.View.NewAsset({ id: this.folder.id }); 
   }
 
 });

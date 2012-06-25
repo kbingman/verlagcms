@@ -1,22 +1,30 @@
-<h1>Upload Assets</h1>
-   
-<form action="/admin/assets" enctype="multipart/form-data" id="new_asset" method="post">
-  <div class="field">
-    <label for="ajax_uploader"></label>
-    <input id="ajax_uploader" name="file" type="file">
-  </div>
-  <div class="buttons">
-    <input type="submit">
-  </div>
-</form>  
+<div id="overlay">
+  <div class="modal">
 
-<ul id="assets">
-  {{#assets}}
-    <li id="asset-{{id}}">
-      <a href="/admin/assets/{{id}}/edit{{query_path}}" id="edit-asset-{{id}}">
-        <img src="/images/thumbnails/{{id}}/{{file_name}}" alt="{{title}}" />
-      </a>  
-      <a href="/admin/assets/{{id}}/remove{{query_path}}" id="remove-asset-{{id}}">Remove</a>
-    </li>
-  {{/assets}}
-</ul>
+    <h1>Upload Assets</h1>
+       
+    <form action="/admin/assets" enctype="multipart/form-data" class="js-create form-horizontal" method="post">
+      
+      <div class="control-group">
+        <label class="control-label" for="name">Name</label>
+         <div class="controls">
+           <input type="text" id="name" name="name" value="" class="textfield" />  
+         </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="name">Choose a file</label>
+         <div class="controls">
+           <input id="ajax_uploader" name="file" type="file">
+         </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn js-create">Upload</button>
+        <a href="/admin/assets" class="close">Cancel</a> 
+      </div>
+      
+    </form>  
+
+  </div>
+</div>

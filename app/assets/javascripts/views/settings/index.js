@@ -1,6 +1,6 @@
 Verlag.View.Settings = Backbone.View.extend({
 
-  el: '#sidebar',
+  el: '#editor',
   tagName:  'div',
 
   // The DOM events specific to an item.
@@ -36,6 +36,9 @@ Verlag.View.Settings = Backbone.View.extend({
     console.log(this.data())
         
     $(this.el).html(template.render(this.data()));
+    $('a.tab').removeClass('active');
+    $('a#settings-tab').addClass('active');
+    
   }, 
 
   new: function(e){

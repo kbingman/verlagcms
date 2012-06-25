@@ -1,11 +1,25 @@
-<h1>Settings</h1>
-
-<ul>
-{{# page_types }}
-<li>
-  {{ name }}
-  <a href="/admin/page_types/{{ id }}/remove" data-id="{{ id }}" class="js-remove">x</a>
-</li>
-{{/ page_types }}
-</ul>
-<a href="/admin/page_types/new" class="js-new">New Page Type</a>
+<div id="sidebar">
+  <div class="submenu">
+    <h2>
+      Page Types
+      <span class="modify">
+        <a href="/admin/page_types/new" class="js-new">+</a>
+      </span>
+    </h2>
+    <ul class="unstyled">
+    {{# page_types }}
+    <li>
+      {{ name }}
+      <a href="/admin/page_types/{{ id }}/remove" data-id="{{ id }}" class="js-remove">x</a>
+    </li>
+    {{/ page_types }}
+    </ul>
+    
+  
+  
+    <h2>Sites</h2>
+  
+    <h2>Users</h2>
+    
+  </div>
+</div>

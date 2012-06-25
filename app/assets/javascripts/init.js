@@ -36,10 +36,18 @@ $(document).ready(function(){
     Verlag.closeModal();
   });
   
-  Verlag.ace_settings()
-  key('command+s, ctrl+s', function(e){
-    e.preventDefault();
-    console.log('Hijacked Command+S or Ctrl+S, damn!');
-  });
+  // Key Master
+  // key('command+s, ctrl+s', function(e){
+  //   e.preventDefault();
+  //   console.log('Hijacked Command+S or Ctrl+S, damn!');
+  //   var from = $('form.command-save');
+  //   if (form.length){
+  //     form.submit();
+  //   }
+  // });
+  
+  // Ace Keybingings
+  Verlag.ace_settings();
+  
   
 });

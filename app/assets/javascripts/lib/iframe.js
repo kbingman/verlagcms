@@ -27,7 +27,7 @@ Verlag.iFramer = {
       // Sets preview links to change the sammy.js routes instead of the usual route
       
       internal_links.click(function(e){
-        var path = $(this).attr('href').split('?')[0].replace('/preview','');
+        var path = $(this).attr('href'); //.split('?')[0].replace('/preview','');
         var page = Verlag.pages.find_by_path(path);
         
         if (page){

@@ -12,7 +12,7 @@ Verlag.View.Asset = Backbone.View.extend({
   initialize: function(options) {
     var id = options.id,
         folder_id = options.folder_id;
-        
+      
     this.folder = Verlag.folders.get(folder_id);
     this.asset = this.folder.assets.get(id);
     
@@ -30,6 +30,8 @@ Verlag.View.Asset = Backbone.View.extend({
     Verlag.loadModal('div#asset-editor', function(){
       jQuery('div#asset-editor').fadeIn(320); 
     }); 
+    $('a.tab').removeClass('active');
+    $('a#assets-tab').addClass('active');
   },
   
   close_overlay: function(e){

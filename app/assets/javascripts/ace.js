@@ -1,5 +1,5 @@
 // Ace
-//= require 'ace/ace-uncompressed'
+//= require 'ace/ace'
 //= require 'ace/theme-textmate'
 //= require 'ace/mode-javascript'
 //= require 'ace/mode-html'

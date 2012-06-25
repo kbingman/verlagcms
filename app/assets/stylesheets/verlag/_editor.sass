@@ -1,9 +1,11 @@
+@import 'variables'
+
 #editor    
   +positionable 
   :z-index 10
-  :left 300px
+  :left 0
   &.open
-    :left 0
+    :left 300
   // :overflow auto     
   .section
     :color #ddd   
@@ -14,34 +16,7 @@
   // :background rgba(255,255,255,0.9)
   label
     :display block 
-    
-  #code-editor 
-    +positionable
-    :overflow auto
-    :top 72px
-    :bottom 0
-    :overflow hidden
-    .tabs     
-      :font-size 1.4em 
-      :height 38px     
-      :border-bottom 1px solid #444
-      :background
-        :color #eee
-      label
-        :display inline-block     
-      input    
-        +border-radius(0) 
-        +positionable  
-        :bottom auto
-        :width auto 
-        :border none  
-        :margin 0
-        :padding 0
-        :background transparent
-        :font-size 1.0em  
-        :padding 6px 0 3px 16px        
-      input:focus
-        :background white
+
   .buttons   
     +positionable
     :right 0  
@@ -76,17 +51,46 @@
     .buttons
       #layout-filter 
         :display block
-  #parts 
-    :position absolute
-    :bottom 0
-    :top 72px
-    :right 0                  
-    :left 0  
-    :border-left 1px solid #ccc     
-    :background #ddd
+
   
 #layout_content
   +positionable  
   :bottom 0
   :top 0
   :line-height 1.6
+  
+#edit-layout
+  +positionable
+  :left 300px
+  :bottom 0
+  :margin 0
+  :padding 0
+  
+#code-editor 
+  +positionable
+  :overflow auto
+  :top 72px
+  :bottom 0
+  :overflow hidden
+  .tabs     
+    :font-size 1.4em 
+    :height 38px     
+    :border-bottom 1px solid #444
+    :background
+      :color #eee
+    label
+      :display inline-block     
+    input    
+      +border-radius(0) 
+      +positionable  
+      :bottom auto
+      :width auto 
+      :border none  
+      :margin 0
+      :padding 0
+      :background transparent
+      :font-size 1.0em  
+      :padding 6px 0 3px 16px        
+    input:focus
+      :background white
+  

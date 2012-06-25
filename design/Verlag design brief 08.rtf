@@ -1,0 +1,49 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue153;}
+\margl1440\margr1440\margb1800\margt1800
+\deftab708
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\pardirnatural
+
+\f0\b\fs24 \cf0 \expnd0\expndtw0\kerning0
+\up0 \nosupersub \ulnone \outl0\strokewidth0 \strokec0 Verlag:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\pardirnatural
+
+\b0 \expnd0\expndtw0\kerning0
+Multisite CMS with \'93front end editor\'94 or enhanced preview function.\
+\
+Basically, it is a single CMS for any number of sites. There are 2 admin domains:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://verlag.example/admin"}}{\fldrslt \cf2 \expnd0\expndtw0\kerning0
+\ul \ulc2 \strokec2 http://verlag.example/admin}}\
+\
+and \
+\
+{\field{\*\fldinst{HYPERLINK "http://verlag.example/admin"}}{\fldrslt \cf2 \expnd0\expndtw0\kerning0
+\ul \ulc2 \strokec2 http://mysite.verlag.example/admin}}\
+\
+The first brings up a list of sites you are authorized to see, so that is the first screen. It has a link to the second domain (with site subdomain) for each site listed. There you can really begin to edit the site. \
+\
+Here is where the fun begins. First thing we need to decide is how to display the pages. For the development version, I have a simple table a la Radiant, listing each site. I am thinking of moving more towards a \'93dashboard\'94 like layout, with a listing of pages on the left and a work area on the right. When a page is selected, this will show the preview view (the actual site in an iFrame), with the edit links. The trick here is to intergrate the site into the cms a bit. The example site (which has been hacked) only had a top bar, but I think we need a left bar as well. \
+\
+Each page consist of various elements, for example textblocks, images, etc. Hovering over element in the previews showing an edit tag, clicking on which brings up the editor. This should be semit transparent, showing the page underneath. Might be nice to somehow show all parts, perhaps in tabs, not just the current part being edited. We also need a way to both search for and upload images within a page (this functionality exists).\
+\
+We also need image and file management. I have a pretty decent image management system, with inline uploads and a very nice search function, but again, no layout. Two options here, as list or as icons. I am leaning to icons for now, though we could offer a switch. \
+\
+Though I have no users now (a simple password protects the backend), we will of over course need that eventually. Don\'92t do anything, but think about it. We will also have a layout system, so that the sites design can be edited online. This will be similar to the page  editor, but withour any preview function. The is a really nice online editor that even has syntax highlighting that I would like to include. \
+\
+A few general notes: \
+\
+All pages with expand to fit the current window. Sidebar and header need to be fixed width and always show (regardless of scroll posiiton). We could always show a footer as well. \
+\
+Icons. We need nice little touches everywhere. As you mentioned, CMS\'92s all look like CMS\'92s. But you would be surprised. Think windows vs OS 10.x. Or Windows 3.0 vs NEXT (for good UI examples, look at old NEXT screenshots). Gruber gave a great talk in New Zealand about apple GUI design history, google it. Subtle gradients, soft colors and good typography (though with the standard fonts. Webkit and Firefox on the mac support multiple weights of Helvetica Neue, so feel free to use those. Pc users just won\'92t see it (not that we really have to worry about that yet). \
+A few technical notes. The whole thing is actually written in Javascript, ruby just provides the connection to the DB. So each part doesn\'92t load a new page, but just shuffles things around. This is basically how Gmail works, Apple\'92s online mail is an even better example. \
+\
+\
+My ultimate goal for this is to actually market it as a service. If nothing else, to the hordes of friends that ask for a website...\
+\
+Keith\
+\
+26.05.May on the train from Schaffhausen to Z\'fcrich.}

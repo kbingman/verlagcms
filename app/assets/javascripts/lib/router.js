@@ -22,37 +22,27 @@ Verlag.Router = Backbone.Router.extend({
   // ------------------------------------------------------------ //
   show_pages: function(){
     this.cleanup(Verlag.sidebar);
-    Verlag.sidebar = new Verlag.View.PageIndex({ el: $('#sidebar') });
-    
-    $('#editor').html('');
+    Verlag.editor = new Verlag.View.PageIndex();
   },
   
   show_page: function(id){
-    this.cleanup(Verlag.sidebar);
+    // this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
         
-    Verlag.sidebar = new Verlag.View.PageIndex();
+    // Verlag.sidebar = new Verlag.View.PageIndex();
     Verlag.editor = new Verlag.View.PagePreview({ id: id });
   }, 
   
   // Folders
   // ------------------------------------------------------------ //
   folders_index: function(){
-    this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
-    
-    Verlag.sidebar = new Verlag.View.FolderIndex();
-    Verlag.sidebar.render();
-    
-    $('#editor').html('');
+    Verlag.editor = new Verlag.View.FolderIndex();
   },
   
   show_folder: function(id){
-    this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    Verlag.sidebar = new Verlag.View.FolderIndex();
-    Verlag.sidebar.render();
     
     Verlag.editor = new Verlag.View.Assets({ 
       id: id
@@ -62,14 +52,10 @@ Verlag.Router = Backbone.Router.extend({
   // Assets
   // ------------------------------------------------------------ //
   show_asset: function(folder_id, id){
-    this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
-    
-    Verlag.sidebar = new Verlag.View.FolderIndex();
-    Verlag.sidebar.render();
-    
+  
     Verlag.editor = new Verlag.View.Assets({ 
-      id: id,
+      id: folder_id,
       success: function(){
         Verlag.modal = new Verlag.View.Asset({ folder_id: folder_id, id: id });
         Verlag.modal.render();        
@@ -83,21 +69,15 @@ Verlag.Router = Backbone.Router.extend({
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    Verlag.sidebar = new Verlag.View.DesignIndex();
-    Verlag.sidebar.render();
-    
-    $('#editor').html('');
+    var id = Verlag.templates.find_by_klass('Layout')[0].id;
+    Verlag.editor = new Verlag.View.DesignEdit({ id: id });
   },
   
   show_template: function(id){
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    Verlag.sidebar = new Verlag.View.DesignIndex();
-    Verlag.sidebar.render();
-    
     Verlag.editor = new Verlag.View.DesignEdit({ id: id });
-    Verlag.editor.render();
   },
   
   show_settings: function(){

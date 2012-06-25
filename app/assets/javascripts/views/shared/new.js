@@ -8,7 +8,7 @@ Verlag.View.New = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click button.js-new': 'create'
+    'click button.js-create': 'create'
   },
 
   initialize: function(options) {

@@ -24,8 +24,8 @@ $(document).ready(function(){
   
   // Modal Events
   $('#overlay').live('click', function(e){
-    e.preventDefault();
     if(e.target.id == 'overlay'){
+      e.preventDefault();
       Verlag.closeModal();
     }
   });

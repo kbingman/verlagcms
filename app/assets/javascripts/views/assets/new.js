@@ -32,6 +32,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
   
   create: function(e){
     e.preventDefault();
+    alert('hey')
   }
   
 });

@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 gem 'rack', '~> 1.4.0' 
 gem 'sinatra', :require => 'sinatra/base'
@@ -22,7 +22,6 @@ gem 'joint', '~> 0.6.0'
 gem 'mongo_mapper_acts_as_tree', '~> 0.3.3' 
 gem 'canable', '~> 0.2.0' # :path => 'vendor/canable'
 
-
 gem 'mini_magick'
 
 gem 'haml'  
@@ -37,8 +36,6 @@ gem 'uglifier', '~>1.0.3'
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
-gem 'rack-raw-upload', :path => 'vendor/rack-raw-upload'
-
 gem 'dalli'
 
 group :production do 

@@ -26,28 +26,17 @@ class Main
       # Create Asset
       # -------------------------------------------
       post '' do
-        # NOTE: For some reason Sinatra is not picking up the params here...
-        # we need to get them directly with the rack request object
-        # this may be an issue with the Rack Upload middleware
-        data = params.empty? ? request.env["rack.request.form_hash"] : params
-        
-        # Gets extra params from the content headers when files are sent using ajax
-        if request.env['HTTP_X_PARAMS']
-          query_params = JSON.parse(request.env['HTTP_X_PARAMS']) 
-          data.merge!(query_params) if query_params
-        end
-        
-        # puts "query_params: #{query_params}"
-        # puts "Data: #{data}"
-        
-        asset = Asset.new(:file => data['file'][:tempfile])
-        asset.file_name = data['file'][:filename]   
-        asset.folder_id = data['folder_id']
-        asset.site = current_site
-        
+        folder_id = params['folder_id']
+        asset = Asset.new({ 
+          file: params['file'][:tempfile] ,
+          file_name: params['file'][:filename], 
+          folder_id: folder_id,
+          site: current_site
+        })
+
         if asset.save
           respond_to do |format|
-            format.html { redirect('/admin/assets') }
+            format.html { redirect("/admin/folders/#{folder_id}") }
             format.json { asset.to_json }
           end
         else

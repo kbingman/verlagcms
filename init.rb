@@ -46,7 +46,6 @@ require 'canable'
 # Rack
 require 'rack/cache'
 require 'rack/request' 
-# require 'rack/raw_upload'
 require 'dalli'
 require 'sprockets'
 
@@ -101,7 +100,6 @@ class Main < Sinatra::Base
   use Rack::Session::Cookie, 
     :secret => 'fibble this must be longer',
     :expire_after => 604800 # One Week
-  # use Rack::RawUpload
   
   # Extensions     
   register Sinatra::Namespace

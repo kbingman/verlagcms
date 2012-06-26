@@ -6,6 +6,20 @@ class Main
   
   namespace '/admin' do
     
+    helpers do
+      def model
+        @model ||= params['model']
+      end
+      
+      def klass 
+        begin
+          @klass ||= model.singularize.camelize.constantize if model 
+        rescue
+          nil
+        end
+      end
+    end
+    
     get '/settings' do
       admin_haml :'admin/index'
     end
@@ -34,7 +48,7 @@ class Main
     # Create
     # -------------------------------------------
     post '/:model' do   
-      
+      attributes = JSON.parse(request.body.read.to_s)
       resource = klass.new(attributes)
       
       # TODO may break some things 

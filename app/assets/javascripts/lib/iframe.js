@@ -23,6 +23,20 @@ Verlag.iFramer = {
       // Loader.stop(loader_el); 
       // self.setEditFlags(editor); 
       // iframe.fadeIn('fast');           
+      
+      // TODO Centralize this
+      content.on('keypress', function(e){
+        if(e.keyCode == '115' && e.metaKey == true){
+          e.preventDefault();
+          // console.log(e.metaKey)
+          // console.log('Hijacked Command+S or Ctrl+S, damn!');
+          
+          var form = $('form.command-save');
+          if (form.length){
+            form.find('input#save').trigger('click');
+          }
+        }
+      });
 
       // Sets preview links to change the sammy.js routes instead of the usual route
       

@@ -32,7 +32,24 @@ Verlag.View.NewAsset = Backbone.View.extend({
   
   create: function(e){
     e.preventDefault();
-    alert('hey')
+    
+    var form = document.getElementById('uploader'),
+        fileInput = document.getElementById('file'),
+        file = fileInput.files[0],
+        folder_id = this.folder ? this.folder.id : null,
+        formData = new FormData({
+          'file': file,
+          'folder_id': folder_id
+        });
+    
+    
+    
+    var xhr = new XMLHttpRequest();
+    // Add any event handlers here...
+    xhr.open('POST', form.getAttribute('action'), true);
+    xhr.send(formData);
+    
+    
   }
   
 });

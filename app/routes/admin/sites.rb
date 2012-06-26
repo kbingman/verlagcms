@@ -16,6 +16,7 @@ class Main
       # Create
       # -------------------------------------------
       post '' do   
+        attributes = JSON.parse(request.body.read.to_s)
         resource = Site.new(attributes) 
         
         # TODO move this to the view

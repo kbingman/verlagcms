@@ -37,14 +37,19 @@ $(document).ready(function(){
   });
   
   // Key Master
-  // key('command+s, ctrl+s', function(e){
-  //   e.preventDefault();
-  //   console.log('Hijacked Command+S or Ctrl+S, damn!');
-  //   var from = $('form.command-save');
-  //   if (form.length){
-  //     form.submit();
-  //   }
-  // });
+  $('body').on('keypress', function(e){
+    if(e.keyCode == '115' && e.metaKey == true){
+      e.preventDefault();
+      // console.log(e.metaKey)
+      // console.log('Hijacked Command+S or Ctrl+S, damn!');
+          
+      var form = $('form.command-save');
+      if (form.length){
+        form.find('input#save').trigger('click');
+      }
+    }
+  });
+  
   
   // Ace Keybingings
   Verlag.ace_settings();

@@ -33,23 +33,52 @@ Verlag.View.NewAsset = Backbone.View.extend({
   create: function(e){
     e.preventDefault();
     
-    var form = document.getElementById('uploader'),
+    var self = this,
+        form = document.getElementById('uploader'),
         fileInput = document.getElementById('file'),
-        file = fileInput.files[0],
-        folder_id = this.folder ? this.folder.id : null,
-        formData = new FormData({
-          'file': file,
-          'folder_id': folder_id
-        });
-    
-    
-    
+        files = fileInput.files,
+        folder_id = this.folder ? this.folder.id : null;
+        
+    $.each(files, function(i, file){
+      self.upload(file, folder_id, form);
+    });
+  },
+  
+  upload: function(file, folder_id, form){
+    var formData = new FormData();
     var xhr = new XMLHttpRequest();
-    // Add any event handlers here...
-    xhr.open('POST', form.getAttribute('action'), true);
+      
+    formData.append('file', file);
+    formData.append('folder_id', folder_id);  
+    
+    xhr.addEventListener('progress', this.onprogressHandler, false);
+    xhr.addEventListener('readystatechange', this.onreadystatechangeHandler, false);
+    xhr.open('POST', form.getAttribute('action') + '.json', true);
     xhr.send(formData);
-    
-    
+  },
+  
+  onprogressHandler: function(evt){
+    var percent = evt.loaded / evt.total * 100;
+    console.log(percent);
+  },
+  
+  onreadystatechangeHandler: function(evt){
+    var status = null;
+    try { status = evt.target.status; }
+    catch(e) { return; }
+  
+    // readyState 4 means that the request is finished
+    if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+      var attr = JSON.parse(evt.target.responseText);
+      var asset = new Verlag.Model.Asset(attr);
+      
+      Verlag.assets.add(asset);
+      Verlag.notify('uploaded');
+      Verlag.closeModal();    
+    }
   }
   
 });
+
+
+

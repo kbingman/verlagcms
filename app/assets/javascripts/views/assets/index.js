@@ -16,7 +16,10 @@ Verlag.View.Assets = Backbone.View.extend({
       
     this.folder = Verlag.folders.get(options.id);
     this.folder.fetch_assets(function(assets, response){
+      // TODO choose one of these
       self.folder.assets = assets;
+      Verlag.assets = assets;
+      
       assets.on('all', function(){
         self.render();
       });

@@ -10,7 +10,11 @@ Verlag.Collection.Assets = Backbone.Collection.extend({
 
   initialize: function() {
   
+  },
+  
+  comparator: function(asset) {
+    var date = new Date(asset.get('created_at')).getTime();
+    return -date;
   }
 
-  
 });

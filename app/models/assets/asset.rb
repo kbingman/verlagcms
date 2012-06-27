@@ -11,13 +11,13 @@ class Asset
   attachment :file # declare an attachment named file
   
   plugin Hunt
-  searches :title, :tags  
+  searches :name, :tags  
   before_save :index_search_terms 
   
   
   # Attributes
   # ----------------------------------------
-  key :title, String, :required => { :message => :required }
+  key :name, String, :required => { :message => :required }
   key :description, String 
   key :tags, Array, :index => true      
   
@@ -51,9 +51,8 @@ class Asset
   
   # Scopes
   # ----------------------------------------
-  scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
-  # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
-  scope :by_title, lambda { |title| where(:title => /#{title}/i) }
+   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
+  scope :by_name, lambda { |name| where(:name => /#{name}/i) }
   # scope :by_all_tags,  lambda { |tags| where({:tags => {'$all' => tags}}) }
   # scope :by_title_desc_tag,  lambda { |query| where({ '$or' => [{:title=>/#{query}/i}, 
   #                                                               {:description=>/#{query}/i}, 
@@ -63,30 +62,9 @@ class Asset
   # Search
   # ----------------------------------------
   def self.search_all_with_title(term)
-    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :title => /#{term}/i }])
+    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :name => /#{term}/i }])
   end
   
-  def self.search_with_artist(query)
-    terms = query ? query.split(' ').collect{ |q| q.downcase } : []
-    artists = []
-    terms_without_artist = []
-    terms.each do |t|
-      a = Artist.search(t).all
-      artists += a
-      terms_without_artist << t if a.empty?
-    end
-    artist_ids = artists.uniq.collect{ |a| a._id }
-        
-    case
-    when terms_without_artist.empty? && artist_ids.empty?
-      self.search_all(query)
-    when terms_without_artist.empty?
-      self.by_artist_ids(artist_ids)
-    else
-      new_query = terms_without_artist.join(' ')
-      self.search_all(new_query).by_artist_ids(artist_ids)
-    end   
-  end
   
   # Pagination
   # ----------------------------------------
@@ -125,7 +103,7 @@ class Asset
     [counter, errors]
   end
 
-  
+  # TODO move to a presenter  
   def image_path
     "/images/#{self.id}/#{self.file_name}" 
   end
@@ -144,10 +122,6 @@ class Asset
   
   def is_image
     self.file_type.match(/image/) && !self.file_type.match(/svg/) ? true : false
-  end
-  
-  def id_string
-    self.id.to_s
   end
   
   def admin_path

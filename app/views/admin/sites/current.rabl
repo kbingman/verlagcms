@@ -12,6 +12,9 @@ end
 code(:templates) { 
  @site.templates 
 }
+code(:sites) { 
+ @sites 
+}
 code :current_user do
   current_user
 end

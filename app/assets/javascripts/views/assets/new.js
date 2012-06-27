@@ -39,6 +39,9 @@ Verlag.View.NewAsset = Backbone.View.extend({
         files = fileInput.files,
         folder_id = this.folder ? this.folder.id : null;
         
+    Verlag.count = 0;
+    Verlag.files = files.length;
+        
     $.each(files, function(i, file){
       self.upload(file, folder_id, form);
     });
@@ -51,7 +54,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
     formData.append('file', file);
     formData.append('folder_id', folder_id);  
     
-    xhr.addEventListener('progress', this.onprogressHandler, false);
+    xhr.upload.addEventListener('progress', this.onprogressHandler, false);
     xhr.addEventListener('readystatechange', this.onreadystatechangeHandler, false);
     xhr.open('POST', form.getAttribute('action') + '.json', true);
     xhr.send(formData);
@@ -59,7 +62,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
   
   onprogressHandler: function(evt){
     var percent = evt.loaded / evt.total * 100;
-    console.log(percent);
+    $('#percent').text(percent + '%'); 
   },
   
   onreadystatechangeHandler: function(evt){
@@ -72,9 +75,19 @@ Verlag.View.NewAsset = Backbone.View.extend({
       var attr = JSON.parse(evt.target.responseText);
       var asset = new Verlag.Model.Asset(attr);
       
+      Verlag.count++;
       Verlag.assets.add(asset);
       Verlag.notify('uploaded');
-      Verlag.closeModal();    
+      
+      console.log(Verlag.count);
+      if (Verlag.count == Verlag.files){
+        Verlag.closeModal();   
+        console.log('close')
+      }
+      
+      
+
+      $('#progress').text(Verlag.count)
     }
   }
   

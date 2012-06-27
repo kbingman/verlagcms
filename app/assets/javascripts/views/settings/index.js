@@ -27,7 +27,8 @@ Verlag.View.Settings = Backbone.View.extend({
   
   data: function(){
     return {
-      page_types: Verlag.page_types.toJSON()
+      page_types: Verlag.page_types.toJSON(),
+      sites: Verlag.sites.toJSON()
     };
   },
 

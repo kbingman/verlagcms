@@ -87,18 +87,6 @@ describe Asset do
     it 'should find assets by title' do
       Asset.search_all('Image').all.should == [@asset]
     end
-    
-    # it 'should find assets by artist' do
-    #   Asset.search_with_artist('Egon').all.should == [@asset]
-    # end
-    
-    # it 'should find assets by artist with tags' do
-    #   Asset.search_with_artist('Egon tag1').all.should == [@asset]
-    # end
-    
-    # it 'should exclude assets by this artist without tags' do
-    #   Asset.search_with_artist('Egon tag5').all.should == []
-    # end
   end
   
   describe 'Asset attachments' do

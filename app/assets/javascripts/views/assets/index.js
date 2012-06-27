@@ -30,7 +30,7 @@ Verlag.View.Assets = Backbone.View.extend({
   },
 
   render: function(callback) {
-    $('#overlay').hide();
+    // $('#overlay').hide();
 
     var self = this,
         template = Verlag.compile_template('admin-assets-index'),

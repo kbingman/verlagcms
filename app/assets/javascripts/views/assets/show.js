@@ -35,8 +35,9 @@ Verlag.View.Asset = Backbone.View.extend({
   },
   
   close_overlay: function(e){
-    e.preventDefault();
+    
     if(e.target.id == 'overlay'){
+      e.preventDefault();
       this.close_modal(e);
     }
   },

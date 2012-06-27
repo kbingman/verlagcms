@@ -124,25 +124,7 @@ class Asset
     
     [counter, errors]
   end
-   
-  # Images
-  # ---------------------------------------- 
-  # def render_image(width=nil, height=nil, options={})
-  #   file = self.file.read
-  #   image = MiniMagick::Image.read(file)
-  # 
-  #   width = nil if width == 0
-  #   height = nil if height == 0
-  #   
-  #   begin
-  #     if height || width
-  #       image = resize(image, width, height, options)
-  #     end
-  #     image
-  #   rescue
-  #     image
-  #   end
-  # end
+
   
   def image_path
     "/images/#{self.id}/#{self.file_name}" 

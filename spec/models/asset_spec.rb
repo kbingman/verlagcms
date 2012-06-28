@@ -8,7 +8,7 @@ describe Asset do
     @site = Factory(:site, :group => @group)
     @folder = Factory(:folder, :site => @site)
     @file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-    @asset = Factory.build(:asset, :artist => @artist, :file => @file, :title => 'Image', :site_id => @site.id, :folder_id => @folder.id) 
+    @asset = Factory.build(:asset, :file => @file, :name => 'Image', :site_id => @site.id, :parent_id => @folder.id) 
     @asset.save  
   end
   
@@ -18,38 +18,39 @@ describe Asset do
   
   describe "asset validations" do
     it "should create a valid artist" do
-      Asset.new(:title => "Fred's Asset", :site => @site).should be_valid
+      Asset.new(:name => "Fred's Asset", :site => @site).should be_valid
     end  
     
     it "should require a site" do
-      Asset.new(:title => 'Asset', :site => nil).should_not be_valid
+      Asset.new(:name => 'Asset', :site => nil).should_not be_valid
     end
     
     it "should require a title" do
-      Asset.new(:title => '', :site => @site).should_not be_valid
+      Asset.new(:name => '', :site => @site).should_not be_valid
     end
     
-    it "should set the title automatically" do
+    it "should set the name automatically" do
       asset = Asset.new(:site => @site, :file => File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')))
       asset.valid?
-      asset.title.should == '830px-Tieboardingcraft'
+      asset.name.should == '830px-Tieboardingcraft'
     end  
   end
   
   describe 'valid Asset' do    
     before(:all) do
       @json = JSON.parse({ 
+        :_type => 'Asset',
         :id => @asset.id,
-        :title => "Image",
+        :name => "Image",
         :tag_list =>'tag1, tag2', 
         :file_name => @asset.file_name,
         :file_type => 'image/jpeg',
         :ext => @asset.ext,
         :id => @asset.id.to_s, 
-        :folder_id => @folder.id, 
+        :parent_id => @folder.id, 
         :is_image => true,
         :image_path => "/images/#{@asset.id}/#{@asset.file_name}",
-        :admin_path => "/admin/folders/#{@folder.id}/assets/#{@asset.id}",
+        :admin_path => "/admin/folders/#{@folder.id}/children/#{@asset.id}",
         :created_at => @asset.created_at
       }.to_json)
     end

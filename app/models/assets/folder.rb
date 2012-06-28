@@ -10,9 +10,13 @@ class Folder < Item
     "/admin/folders/#{self.id}"
   end
   
+  def image_path
+    '/icons/folder.png'
+  end
+  
   def as_json(options)
     super(:methods => [
-      :admin_path
+      :admin_path, :image_path
     ]) 
   end
   

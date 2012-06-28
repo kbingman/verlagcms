@@ -25,7 +25,7 @@ describe ImagePart do
     
     it 'renders the part' do
       file = File.open(root_path('spec/data/830px-Tieboardingcraft.jpg'))
-      asset = Factory(:asset, :artist => @artist, :file => file, :title => 'Image', :site_id => @site.id)
+      asset = Factory(:asset, :file => file, :name => 'Image', :site_id => @site.id)
       part = ImagePart.new :name => 'pathpart', :page => @page, :asset => asset
       @page.save
       part.render.should == "<img src='#{asset.image_path}' alt='Image' />"

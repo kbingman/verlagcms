@@ -19,10 +19,6 @@ class ImagePart < Part
     self.asset ? self.asset.image_path : '/images/missing.png'
   end
   
-  def title
-    self.asset.title if self.asset
-  end
-  
   def image_path
     self.asset ? self.asset.image_path : '/images/missing.png'
   end
@@ -48,7 +44,7 @@ class ImagePart < Part
       result += "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>\n"
     end
     
-    result += "<img src='#{self.path}' alt='#{self.title}' />"
+    result += "<img src='#{self.path}' alt='#{self.asset.name}' />"
     result
     # self.asset.image_path
     # ImageProxy.new(self, edit)

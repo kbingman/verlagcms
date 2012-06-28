@@ -26,17 +26,16 @@ class Main
       # Create Asset
       # -------------------------------------------
       post '' do
-        folder_id = params['folder_id']
         asset = Asset.new({ 
           file: params['file'][:tempfile] ,
           file_name: params['file'][:filename], 
-          folder_id: folder_id,
+          parent_id:  params['parent_id'],
           site: current_site
         })
 
         if asset.save
           respond_to do |format|
-            format.html { redirect("/admin/folders/#{folder_id}") }
+            format.html { redirect("/admin/folders/#{params['parent_id']}") }
             format.json { asset.to_json }
           end
         else

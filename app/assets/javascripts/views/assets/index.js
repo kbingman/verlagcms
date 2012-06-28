@@ -4,7 +4,8 @@ Verlag.View.Assets = Backbone.View.extend({
   tagName:  'div',
 
   events: {
-    'click a.js-show': 'show',
+    'click a.js-show-Asset': 'show',
+    'click a.js-show-Folder': 'showFolder',
     'click a.js-new-folder': 'newFolder',
     'click a.js-new-asset': 'newAsset',
     'click a.js-remove': 'remove'
@@ -35,7 +36,7 @@ Verlag.View.Assets = Backbone.View.extend({
     var self = this,
         template = Verlag.compile_template('admin-assets-index'),
         partials = { 
-          asset:  Verlag.compile_template('admin-assets-asset'),
+          item:  Verlag.compile_template('admin-assets-item'),
           toolbar: Verlag.compile_template('admin-assets-toolbar')
         },
         data = { 
@@ -78,6 +79,16 @@ Verlag.View.Assets = Backbone.View.extend({
     
     Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
   }, 
+  
+  showFolder: function(e){
+    e.preventDefault();
+    var path = $(e.currentTarget).attr('href'),
+      id = $(e.currentTarget).data('id');
+
+    Verlag.router.navigate(path, { trigger: false });
+    Verlag.editor = new Verlag.View.Assets({ id: id });
+    
+  },
   
   newAsset: function(e){
     e.preventDefault();

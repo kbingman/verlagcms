@@ -43,7 +43,7 @@ describe "routes/admin/assets" do
         @alien_asset = Factory(:asset, 
           site: @alien_site,
           file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
-          title: 'alien-image') 
+          name: 'alien-image') 
         do_get 
         last_response.body.should_not include(@alien_asset.to_json) 
       end 
@@ -80,8 +80,9 @@ describe "routes/admin/assets" do
       end 
       
       it 'should return the filename in the json' do
-        do_post                       
-        JSON.parse(last_response.body)['title'].should == '830px-Tieboardingcraft' 
+        do_post                  
+        # puts last_response.body.inspect     
+        JSON.parse(last_response.body)['name'].should == '830px-Tieboardingcraft' 
       end
     end
     
@@ -91,7 +92,7 @@ describe "routes/admin/assets" do
           
     context 'json' do   
       def do_put
-        put "/admin/assets/#{@asset.id}.json", { title: 'Really Awesome Image' }.to_json
+        put "/admin/assets/#{@asset.id}.json", { name: 'Really Awesome Image' }.to_json
       end
     
       it 'should be successful' do
@@ -104,7 +105,7 @@ describe "routes/admin/assets" do
         last_response.headers['Content-Type'].should == 'application/json;charset=utf-8'
       end
       
-      it 'should include the title in the json' do  
+      it 'should include the name in the json' do  
         do_put
         last_response.body.should include('Really Awesome Image')
       end  
@@ -116,10 +117,10 @@ describe "routes/admin/assets" do
 
     before(:each) do 
       @kill_me = Factory(:asset, 
-        title: 'killme', 
+        name: 'killme', 
         site_id: @site.id, 
         file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')),
-        title: 'kill_me.jpg')    
+        name: 'kill_me.jpg')    
     end
 
     context 'json' do    

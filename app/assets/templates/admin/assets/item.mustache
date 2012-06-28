@@ -1,0 +1,14 @@
+<li id="{{ _type }}-{{id}}" class="{{ _type }}">
+  <div class="image">
+    <a href="{{admin_path}}{{query_path}}" data-id="{{ id }}" class="js-show-{{ _type }}">
+    {{# is_image }}
+      <img src="{{image_path}}?w=240&amp;h=180&amp;c=t&amp;g=North" alt="{{title}}" />
+    {{/ is_image }}
+    {{^ is_image }}
+      <img src="/icons/{{ _type }}.png" alt="{{title}}" />
+    {{/ is_image }}
+    </a>
+  </div>
+  <p>{{ name }} {{ _type }}<br />
+  <a href="{{admin_path}}/remove" class="remove-icon js-remove" data-id="{{ id }}">remove</a></p> 
+</li>

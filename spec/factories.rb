@@ -4,7 +4,7 @@ Factory.define :artist do |f|
 end 
 
 Factory.define :asset do |f|
-  f.title { Faker::Name.first_name }
+  f.name { Faker::Name.first_name }
   f.tag_list  'tag1, tag2'
   f.file File.open root_path('spec/data/830px-Tieboardingcraft.jpg') 
   # f.association :site

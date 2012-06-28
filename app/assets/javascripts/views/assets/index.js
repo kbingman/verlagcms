@@ -44,6 +44,11 @@ Verlag.View.Assets = Backbone.View.extend({
         };
     
     $(self.el).html(template.render(data, partials));
+    
+    $(self.el).find('img').hide().on('load', function(){
+      $(this).fadeIn(480)
+    });
+    
     $('a.tab').removeClass('active');
     $('a#assets-tab').addClass('active');
   }, 

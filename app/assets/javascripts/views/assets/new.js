@@ -52,7 +52,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
     var xhr = new XMLHttpRequest();
       
     formData.append('file', file);
-    formData.append('folder_id', folder_id);  
+    formData.append('parent_id', folder_id);  
     
     xhr.upload.addEventListener('progress', this.onprogressHandler, false);
     xhr.addEventListener('readystatechange', this.onreadystatechangeHandler, false);

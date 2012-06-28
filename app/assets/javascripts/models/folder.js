@@ -9,7 +9,7 @@ Verlag.Model.Folder = Backbone.Model.extend({
   fetch_assets: function(callback){
     var self = this;
     $.ajax({
-      url: '/admin/folders/' + self.id + '/assets.json',
+      url: '/admin/folders/' + self.id + '/children.json',
       success: function(response){
         var assets = new Verlag.Collection.Assets(response);
         if(callback){

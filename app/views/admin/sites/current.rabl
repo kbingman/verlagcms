@@ -4,7 +4,7 @@ code :pages do
   @pages
 end
 code :folders do 
-  @site.folders 
+  @folders 
 end
 # code(:assets) { 
 #   @site.assets 

@@ -1,4 +1,4 @@
-class Folder::Item
+class Folder < Item
   include MongoMapper::Document
   
   # Attributes

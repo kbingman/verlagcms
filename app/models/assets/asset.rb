@@ -1,6 +1,6 @@
 require 'mini_magick'
 
-class Asset
+class Asset < Item
   
   include MongoMapper::Document
   include Canable::Ables
@@ -21,15 +21,6 @@ class Asset
   key :description, String 
   key :tags, Array, :index => true      
   
-  key :site_id, ObjectId, :required => true
-  belongs_to :site, :foreign_key => :site_id 
-  scope :by_site, lambda { |site| where(:site_id => site.id) }
-  
-  key :folder_id, ObjectId
-  belongs_to :folder, :foreign_key => :folder_id
-  
-  key :artist_id, ObjectId
-  belongs_to :artist, :foreign_key => :artist_id  
   
   # key :page_id, ObjectId
   # belongs_to :page, :foreign_key => :artist_id  
@@ -132,7 +123,7 @@ class Asset
   # ----------------------------------------
   def as_json(options)
     super(
-      :only => [ :id, :created_at, :file_name,  :folder_id, :title, :file_type ], 
+      :only => [ :id, :created_at, :file_name,  :folder_id, :title, :file_type, :_type ], 
       :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
     )
   end
@@ -159,7 +150,7 @@ class Asset
     
     before_validation :set_title
     def set_title
-      self.title ||= File.basename self.file_name, '.*'
+      self.name ||= File.basename self.file_name, '.*'
     end
     
     def fonts_extensions

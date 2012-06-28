@@ -1,4 +1,9 @@
+{{# model }}
 <h1>New Folder</h1>  
+
+<div class="hidden">
+  <input type="hidden" id="parent_id" name="parent_id" value="{{ parent_id }}" />  
+</div>
 
 <div class="control-group">
   <label class="control-label" for="name">Name</label>
@@ -6,4 +11,5 @@
      <input type="text" id="name" name="name" value="" class="textfield" />  
    </div>
 </div>
+{{/ model }}
 

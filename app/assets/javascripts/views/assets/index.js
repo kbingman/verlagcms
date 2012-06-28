@@ -72,7 +72,9 @@ Verlag.View.Assets = Backbone.View.extend({
   newFolder: function(e){
     e.preventDefault();
     var path = $(e.target).attr('href');
-    var model = new Verlag.Model.Folder();
+    var model = new Verlag.Model.Folder({
+      parent_id: this.folder.id
+    });
     
     Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
   }, 

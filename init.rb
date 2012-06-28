@@ -181,6 +181,7 @@ end
 # These need to be required first or Page blows up...
 # require root_path('app/models/templates/template.rb')
 
+require root_path('app/models/assets/item.rb')
 require root_path('app/models/assets/asset.rb')
 # require root_path('app/models/parts/part.rb')
 

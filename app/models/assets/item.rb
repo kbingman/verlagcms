@@ -3,10 +3,11 @@ class Item
   
   # Plugins
   # ----------------------------------------  
-  plugin MongoMapper::Plugins::ActsAsTree
+  
   
   # Folder Tree
   # ----------------------------------------
+  plugin MongoMapper::Plugins::ActsAsTree
   key :parent_id, ObjectId
   acts_as_tree :order => :slug
   
@@ -23,7 +24,7 @@ class Item
   # Validations
   # ----------------------------------------
   validates :name, 
-    :uniqueness => { :scope => [:site_id, :parent_id] },
+    :uniqueness => { :scope => [:site_id, :folder_id] },
     :presence => true
   
   timestamps!

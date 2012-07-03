@@ -14,11 +14,11 @@ class Folder < Item
     '/icons/folder.png'
   end
   
-  def as_json(options)
-    super(:methods => [
-      :admin_path, :image_path, :children, :is_image
-    ]) 
-  end
+  # def as_json(options)
+  #   super(:methods => [
+  #     :admin_path, :image_path, :children, :is_image
+  #   ]) 
+  # end
   
   
   protected

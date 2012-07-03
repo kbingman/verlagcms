@@ -18,7 +18,7 @@ class Main
         assets.each do |asset|
           a = {
             :id => asset.id.to_s,
-            :title => asset.title,
+            :name => asset.name,
             :tags => asset.tag_list,
             :site_id => asset.site_id,
             :filename => asset.file.filename,

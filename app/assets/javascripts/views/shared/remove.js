@@ -13,6 +13,7 @@ Verlag.View.Remove = Backbone.View.extend({
 
   initialize: function(options) {
     this.model = options.model;
+    this.domId = options.domId;
     this.collection = options.collection;
     $(this.el).undelegate();
     this.render();
@@ -31,6 +32,12 @@ Verlag.View.Remove = Backbone.View.extend({
   delete: function(e){
     var self = this;
     
+    if(this.domId){
+      $(this.domId).fadeOut('fast', function(){
+        $(this).remove();
+      })
+    }
+
     e.preventDefault();
     this.model.destroy({
       success: function(){

@@ -9,20 +9,35 @@ Verlag.View.Asset = Backbone.View.extend({
     'click input#save-asset'  : 'update'
   },
 
-  initialize: function(options) {
+  initialize: function(options, callback) {
     var id = options.id,
+        self = this,
         folder_id = options.folder_id;
-      
-    // this.folder = Verlag.folders.get(folder_id);
-    this.asset = Verlag.assets.get(id);
-    
+ 
+    this.asset = new Verlag.Model.Asset({ id: id });
+    this.asset.fetch({
+      success: function(asset, response){
+        console.log(asset)
+        self.render();
+        if(callback){
+          callback(asset)
+        }
+      }
+    });
     $(this.el).undelegate();
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-assets-edit'),
+    var asset = this.asset,
+        template = Verlag.compile_template('admin-assets-edit'),
         data = { 
-          asset: this.asset.toJSON()
+          asset: function(){
+            var attr = asset.toJSON();
+            attr.is_image = asset.isImage();
+            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name');
+            attr.admin_path = asset.adminPath();
+            return attr;
+          }
         };
     
     $(this.el).append(template.render(data));
@@ -46,20 +61,21 @@ Verlag.View.Asset = Backbone.View.extend({
     $('#overlay').fadeOut('fast', function(){
       $(this).remove();
     });
+    var path = this.asset.get('parent_id') ? '/admin/folders/' + this.asset.get('parent_id') : '/admin/folders'
     
-    // Verlag.router.navigate(this.folder.get('admin_path'), { 
-    //   trigger: false 
-    // });
+    Verlag.router.navigate(path, { 
+      trigger: false 
+    });
   },
   
   update: function(e){
     e.preventDefault();
 
-    var target = $(e.currentTarget);
-    var form = target.parents('form');
-    var tag_list = form.find('#asset_tag_list').val();
-    var title = form.find('#asset_title').val();
-    var asset = this.asset;
+    var target = $(e.currentTarget),
+        form = target.parents('form'),
+        tag_list = form.find('#asset_tag_list').val(),
+        title = form.find('#asset_title').val(),
+        asset = this.asset;
     
     asset = asset.save({
       title: title,

@@ -38,8 +38,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
         fileInput = document.getElementById('file'),
         files = fileInput.files,
         folder_id = this.folder ? this.folder.id : null;
-        
-        alert(folder_id)
+
     Verlag.count = 0;
     Verlag.files = files.length;
         
@@ -76,7 +75,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
     if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
       var attr = JSON.parse(evt.target.responseText);
       // var item = new Verlag.Model.Asset(attr);
-      console.log(attr)
+
       Verlag.count++;
       Verlag.assets.add(attr);
       Verlag.notify('uploaded');

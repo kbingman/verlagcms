@@ -31,7 +31,6 @@ Verlag.View.New = Backbone.View.extend({
             return l.toJSON();
           })
         };
-
     $(template.render(data, partials)).hide().appendTo(this.$el).fadeIn('fast');
   },
   
@@ -48,8 +47,8 @@ Verlag.View.New = Backbone.View.extend({
     this.model.save(attr, {
       success: function(model, response){
         Verlag.notify('created');
-        Verlag[self.collection].add(model);
-        Verlag.router.navigate(model.get('admin_path'), { trigger: true });
+        // Verlag[self.collection].add(model);
+        Verlag.router.navigate(model.admin_path(), { trigger: true });
         Verlag.closeModal();
       }
     });

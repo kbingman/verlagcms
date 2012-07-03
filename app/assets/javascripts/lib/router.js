@@ -54,15 +54,11 @@ Verlag.Router = Backbone.Router.extend({
   show_asset: function(id){
     this.cleanup(Verlag.editor);
     
-    Verlag.modal = new Verlag.View.Asset({ id: id });
-    Verlag.modal.render(); 
-  
-    // Verlag.editor = new Verlag.View.Assets({ 
-    //   id: folder_id,
-    //   success: function(){
-    //            
-    //   }
-    // });
+    Verlag.modal = new Verlag.View.Asset({ id: id }, function(asset){
+      Verlag.editor = new Verlag.View.Assets({ 
+        id: asset.get('parent_id')
+      });
+    });
   },
   
   // Design / Templates

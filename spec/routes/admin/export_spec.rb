@@ -34,7 +34,7 @@ describe "routes/admin/export" do
     
       it 'should include assets in the json' do
         do_get
-        last_response.body.should include(@asset.title)
+        last_response.body.should include(@asset.name)
       end 
     end
     

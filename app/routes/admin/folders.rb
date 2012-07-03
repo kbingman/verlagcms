@@ -6,7 +6,7 @@ class Main
       # Top Level
       # -------------------------------------------
       get '/?' do
-        folders = Item.where(parent_id: nil).where(site_id: current_site._id).all
+        folders = Folder.where(parent_id: nil).where(site_id: current_site._id).all
         
         respond_to do |format| 
           format.html { admin_haml :'admin/index' }

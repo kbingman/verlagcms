@@ -121,12 +121,18 @@ class Asset < Item
   
   # JSON API
   # ----------------------------------------
+  # def as_json(options)
+  #   super(
+  #     :only => [ :id, :created_at, :file_name,  :parent_id, :name, :file_type, :_type ], 
+  #     :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
+  #   )
+  # end
   def as_json(options)
-    super(
-      :only => [ :id, :created_at, :file_name,  :parent_id, :name, :file_type, :_type ], 
-      :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
-    )
+    super(:methods => [
+      :admin_path, :image_path, :children, :is_image
+    ]) 
   end
+  
   
   # Tags
   # ----------------------------------------

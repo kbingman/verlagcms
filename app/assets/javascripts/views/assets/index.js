@@ -20,8 +20,7 @@ Verlag.View.Assets = Backbone.View.extend({
     this.folder.fetch({
       success: function(folder, response){
         Verlag.assets = new Verlag.Collection.Assets(response.children);
-        
-        Verlag.assets.on('all', function(){
+        Verlag.assets.on('add', function(){
           self.render();
         });
         self.render();    
@@ -40,10 +39,20 @@ Verlag.View.Assets = Backbone.View.extend({
         },
         data = { 
           folder: this.folder ? this.folder.toJSON() : {},
-          assets: Verlag.assets.toJSON()
+          assets: Verlag.assets.map(function(a){
+            attr = a.toJSON();
+            attr.is_image = a.isImage();
+            attr.image_path = '/images/' + a.id + '/' + a.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';
+            attr.admin_path = a.adminPath();
+            
+            return attr;
+          })
         };
     
     $(self.el).html(template.render(data, partials));
+    $(self.el).find('img').hide().on('load', function(){
+      $(this).fadeIn('fast');
+    })
     $('a.tab').removeClass('active');
     $('a#assets-tab').addClass('active');
   }, 
@@ -57,7 +66,6 @@ Verlag.View.Assets = Backbone.View.extend({
   
     Verlag.router.navigate(path, { trigger: false });
     Verlag.modal = new Verlag.View.Asset({ folder_id: folder_id, id: id });
-    Verlag.modal.render(folder_id, id);
   }, 
   
   remove: function(e){
@@ -66,7 +74,8 @@ Verlag.View.Assets = Backbone.View.extend({
     
     Verlag.modal = new Verlag.View.Remove({ 
       model: asset, 
-      collection: 'assets' 
+      domId: '#Asset-' + asset.id,
+      collection: 'assets'
     });
   },
   

@@ -46,7 +46,7 @@ require 'canable'
 # Rack
 require 'rack/cache'
 require 'rack/request' 
-require 'dalli'
+# require 'dalli'
 require 'sprockets'
 
 # Templating
@@ -92,8 +92,8 @@ class Main < Sinatra::Base
   # if RACK_ENV != 'development'
   use Rack::Cache,
     :verbose => true,
-    :metastore => "memcached://localhost:11211/meta",
-    # :metastore => 'file:tmp/cache/meta', 
+    # :metastore => "memcached://localhost:11211/meta",
+    :metastore => 'file:tmp/cache/meta', 
     :entitystore => 'file:tmp/cache/body'       
   # end
   # use Rack::NoVarnish

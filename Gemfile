@@ -36,7 +36,7 @@ gem 'uglifier', '~>1.0.3'
 gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
-gem 'dalli'
+# gem 'dalli'
 
 group :production do 
   
@@ -56,7 +56,7 @@ group :test do
   gem 'capybara'
   gem 'yajl-ruby'
   # gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
-  gem 'capybara-webkit', :git => 'https://github.com/thoughtbot/capybara-webkit.git'
+  # gem 'capybara-webkit', # :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl' #, :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'
   gem 'jasmine'

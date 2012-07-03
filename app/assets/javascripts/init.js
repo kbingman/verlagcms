@@ -4,7 +4,7 @@ $(document).ready(function(){
     url: '/admin/sites/current.json',
     success: function(response){
       Verlag.pages = new Verlag.Collection.Pages(response.pages);
-      Verlag.folders = new Verlag.Collection.Folders(response.folders);
+      // Verlag.folders = new Verlag.Collection.Folders(response.folders);
       Verlag.templates = new Verlag.Collection.Templates(response.templates);
       Verlag.sites = new Verlag.Collection.Sites(response.sites);
       Verlag.current_user = new Verlag.Model.User(response.current_user);

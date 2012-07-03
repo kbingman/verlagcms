@@ -62,6 +62,21 @@ Verlag.ace_settings = function(){
   });
 }
 
+// TODO move this to a better place
+Verlag.fetchItemsByFolderId = function(id, callback){
+  var url = id ? '/admin/folders/' + id + '/children.json' : '/admin/items.json';
+  $.ajax({
+    url: url,
+    success: function(response){
+      var items = new Verlag.Collection.Assets(response);
+      if(callback){
+        callback.call(this, items, response);
+      }
+    }
+  });
+}
+
+
 // ACE Editor modes depending on content type
 Verlag.ace_modes = {
   'javascript' : require('ace/mode/javascript').Mode,

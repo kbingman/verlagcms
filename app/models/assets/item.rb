@@ -24,10 +24,29 @@ class Item
   # Validations
   # ----------------------------------------
   validates :name, 
-    :uniqueness => { :scope => [:site_id, :folder_id] },
+    :uniqueness => { :scope => [:site_id, :parent_id] },
     :presence => true
   
   timestamps!
+  
+  def is_image
+    true
+  end
+  
+  def admin_path
+    "/admin/items/#{self.id}"
+  end
+  
+  def image_path
+    '/icons/folder.png'
+  end
+  
+  def as_json(options)
+    super(:methods => [
+      :admin_path, :image_path, :children, :is_image
+    ]) 
+  end
+
   
   
 end

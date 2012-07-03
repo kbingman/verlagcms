@@ -116,14 +116,14 @@ class Asset < Item
   end
   
   def admin_path
-    "/admin/folders/#{self.parent_id}/children/#{self.id}"
+    "/admin/assets/#{self.id}"
   end
   
   # JSON API
   # ----------------------------------------
   def as_json(options)
     super(
-      :only => [ :id, :created_at, :file_name,  :folder_id, :name, :file_type, :_type ], 
+      :only => [ :id, :created_at, :file_name,  :parent_id, :name, :file_type, :_type ], 
       :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
     )
   end

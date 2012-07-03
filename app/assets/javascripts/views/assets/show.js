@@ -13,11 +13,10 @@ Verlag.View.Asset = Backbone.View.extend({
     var id = options.id,
         folder_id = options.folder_id;
       
-    this.folder = Verlag.folders.get(folder_id);
-    this.asset = this.folder.assets.get(id);
+    // this.folder = Verlag.folders.get(folder_id);
+    this.asset = Verlag.assets.get(id);
     
-    $(this.el).undelegate('div#overlay a.cancel', 'click');
-    $(this.el).undelegate('form#edit-asset', 'submit');
+    $(this.el).undelegate();
   },
 
   render: function() {
@@ -47,9 +46,10 @@ Verlag.View.Asset = Backbone.View.extend({
     $('#overlay').fadeOut('fast', function(){
       $(this).remove();
     });
-    Verlag.router.navigate(this.folder.get('admin_path'), { 
-      trigger: false 
-    });
+    
+    // Verlag.router.navigate(this.folder.get('admin_path'), { 
+    //   trigger: false 
+    // });
   },
   
   update: function(e){

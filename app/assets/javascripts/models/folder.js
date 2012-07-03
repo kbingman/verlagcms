@@ -1,6 +1,11 @@
 Verlag.Model.Folder = Backbone.Model.extend({
   
-  urlRoot: '/admin/folders',
+  // urlRoot: '/admin/folders',
+  
+  url: function() {
+    return '/admin/folders/' + this.id + '.json';
+  },
+  
   
   initialize: function() {
     

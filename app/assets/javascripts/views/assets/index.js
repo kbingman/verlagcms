@@ -14,19 +14,18 @@ Verlag.View.Assets = Backbone.View.extend({
   initialize: function(options) {
     $(this.el).undelegate();
     var self = this;
+    var id = options && options.id ? options.id : null;
       
-    this.folder = Verlag.folders.get(options.id);
-    this.folder.fetch_assets(function(assets, response){
-      // TODO choose one of these
-      self.folder.assets = assets;
-      Verlag.assets = assets;
-      
-      assets.on('all', function(){
-        self.render();
-      });
-      self.render();
-      
-      if(options.success) options.success.call(this);
+    this.folder = new Verlag.Model.Folder({ id: id });
+    this.folder.fetch({
+      success: function(folder, response){
+        Verlag.assets = new Verlag.Collection.Assets(response.children);
+        
+        Verlag.assets.on('all', function(){
+          self.render();
+        });
+        self.render();    
+      }  
     });
   },
 
@@ -40,8 +39,8 @@ Verlag.View.Assets = Backbone.View.extend({
           toolbar: Verlag.compile_template('admin-assets-toolbar')
         },
         data = { 
-          folder: this.folder.toJSON(),
-          assets: this.folder.assets.toJSON()
+          folder: this.folder ? this.folder.toJSON() : {},
+          assets: Verlag.assets.toJSON()
         };
     
     $(self.el).html(template.render(data, partials));
@@ -51,18 +50,19 @@ Verlag.View.Assets = Backbone.View.extend({
   
   show: function(e){
     e.preventDefault();
-    var href = $(e.currentTarget).attr('href'),
-      folder_id = href.split('/')[3],
-      id = href.split('/')[5];
+    var path = $(e.currentTarget).attr('href'),
+      folder_id = this.folder ? this.folder.id : null,
+      id = $(e.currentTarget).data('id');;
       
-    Verlag.router.navigate(href, { trigger: false });
+  
+    Verlag.router.navigate(path, { trigger: false });
     Verlag.modal = new Verlag.View.Asset({ folder_id: folder_id, id: id });
     Verlag.modal.render(folder_id, id);
   }, 
   
   remove: function(e){
     e.preventDefault();
-    var asset = this.folder.assets.get($(e.target).data('id'));
+    var asset = Verlag.assets.get($(e.target).data('id'));
     
     Verlag.modal = new Verlag.View.Remove({ 
       model: asset, 
@@ -74,17 +74,19 @@ Verlag.View.Assets = Backbone.View.extend({
     e.preventDefault();
     var path = $(e.target).attr('href');
     var model = new Verlag.Model.Folder({
-      parent_id: this.folder.id
+      parent_id: this.folder ? this.folder.id : null
     });
     
     Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
   }, 
   
   showFolder: function(e){
+    console.log($(e.currentTarget));
     e.preventDefault();
     var path = $(e.currentTarget).attr('href'),
       id = $(e.currentTarget).data('id');
-
+    
+      
     Verlag.router.navigate(path, { trigger: false });
     Verlag.editor = new Verlag.View.Assets({ id: id });
     
@@ -92,8 +94,9 @@ Verlag.View.Assets = Backbone.View.extend({
   
   newAsset: function(e){
     e.preventDefault();
+    // var id = this.folder ? this.folder.id : null;
     
-    Verlag.modal = new Verlag.View.NewAsset({ id: this.folder.id }); 
+    Verlag.modal = new Verlag.View.NewAsset({ folder: this.folder }); 
   }
 
 });

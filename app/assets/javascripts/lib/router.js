@@ -2,16 +2,16 @@
 Verlag.Router = Backbone.Router.extend({
   
   routes: {
-    '':                                       'show_index', 
-    'admin/':                                 'show_index',
-    'admin/pages':                            'show_pages',
-    'admin/pages/:id':                        'show_page',
-    'admin/folders':                          'folders_index',
-    'admin/folders/:id':                      'show_folder',
-    'admin/folders/:folder_id/assets/:id':    'show_asset',
-    'admin/templates':                        'templates_index',
-    'admin/templates/:id':                    'show_template',
-    'admin/settings':                         'show_settings'
+    '':                     'show_index', 
+    'admin/':               'show_index',
+    'admin/pages':          'show_pages',
+    'admin/pages/:id':      'show_page',
+    'admin/folders':        'folders_index',
+    'admin/folders/:id':    'show_folder',
+    'admin/assets/:id':     'show_asset',
+    'admin/templates':      'templates_index',
+    'admin/templates/:id':  'show_template',
+    'admin/settings':       'show_settings'
   },
   
   show_index: function(){
@@ -37,7 +37,7 @@ Verlag.Router = Backbone.Router.extend({
   // ------------------------------------------------------------ //
   folders_index: function(){
     this.cleanup(Verlag.editor);
-    Verlag.editor = new Verlag.View.FolderIndex();
+    Verlag.editor = new Verlag.View.Folders();
   },
   
   show_folder: function(id){
@@ -51,16 +51,18 @@ Verlag.Router = Backbone.Router.extend({
   
   // Assets
   // ------------------------------------------------------------ //
-  show_asset: function(folder_id, id){
+  show_asset: function(id){
     this.cleanup(Verlag.editor);
+    
+    Verlag.modal = new Verlag.View.Asset({ id: id });
+    Verlag.modal.render(); 
   
-    Verlag.editor = new Verlag.View.Assets({ 
-      id: folder_id,
-      success: function(){
-        Verlag.modal = new Verlag.View.Asset({ folder_id: folder_id, id: id });
-        Verlag.modal.render();        
-      }
-    });
+    // Verlag.editor = new Verlag.View.Assets({ 
+    //   id: folder_id,
+    //   success: function(){
+    //            
+    //   }
+    // });
   },
   
   // Design / Templates

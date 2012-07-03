@@ -14,7 +14,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
   initialize: function(options) {
     $(this.el).undelegate();
     
-    this.folder = Verlag.folders.get(options.id);
+    this.folder = options.folder; // Verlag.folders.get(options.id);
     // this.asset = new Verlag.Asset({
     //   folder_id: options.id
     // })
@@ -39,10 +39,12 @@ Verlag.View.NewAsset = Backbone.View.extend({
         files = fileInput.files,
         folder_id = this.folder ? this.folder.id : null;
         
+        alert(folder_id)
     Verlag.count = 0;
     Verlag.files = files.length;
         
     $.each(files, function(i, file){
+      console.log(folder_id)
       self.upload(file, folder_id, form);
     });
   },
@@ -73,20 +75,15 @@ Verlag.View.NewAsset = Backbone.View.extend({
     // readyState 4 means that the request is finished
     if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
       var attr = JSON.parse(evt.target.responseText);
-      var asset = new Verlag.Model.Asset(attr);
-      
+      // var item = new Verlag.Model.Asset(attr);
+      console.log(attr)
       Verlag.count++;
-      Verlag.assets.add(asset);
+      Verlag.assets.add(attr);
       Verlag.notify('uploaded');
       
-      console.log(Verlag.count);
       if (Verlag.count == Verlag.files){
         Verlag.closeModal();   
-        console.log('close')
       }
-      
-      
-
       $('#progress').text(Verlag.count)
     }
   }

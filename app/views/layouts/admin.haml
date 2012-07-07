@@ -24,15 +24,15 @@
                 %a.tab{ :id => 'pages-tab', :href => '/admin/pages' } Pages 
                 %a.tab{ :id => 'assets-tab', :href => '/admin/folders' } Files 
                 %a.tab{ :id => 'templates-tab', :href => '/admin/templates' } Design
-                %a.tab{ :id => 'users-tab', :href => '/admin/settings' } Settings 
+                %a.tab{ :id => 'settings-tab', :href => '/admin/settings' } Settings 
                 // %a.tab{ :id => 'users-tab', :href => '/admin/users' } Users 
                 // %a.tab{ :id => 'sites-tab', :href => '/admin/sites' } Sites
             = yield_content :header
             .notice
       #content 
-        = yield  
-        %noscript
-          #editor.editor
+        #editor.editor
+          = yield  
+          %noscript
             %h1 You need to change a setting in your web browser</h1> 
             %p 
               This application requires a browser feature called <strong>JavaScript</strong>. All modern browsers support JavaScript. 
@@ -40,8 +40,6 @@
               
             %p 
               Please see: <a href="http://www.google.com/support/bin/answer.py?answer=23852">How to enable JavaScript in your browser</a>.
-            -# %p  
-            -#   If you use ad-blocking software, it may require you to allow JavaScript from basecamphq.com.
             %p  
               Once you've enabled JavaScript you can <a href="">try loading this page again</a>.</p> <p>Thank you.</p> </div> </div>
         

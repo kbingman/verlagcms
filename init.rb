@@ -203,14 +203,14 @@ end
 
 # Load all admin routes, except the rest_controller.
 # This is loaded last
-Dir[root_path('app/routes/admin/*.rb')].each do |file|
+Dir[root_path('app/routes/api/v1/*.rb')].each do |file|
   require file unless file.match('rest_controller')
 end
 # Loads this last so that one can easily override it
-require root_path('app/routes/admin/rest_controller') 
+require root_path('app/routes/api/v1/rest_controller') 
 
 # Load api routes
-Dir[root_path('app/routes/api/*.rb')].each do |file|
+Dir[root_path('app/routes/api/public/**/*.rb')].each do |file|
   require file
 end
 

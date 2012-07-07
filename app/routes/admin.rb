@@ -1,15 +1,6 @@
 class Main   
   # include Canable::Enforcers
-  
-  # Admin Mustache Templates 
-  # -------------------------------------------
-  template_route = get '/templates' do  
-    authenticate!
-    cache_request  
-    @files = Dir[root_path('app/views/admin/**/*.mustache')]
-    partial :'layouts/js_templates' 
-  end
-  
+    
   # Site admin interface  
   # -------------------------------------------  
   namespace '/admin' do   

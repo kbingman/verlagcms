@@ -21,9 +21,9 @@ Verlag.View.New = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-shared-new'),
+    var template = HoganTemplates['shared/new'],
         partials = {
-          form: Verlag.compile_template('admin-' + this.collection + '-new')
+          form: HoganTemplates[this.collection + '/new']
         },
         data = {
           model: this.model ? this.model.toJSON() : {},

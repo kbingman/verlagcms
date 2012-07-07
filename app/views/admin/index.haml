@@ -1,11 +1,3 @@
-- content_for :head do
-- files = Dir[root_path('app/assets/templates/admin/**/*.mustache')]
-  - files.each do |file|
-    - filepath = file.gsub(root_path('app/assets/templates/'), '').gsub('.mustache', '')
-    - filename = filepath.gsub('/','-')
-    %script{ :id => filename, :type => 'text/mustache', :charset => 'utf-8' }
-      = js_template(filepath)
-  
 #editor{ :class => editor_toggled? }
   =# mustache :'admin/pages/table'
 // #sidebar{ :class => sidebar_toggled? }

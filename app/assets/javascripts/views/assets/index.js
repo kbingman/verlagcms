@@ -8,6 +8,7 @@ Verlag.View.Assets = Backbone.View.extend({
     'click a.js-show-Folder': 'showFolder',
     'click a.js-new-folder': 'newFolder',
     'click a.js-new-asset': 'newAsset',
+    'change input.js-upload': 'create',
     'click a.js-remove': 'remove'
   },
 
@@ -32,10 +33,10 @@ Verlag.View.Assets = Backbone.View.extend({
     // $('#overlay').hide();
 
     var self = this,
-        template = Verlag.compile_template('admin-assets-index'),
+        template = HoganTemplates['assets/index'],
         partials = { 
-          item:  Verlag.compile_template('admin-assets-item'),
-          toolbar: Verlag.compile_template('admin-assets-toolbar')
+          item: HoganTemplates['assets/item'],
+          toolbar: HoganTemplates['assets/toolbar']
         },
         data = { 
           folder: this.folder ? this.folder.toJSON() : {},
@@ -90,7 +91,6 @@ Verlag.View.Assets = Backbone.View.extend({
   }, 
   
   showFolder: function(e){
-    console.log($(e.currentTarget));
     e.preventDefault();
     var path = $(e.currentTarget).attr('href'),
       id = $(e.currentTarget).data('id');
@@ -106,6 +106,34 @@ Verlag.View.Assets = Backbone.View.extend({
     // var id = this.folder ? this.folder.id : null;
     
     Verlag.modal = new Verlag.View.NewAsset({ folder: this.folder }); 
+  },
+  
+  create: function(e){
+    e.preventDefault();
+    
+    var self = this,
+        form = document.getElementById('uploader'),
+        fileInput = document.getElementById('file'),
+        files = fileInput.files,
+        parent_id = this.folder ? this.folder.id : null;
+
+    Verlag.count = 0;
+    Verlag.files = files.length;
+        
+    $.each(files, function(i, file){
+      var asset = new Verlag.Model.Asset({ parent_id: parent_id });
+      asset.upload(file, function(asset, response){
+        Verlag.count++;
+        Verlag.assets.add(asset);
+        Verlag.notify('uploaded');
+      
+        if (Verlag.count == Verlag.files){
+          Verlag.closeModal();   
+        }
+        $('#progress').text(Verlag.count);
+        
+      });
+    });
   }
 
 });

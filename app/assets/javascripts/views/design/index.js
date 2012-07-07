@@ -51,7 +51,7 @@ Verlag.View.DesignIndex = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-templates-index');
+    var template = HoganTemplates['templates/index'];
     
     $(this.el).html(template.render(this.data())); 
     $('a.tab').removeClass('active');

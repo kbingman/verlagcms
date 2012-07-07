@@ -43,8 +43,8 @@ class ImagePart < Part
     if self.edit
       result += "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>\n"
     end
-    
-    result += "<img src='#{self.path}' alt='#{self.asset.name}' />"
+    # self.asset.name
+    result += "<img src='#{self.path}' alt='#{}' />"
     result
     # self.asset.image_path
     # ImageProxy.new(self, edit)

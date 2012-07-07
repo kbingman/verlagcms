@@ -29,6 +29,7 @@ gem 'sass'
 gem 'rabl', '~> 0.3.0' 
 gem 'mustache', '~> 0.99.4'
 gem 'RedCloth' 
+gem 'hogan_assets'
 
 gem 'sprockets', '~>2.0.2'
 gem 'uglifier', '~>1.0.3'
@@ -37,7 +38,7 @@ gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
 # gem 'dalli'
-# gem 'representer', :path => 'vendor/representer'
+gem 'representer', :path => 'vendor/representer'
 
 group :production do 
   

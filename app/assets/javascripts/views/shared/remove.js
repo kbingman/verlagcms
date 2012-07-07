@@ -21,7 +21,7 @@ Verlag.View.Remove = Backbone.View.extend({
 
   render: function() {
     
-    var template = Verlag.compile_template('admin-shared-remove'),
+    var template = HoganTemplates['shared/remove'],
         data = { 
           model: this.model.toJSON()
         };

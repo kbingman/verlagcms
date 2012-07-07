@@ -108,6 +108,10 @@ class Main
         @site.users
       end
       
+      def parts
+        @global_page.parts
+      end
+      
       # Conditionals
       # ----------------------------------------------------
       

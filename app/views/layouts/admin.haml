@@ -7,8 +7,7 @@
     // Ace
     %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' } 
     %script{ :src => "#{asset_path('application.js')}", :type => 'text/javascript', :charset => 'utf-8' }
-    
-    -# This is where the mustache templates are rendered  
+
     = yield_content :head
 
   %body

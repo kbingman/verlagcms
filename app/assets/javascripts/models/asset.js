@@ -1,7 +1,12 @@
 Verlag.Model.Asset = Backbone.Model.extend({
     
   url: function() {
-    return '/admin/assets/' + this.id + '.json';
+    if (this.id){
+      path = '/admin/assets/' + this.id + '.json';
+    } else {
+      path = '/admin/assets.json'
+    }
+    return path
   },
 
   initialize: function() {
@@ -34,6 +39,48 @@ Verlag.Model.Asset = Backbone.Model.extend({
     var type = this.get('_type') ? this.get('_type').toLowerCase() + 's/'  : '';
     var path = '/admin/' + type + this.id;
     return path;
+  },
+  
+  upload: function(file, callback){
+    var formData = new FormData();
+    var xhr = new XMLHttpRequest();
+    var asset = this;
+    
+    var generate_uuid = function(){
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = "0123456789ABCDEF";
+      for (var i = 0; i < 32; i++) { s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1); }
+      s[12] = "4";                                       // bits 12-15 of the time_hi_and_version field to 0010
+      s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      return s.join(''); 
+    };
+  
+    var onprogressHandler = function(evt){
+      var percent = evt.loaded / evt.total * 100;
+      $('#percent').text(percent + '%'); 
+    };
+  
+    var onreadystatechangeHandler = function(evt){
+      var status = null;
+      try { status = evt.target.status; }
+      catch(e) { return; }
+  
+      // readyState 4 means that the request is finished
+      if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+        var response = JSON.parse(evt.target.responseText);
+        asset.set(response)
+        callback(asset, response)
+      }
+    };
+      
+    formData.append('file', file);
+    formData.append('parent_id', this.get('parent_id'));  
+    
+    xhr.upload.addEventListener('progress', onprogressHandler, false);
+    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
+    xhr.open('POST', '/admin/assets.json', true);
+    xhr.send(formData);
   }
   
   

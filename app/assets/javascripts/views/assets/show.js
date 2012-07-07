@@ -17,7 +17,6 @@ Verlag.View.Asset = Backbone.View.extend({
     this.asset = new Verlag.Model.Asset({ id: id });
     this.asset.fetch({
       success: function(asset, response){
-        console.log(asset)
         self.render();
         if(callback){
           callback(asset)
@@ -29,7 +28,7 @@ Verlag.View.Asset = Backbone.View.extend({
 
   render: function() {
     var asset = this.asset,
-        template = Verlag.compile_template('admin-assets-edit'),
+        template = HoganTemplates['assets/edit'],
         data = { 
           asset: function(){
             var attr = asset.toJSON();

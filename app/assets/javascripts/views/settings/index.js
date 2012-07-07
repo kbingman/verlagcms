@@ -33,7 +33,7 @@ Verlag.View.Settings = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-settings-index');
+    var template = HoganTemplates['settings/index'];
     console.log(this.data())
         
     $(this.el).html(template.render(this.data()));

@@ -8,7 +8,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click button.js-create': 'create'
+    'change button.js-upload': 'create'
   },
 
   initialize: function(options) {
@@ -22,7 +22,7 @@ Verlag.View.NewAsset = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-assets-new'),
+    var template = HoganTemplates['assets/new'],
         data = {
           asset: {}
         };
@@ -37,54 +37,25 @@ Verlag.View.NewAsset = Backbone.View.extend({
         form = document.getElementById('uploader'),
         fileInput = document.getElementById('file'),
         files = fileInput.files,
-        folder_id = this.folder ? this.folder.id : null;
+        parent_id = this.folder ? this.folder.id : null;
 
     Verlag.count = 0;
     Verlag.files = files.length;
         
     $.each(files, function(i, file){
-      console.log(folder_id)
-      self.upload(file, folder_id, form);
+      var asset = new Verlag.Model.Asset({ parent_id: parent_id });
+      asset.upload(file, function(asset, response){
+        Verlag.count++;
+        Verlag.assets.add(asset);
+        Verlag.notify('uploaded');
+      
+        if (Verlag.count == Verlag.files){
+          Verlag.closeModal();   
+        }
+        $('#progress').text(Verlag.count);
+        
+      });
     });
-  },
-  
-  upload: function(file, folder_id, form){
-    var formData = new FormData();
-    var xhr = new XMLHttpRequest();
-      
-    formData.append('file', file);
-    formData.append('parent_id', folder_id);  
-    
-    xhr.upload.addEventListener('progress', this.onprogressHandler, false);
-    xhr.addEventListener('readystatechange', this.onreadystatechangeHandler, false);
-    xhr.open('POST', form.getAttribute('action') + '.json', true);
-    xhr.send(formData);
-  },
-  
-  onprogressHandler: function(evt){
-    var percent = evt.loaded / evt.total * 100;
-    $('#percent').text(percent + '%'); 
-  },
-  
-  onreadystatechangeHandler: function(evt){
-    var status = null;
-    try { status = evt.target.status; }
-    catch(e) { return; }
-  
-    // readyState 4 means that the request is finished
-    if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
-      var attr = JSON.parse(evt.target.responseText);
-      // var item = new Verlag.Model.Asset(attr);
-
-      Verlag.count++;
-      Verlag.assets.add(attr);
-      Verlag.notify('uploaded');
-      
-      if (Verlag.count == Verlag.files){
-        Verlag.closeModal();   
-      }
-      $('#progress').text(Verlag.count)
-    }
   }
   
 });

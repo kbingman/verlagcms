@@ -8,10 +8,8 @@ Verlag.Model.Folder = Backbone.Model.extend({
     } else {
       path = '/admin/folders.json'
     }
-    
     return path
   },
-  
   
   initialize: function() {
     

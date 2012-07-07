@@ -5,7 +5,7 @@ Verlag.Collection.PageTypes = Backbone.Collection.extend({
   url: '/admin/page_types',
 
   initialize: function() {
-    console.log('hey')
+
   }
   
 });

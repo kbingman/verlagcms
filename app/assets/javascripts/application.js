@@ -1,6 +1,9 @@
+// Hogan
+//= require 'vendor/hogan'
+//= require_tree '../templates'
+
 // Libraries
 //= require 'vendor/jquery-1.7.1.min'
-//= require 'vendor/hogan'
 //= require 'vendor/underscore'
 //= require 'vendor/backbone'
 //= require 'vendor/modernizr.custom.00537'

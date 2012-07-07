@@ -27,9 +27,9 @@ Verlag.View.PageIndex = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-pages-index'),
+    var template = HoganTemplates['pages/index'],
         partials = { 
-         node:  Verlag.compile_template('admin-pages-node') 
+         node: HoganTemplates['pages/node']
         };
         
     $(this.el).html(template.render(this.data(), partials));

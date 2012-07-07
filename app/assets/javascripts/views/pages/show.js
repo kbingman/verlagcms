@@ -20,7 +20,7 @@ Verlag.View.PagePreview = Backbone.View.extend({
 
   render: function(id) {
     var page = this.page,
-        template = Verlag.compile_template('admin-pages-show'),
+        template = HoganTemplates['pages/show'],
         data = { page: page.toJSON() };
 
     $(this.el).html(template.render(data));

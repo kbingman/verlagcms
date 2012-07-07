@@ -27,7 +27,7 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-templates-edit');
+    var template = HoganTemplates['templates/edit'];
     
     $(this.el).html(template.render(this.data())); 
     this.intitializeAce();

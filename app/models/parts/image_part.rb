@@ -41,7 +41,7 @@ class ImagePart < Part
   def render(edit=false)
     result = ""
     if self.edit
-      result += "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>insert widget goes here</a>\n</div>\n"
+      result += "<div data-name='#{self.name}' class='verlag'>\n<a class='insert-image' href='#{admin_path}/edit'>The Insert Widget goes here</a>\n</div>\n"
     end
     # self.asset.name
     result += "<img src='#{self.path}' alt='#{}' />"

@@ -9,16 +9,11 @@ class Main
       authenticate! unless request.path.match(/^\/admin\/css\//)
       
       # Clears the cache
-      # TDOO this needs to be a class or something...
+      # TODO this needs to be a class or something...
       if request.request_method == 'PUT'
         Dir[File.join(root_path('tmp/cache/body'), "*")].each{ |file| FileUtils.rm_rf(file) }
         $cache.flush unless $cache.nil?
       end
-  
-      # Redirects if no site is found
-      # unless current_site   
-      #   redirect '/admin/' 
-      # end 
     end  
     
     # Redirects to '/admin/' so that the page hash looks pretty     
@@ -26,7 +21,7 @@ class Main
       redirect '/admin/'
     end
   
-    get '/' do   
+    get '/*' do   
       admin_haml :'admin/index'
     end  
   end

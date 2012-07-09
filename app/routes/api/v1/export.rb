@@ -1,6 +1,6 @@
 class Main    
   
-  namespace '/admin' do 
+  namespace '/api/v1' do 
     namespace '/export' do
       
       get '/?' do

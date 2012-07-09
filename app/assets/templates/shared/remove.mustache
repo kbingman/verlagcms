@@ -1,19 +1,24 @@
-<div id="overlay">
-  <div class="modal">
-  {{# model }}
-    <h2>Remove </h2>
-    <form method="post" action="{{ admin_url }}" enctype="multipart/form-data" class="remove">
+{{# model }}
+<div class="modal hide">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Remove</h3>
+  </div>
+  <form method="post" action="{{ admin_url }}" enctype="multipart/form-data" class="remove">
+    <div class="modal-body">
+      
       <div class="hidden">                   
         <input type="hidden" name="_method" value="delete" />
       </div>
       <div class="note"> 
-        Are you sure you want to delete <strong>{{ name }}</strong>?
+        Are you sure you want to delete <strong>{{ name }}{{ title }}</strong>?
       </div>
-      <div class="buttons">
-        <button type="submit" class="btn">Remove</button>
-        <a href="#" class="cancel">Cancel</a>
-      </div>
-    </form>  
-  {{/ model }}
-  </div>
+      
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
+      <button type="submit" class="btn btn-primary js-delete">Remove</button>
+    </div>
+  </form> 
 </div>
+{{/ model }}

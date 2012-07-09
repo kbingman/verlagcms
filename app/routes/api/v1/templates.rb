@@ -1,6 +1,6 @@
 class Main    
   
-  namespace '/admin' do    
+  namespace '/api/v1' do    
     namespace '/templates' do
       
       # Create layout
@@ -14,12 +14,9 @@ class Main
         template.site = current_site
         
         if template.save
-          respond_to do |format|
-            format.html { }
-            format.json { template.to_json }
-          end
+          template.to_json
         else   
-          # logger.info(template.errors.inspect)  
+          puts template.errors.inspect
           { :errors => template.errors }.to_json
         end
       end

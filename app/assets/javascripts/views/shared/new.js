@@ -27,11 +27,13 @@ Verlag.View.New = Backbone.View.extend({
         },
         data = {
           model: this.model ? this.model.toJSON() : {},
-          layouts: Verlag.templates.find_by_klass('Layout').map(function(l){
+          layouts: Verlag.templates.findByKlass('Layout').map(function(l){
             return l.toJSON();
           })
         };
-    $(template.render(data, partials)).hide().appendTo(this.$el).fadeIn('fast');
+    $(template.render(data, partials)).appendTo(this.$el).modal().on('hidden', function() {
+      $(this).remove();
+    });
   },
   
   create: function(e){
@@ -49,7 +51,7 @@ Verlag.View.New = Backbone.View.extend({
         Verlag.notify('created');
         // Verlag[self.collection].add(model);
         Verlag.router.navigate(model.admin_path(), { trigger: true });
-        Verlag.closeModal();
+        $('.modal').modal('hide');  
       }
     });
   }

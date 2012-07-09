@@ -2,9 +2,9 @@ Verlag.Collection.Templates = Backbone.Collection.extend({
   
   model: Verlag.Model.Template,
 
-  url: '/admin/templates',
+  url: '/api/v1/templates',
   
-  find_by_klass: function(klass){
+  findByKlass: function(klass){
     return this.filter(function(template){
       return template.get('klass') === klass;
     });

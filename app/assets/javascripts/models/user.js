@@ -1,23 +1,16 @@
 Verlag.Model.User = Backbone.Model.extend({
   
-  // Makes nice rails style json urls 
-  url: function() {
-    return '/admin/users/' + this.id + '.json';
-  },
+  urlRoot: '/api/v1/users',
   
-  initialize: function() {
-    
-  },
-  
-  is_admin: function(){
+  isAdmin: function(){
     return this.get('role').id >= 100;
   },
   
-  is_super_user: function(){
+  isSuperUser: function(){
     return this.get('role').id >= 101;
   },
   
-  admin_path: function(){
+  adminPath: function(){
     return '/admin/folders/' + this.id 
   }
   

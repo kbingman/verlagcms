@@ -67,7 +67,7 @@ Verlag.Router = Backbone.Router.extend({
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    var id = Verlag.templates.find_by_klass('Layout')[0].id;
+    var id = Verlag.templates.findByKlass('Layout')[0].id;
     Verlag.editor = new Verlag.View.DesignEdit({ id: id });
   },
   

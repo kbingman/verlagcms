@@ -5,6 +5,11 @@ Verlag.Model.Template = Backbone.Model.extend({
   //   return '/admin/templates/' + this.id + '.json';
   // }
   
-  urlRoot: '/admin/templates',
+  urlRoot: '/api/v1/templates',
+  
+  adminPath: function(){
+    return '/admin/templates/' + this.id 
+  }
+  
   
 });

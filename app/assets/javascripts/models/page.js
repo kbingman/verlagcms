@@ -5,7 +5,7 @@ Verlag.Model.Page = Backbone.Model.extend({
   //   return '/admin/pages/' + this.id + '.json';
   // },
   
-  urlRoot: '/admin/pages',
+  urlRoot: '/api/v1/pages',
   
   initialize: function() {
     
@@ -31,6 +31,11 @@ Verlag.Model.Page = Backbone.Model.extend({
     
     attr['children'] = this.childData();
     return attr;
+  },
+  
+  adminPath: function(){
+    return '/admin/pages/' + this.id 
   }
+  
   
 });

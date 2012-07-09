@@ -92,9 +92,10 @@ class Main
       # Proxy Methods
       # ----------------------------------------------------
       
-      def data
+      def block
         PartProxy.new @global_page, @edit
       end
+      alias :part :block
       
       def find
         FindPageProxy.new @site

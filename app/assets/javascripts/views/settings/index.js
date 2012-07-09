@@ -14,7 +14,7 @@ Verlag.View.Settings = Backbone.View.extend({
     var self = this;
     
     $.ajax({
-      url: '/admin/page_types.json',
+      url: '/api/v1/page_types.json',
       success: function(response){
         Verlag.page_types = new Verlag.Collection.PageTypes(response);
         Verlag.page_types.on('all', function(){

@@ -6,7 +6,8 @@ Verlag.View.DesignEdit = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    // 'click a': 'showTemplate'
+    'click a.js-show': 'showLayout',
+    'click a.js-new-part': 'newPart',
     'submit form#edit-layout': 'update'
   },
 
@@ -21,6 +22,9 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   
   data: function(){
     return {
+      'layouts': Verlag.templates.findByKlass('Layout').map(function(l){
+        return l.toJSON()
+      }),
       'layout': this.layout.toJSON(),
       'layout?': false
     }
@@ -35,7 +39,9 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     $('a#templates-tab').addClass('active');
     
     
-    Verlag.sidebar = new Verlag.View.DesignIndex();
+    Verlag.sidebar = new Verlag.View.DesignIndex({
+      layout: this.layout.get('klass') == 'Layout' ? this.layout.toJSON() : null
+    });
     
   },
   
@@ -62,12 +68,30 @@ Verlag.View.DesignEdit = Backbone.View.extend({
       name: $(e.target).find('input#layout_name').val()
     };
     
-    this.layout.save(attributes ,{
+    this.layout.save(attributes, {
       success: function(model, response){
         Verlag.notify('Layout saved')
       }
     });
-  }
+  }, 
+  
+  newPart: function(e){
+    e.preventDefault();
+    var klass = $(e.target).data('klass');
+    var partType = new Verlag.Model.PartType();
+    
+    Verlag.modal = new Verlag.View.New({ 
+      model: partType, 
+      collection: 'partType' 
+    });
+  },
+  
+  showLayout: function(e){
+    e.preventDefault();
+    var path = $(e.target).attr('href');
+    Verlag.router.navigate(path, { trigger: true });
+  },
+  
   
 
 });

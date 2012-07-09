@@ -1,8 +1,6 @@
 Verlag.Model.Item = Backbone.Model.extend({
   
-  url: function() {
-    return '/admin/items/' + this.id + '.json';
-  },
+  urlRoot: '/api/v1/items',
   
   isImage: function(){
     return this.get('file_type') && this.get('file_type').match(/image/);
@@ -18,6 +16,4 @@ Verlag.Model.Item = Backbone.Model.extend({
     return path;
   }
 
-    
-  
 });

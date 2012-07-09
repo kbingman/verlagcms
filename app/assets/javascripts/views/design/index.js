@@ -1,6 +1,6 @@
 Verlag.View.DesignIndex = Backbone.View.extend({
 
-  el: '#sidebar',
+  el: '#blocks',
 
   tagName:  'div',
 
@@ -11,39 +11,41 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     'click a.js-new': 'new'
   },
 
-  initialize: function() {
+  initialize: function(options) {
     var self = this;
     Verlag.templates.on('all', function(){
       self.render();
     });
+    this.currentLayout = options.layout || Verlag.templates.findByKlass('Layout')[0];
     $(this.el).undelegate();
     this.render();
   },
   
   data: function(){
+    // {
+    //   title: 'Layouts',
+    //   klass: 'Layout',
+    //   models: Verlag.templates.findByKlass('Layout').map(function(l){
+    //     return l.toJSON()
+    //   })
+    // },
     return {
       templates: [{
-        title: 'Layouts',
-        klass: 'Layout',
-        models: Verlag.templates.find_by_klass('Layout').map(function(l){
-          return l.toJSON()
-        })
-      },{
         title: 'Partials',
         klass: 'Partial',
-        models: Verlag.templates.find_by_klass('Partial').map(function(l){
+        models: Verlag.templates.findByKlass('Partial').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Stylesheets',
         klass: 'Stylesheet',
-        models: Verlag.templates.find_by_klass('Stylesheet').map(function(l){
+        models: Verlag.templates.findByKlass('Stylesheet').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Javascripts',
         klass: 'Javascript',
-        models: Verlag.templates.find_by_klass('Javascript').map(function(l){
+        models: Verlag.templates.findByKlass('Javascript').map(function(l){
           return l.toJSON()
         })
       }]

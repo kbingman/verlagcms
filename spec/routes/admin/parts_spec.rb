@@ -1,6 +1,6 @@
 # require 'spec_helper'
 # 
-# describe "routes/admin/parts" do 
+# describe "routes/api/v1'/parts" do 
 #   
 #   before(:all) do  
 #     setup_site 
@@ -14,7 +14,7 @@
 #   
 #   context 'POST create page part' do
 #     def do_post
-#       post "/admin/pages/#{@page.id}/parts.json", :part => { :name => 'body', :page_id => @page.id }
+#       post "/api/v1'/pages/#{@page.id}/parts.json", :part => { :name => 'body', :page_id => @page.id }
 #     end
 #     
 #     it "should be ok" do
@@ -61,7 +61,7 @@
 #       end
 #        
 #       def do_delete
-#         delete "/admin/pages/#{@page.id.to_s}/parts/#{@part.id.to_s}.json"
+#         delete "/api/v1'/pages/#{@page.id.to_s}/parts/#{@part.id.to_s}.json"
 #       end
 #     
 #       it 'should be successful' do 

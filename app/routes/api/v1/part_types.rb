@@ -1,13 +1,14 @@
 class Main   
   
-  namespace '/admin' do
+  namespace '/api/v1' do
     namespace '/templates' do
 
       # Create Page Type 
       # -------------------------------------------
       post '/:id/parts' do
+        attributes = JSON.parse(request.body.read.to_s)  
         template = Template.find(params[:id])
-        part = PartType.new(params[:part]) 
+        part = PartType.new(attributes) 
         
         template.part_types << part
         

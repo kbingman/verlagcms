@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/admin/pages" do
+describe "routes/api/v1'/pages" do
   include Rack::Test::Methods
   
   before(:all) do 
@@ -19,7 +19,7 @@ describe "routes/admin/pages" do
     
     context 'json' do   
       def do_get
-        get '/admin/pages.json'
+        get '/api/v1'/pages.json'
       end
     
       it 'should be successful' do
@@ -53,7 +53,7 @@ describe "routes/admin/pages" do
     context 'json' do   
       def do_post
         @name = Faker::Name.first_name
-        post "/admin/pages.json", { title: @name, layout_id: @layout.id, parent_id: @root.id }.to_json
+        post "/api/v1'/pages.json", { title: @name, layout_id: @layout.id, parent_id: @root.id }.to_json
       end
     
       it 'should be successful' do
@@ -78,7 +78,7 @@ describe "routes/admin/pages" do
         
     context 'json' do   
       def do_get
-        get "/admin/pages/#{@page.id}/children.json"
+        get "/api/v1'/pages/#{@page.id}/children.json"
       end
     
       it 'should be successful' do
@@ -113,7 +113,7 @@ describe "routes/admin/pages" do
     context 'json' do   
       def do_put
         @new_title = Faker::Name.first_name
-        put "/admin/pages/#{@page.id}.json", { title: @new_title, layout_id: @alt_layout.id  }.to_json
+        put "/api/v1'/pages/#{@page.id}.json", { title: @new_title, layout_id: @alt_layout.id  }.to_json
       end
     
       it 'should be successful' do
@@ -151,7 +151,7 @@ describe "routes/admin/pages" do
       end
        
       def do_delete
-        delete "/admin/pages/#{@page.id}.json"
+        delete "/api/v1'/pages/#{@page.id}.json"
       end
     
       it 'should be successful' do

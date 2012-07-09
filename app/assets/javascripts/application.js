@@ -4,10 +4,10 @@
 
 // Libraries
 //= require 'vendor/jquery-1.7.1.min'
+//= require 'vendor/modernizr.custom.00537'
+//= require 'vendor/bootstrap'
 //= require 'vendor/underscore'
 //= require 'vendor/backbone'
-//= require 'vendor/modernizr.custom.00537'
-//= require 'vendor/keymaster.min'
 
 // Verlag
 //= require 'lib/verlag'

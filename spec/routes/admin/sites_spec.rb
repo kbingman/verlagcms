@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/admin/sites" do
+describe "routes/api/v1'/sites" do
   include Rack::Test::Methods
   before(:all) do 
     teardown
@@ -16,7 +16,7 @@ describe "routes/admin/sites" do
 
     context 'json' do   
       def do_get
-        get '/admin/sites.json'
+        get '/api/v1'/sites.json'
       end
     
       it 'should be successful' do
@@ -46,7 +46,7 @@ describe "routes/admin/sites" do
     context 'json' do   
       def do_post
         @site_name = Faker::Name.first_name
-        post '/admin/sites.json', { name: @site_name, group_id: @group.id }.to_json
+        post '/api/v1'/sites.json', { name: @site_name, group_id: @group.id }.to_json
       end
     
       it 'should be successful' do
@@ -75,7 +75,7 @@ describe "routes/admin/sites" do
         
     context 'json' do   
       def do_put
-        put "/admin/sites/#{@site.id}.json", { name: @new_name }.to_json
+        put "/api/v1'/sites/#{@site.id}.json", { name: @new_name }.to_json
       end
     
       it 'should be successful' do
@@ -106,7 +106,7 @@ describe "routes/admin/sites" do
         
     context 'json' do    
       def do_delete
-        delete "/admin/sites/#{@site.id}.json"
+        delete "/api/v1'/sites/#{@site.id}.json"
       end
     
       it 'should be successful' do

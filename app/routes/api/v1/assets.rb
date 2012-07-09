@@ -1,6 +1,6 @@
 class Main    
   
-  namespace '/admin' do 
+  namespace '/api/v1' do 
     namespace '/assets' do
       
       # Asset Index
@@ -15,12 +15,9 @@ class Main
         else
           Asset.by_site(current_site)
         end
+        
         assets = plucky_query.paginate(options)
-
-        respond_to do |format|
-          format.html { admin_haml :'admin/index' }
-          format.json { assets.to_json  }
-        end
+        assets.to_json 
       end
       
       # Create Asset
@@ -34,10 +31,7 @@ class Main
         })
 
         if asset.save
-          respond_to do |format|
-            format.html { redirect("/admin/folders/#{params['parent_id']}") }
-            format.json { asset.to_json }
-          end
+          asset.to_json 
         else
           { :errors => asset.errors }.to_json
         end

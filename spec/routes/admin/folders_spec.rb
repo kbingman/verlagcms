@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/admin/folders" do
+describe "routes/api/v1'/folders" do
   include Rack::Test::Methods
   
   before(:all) do
@@ -18,7 +18,7 @@ describe "routes/admin/folders" do
     
     context 'json' do   
       def do_get
-        get '/admin/folders.json'
+        get '/api/v1'/folders.json'
       end
     
       it 'should be successful' do

@@ -8,7 +8,7 @@ Verlag.View.Remove = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click form.remove button': 'delete'
+    'click button.js-delete': 'delete'
   },
 
   initialize: function(options) {
@@ -26,7 +26,9 @@ Verlag.View.Remove = Backbone.View.extend({
           model: this.model.toJSON()
         };
 
-    $(template.render(data)).hide().appendTo(this.$el).fadeIn('fast');
+    $(template.render(data)).appendTo(this.$el).modal().on('hidden', function () {
+      $(this).remove();
+    });
   },
   
   delete: function(e){
@@ -42,7 +44,7 @@ Verlag.View.Remove = Backbone.View.extend({
     this.model.destroy({
       success: function(){
         Verlag.notify('removed');
-        Verlag.closeModal();                         
+        $('.modal').modal('hide');                         
       }
     });
 

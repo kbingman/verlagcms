@@ -1,6 +1,6 @@
 Verlag.Collection.Items = Backbone.Collection.extend({
   
-  urlRoot: '/admin/items',
+  urlRoot: '/api/v1/items',
   
   initialize: function() {
     

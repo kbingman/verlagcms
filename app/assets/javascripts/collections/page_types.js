@@ -2,7 +2,7 @@ Verlag.Collection.PageTypes = Backbone.Collection.extend({
   
   model: Verlag.Model.PageType,
   
-  url: '/admin/page_types',
+  url: '/api/v1/page_types',
 
   initialize: function() {
 

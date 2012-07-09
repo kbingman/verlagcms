@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/admin/export" do
+describe "routes/api/v1'/export" do
   include Rack::Test::Methods
   
   before(:all) do    
@@ -19,7 +19,7 @@ describe "routes/admin/export" do
     
     context 'json' do   
       def do_get
-        get '/admin/export/assets.json'
+        get '/api/v1'/export/assets.json'
       end
     
       it 'should be successful' do
@@ -44,7 +44,7 @@ describe "routes/admin/export" do
     
     context 'json' do   
       def do_post
-        post '/admin/export/assets', :file => File.open(root_path('spec/data/assets.json')) 
+        post '/api/v1'/export/assets', :file => File.open(root_path('spec/data/assets.json')) 
       end
     
       it 'should be redirect' do

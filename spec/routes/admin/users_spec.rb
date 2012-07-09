@@ -20,7 +20,7 @@ describe "routes/users" do
     
     context 'json' do   
       def do_get
-        get '/admin/users.json'
+        get '/api/v1'/users.json'
       end
     
       it 'should be successful' do
@@ -57,7 +57,7 @@ describe "routes/users" do
         params[:site_id] = @site.id 
         params
 
-        post '/admin/users.json', params.to_json
+        post '/api/v1'/users.json', params.to_json
       end
     
       it 'should be successful' do
@@ -82,7 +82,7 @@ describe "routes/users" do
         
     context 'json' do   
       def do_put
-        put "/admin/users/#{@user.id}.json", { name: 'Rename' }.to_json
+        put "/api/v1'/users/#{@user.id}.json", { name: 'Rename' }.to_json
       end
     
       it 'should be successful' do
@@ -113,7 +113,7 @@ describe "routes/users" do
         
     context 'json' do    
       def do_delete
-        delete "/admin/users/#{@killme.id}.json"
+        delete "/api/v1'/users/#{@killme.id}.json"
       end
     
       it 'should be successful' do

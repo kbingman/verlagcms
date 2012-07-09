@@ -1,7 +1,7 @@
 $(document).ready(function(){
   
   $.ajax({
-    url: '/admin/sites/current.json',
+    url: '/api/v1/sites/current.json',
     success: function(response){
       Verlag.pages = new Verlag.Collection.Pages(response.pages);
       // Verlag.folders = new Verlag.Collection.Folders(response.folders);

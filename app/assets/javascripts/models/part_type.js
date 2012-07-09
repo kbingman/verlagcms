@@ -1,4 +1,4 @@
-Verlag.Model.PageType = Backbone.Model.extend({
+Verlag.Model.PartType = Backbone.Model.extend({
   
   urlRoot: '/api/v1/page_types.json',
   

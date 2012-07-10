@@ -7,7 +7,6 @@ class Main
       # -------------------------------------------
       get '/?' do
         items = Item.where(parent_id: nil).where(site_id: current_site._id).all
-        puts items.length
         items.to_json
       end
       

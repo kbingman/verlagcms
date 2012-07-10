@@ -18,7 +18,7 @@ describe "routes/api/v1'/folders" do
     
     context 'json' do   
       def do_get
-        get '/api/v1'/folders.json'
+        get '/api/v1/folders.json'
       end
     
       it 'should be successful' do

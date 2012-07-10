@@ -17,7 +17,7 @@ describe "routes/templates" do
     
     context 'json' do   
       def do_get
-        get '/api/v1'/templates.json'
+        get '/api/v1/templates.json'
       end
     
       it 'should be successful' do
@@ -50,7 +50,7 @@ describe "routes/templates" do
     context 'json' do   
       def do_post
         @template_name = Faker::Name.first_name
-        post '/api/v1'/templates.json', { name: @template_name, klass: 'layout' }.to_json
+        post '/api/v1/templates.json', { name: @template_name, klass: 'layout' }.to_json
       end
     
       it 'should be successful' do
@@ -84,7 +84,7 @@ describe "routes/templates" do
         
     context 'json' do   
       def do_put
-        put "/api/v1'/templates/#{@template.id}.json", { name: 'Rename', site_id: @site.id, klass: 'layout' }.to_json
+        put "/api/v1/templates/#{@template.id}.json", { name: 'Rename', site_id: @site.id, klass: 'layout' }.to_json
       end
     
       it 'should be successful' do
@@ -113,7 +113,7 @@ describe "routes/templates" do
         
     context 'json' do    
       def do_delete
-        delete "/api/v1'/templates/#{@killme.id}.json"
+        delete "/api/v1/templates/#{@killme.id}.json"
       end
     
       it 'should be successful' do

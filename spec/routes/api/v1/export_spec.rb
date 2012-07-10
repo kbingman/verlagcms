@@ -19,7 +19,7 @@ describe "routes/api/v1'/export" do
     
     context 'json' do   
       def do_get
-        get '/api/v1'/export/assets.json'
+        get '/api/v1/export/assets.json'
       end
     
       it 'should be successful' do
@@ -44,7 +44,7 @@ describe "routes/api/v1'/export" do
     
     context 'json' do   
       def do_post
-        post '/api/v1'/export/assets', :file => File.open(root_path('spec/data/assets.json')) 
+        post '/api/v1/export/assets', :file => File.open(root_path('spec/data/assets.json')) 
       end
     
       it 'should be redirect' do

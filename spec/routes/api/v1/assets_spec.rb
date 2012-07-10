@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "routes/api/v1'/assets" do
+describe "routes/api/v1/assets" do
   include Rack::Test::Methods
   
   before(:all) do    
@@ -20,7 +20,7 @@ describe "routes/api/v1'/assets" do
     
     context 'json' do   
       def do_get
-        get '/api/v1'/assets.json'
+        get '/api/v1/assets.json'
       end
     
       it 'should be successful' do
@@ -55,7 +55,7 @@ describe "routes/api/v1'/assets" do
     
     context 'html' do 
       def do_post
-        post "/api/v1'/assets", file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')), file: { filename: 'test_file.jpg' }
+        post "/api/v1/assets", file: File.open(root_path('spec/data/830px-Tieboardingcraft.jpg')), file: { filename: 'test_file.jpg' }
       end
       
       it 'should be a redirect' do
@@ -66,7 +66,7 @@ describe "routes/api/v1'/assets" do
     
     context 'json' do 
       def do_post
-        post "/api/v1'/assets.json", file: File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), file: { filename: '830px-Tieboardingcraft.jpg' }
+        post "/api/v1/assets.json", file: File.open(root_path('/spec/data/830px-Tieboardingcraft.jpg')), file: { filename: '830px-Tieboardingcraft.jpg' }
       end
       
       it 'should be successful' do
@@ -92,7 +92,7 @@ describe "routes/api/v1'/assets" do
           
     context 'json' do   
       def do_put
-        put "/api/v1'/assets/#{@asset.id}.json", { name: 'Really Awesome Image' }.to_json
+        put "/api/v1/assets/#{@asset.id}.json", { name: 'Really Awesome Image' }.to_json
       end
     
       it 'should be successful' do
@@ -125,7 +125,7 @@ describe "routes/api/v1'/assets" do
 
     context 'json' do    
       def do_delete
-        delete "/api/v1'/assets/#{@kill_me.id}.json"
+        delete "/api/v1/assets/#{@kill_me.id}.json"
       end
 
       it 'should be successful' do

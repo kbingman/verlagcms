@@ -21,8 +21,11 @@ Verlag.Router = Backbone.Router.extend({
   // Pages
   // ------------------------------------------------------------ //
   show_pages: function(){
-    this.cleanup(Verlag.sidebar);
-    Verlag.editor = new Verlag.View.PageIndex();
+    this.cleanup(Verlag.editor);
+    
+    var id = Verlag.pages.first().id;
+    // Verlag.sidebar = new Verlag.View.PageIndex();
+    Verlag.editor = new Verlag.View.PagePreview({ id: id });
   },
   
   show_page: function(id){
@@ -91,6 +94,7 @@ Verlag.Router = Backbone.Router.extend({
     if(view){
       view.off();
       $(view.el).undelegate();
+      console.log('cleanup')
     }
   }
   

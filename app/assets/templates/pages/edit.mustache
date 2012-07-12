@@ -1,0 +1,21 @@
+<aside id="sidebar">
+  
+</aside>
+
+<section id="main">
+  {{# page }}  
+  <h1 id="page-title-{{id}}" contenteditable="true">
+    {{ title }}
+  </h1>
+ 
+  <div class="content">
+    {{# parts }}
+      <h2>{{ name }}</h2>
+      <div class="content editable" contenteditable="true" id="part-{{ id }}">
+        {{{ render }}}
+      </div>
+    {{/ parts }}
+  </div>
+  {{/ page }}
+</section>
+

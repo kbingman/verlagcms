@@ -10,6 +10,8 @@ class Main
         
       def initialize page, edit = nil
         @global_page = page
+        puts '**************'
+        puts @global_page.inspect
         @site = page.site
         @edit = edit
       end
@@ -120,13 +122,15 @@ class Main
       def if_self
         @global_page.id == self[:id]
       end
+      alias :self? :if_self
       
       # Returns true if the local page or any of its ancestors match the global page
       def if_ancestor_or_self
         local_page_id = self[:id].to_s
         ids = @global_page.ancestor_ids + [@global_page.id.to_s]
         ids.include?(local_page_id)
-      end      
+      end    
+      alias :ancestor_or_self? :if_ancestor_or_self
       
       # Meta Methods
       # ----------------------------------------------------

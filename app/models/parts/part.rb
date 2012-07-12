@@ -29,14 +29,20 @@ class Part
       r += self.content.blank? ? '<p>&nbsp;</p>' : self.content
       r += '</div>'
     else
-      r = self.content.blank? ? '<p>&nbsp;</p>' : self.content
+      # r = self.content.blank? ? '<p>&nbsp;</p>' : self.content
+      r =  "<div class='editable part #{self.name} textile' id='part-#{self.id}'>"
+      r += self.content.blank? ? '<p>&nbsp;</p>' : self.content
+      r += '</div>'
     end
     r
   end
   
   
   def as_json(options)
-    super(:methods => [:path, :klass, :admin_path, :file_name])
+    super(
+      :only => [ :id, :created_at, :name ], 
+      :methods => [ :path, :klass, :admin_path, :file_name, :render ]
+    )
   end
     
 end

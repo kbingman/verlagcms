@@ -96,6 +96,7 @@ class Main
       def if_self
         @global_page.id == self[:id]
       end
+      alias :self? :if_self
       
       # Returns true if the local page or any of its ancestors match the global page
       def if_ancestor_or_self
@@ -103,6 +104,7 @@ class Main
         ids = @global_page.ancestor_ids + [@global_page.id.to_s]
         ids.include?(local_page_id)
       end
+      alias :ancestor_or_self? :if_ancestor_or_self
       
       # Meta Methods
       # ----------------------------------------------------

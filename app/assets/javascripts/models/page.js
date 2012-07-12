@@ -1,15 +1,6 @@
 Verlag.Model.Page = Backbone.Model.extend({
   
-  // Makes nice rails style json urls 
-  // url: function() {
-  //   return '/admin/pages/' + this.id + '.json';
-  // },
-  
   urlRoot: '/api/v1/pages',
-  
-  initialize: function() {
-    
-  }, 
   
   children: function(){
     var self = this,

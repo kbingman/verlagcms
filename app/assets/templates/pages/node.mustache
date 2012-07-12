@@ -1,11 +1,11 @@
-<tr class="node level-{{level}}" id="page-{{id}}"> 
-  <td class="item">
+<li class="node level-{{level}}" id="page-{{id}}"> 
+  <div class="item">
     {{# child? }}{{# children? }}
       <span style="padding-left: {{padding}}px;" class="opener{{# open? }} open {{/ open? }}">+</span>
     {{/ children? }}{{/ child? }}
     <span class="title" style="padding-left: {{padding}}px;"> 
        <a class="js-show" id="edit-{{id}}" data-id="{{id}}" href="{{admin_path}}">{{title}}</a>  
-       <a class="js-new"  data-id="{{ id }}" href="{{admin_path}}/new">+</a>  
+       <!-- a class="js-new"  data-id="{{ id }}" href="{{admin_path}}/new">+</a-->  
        {{^ root? }}<a data-id="{{ id }}" class="js-remove" href="{{admin_path}}/remove">x</a>{{/ root? }}
     </span>
     {{# children? }}
@@ -13,10 +13,15 @@
       {{child_count}} Children
     </span>
     {{/ children? }}
-  </td>
-</tr>
+  </div>
+  {{# children? }}
+  <ul class="unstyled">
+    {{# children }}
+      {{> node }}
+    {{/ children }}
+  </ul>
+  {{/ children? }}
+</li>
 
-{{# children }}
-  {{> node }}
-{{/ children }}
+
 

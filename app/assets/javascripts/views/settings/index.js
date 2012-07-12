@@ -34,8 +34,7 @@ Verlag.View.Settings = Backbone.View.extend({
 
   render: function() {
     var template = HoganTemplates['settings/index'];
-    console.log(this.data())
-        
+
     $(this.el).html(template.render(this.data()));
     $('a.tab').removeClass('active');
     $('a#settings-tab').addClass('active');

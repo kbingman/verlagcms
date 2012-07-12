@@ -20,16 +20,18 @@ Verlag.View.PagePreview = Backbone.View.extend({
 
   render: function(id) {
     var page = this.page,
-        template = HoganTemplates['pages/show'],
+        template = HoganTemplates['pages/edit'],
         data = { page: page.toJSON() };
 
-    $(this.el).html(template.render(data));
-    $('#sidebar li.node').removeClass('active')
-    $('li#page-' + page.id).addClass('active');
+    $(this.el).html(template.render(data, HoganTemplates));
+    // $('#sidebar li.node').removeClass('active')
+    // $('li#page-' + page.id).addClass('active');
+    // 
+    // Verlag.iFramer.initialize('.preview iframe', function(){
+    //   Verlag.Editor.initialize();
+    // }); 
     
-    Verlag.iFramer.initialize('.preview iframe', function(){
-      Verlag.Editor.initialize();
-    }); 
+    Verlag.sidebar = new Verlag.View.PageIndex();
     
     $('a.tab').removeClass('active');
     $('a#pages-tab').addClass('active');

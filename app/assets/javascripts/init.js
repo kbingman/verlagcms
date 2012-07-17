@@ -1,7 +1,7 @@
 $(document).ready(function(){
   
   $.ajax({
-    url: '/api/v1/sites/current.json',
+    url: '/api/v1/sites/current',
     success: function(response){
       Verlag.pages = new Verlag.Collection.Pages(response.pages);
       // Verlag.folders = new Verlag.Collection.Folders(response.folders);
@@ -22,21 +22,7 @@ $(document).ready(function(){
     Verlag.router.navigate(href, { trigger: true });
   });  
   
-  // Modal Events
-  $('#overlay').live('click', function(e){
-    if(e.target.id == 'overlay'){
-      e.preventDefault();
-      Verlag.closeModal();
-    }
-  });
-  
-  // Modal Events
-  $('a.close').live('click', function(e){
-    e.preventDefault();
-    Verlag.closeModal();
-  });
-  
-  // Key Master
+  // Key Bindings
   $('body').on('keypress', function(e){
     if(e.keyCode == '115' && e.metaKey == true){
       e.preventDefault();

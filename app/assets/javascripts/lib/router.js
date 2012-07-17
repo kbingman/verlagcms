@@ -85,7 +85,7 @@ Verlag.Router = Backbone.Router.extend({
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    Verlag.editor = new Verlag.View.Settings();
+    Verlag.editor = new Verlag.View.SiteSettings();
   },
   
   // Shared

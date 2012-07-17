@@ -31,7 +31,7 @@ Verlag.View.Asset = Backbone.View.extend({
           asset: function(){
             var attr = asset.toJSON();
             attr.is_image = asset.isImage();
-            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name');
+            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';;
             attr.admin_path = asset.adminPath();
             return attr;
           }

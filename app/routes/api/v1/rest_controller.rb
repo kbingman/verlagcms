@@ -81,7 +81,7 @@ class Main
       if resource.update_attributes(attributes)
         resource.to_json
       else
-        { :errors => resource.errors }.to_json 
+        { errors: resource.errors }.to_json 
       end
     end     
     

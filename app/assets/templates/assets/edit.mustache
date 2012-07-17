@@ -7,8 +7,8 @@
 {{#asset}}
 
     {{# is_image }}
-    <div class="image-display" id="image-display-{{id}}">
-      <img src="/images/{{id}}/{{file_name}}" alt="{{title}}" />
+    <div class="image-display" id="image-display-{{ id }}">
+      <img src="{{ image_path }}" alt="{{ title }}" />
     </div>
     {{/ is_image }}
     {{^ is_image }}

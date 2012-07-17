@@ -707,7 +707,7 @@ var Hogan = {};
 })(typeof exports !== 'undefined' ? exports : Hogan);
 
         this.HoganTemplates || (this.HoganTemplates = {});
-        this.HoganTemplates["assets/edit"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal hide\">");t.b("\n" + i);t.b("  <div class=\"modal-header\">");t.b("\n" + i);t.b("    <a class=\"close\" data-dismiss=\"modal\">×</a>");t.b("\n" + i);t.b("    <h3>Modal header</h3>");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("  <div class=\"modal-body\">   ");t.b("\n" + i);if(t.s(t.f("asset",c,p,1),c,p,0,177,1830,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);if(t.s(t.f("is_image",c,p,1),c,p,0,198,337,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <div class=\"image-display\" id=\"image-display-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <img src=\"/images/");t.b(t.v(t.f("id",c,p,0)));t.b("/");t.b(t.v(t.f("file_name",c,p,0)));t.b("\" alt=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);});c.pop();}if(!t.s(t.f("is_image",c,p,1),c,p,1,0,0,"")){t.b("    <div class=\"downloads\">");t.b("\n" + i);t.b("      <h1>");t.b(t.v(t.f("ext",c,p,0)));t.b("</h1>");t.b("\n" + i);t.b("      <p>");t.b("\n" + i);t.b("        Download: ");t.b("\n" + i);t.b("        <a href=\"");t.b(t.v(t.f("image_path",c,p,0)));t.b("\">");t.b(t.v(t.f("file_name",c,p,0)));t.b("</a>");t.b("\n" + i);t.b("      </p>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);};t.b("    <div class=\"image-info\" id=\"image-info-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <form method=\"post\" action=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("\" enctype=\"multipart/form-data\" id=\"edit-asset\" class=\"command-save\">");t.b("\n" + i);t.b("        <div class=\"hidden\">");t.b("\n" + i);t.b("          <input type=\"hidden\" name=\"_method\" value=\"put\" />");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          Path: /images/");t.b(t.v(t.f("id",c,p,0)));t.b("/");t.b(t.v(t.f("file_name",c,p,0)));t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          <input type=\"text\" name=\"asset[title]\" id=\"asset_title\" value=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\" class=\"textfield\" />");t.b("\n" + i);t.b("        </div> ");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          <label for=\"asset_tags\">Tags</label> ");t.b("\n" + i);t.b("          <input type=\"text\" name=\"asset[tag_list]\" id=\"asset_tag_list\" value=\"");t.b(t.v(t.f("tag_list",c,p,0)));t.b("\" class=\"textfield\" /> ");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"actions\">");t.b("\n" + i);t.b("          <!--input type=\"submit\" value=\"Save and Continue\" class=\"button html-only\" /-->");t.b("\n" + i);t.b("          <a href=\"/admin/folders/");t.b(t.v(t.f("folder_id",c,p,0)));t.b("\" class=\"cancel\">Cancel</a>");t.b("\n" + i);t.b("          or");t.b("\n" + i);t.b("          <input type=\"submit\" value=\"Save\" id=\"save-asset\" class=\"button html-only\" />");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("      </form>  ");t.b("\n" + i);t.b("      <!--");if(t.s(t.f("previous",c,p,1),c,p,0,1626,1705,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<a class=\"previous\" href=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("/edit");t.b(t.v(t.f("query_path",c,p,0)));t.b("\">Previous</a>");});c.pop();}t.b("\n" + i);t.b("      ");if(t.s(t.f("next",c,p,1),c,p,0,1734,1805,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<a class=\"next\" href=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("/edit");t.b(t.v(t.f("query_path",c,p,0)));t.b("\">Next</a>");});c.pop();}t.b("-->");t.b("\n" + i);t.b("    </div>");t.b("\n");t.b("\n" + i);});c.pop();}t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("  <div class=\"modal-footer\">");t.b("\n" + i);t.b("    <a href=\"#\" data-dismiss=\"modal\" class=\"cancel\">Cancel</a>");t.b("\n" + i);t.b("    <button type=\"submit\" class=\"btn btn-primary js-create\">Save</button>");t.b("\n" + i);t.b("  </div>");t.b("\n");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
+        this.HoganTemplates["assets/edit"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"modal hide\">");t.b("\n" + i);t.b("  <div class=\"modal-header\">");t.b("\n" + i);t.b("    <a class=\"close\" data-dismiss=\"modal\">×</a>");t.b("\n" + i);t.b("    <h3>Modal header</h3>");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("  <div class=\"modal-body\">   ");t.b("\n" + i);if(t.s(t.f("asset",c,p,1),c,p,0,177,1822,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("\n" + i);if(t.s(t.f("is_image",c,p,1),c,p,0,198,329,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("    <div class=\"image-display\" id=\"image-display-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <img src=\"");t.b(t.v(t.f("image_path",c,p,0)));t.b("\" alt=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\" />");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);});c.pop();}if(!t.s(t.f("is_image",c,p,1),c,p,1,0,0,"")){t.b("    <div class=\"downloads\">");t.b("\n" + i);t.b("      <h1>");t.b(t.v(t.f("ext",c,p,0)));t.b("</h1>");t.b("\n" + i);t.b("      <p>");t.b("\n" + i);t.b("        Download: ");t.b("\n" + i);t.b("        <a href=\"");t.b(t.v(t.f("image_path",c,p,0)));t.b("\">");t.b(t.v(t.f("file_name",c,p,0)));t.b("</a>");t.b("\n" + i);t.b("      </p>");t.b("\n" + i);t.b("    </div>");t.b("\n" + i);};t.b("    <div class=\"image-info\" id=\"image-info-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("      <form method=\"post\" action=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("\" enctype=\"multipart/form-data\" id=\"edit-asset\" class=\"command-save\">");t.b("\n" + i);t.b("        <div class=\"hidden\">");t.b("\n" + i);t.b("          <input type=\"hidden\" name=\"_method\" value=\"put\" />");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          Path: /images/");t.b(t.v(t.f("id",c,p,0)));t.b("/");t.b(t.v(t.f("file_name",c,p,0)));t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          <input type=\"text\" name=\"asset[title]\" id=\"asset_title\" value=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\" class=\"textfield\" />");t.b("\n" + i);t.b("        </div> ");t.b("\n" + i);t.b("        <div class=\"field\">");t.b("\n" + i);t.b("          <label for=\"asset_tags\">Tags</label> ");t.b("\n" + i);t.b("          <input type=\"text\" name=\"asset[tag_list]\" id=\"asset_tag_list\" value=\"");t.b(t.v(t.f("tag_list",c,p,0)));t.b("\" class=\"textfield\" /> ");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("        <div class=\"actions\">");t.b("\n" + i);t.b("          <!--input type=\"submit\" value=\"Save and Continue\" class=\"button html-only\" /-->");t.b("\n" + i);t.b("          <a href=\"/admin/folders/");t.b(t.v(t.f("folder_id",c,p,0)));t.b("\" class=\"cancel\">Cancel</a>");t.b("\n" + i);t.b("          or");t.b("\n" + i);t.b("          <input type=\"submit\" value=\"Save\" id=\"save-asset\" class=\"button html-only\" />");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("      </form>  ");t.b("\n" + i);t.b("      <!--");if(t.s(t.f("previous",c,p,1),c,p,0,1618,1697,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<a class=\"previous\" href=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("/edit");t.b(t.v(t.f("query_path",c,p,0)));t.b("\">Previous</a>");});c.pop();}t.b("\n" + i);t.b("      ");if(t.s(t.f("next",c,p,1),c,p,0,1726,1797,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<a class=\"next\" href=\"/admin/assets/");t.b(t.v(t.f("id",c,p,0)));t.b("/edit");t.b(t.v(t.f("query_path",c,p,0)));t.b("\">Next</a>");});c.pop();}t.b("-->");t.b("\n" + i);t.b("    </div>");t.b("\n");t.b("\n" + i);});c.pop();}t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("  <div class=\"modal-footer\">");t.b("\n" + i);t.b("    <a href=\"#\" data-dismiss=\"modal\" class=\"cancel\">Cancel</a>");t.b("\n" + i);t.b("    <button type=\"submit\" class=\"btn btn-primary js-create\">Save</button>");t.b("\n" + i);t.b("  </div>");t.b("\n");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
         this.HoganTemplates || (this.HoganTemplates = {});
         this.HoganTemplates["assets/form"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"overlay\">");t.b("\n" + i);t.b("  <div class=\"modal\">");t.b("\n");t.b("\n" + i);t.b("    <h1>Upload Assets</h1>");t.b("\n" + i);t.b("       ");t.b("\n" + i);t.b("    <form action=\"/admin/assets\" id=\"uploader\" enctype=\"multipart/form-data\" class=\"js-create form-horizontal\" method=\"post\">");t.b("\n" + i);t.b("      ");t.b("\n" + i);t.b("      <div class=\"control-group\">");t.b("\n" + i);t.b("        <label class=\"control-label\" for=\"file\">Choose a file</label>");t.b("\n" + i);t.b("        <div class=\"controls\">");t.b("\n" + i);t.b("          <input id=\"file\" name=\"file\" type=\"file\" multiple=\"multiple\"><!--  -->");t.b("\n" + i);t.b("        </div>");t.b("\n" + i);t.b("      </div>");t.b("\n" + i);t.b("      ");t.b("\n" + i);t.b("      <div id=\"progress\">0</div>");t.b("\n" + i);t.b("      <div id=\"percent\">0</div>");t.b("\n" + i);t.b("      ");t.b("\n" + i);t.b("      <div class=\"form-actions\">");t.b("\n" + i);t.b("        <button type=\"submit\" class=\"btn js-create\">Upload</button>");t.b("\n" + i);t.b("        <a href=\"/admin/assets\" class=\"close\">Cancel</a> ");t.b("\n" + i);t.b("      </div>");t.b("\n" + i);t.b("      ");t.b("\n" + i);t.b("    </form>  ");t.b("\n");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
         this.HoganTemplates || (this.HoganTemplates = {});
@@ -729,7 +729,7 @@ var Hogan = {};
         this.HoganTemplates || (this.HoganTemplates = {});
         this.HoganTemplates["page_types/new"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");if(t.s(t.f("model",c,p,1),c,p,0,12,551,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<h1>New Page</h1>  ");t.b("\n");t.b("\n" + i);t.b("<div class=\"control-group\">");t.b("\n" + i);t.b("  <label class=\"control-label\" for=\"title\">Name</label>");t.b("\n" + i);t.b("   <div class=\"controls\">");t.b("\n" + i);t.b("     <input type=\"text\" id=\"title\" name=\"name\" value=\"\" class=\"textfield\" />  ");t.b("\n" + i);t.b("   </div>");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div class=\"control-group\">");t.b("\n" + i);t.b("  <label class=\"control-label\" for=\"layout\">Layout</label> ");t.b("\n" + i);t.b("  <div class=\"controls\">");t.b("\n" + i);t.b("    <select id=\"page-layout\" class=\"select\" name=\"layout_id\"> ");t.b("\n" + i);if(t.s(t.f("layouts",c,p,1),c,p,0,437,504,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("      <option value=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\" ");t.b(t.v(t.f("selected",c,p,0)));t.b(">");t.b(t.v(t.f("name",c,p,0)));t.b("</option>");t.b("\n" + i);});c.pop();}t.b("    </select>  ");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("</div>");t.b("\n" + i);});c.pop();}return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
         this.HoganTemplates || (this.HoganTemplates = {});
-        this.HoganTemplates["pages/edit"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<aside id=\"sidebar\">");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("</aside>");t.b("\n");t.b("\n" + i);t.b("<section id=\"main\">");t.b("\n" + i);if(t.s(t.f("page",c,p,1),c,p,0,67,338,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("  <h1 id=\"page-title-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b(t.v(t.f("title",c,p,0)));t.b("</h1>");t.b("\n" + i);t.b("  <a class=\"btn js-settings\">Settings</a>");t.b("\n" + i);t.b(" ");t.b("\n" + i);t.b("  <div class=\"content\">");t.b("\n" + i);if(t.s(t.f("parts",c,p,1),c,p,0,200,314,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("      <h2>");t.b(t.v(t.f("name",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("      <div class=\"content\" id=\"part-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        ");t.b(t.t(t.f("render",c,p,0)));t.b("\n" + i);t.b("      </div>");t.b("\n" + i);});c.pop();}t.b("  </div>");t.b("\n" + i);});c.pop();}t.b("</section>");t.b("\n");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
+        this.HoganTemplates["pages/edit"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<aside id=\"sidebar\">");t.b("\n" + i);t.b("  ");t.b("\n" + i);t.b("</aside>");t.b("\n");t.b("\n" + i);t.b("<section id=\"main\">");t.b("\n" + i);if(t.s(t.f("page",c,p,1),c,p,0,67,420,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("  <h1 id=\"page-title-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b(t.v(t.f("title",c,p,0)));t.b("</h1>");t.b("\n" + i);t.b("  <a class=\"btn js-settings\">Settings</a>");t.b("\n" + i);t.b("  <a class=\"btn js-new-child\">Add Child</a>");t.b("\n" + i);t.b("  <a class=\"btn js-remove\">Remove</a>");t.b("\n" + i);t.b(" ");t.b("\n" + i);t.b("  <div class=\"content\">");t.b("\n" + i);if(t.s(t.f("parts",c,p,1),c,p,0,282,396,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("      <h2>");t.b(t.v(t.f("name",c,p,0)));t.b("</h2>");t.b("\n" + i);t.b("      <div class=\"content\" id=\"part-");t.b(t.v(t.f("id",c,p,0)));t.b("\">");t.b("\n" + i);t.b("        ");t.b(t.t(t.f("render",c,p,0)));t.b("\n" + i);t.b("      </div>");t.b("\n" + i);});c.pop();}t.b("  </div>");t.b("\n" + i);});c.pop();}t.b("</section>");t.b("\n");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
         this.HoganTemplates || (this.HoganTemplates = {});
         this.HoganTemplates["pages/form"] = new Hogan.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div class=\"hidden\">");t.b("\n" + i);t.b("  <input type=\"hidden\" id=\"parent_id\" name=\"parent_id\" value=\"");t.b(t.v(t.f("parent_id",c,p,0)));t.b("\" class=\"hidden\" />   ");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div class=\"control-group\">");t.b("\n" + i);t.b("  <label class=\"control-label\" for=\"page-title\">Title</label>");t.b("\n" + i);t.b("   <div class=\"controls\">");t.b("\n" + i);t.b("     <input type=\"text\" id=\"page-title\" name=\"title\" value=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\" class=\"textfield\" />  ");t.b("\n" + i);t.b("   </div>");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div class=\"control-group\">");t.b("\n" + i);t.b("  <label class=\"control-label\" for=\"slug\">Slug</label>");t.b("\n" + i);t.b("   <div class=\"controls\">");t.b("\n" + i);t.b("     <input type=\"text\" id=\"slug\" name=\"slug\" value=\"");t.b(t.v(t.f("slug",c,p,0)));t.b("\" class=\"textfield\" />  ");t.b("\n" + i);t.b("   </div>");t.b("\n" + i);t.b("</div>");t.b("\n");t.b("\n" + i);t.b("<div class=\"control-group\">");t.b("\n" + i);t.b("  <label class=\"control-label\" for=\"page-layout\">Layout</label> ");t.b("\n" + i);t.b("  <div class=\"controls\">");t.b("\n" + i);t.b("    <select id=\"page-layout\" class=\"select\" name=\"layout_id\"> ");t.b("\n" + i);if(t.s(t.f("layouts",c,p,1),c,p,0,775,842,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("      <option value=\"");t.b(t.v(t.f("id",c,p,0)));t.b("\" ");t.b(t.v(t.f("selected",c,p,0)));t.b(">");t.b(t.v(t.f("name",c,p,0)));t.b("</option>");t.b("\n" + i);});c.pop();}t.b("    </select>  ");t.b("\n" + i);t.b("  </div>");t.b("\n" + i);t.b("</div>");t.b("\n");return t.fl(); },partials: {}, subs: {  }}, "", Hogan, {});
         this.HoganTemplates || (this.HoganTemplates = {});
@@ -5383,7 +5383,7 @@ Verlag.View.Asset = Backbone.View.extend({
           asset: function(){
             var attr = asset.toJSON();
             attr.is_image = asset.isImage();
-            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name');
+            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';;
             attr.admin_path = asset.adminPath();
             return attr;
           }
@@ -5684,7 +5684,6 @@ Verlag.View.EditPage = Backbone.View.extend({
     var self = this;
     
     this.page = Verlag.pages.get(options.id) || new Verlag.Model.Page({ id: options.id });    
-    this.page.on('change', this.render);
     this.page.fetch({
       success: function(page, response){
         self.render();
@@ -5734,8 +5733,17 @@ Verlag.View.EditPage = Backbone.View.extend({
       page.save({ 
         parts: parts 
       },{
-        success: function(){
-          Verlag.notify('Page saved')
+        success: function(model, response){
+          console.log(response)
+          if(!response.errors){
+            Verlag.notify('Page saved')
+          } else {
+            alert('hey')
+          }
+        },
+        error: function(reponse){
+          console.log(response);
+          alert('error')
         }
       });
       
@@ -5873,7 +5881,7 @@ Verlag.View.PagePreview = Backbone.View.extend({
   }
 
 });
-Verlag.View.Settings = Backbone.View.extend({
+Verlag.View.SiteSettings = Backbone.View.extend({
 
   el: '#editor',
   tagName:  'div',
@@ -6101,12 +6109,16 @@ Verlag.View.Settings = Backbone.View.extend({
     });
     
     this.model.save(attr, {
-      success: function(){
-        Verlag.notify('Page saved');
-        // TODO make this automatic
-        Verlag.editor.render();
-
-        $('.modal').modal('hide');  
+      success: function(model, response){
+        if(!response.errors){
+          Verlag.notify('Saved')
+          // TODO make this automatic
+          Verlag.editor.render();
+          $('.modal').modal('hide');  
+        } else {
+          alert('error')
+          console.log(response.errors);
+        }        
       }
     });
   }
@@ -6410,7 +6422,7 @@ Verlag.Router = Backbone.Router.extend({
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
-    Verlag.editor = new Verlag.View.Settings();
+    Verlag.editor = new Verlag.View.SiteSettings();
   },
   
   // Shared
@@ -6427,7 +6439,7 @@ Verlag.Router = Backbone.Router.extend({
 $(document).ready(function(){
   
   $.ajax({
-    url: '/api/v1/sites/current.json',
+    url: '/api/v1/sites/current',
     success: function(response){
       Verlag.pages = new Verlag.Collection.Pages(response.pages);
       // Verlag.folders = new Verlag.Collection.Folders(response.folders);
@@ -6448,21 +6460,7 @@ $(document).ready(function(){
     Verlag.router.navigate(href, { trigger: true });
   });  
   
-  // Modal Events
-  $('#overlay').live('click', function(e){
-    if(e.target.id == 'overlay'){
-      e.preventDefault();
-      Verlag.closeModal();
-    }
-  });
-  
-  // Modal Events
-  $('a.close').live('click', function(e){
-    e.preventDefault();
-    Verlag.closeModal();
-  });
-  
-  // Key Master
+  // Key Bindings
   $('body').on('keypress', function(e){
     if(e.keyCode == '115' && e.metaKey == true){
       e.preventDefault();

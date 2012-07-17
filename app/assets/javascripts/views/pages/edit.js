@@ -19,7 +19,6 @@ Verlag.View.EditPage = Backbone.View.extend({
     var self = this;
     
     this.page = Verlag.pages.get(options.id) || new Verlag.Model.Page({ id: options.id });    
-    this.page.on('change', this.render);
     this.page.fetch({
       success: function(page, response){
         self.render();
@@ -69,8 +68,17 @@ Verlag.View.EditPage = Backbone.View.extend({
       page.save({ 
         parts: parts 
       },{
-        success: function(){
-          Verlag.notify('Page saved')
+        success: function(model, response){
+          console.log(response)
+          if(!response.errors){
+            Verlag.notify('Page saved')
+          } else {
+            alert('hey')
+          }
+        },
+        error: function(reponse){
+          console.log(response);
+          alert('error')
         }
       });
       

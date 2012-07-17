@@ -35,12 +35,16 @@ Verlag.View.Settings = Backbone.View.extend({
     });
     
     this.model.save(attr, {
-      success: function(){
-        Verlag.notify('Page saved');
-        // TODO make this automatic
-        Verlag.editor.render();
-
-        $('.modal').modal('hide');  
+      success: function(model, response){
+        if(!response.errors){
+          Verlag.notify('Saved')
+          // TODO make this automatic
+          Verlag.editor.render();
+          $('.modal').modal('hide');  
+        } else {
+          alert('error')
+          console.log(response.errors);
+        }        
       }
     });
   }

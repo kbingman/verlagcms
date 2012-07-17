@@ -1,4 +1,4 @@
-Verlag.View.Settings = Backbone.View.extend({
+Verlag.View.SiteSettings = Backbone.View.extend({
 
   el: '#editor',
   tagName:  'div',

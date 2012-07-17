@@ -1,12 +1,7 @@
 Verlag.View.New = Backbone.View.extend({
 
   el: 'body',
-  tagName:  'div',
 
-  // Cache the template function for a single item.
-  // template: Hogan.compile($('#carousel_template').html()),
-
-  // The DOM events specific to an item.
   events: {
     'click button.js-create': 'create'
   },
@@ -23,7 +18,7 @@ Verlag.View.New = Backbone.View.extend({
   render: function() {
     var template = HoganTemplates['shared/new'],
         partials = {
-          form: HoganTemplates[this.collection + '/new']
+          form: HoganTemplates[this.collection + '/form']
         },
         data = {
           model: this.model ? this.model.toJSON() : {},
@@ -50,7 +45,7 @@ Verlag.View.New = Backbone.View.extend({
       success: function(model, response){
         Verlag.notify('created');
         // Verlag[self.collection].add(model);
-        Verlag.router.navigate(model.admin_path(), { trigger: true });
+        Verlag.router.navigate(model.adminPath(), { trigger: true });
         $('.modal').modal('hide');  
       }
     });

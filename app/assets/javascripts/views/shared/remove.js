@@ -1,12 +1,7 @@
 Verlag.View.Remove = Backbone.View.extend({
 
   el: 'body',
-  tagName:  'div',
 
-  // Cache the template function for a single item.
-  // template: Hogan.compile($('#carousel_template').html()),
-
-  // The DOM events specific to an item.
   events: {
     'click button.js-delete': 'delete'
   },

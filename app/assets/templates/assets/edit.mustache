@@ -1,6 +1,11 @@
-<div id="overlay">
+<div class="modal hide">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Modal header</h3>
+  </div>
+  <div class="modal-body">   
 {{#asset}}
-  <div id="asset-editor" class="fade-in">
+
     {{# is_image }}
     <div class="image-display" id="image-display-{{id}}">
       <img src="/images/{{id}}/{{file_name}}" alt="{{title}}" />
@@ -40,6 +45,15 @@
       <!--{{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
       {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}-->
     </div>
-  </div> 
+
 {{/asset}}
+
+  </div>
+  <div class="modal-footer">
+    <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
+    <button type="submit" class="btn btn-primary js-create">Save</button>
+  </div>
+
 </div>
+
+

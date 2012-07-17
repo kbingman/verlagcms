@@ -51,10 +51,9 @@
 <section id="main">
   <form action="/admin/templates/{{id}}" method= "post" id="edit-layout" class="command-save">  
     <header class="toolbar">
-      <div class="title">
-        <!--label for="layout_name">Name</label-->
-        <input type="text" id="layout_name" name="layout[name]" value="{{ name }}" class="textfield" />
-      </div>
+      <h1 id="layout-title-{{ id }}">{{ name }}</h1>
+      <a class="btn js-settings">Settings</a>
+      <a class="btn js-insert">Insert</a>
     </header>    
     <section id="code-editor" class="{{ klass }} pane">
     

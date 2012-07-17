@@ -5,7 +5,7 @@
     {{/ children? }}{{/ child? }}
     <span class="title" style="padding-left: {{padding}}px;"> 
        <a class="js-show" id="edit-{{id}}" data-id="{{id}}" href="{{admin_path}}">{{title}}</a>  
-       <!-- a class="js-new"  data-id="{{ id }}" href="{{admin_path}}/new">+</a-->  
+       <a class="js-new"  data-id="{{ id }}" href="{{admin_path}}/new">+</a>  
        {{^ root? }}<a data-id="{{ id }}" class="js-remove" href="{{admin_path}}/remove">x</a>{{/ root? }}
     </span>
     {{# children? }}

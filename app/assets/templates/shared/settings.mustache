@@ -1,17 +1,18 @@
-<div class="modal hide">
+{{# model }}
+<div class="modal hide fade">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
-    <h3>Modal header</h3>
+    <h3>Settings</h3>
   </div>
-  <form method="post" class="js-create form-horizontal">
+  <form method="post" class="js-update form-horizontal">
     <div class="modal-body">   
-    {{# model }}
       {{> form }}
-    {{/ model }}
     </div>
+    
     <div class="modal-footer">
       <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
       <button type="submit" class="btn btn-primary js-create">Save</button>
     </div>
   </form>
 </div>
+{{/ model }}

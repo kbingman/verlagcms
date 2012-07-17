@@ -7,8 +7,11 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   // The DOM events specific to an item.
   events: {
     'click a.js-show': 'showLayout',
-    'click a.js-new-part': 'newPart',
-    'submit form#edit-layout': 'update'
+    // 'click a.js-new-part': 'newPart',
+    // 'submit form#edit-layout': 'update',
+    'keyup #code-editor': 'update', 
+    'click a.js-settings': 'openSettings',
+    'click a.js-insert': 'insert'
   },
 
   initialize: function(options) {
@@ -62,27 +65,48 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   
   update: function(e){
     e.preventDefault();
+
+    var self = this; 
+    if(self.timeOut){
+      clearTimeout(self.timeOut);
+    }
     
-    var attributes = {
-      content: Verlag.aceEditor.getSession().getValue(),
-      name: $(e.target).find('input#layout_name').val()
-    };
+    this.timeOut = setTimeout(function(){
+      var attributes = {
+        content: Verlag.aceEditor.getSession().getValue(),
+        name: $(e.target).find('input#layout_name').val()
+      };
     
-    this.layout.save(attributes, {
-      success: function(model, response){
-        Verlag.notify('Layout saved')
-      }
-    });
+      self.layout.save(attributes, {
+        success: function(model, response){
+          Verlag.notify('Layout saved')
+        }
+      });
+    }, 720);
+    
   }, 
   
-  newPart: function(e){
+  // newPart: function(e){
+  //   e.preventDefault();
+  //   var klass = $(e.target).data('klass');
+  //   var partType = new Verlag.Model.PartType();
+  //   
+  //   Verlag.modal = new Verlag.View.New({ 
+  //     model: partType, 
+  //     collection: 'partType' 
+  //   });
+  // },
+  
+  insert: function(e){
     e.preventDefault();
-    var klass = $(e.target).data('klass');
-    var partType = new Verlag.Model.PartType();
-    
-    Verlag.modal = new Verlag.View.New({ 
-      model: partType, 
-      collection: 'partType' 
+    alert('insert')
+  },
+  
+  openSettings: function(e){
+    e.preventDefault();
+    Verlag.modal = new Verlag.View.Settings({ 
+      model: this.layout,
+      collection: 'templates'
     });
   },
   

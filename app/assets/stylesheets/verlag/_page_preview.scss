@@ -1,9 +1,5 @@
 .preview {
-  /* @include positionable; */
-  position: absolute;
-  overflow: auto;
-  left: 0;
-  right: 0;
+  @include positionable;
   top: 102px; 
   bottom: 42px;
   z-index: 1;

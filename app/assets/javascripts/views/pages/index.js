@@ -12,27 +12,20 @@ Verlag.View.PageIndex = Backbone.View.extend({
 
   initialize: function() {
     var self = this;
-    Verlag.pages.on('all', function(){
-      self.render()
-    });
+    Verlag.pages.on('all', this.render);
     
     $(this.el).undelegate();
     this.render();
   },
-  
-  data: function(){
-    return { 
-      root: Verlag.pages.root().pageData()
-    };
-  },
 
   render: function() {
     var template = HoganTemplates['pages/index'],
+        data ={ root: Verlag.pages.root().pageData() },
         partials = { 
          node: HoganTemplates['pages/node']
         };
         
-    $(this.el).html(template.render(this.data(), partials));
+    $(this.el).html(template.render(data, partials));
     $('a.tab').removeClass('active');
     $('a#pages-tab').addClass('active');
   }, 
@@ -58,7 +51,8 @@ Verlag.View.PageIndex = Backbone.View.extend({
       id = href.split('/')[3];
     
     Verlag.router.navigate(href, { trigger: false });
-    Verlag.editor = new Verlag.View.PagePreview({ id: id });
+    // Verlag.editor = new Verlag.View.PagePreview({ id: id });
+    Verlag.editor = new Verlag.View.EditPage({ id: id });
   },
   
   remove: function(e){

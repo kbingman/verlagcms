@@ -10,8 +10,6 @@ class Main
         
       def initialize page, edit = nil
         @global_page = page
-        puts '**************'
-        puts @global_page.inspect
         @site = page.site
         @edit = edit
       end

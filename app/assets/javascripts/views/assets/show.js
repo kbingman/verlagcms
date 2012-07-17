@@ -4,8 +4,6 @@ Verlag.View.Asset = Backbone.View.extend({
   tagName:  'div',
   
   events: {
-    'click #overlay'          : 'close_overlay',
-    'click #overlay a.cancel' : 'close_modal',
     'click input#save-asset'  : 'update'
   },
 
@@ -39,32 +37,16 @@ Verlag.View.Asset = Backbone.View.extend({
           }
         };
     
-    $(this.el).append(template.render(data));
-    Verlag.loadModal('div#asset-editor', function(){
-      jQuery('div#asset-editor').fadeIn(320); 
-    }); 
+    $(template.render(data)).appendTo(this.$el).modal().on('hidden', function() {
+      $(this).remove();
+      var path = asset.get('parent_id') ? '/admin/folders/' + asset.get('parent_id') : '/admin/folders'
+      Verlag.router.navigate(path, { 
+        trigger: false 
+      });
+    });
+    
     $('a.tab').removeClass('active');
     $('a#assets-tab').addClass('active');
-  },
-  
-  close_overlay: function(e){
-    
-    if(e.target.id == 'overlay'){
-      e.preventDefault();
-      this.close_modal(e);
-    }
-  },
-  
-  close_modal: function(e){
-    e.preventDefault();
-    $('#overlay').fadeOut('fast', function(){
-      $(this).remove();
-    });
-    var path = this.asset.get('parent_id') ? '/admin/folders/' + this.asset.get('parent_id') : '/admin/folders'
-    
-    Verlag.router.navigate(path, { 
-      trigger: false 
-    });
   },
   
   update: function(e){

@@ -1,0 +1,77 @@
+@import 'variables';
+
+html { height: 100%; }
+
+body {
+  background-color: white;
+  font-family: $fonts;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  color: #000;
+  background: #eee;
+  height: 100% ;
+  overflow: hidden;
+}
+
+  /*  This is needed for capybara-webkit screenshots... */
+.wrapper {
+  min-height: 500px;
+  height: 100%;
+}
+
+.container {
+  position: relative;
+  padding: 0 0;
+  margin: 0 auto;
+
+}
+
+#content {
+  padding-top: 0;
+  position: absolute;
+  top: 42px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+#loader {
+  position: absolute;
+  display: none;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  left: 50%;
+  top: 50%;
+  z-index: 10000;
+  background: {
+    image: url(/images/loader.png);
+    position-x: center;
+    position-y: 0;
+  }
+  h1 {
+    font-size: 2em;
+  }
+}
+
+#main {
+  position: absolute;
+  top: 0;
+  left: 300px;
+  bottom: 0; 
+  right: 0;
+}
+
+.login {
+  width: 540px;
+  margin: 100px auto;
+}
+
+
+
+
+
+
+

@@ -40,12 +40,11 @@ class Main
         # @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
         @pages = current_site.pages.sort_by{ |p| p.created_at }
         @folders =  Item.where(parent_id: nil).where(site_id: current_site._id).all
-        puts "Folders: #{@folders.length}"
         @sites = current_user.sites
         
         # @root = current_site.root 
         
-        render :rabl, :'admin/sites/current', :format => 'json'
+        render :rabl, :'api/v1/sites/current', format: 'json'
       end
       
     end  

@@ -47,7 +47,6 @@ describe 'routes/api/v1/items' do
       
       it 'should not include the child folder in the json' do
         do_get
-        puts JSON.parse(last_response.body).length
         last_response.body.should_not include(@child_folder.to_json)
       end 
       

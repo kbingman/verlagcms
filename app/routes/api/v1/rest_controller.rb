@@ -75,6 +75,7 @@ class Main
     # -------------------------------------------
     put '/:model/:id' do
       attributes = JSON.parse(request.body.read.to_s)
+      puts attributes
       resource = klass.by_site(current_site).find params['id']
       
       if resource.update_attributes(attributes)

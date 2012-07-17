@@ -12,6 +12,8 @@ class Main
         # pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }
         pages = current_site.pages
         pages.to_json
+        
+        # render :rabl, :'api/v1/pages/index', format: 'json'
       end
       
       # Create page
@@ -38,21 +40,18 @@ class Main
       
       # Update page
       # -------------------------------------------
-      put '/:id' do
-        page = Page.by_site(current_site).find(params['id']) 
-        attributes = JSON.parse(request.body.read.to_s)
-
-        # enforce_update_permission(page) 
-        
-        # HACK!! TODO FIX THIS!
-        attributes['parts'] = attributes['contents']
-                
-        if page.update_attributes(attributes)
-          page.to_json 
-        else
-          { errors: page.errors }.to_json  
-        end
-      end     
+      # put '/:id' do
+      #   page = Page.by_site(current_site).find(params['id']) 
+      #   attributes = JSON.parse(request.body.read.to_s)
+      # 
+      #   # enforce_update_permission(page) 
+      #                   
+      #   if page.update_attributes(attributes)
+      #     page.to_json 
+      #   else
+      #     { errors: page.errors }.to_json  
+      #   end
+      # end     
       
     end  
   end

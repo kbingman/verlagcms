@@ -25,7 +25,7 @@ Verlag.Router = Backbone.Router.extend({
     
     var id = Verlag.pages.first().id;
     // Verlag.sidebar = new Verlag.View.PageIndex();
-    Verlag.editor = new Verlag.View.PagePreview({ id: id });
+    Verlag.editor = new Verlag.View.EditPage({ id: id });
   },
   
   show_page: function(id){
@@ -33,7 +33,8 @@ Verlag.Router = Backbone.Router.extend({
     this.cleanup(Verlag.editor);
         
     // Verlag.sidebar = new Verlag.View.PageIndex();
-    Verlag.editor = new Verlag.View.PagePreview({ id: id });
+    // Verlag.editor = new Verlag.View.PagePreview({ id: id });
+    Verlag.editor = new Verlag.View.EditPage({ id: id });
   }, 
   
   // Folders
@@ -45,7 +46,6 @@ Verlag.Router = Backbone.Router.extend({
   
   show_folder: function(id){
     this.cleanup(Verlag.editor);
-    
     
     Verlag.editor = new Verlag.View.Assets({ 
       id: id

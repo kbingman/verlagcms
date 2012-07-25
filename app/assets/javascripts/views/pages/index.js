@@ -5,9 +5,7 @@ Verlag.View.PageIndex = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-    'click a.js-show': 'show',
-    'click a.js-remove': 'remove',
-    'click a.js-new': 'new'
+    'click a.js-show': 'show'
   },
 
   initialize: function() {
@@ -29,21 +27,6 @@ Verlag.View.PageIndex = Backbone.View.extend({
     $('a.tab').removeClass('active');
     $('a#pages-tab').addClass('active');
   }, 
-
-  new: function(e){
-    e.preventDefault();
-    var id = $(e.target).data('id');
-    var parent = Verlag.pages.get(id);
-    var model = new Verlag.Model.Page({
-      parent_id: id
-    });
-    
-    parent.set({ 'children?': true, 'open?': true });
-    Verlag.modal = new Verlag.View.New({ 
-      model: model, 
-      collection: 'pages' 
-    });
-  },
   
   show: function(e){
     e.preventDefault();
@@ -53,16 +36,6 @@ Verlag.View.PageIndex = Backbone.View.extend({
     Verlag.router.navigate(href, { trigger: false });
     // Verlag.editor = new Verlag.View.PagePreview({ id: id });
     Verlag.editor = new Verlag.View.EditPage({ id: id });
-  },
-  
-  remove: function(e){
-    e.preventDefault();
-    var page = Verlag.pages.get($(e.target).data('id'));
-    
-    Verlag.modal = new Verlag.View.Remove({ 
-      model: page, 
-      collection: 'pages' 
-    });
   }
 
 });

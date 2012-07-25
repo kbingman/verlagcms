@@ -4,27 +4,7 @@ Verlag.Model = {};
 Verlag.Collection = {};
 Verlag.View = {};
 
-Verlag.collections = {};
-Verlag.templates = {};
-
-// Precompile and cache a given template with Hogan.js
-// compiling is the most expensive part of Mustache templates
-// so we attempt to only do it once
-Verlag.compile_template = function(template){
-  if (Verlag.templates[template]){
-    return Verlag.templates[template];
-  } else {
-    Verlag.templates[template] = Hogan.compile($('#' + template).html());
-    return Verlag.templates[template];
-  }
-};
-
-Verlag.closeModal = function(){
-  $('#overlay').fadeOut('fast', function(){
-    $(this).remove();
-  });
-}
-
+// TODO make a view
 Verlag.notify = function(message, options){
   var options = options || {};
   var klass = options['class'] || 'message';

@@ -16,7 +16,12 @@ Verlag.View.Settings = Backbone.View.extend({
     var model = this.model,
         template = HoganTemplates['shared/settings'],
         partials = { form: HoganTemplates[this.collection + '/form'] },
-        data = { model: model.toJSON() };
+        data = { 
+          model: model.toJSON(),
+          layouts: Verlag.templates.findByKlass('Layout').map(function(l){
+            return l.toJSON();
+          })
+        };
 
 
     $(template.render(data, partials)).appendTo(this.$el).modal().on('hidden', function() {

@@ -2,21 +2,20 @@
   
 </aside>
 
-<section id="main">
+<section id="main" class="page">
   {{# page }}  
-  <h1 id="page-title-{{id}}">{{ title }}</h1>
-  <a class="btn js-settings">Settings</a>
-  <a class="btn js-new-child">Add Child</a>
-  <a class="btn js-remove">Remove</a>
+  <header>
+    <h1 id="page-title-{{id}}">{{ title }}</h1>
+    <a class="btn js-settings">Settings</a>
+    <a class="btn js-new-child" data-id="{{ id }}">Add Child</a>
+    <a class="btn js-remove" data-id="{{ id }}">Remove</a>
+  </header>
  
-  <div class="content">
-    {{# parts }}
-      <h2>{{ name }}</h2>
-      <div class="content" id="part-{{ id }}">
-        {{{ render }}}
-      </div>
-    {{/ parts }}
-  </div>
+  <div id="preview-{{id}}" class="preview">
+    <iframe src="/preview{{path}}" id="page-iframe-{{id}}"></iframe>
+  </div>   
+  
+  
   {{/ page }}
 </section>
 

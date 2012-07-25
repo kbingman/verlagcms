@@ -1,0 +1,11 @@
+@import 'variables';
+
+.toolbar {
+  @include positionable;
+  left: 300px;
+  top: 120px; 
+  background: #222; 
+  color: white; 
+  width: 800px;
+  height: 42px;
+}

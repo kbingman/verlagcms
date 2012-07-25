@@ -1,13 +1,16 @@
 @import 'bootstrap/bootstrap.scss';
 
-@import 'verlag/_layout.scss';
-@import 'verlag/_sidebar.sass';  
+@import 'verlag/_layout.scss';  
 @import 'verlag/_header.scss';
 @import 'verlag/_page_preview.scss';
 @import 'verlag/_notices.scss';
 @import 'verlag/_page_editor.scss';
 @import 'verlag/_assets.scss';
 @import 'verlag/_editable.scss';
+@import 'verlag/_toolbar.scss';
 
 @import 'verlag/_editor.sass';
-@import 'verlag/_toolbar.sass';
+@import 'verlag/_sidebar.sass';
+
+/* Bootstrap overrides */
+@import 'verlag/_modal.scss';

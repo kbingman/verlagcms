@@ -19,8 +19,6 @@
     
 // Lib
 //= require 'lib/editor.js'
-//= require 'lib/iframe.js'
-//= require 'lib/modal.js'
-//= require 'lib/router.js'
+//= require 'router.js'
 
 //= require 'init'

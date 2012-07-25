@@ -17,6 +17,20 @@
 </div>
 
 <div class="control-group">
+  <label class="control-label" for="keywords">Keywords</label>
+   <div class="controls">
+     <input type="text" id="keywords" name="keywords" value="{{ keywords }}" class="textfield" />  
+   </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label" for="description">Description</label>
+   <div class="controls">
+     <input type="text" id="description" name="description" value="{{ description }}" class="textfield" />  
+   </div>
+</div>
+
+<div class="control-group">
   <label class="control-label" for="page-layout">Layout</label> 
   <div class="controls">
     <select id="page-layout" class="select" name="layout_id"> 
@@ -26,3 +40,13 @@
     </select>  
   </div>
 </div>
+
+{{# parts }}
+<div class="control-group">
+  <p class="control-label">{{ name }}</p> 
+  <p class="controls">
+    Description goes here
+  </p>
+</div>
+
+{{/ parts }}

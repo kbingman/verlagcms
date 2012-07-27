@@ -29,10 +29,7 @@ class Part
       r += self.content.blank? ? '<p>&nbsp;</p>' : self.content
       r += '</div>'
     else
-      # r = self.content.blank? ? '<p>&nbsp;</p>' : self.content
-      r =  "<div class='editable part #{self.name} textile' contenteditable='true' id='part-#{self.id}'>"
-      r += self.content.blank? ? '<p>&nbsp;</p>' : self.content
-      r += '</div>'
+      r = self.content.blank? ? '<p>&nbsp;</p>' : self.content
     end
     r
   end

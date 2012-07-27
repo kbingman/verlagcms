@@ -39,7 +39,8 @@ Verlag.View.Remove = Backbone.View.extend({
     this.model.destroy({
       success: function(){
         Verlag.notify('removed');
-        $('.modal').modal('hide');                         
+        $('.modal').modal('hide');  
+        Verlag.router.navigate('/admin/' + self.collection, { trigger: true });                       
       }
     });
 

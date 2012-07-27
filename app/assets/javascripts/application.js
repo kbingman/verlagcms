@@ -3,6 +3,7 @@
 //= require_tree '../templates'
 
 // Libraries
+//= require 'vendor/sugar'
 //= require 'vendor/jquery-1.7.1.min'
 //= require 'vendor/modernizr.custom.00537'
 //= require 'vendor/bootstrap'
@@ -10,15 +11,14 @@
 //= require 'vendor/backbone'
 
 // Verlag
-//= require 'lib/verlag'
+//= require 'verlag'
 
 // Backbone
 //= require_tree './models'     
 //= require_tree './collections'
 //= require_tree './views'
     
-// Lib
-//= require 'lib/editor.js'
+// Router
 //= require 'router.js'
 
 //= require 'init'

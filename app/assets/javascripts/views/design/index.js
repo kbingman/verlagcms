@@ -1,13 +1,12 @@
 Verlag.View.DesignIndex = Backbone.View.extend({
 
-  el: '#blocks',
+  el: '#sidebar',
 
   tagName:  'div',
 
   // The DOM events specific to an item.
   events: {
     'click a.js-show': 'show',
-    'click a.js-remove': 'remove',
     'click a.js-new': 'new'
   },
 
@@ -22,15 +21,15 @@ Verlag.View.DesignIndex = Backbone.View.extend({
   },
   
   data: function(){
-    // {
-    //   title: 'Layouts',
-    //   klass: 'Layout',
-    //   models: Verlag.templates.findByKlass('Layout').map(function(l){
-    //     return l.toJSON()
-    //   })
-    // },
+
     return {
       templates: [{
+        title: 'Layouts',
+        klass: 'Layout',
+        models: Verlag.templates.findByKlass('Layout').map(function(l){
+          return l.toJSON()
+        })
+      },{
         title: 'Partials',
         klass: 'Partial',
         models: Verlag.templates.findByKlass('Partial').map(function(l){
@@ -78,17 +77,6 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     e.preventDefault();
     var path = $(e.target).attr('href');
     Verlag.router.navigate(path, { trigger: true });
-  },
-  
-  remove: function(e){
-    e.preventDefault();
-    var template = Verlag.templates.get($(e.target).data('id'));
-    
-    Verlag.modal = new Verlag.View.Remove({ 
-      model: template, 
-      collection: 'templates' 
-    });
   }
   
-
 });

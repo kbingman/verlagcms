@@ -10,12 +10,13 @@ Verlag.View.Iframe = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'update', 'saveOnKeyup', 'editor');
     this.page = options.page;
+    this.iframe = $(this.el).find('iframe');
     this.render();
   },
 
   render: function(id) {
-    var self = this,  
-        iframe = $(this.el).find('iframe');
+    var self = this;
+    var iframe = this.iframe;
         
     iframe.load(function(){  
       var contents = iframe.contents();
@@ -27,6 +28,11 @@ Verlag.View.Iframe = Backbone.View.extend({
       self.setPageLinks(contents);
       
       self.hideToolbar(contents);
+      
+      // reposition editor
+      // contents.on('scroll', function(){
+      //   console.log('hey');
+      // })
     });
   },
   
@@ -47,7 +53,6 @@ Verlag.View.Iframe = Backbone.View.extend({
       var id = $(part).attr('id').split('-')[1],
           content = $(part).html(),
           p = _.detect(parts, function(p){ return p.id == id });
-      
       if(p) p.content = content;
     });
     
@@ -72,13 +77,13 @@ Verlag.View.Iframe = Backbone.View.extend({
   
   editor: function(contents){
     var self = this; 
+    var iframe = this.iframe;
     
     this.editableAreas = contents.find('div.editable');
     this.editableAreas
       .attr('contenteditable','true')
       .css({
-        'background': 'hsla(1, 0%, 0%, 0.05)',
-        'border': '2px solid red' 
+        'background': 'hsla(1, 0%, 0%, 0.05)'
       })
       .on('click', function(e){
         e.stopPropagation();
@@ -86,11 +91,17 @@ Verlag.View.Iframe = Backbone.View.extend({
       .on('keyup', this.saveOnKeyup)
       .on('focus', function(e){
         $(this).css({
-          'border': '2px solid #222'
+
         });
         Verlag.toolbar = new Verlag.View.Toolbar({
           page: self.page,
+          iframe: iframe,
           offset: $(e.target).offset()
+        });
+      })
+      .on('blur', function(){
+        $(this).css({
+ 
         });
       });
         

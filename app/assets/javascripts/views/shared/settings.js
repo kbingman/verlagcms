@@ -3,7 +3,7 @@ Verlag.View.Settings = Backbone.View.extend({
   el: 'body',
 
   events: {
-    'submit form.js-update': 'update',
+    'submit form.js-update': 'update'
   },
 
   initialize: function(options) {

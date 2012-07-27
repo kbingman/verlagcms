@@ -1,66 +1,13 @@
+<aside id="sidebar"></aside>
+
 {{# layout }} 
-<aside id="sidebar">
-  <div class="submenu">
-    
-    <h2>
-      Layouts
-      <span class="modify">
-        <a href="#" class="js-new-part">+</a>
-      </span>
-    </h2> 
-    <ul class="unstyled">
-      {{# layouts }}
-        <li class="layout" id="layout-{{id}}"> 
-          <div class="item"> 
-            <span class="modify">                 
-              <a class="js-show" id="edit-layout-{{id}}" href="{{admin_path}}">{{name}}</a> 
-            </span>  
-          </div>
-        </li>  
-      {{/ layouts }}
-    </ul>
-    
-  </div>
-  <div id="blocks">
-    
-  </div>
-
-</aside>
-
 <section id="main">
-  <form action="/admin/templates/{{id}}" method= "post" id="edit-layout" class="command-save">  
-    <header class="toolbar">
+    <header>
       <h1 id="layout-title-{{ id }}">{{ name }}</h1>
       <a class="btn js-settings">Settings</a>
       <a class="btn js-insert">Insert</a>
+      <a class="btn js-remove">Remove</a>
     </header>    
-    <section id="code-editor" class="{{ klass }} pane">
-    
-        <div class="hidden">
-          <input type="hidden" name="_method" value="put" /> 
-          <input type="hidden" id="layout-updated_at" name="layout[updated_at]" value="{{ updated_at }}" />
-        </div>
-      
-        <div class="code">   
-          <pre id="layout_content" class="{{mode}}"></pre>
-          <noscript><textarea id="textarea_content" class="{{mode}}"></textarea></noscript>
-        </div>     
-  
-        <div class="buttons"> 
-          <div class="field"> 
-            <input type="submit" id="save-layout" value="Save" class="save button" /> 
-            <select class="select" name="layout[filter]"> 
-              {{#filters}}
-              <option value="{{value}}" {{selected}}>{{name}}</option>
-              {{/filters}}
-            </select>
-          </div>
-        </div>
-    
-    </section>  
-  </form>  
-  
+    <pre id="code-editor" class="{{ klass }} {{ mode }} pane"></pre>  
 </section>
-
-
 {{/ layout }}

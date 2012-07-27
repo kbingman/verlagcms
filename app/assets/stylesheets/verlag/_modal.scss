@@ -1,8 +1,12 @@
 .settings {
   top: 20px;
+  bottom: 20px;
   left: auto;
   right: 20px;
   margin: 0;
+  .modal-body {
+    max-height: auto;
+  }
 }
 
 .modal-backdrop,

@@ -37,8 +37,7 @@ $(document).ready(function(){
   });
   
   
-  // Ace Keybingings
-  Verlag.ace_settings();
+
   
   
 });

@@ -9,18 +9,32 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     'click a.js-show': 'showLayout',
     // 'click a.js-new-part': 'newPart',
     // 'submit form#edit-layout': 'update',
-    'keyup #code-editor': 'update', 
-    'click a.js-settings': 'openSettings',
-    'click a.js-insert': 'insert'
+    'keyup #code-editor': 'saveOnKeyUp', 
+    'click a.js-settings': 'showSettings',
+    'click a.js-insert': 'insert',
+    'click a.js-remove': 'remove'
   },
 
   initialize: function(options) {
-    this.layout = Verlag.templates.get(options.id);
-    $(this.el).undelegate();
-    if(Verlag.aceEditor){
-      Verlag.aceEditor.destroy();
-    }
-    this.render();
+    // this.model = Verlag.templates.get(options.id) || new Verlag.Model.Template({ id: options.id });  
+   
+    
+    _.bindAll(this, 'render', 'aceSettings', 'update', 'saveOnKeyUp');
+    var self = this; 
+    
+    this.model = Verlag.templates.get(options.id);  
+    this.model.fetch({
+      success: function(model, response){
+        self.aceSettings();
+    
+        
+        if(Verlag.aceEditor){
+          Verlag.aceEditor.destroy();
+        }
+        self.render();
+      }
+    });
+    $(self.el).undelegate();
   },
   
   data: function(){
@@ -28,7 +42,7 @@ Verlag.View.DesignEdit = Backbone.View.extend({
       'layouts': Verlag.templates.findByKlass('Layout').map(function(l){
         return l.toJSON()
       }),
-      'layout': this.layout.toJSON(),
+      'layout': this.model.toJSON(),
       'layout?': false
     }
   },
@@ -43,17 +57,17 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     
     
     Verlag.sidebar = new Verlag.View.DesignIndex({
-      layout: this.layout.get('klass') == 'Layout' ? this.layout.toJSON() : null
+      layout: this.model.get('klass') == 'Layout' ? this.model.toJSON() : null
     });
     
   },
   
   intitializeAce: function(){
-    var layout = this.layout,
+    var layout = this.model,
         mode = layout.get('mode'),
         editorMode = Verlag.ace_modes[mode];
         
-    Verlag.aceEditor = ace.edit('layout_content');
+    Verlag.aceEditor = ace.edit('code-editor');
     Verlag.aceEditor.setTheme('ace/theme/textmate');
     Verlag.aceEditor.getSession().setMode(new editorMode);
     Verlag.aceEditor.session.setUseWrapMode(true);
@@ -63,27 +77,33 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     Verlag.aceEditor.getSession().setValue(layout.get('content'));  
   },
   
-  update: function(e){
-    e.preventDefault();
-
-    var self = this; 
-    if(self.timeOut){
-      clearTimeout(self.timeOut);
+  saveOnKeyUp: function(e){
+    // e.preventDefault();
+    var self = this;
+    
+    if(this.timeOut){
+      clearTimeout(this.timeOut);
     }
-    
     this.timeOut = setTimeout(function(){
-      var attributes = {
-        content: Verlag.aceEditor.getSession().getValue(),
-        name: $(e.target).find('input#layout_name').val()
-      };
-    
-      self.layout.save(attributes, {
-        success: function(model, response){
-          Verlag.notify('Layout saved')
-        }
-      });
+      self.update();
     }, 720);
     
+  },
+  
+  update: function(){
+    var attributes = {
+      content: Verlag.aceEditor.getSession().getValue()
+    };
+    
+    if(this.timeOut){
+      clearTimeout(this.timeOut);
+    }
+    
+    this.model.save(attributes, {
+      success: function(model, response){
+        Verlag.notify('Layout saved')
+      }
+    });    
   }, 
   
   // newPart: function(e){
@@ -99,14 +119,15 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   
   insert: function(e){
     e.preventDefault();
-    alert('insert')
+    Verlag.modal = new Verlag.View.Insert({ 
+      model: this.model
+    });
   },
   
-  openSettings: function(e){
-    e.preventDefault();
+  showSettings: function(e){
     Verlag.modal = new Verlag.View.Settings({ 
-      model: this.layout,
-      collection: 'templates'
+      model: this.model,
+      collection: this.model.get('klass').toLowerCase() + 's'
     });
   },
   
@@ -114,7 +135,37 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     e.preventDefault();
     var path = $(e.target).attr('href');
     Verlag.router.navigate(path, { trigger: true });
-  },
+  }, 
+
+  remove: function(e){
+    e.preventDefault();
+    var template = this.model;
+  
+    Verlag.modal = new Verlag.View.Remove({ 
+      model: template, 
+      collection: 'templates' 
+    });
+  },  
+  
+  // ACE Editor keyboard shortcuts
+  aceSettings: function(){
+    var self = this;
+    var canon = require('pilot/canon');  
+    
+    canon.addCommand({
+      name: 'save',
+      bindKey: {
+        win: 'Ctrl-S',
+        mac: 'Command-S',
+        sender: 'editor'
+      },
+      exec: function() {
+        self.update();
+      }
+    });
+  }
+  
+  
   
   
 

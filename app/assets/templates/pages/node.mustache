@@ -1,0 +1,25 @@
+<li class="node level-{{level}}" id="page-{{id}}"> 
+  <div class="item">
+    {{# child? }}{{# children? }}
+      <span style="padding-left: {{padding}}px;" class="opener{{# open? }} open {{/ open? }}">+</span>
+    {{/ children? }}{{/ child? }}
+    <span class="title" style="padding-left: {{padding}}px;"> 
+       <a class="js-show" id="edit-{{id}}" data-id="{{id}}" href="{{admin_path}}">{{title}}</a>     
+    </span>
+    {{# children? }}
+    <span class="count" style="padding-left: {{padding}}px;">
+      {{child_count}} Children
+    </span>
+    {{/ children? }}
+  </div>
+  {{# children? }}
+  <ul class="unstyled">
+    {{# children }}
+      {{> node }}
+    {{/ children }}
+  </ul>
+  {{/ children? }}
+</li>
+
+
+

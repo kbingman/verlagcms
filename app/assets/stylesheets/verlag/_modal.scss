@@ -1,0 +1,17 @@
+.settings {
+  top: 20px;
+  bottom: 20px;
+  left: auto;
+  right: 20px;
+  margin: 0;
+  .modal-body {
+    max-height: auto;
+  }
+}
+
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  background-color: white; 
+}

@@ -1,0 +1,17 @@
+<div class="modal hide">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>New {{ name }}</h3>
+  </div>
+  <form method="post" class="js-create form-horizontal">
+    <div class="modal-body">   
+    {{# model }}
+      {{> form }}
+    {{/ model }}
+    </div>
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
+      <button type="submit" class="btn btn-primary js-create">Save</button>
+    </div>
+  </form>
+</div>

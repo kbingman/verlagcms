@@ -1,0 +1,17 @@
+@import 'variables';
+
+.toolbar {
+  @include positionable;
+  left: 300px;
+  top: 120px; 
+  
+  width: 800px;
+  height: 30px;
+  padding: 6px;
+  color: white; 
+  background: #222; 
+  
+  input {
+    margin: 0;
+  }
+}

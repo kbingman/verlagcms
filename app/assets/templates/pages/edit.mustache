@@ -1,0 +1,21 @@
+<aside id="sidebar">
+  
+</aside>
+
+<section id="main" class="page">
+  {{# page }}  
+  <header>
+    <h1 id="page-title-{{id}}">{{ title }}</h1>
+    <a class="btn js-settings">Settings</a>
+    <a class="btn js-new-child" data-id="{{ id }}">Add Child</a>
+    <a class="btn js-remove" data-id="{{ id }}">Remove</a>
+  </header>
+ 
+  <div id="preview-{{id}}" class="preview">
+    <iframe src="/preview{{path}}" id="page-iframe-{{id}}"></iframe>
+  </div>   
+  
+  
+  {{/ page }}
+</section>
+

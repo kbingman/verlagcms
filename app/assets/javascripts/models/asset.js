@@ -1,80 +1,74 @@
 Verlag.Model.Asset = Backbone.Model.extend({
     
-  urlRoot: '/admin/assets',
+  // url: function() {
+  //   if (this.id){
+  //     path = '/api/v1/assets/' + this.id + '.json';
+  //   } else {
+  //     path = '/api/v1/assets.json'
+  //   }
+  //   return path
+  // },
   
-  initialize: function() {
+  urlRoot: '/api/v1/assets',
+  
+  isImage: function(){
+    return this.get('file_type') && this.get('file_type').match(/image/);
+  },
+  
+  imagePath: function(){
+    '/images/' + this.id + '/' + this.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';
+  },
+  
+  adminPath: function(){
+    var type = this.get('_type') ? this.get('_type').toLowerCase() + 's/'  : '';
+    var path = '/admin/' + type + this.id;
+    return path;
+  },
+  
+  upload: function(file, callback){
+    var formData = new FormData();
+    var xhr = new XMLHttpRequest();
+    var asset = this;
+
+    var generateUuid = function(){
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = '0123456789ABCDEF';
+      for (var i = 0; i < 32; i++) { s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1); }
+      s[12] = '4';                                       // bits 12-15 of the time_hi_and_version field to 0010
+      s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+      return s.join(''); 
+    };
+  
+    var onprogressHandler = function(evt){
+      var percent = evt.loaded / evt.total * 100;
+      $('#percent').text(percent + '%'); 
+      console.log(asset.get('uuid'))
+    };
+  
+    var onreadystatechangeHandler = function(evt){
+      var status = null;
+      try { status = evt.target.status; }
+      catch(e) { return; }
+  
+      // readyState 4 means that the request is finished
+      if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
+        var response = JSON.parse(evt.target.responseText);
+        asset.set(response);
+        
+        callback(asset, response);
+      }
+    };
     
-  },
-  
-  admin_path: function(){
-    return '/admin/folders/' + this.folder_id + '/assets/' + this.id 
-  },
-  
-  // Uploads a file using ajax to an existing asset
-  upload: function(params, callback){
-      
-    var self = this,
-      file = params['file'],
-      url = '/admin/assets.json',
-      xhr = new XMLHttpRequest(),
-      uuid = self.generate_uuid(),
-      query_params = JSON.stringify({ folder_id: params.folder_id });
-  
-    // Hack?
-    self.callback = callback;
-      
-    xhr.upload.uuid = uuid;
-    xhr.upload.filename = file.name;
-    xhr.upload.addEventListener('loadstart', self.onloadstartHandler, false);
-    xhr.upload.addEventListener('progress', self.onprogressHandler);
-    xhr.upload.addEventListener('load', self.onloadHandler, false);
-    xhr.addEventListener('readystatechange', self.onreadystatechangeHandler, false);  
-      
-    // xhr.setRequestHeader("X-Query-Params", {'format':'json'});
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader("Content-Type", "application/octet-stream");
-    xhr.setRequestHeader("X-File-Name", file.name);
-    xhr.setRequestHeader("X-Params", query_params);
-    xhr.setRequestHeader("X-File-Upload", "true");
-    xhr.send(file);   
-    if(callback['before']){ callback['before'].call(this, {uuid: uuid, file_name: file.name}); } 
-  },    
+    asset.set('uuid', generateUuid());
+    formData.append('file', file);
+    formData.append('parent_id', this.get('parent_id'));  
     
-  onloadstartHandler: function(evt) {
-    // var percent = AjaxUploader.processedFiles / AjaxUploader.totalFiles * 100;
-  },
-  
-  onloadHandler: function(evt) { 
-    // $('#ajax_uploader').attr('value', '');
-  },
-  
-  onprogressHandler: function(evt) {
-    var percent = Math.round(evt.loaded / evt.total * 100); 
-    if(this.callback['progress']){ this.callback['progress'].call(this, evt.target.uuid, percent); }  
-  },
-    
-  onreadystatechangeHandler: function(evt){
-    var status = null;
-    try { status = evt.target.status; }
-    catch(e) { return; }
-      
-    // readyState 4 means that the request is finished
-    if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
-      var response = JSON.parse(evt.target.responseText);
-      response.uuid = evt.target.upload.uuid;
-  
-      if(this.callback['success']){ this.callback['success'].call(this, response); }   
-    }
-  },
-    
-  generate_uuid: function(){
-    // http://www.ietf.org/rfc/rfc4122.txt
-    var s = [];
-    var hexDigits = "0123456789ABCDEF";
-    for (var i = 0; i < 32; i++) { s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1); }
-    s[12] = "4";                                       // bits 12-15 of the time_hi_and_version field to 0010
-    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-    return s.join(''); 
+    xhr.upload.addEventListener('progress', onprogressHandler, false);
+    xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
+    xhr.open('POST', '/api/v1/assets.json', true);
+    xhr.send(formData);
   }
+  
   
 });

@@ -29,6 +29,7 @@ gem 'sass'
 gem 'rabl', '~> 0.3.0' 
 gem 'mustache', '~> 0.99.4'
 gem 'RedCloth' 
+gem 'hogan_assets'
 
 gem 'sprockets', '~>2.0.2'
 gem 'uglifier', '~>1.0.3'
@@ -37,6 +38,7 @@ gem 'json'
 gem 'rack-flash'
 gem 'rack-cache'
 # gem 'dalli'
+# gem 'representer', :path => 'vendor/representer'
 
 group :production do 
   
@@ -45,7 +47,6 @@ end
 group :development do
   gem 'rake'
   gem 'thor'  
-  gem 'monk' 
   gem 'guard-sprockets2'
 end
 
@@ -55,8 +56,7 @@ group :test do
   gem 'rspec', '>= 2.5.0'
   gem 'capybara'
   gem 'yajl-ruby'
-  # gem 'capybara-zombie', :path => 'vendor/capybara-zombie' # 
-  # gem 'capybara-webkit', # :git => 'https://github.com/thoughtbot/capybara-webkit.git'
+  gem 'capybara-webkit' #, :git => 'https://github.com/thoughtbot/capybara-webkit.git'
   gem 'factory_girl' #, :git => 'https://github.com/thoughtbot/factory_girl.git'
   gem 'faker'
   gem 'jasmine'

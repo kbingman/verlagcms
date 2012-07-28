@@ -1,0 +1,18 @@
+.editable {
+  margin: 10px;
+  min-height: 1em;
+  background: rgba(0,0,0,0.1);
+}
+  
+.editable:hover {
+  background: rgba(0,0,0,0.2);
+}
+  
+.editable:focus {
+  background: transparent;
+}
+
+
+
+  
+  

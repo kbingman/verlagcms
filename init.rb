@@ -50,7 +50,10 @@ require 'rack/request'
 require 'sprockets'
 
 # Templating
+require 'sprockets'
+require 'sprockets/engines'
 require 'mustache/sinatra'
+require 'hogan_assets'
 require 'haml' 
 require 'RedCloth' 
 require 'rabl'
@@ -117,6 +120,7 @@ class Main < Sinatra::Base
   
   configure :development do
     register Sinatra::Reloader
+    
   end
   
   set :dump_errors, true
@@ -146,6 +150,8 @@ class Main < Sinatra::Base
     sprockets.append_path(File.join(root, 'app', 'assets', 'stylesheets'))
     sprockets.append_path(File.join(root, 'app', 'assets', 'javascripts'))
     sprockets.append_path(File.join(root, 'app', 'assets', 'images'))
+    sprockets.append_path(File.join(root, 'app', 'assets', 'templates'))
+    
 
     sprockets.context_class.instance_eval do
       include AssetHelpers
@@ -181,6 +187,7 @@ end
 # These need to be required first or Page blows up...
 # require root_path('app/models/templates/template.rb')
 
+require root_path('app/models/assets/item.rb')
 require root_path('app/models/assets/asset.rb')
 # require root_path('app/models/parts/part.rb')
 
@@ -196,14 +203,14 @@ end
 
 # Load all admin routes, except the rest_controller.
 # This is loaded last
-Dir[root_path('app/routes/admin/*.rb')].each do |file|
+Dir[root_path('app/routes/api/v1/*.rb')].each do |file|
   require file unless file.match('rest_controller')
 end
 # Loads this last so that one can easily override it
-require root_path('app/routes/admin/rest_controller') 
+require root_path('app/routes/api/v1/rest_controller') 
 
 # Load api routes
-Dir[root_path('app/routes/api/*.rb')].each do |file|
+Dir[root_path('app/routes/api/public/**/*.rb')].each do |file|
   require file
 end
 

@@ -1,6 +1,6 @@
 ENV['RACK_ENV'] = 'test'
         
-require File.join(File.dirname(__FILE__),'../spec/spec_helper')
+require File.join(File.dirname(__FILE__),'../spec_helper')
 
 require 'capybara/rspec'
 require 'capybara/dsl'

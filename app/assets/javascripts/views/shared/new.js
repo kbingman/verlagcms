@@ -1,12 +1,7 @@
 Verlag.View.New = Backbone.View.extend({
 
   el: 'body',
-  tagName:  'div',
 
-  // Cache the template function for a single item.
-  // template: Hogan.compile($('#carousel_template').html()),
-
-  // The DOM events specific to an item.
   events: {
     'click button.js-create': 'create'
   },
@@ -21,18 +16,19 @@ Verlag.View.New = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-shared-new'),
+    var template = HoganTemplates['shared/new'],
         partials = {
-          form: Verlag.compile_template('admin-' + this.collection + '-new')
+          form: HoganTemplates[this.collection + '/form']
         },
         data = {
           model: this.model ? this.model.toJSON() : {},
-          layouts: Verlag.templates.find_by_klass('Layout').map(function(l){
+          layouts: Verlag.templates.findByKlass('Layout').map(function(l){
             return l.toJSON();
           })
         };
-
-    $(template.render(data, partials)).hide().appendTo(this.$el).fadeIn('fast');
+    $(template.render(data, partials)).appendTo(this.$el).modal().on('hidden', function() {
+      $(this).remove();
+    });
   },
   
   create: function(e){
@@ -48,9 +44,9 @@ Verlag.View.New = Backbone.View.extend({
     this.model.save(attr, {
       success: function(model, response){
         Verlag.notify('created');
-        Verlag[self.collection].add(model);
-        Verlag.router.navigate(model.get('admin_path'), { trigger: true });
-        Verlag.closeModal();
+        // Verlag[self.collection].add(model);
+        Verlag.router.navigate(model.adminPath(), { trigger: true });
+        $('.modal').modal('hide');  
       }
     });
   }

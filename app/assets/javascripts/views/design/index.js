@@ -7,43 +7,44 @@ Verlag.View.DesignIndex = Backbone.View.extend({
   // The DOM events specific to an item.
   events: {
     'click a.js-show': 'show',
-    'click a.js-remove': 'remove',
     'click a.js-new': 'new'
   },
 
-  initialize: function() {
+  initialize: function(options) {
     var self = this;
     Verlag.templates.on('all', function(){
       self.render();
     });
+    this.currentLayout = options.layout || Verlag.templates.findByKlass('Layout')[0];
     $(this.el).undelegate();
     this.render();
   },
   
   data: function(){
+
     return {
       templates: [{
         title: 'Layouts',
         klass: 'Layout',
-        models: Verlag.templates.find_by_klass('Layout').map(function(l){
+        models: Verlag.templates.findByKlass('Layout').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Partials',
         klass: 'Partial',
-        models: Verlag.templates.find_by_klass('Partial').map(function(l){
+        models: Verlag.templates.findByKlass('Partial').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Stylesheets',
         klass: 'Stylesheet',
-        models: Verlag.templates.find_by_klass('Stylesheet').map(function(l){
+        models: Verlag.templates.findByKlass('Stylesheet').map(function(l){
           return l.toJSON()
         })
       },{
         title: 'Javascripts',
         klass: 'Javascript',
-        models: Verlag.templates.find_by_klass('Javascript').map(function(l){
+        models: Verlag.templates.findByKlass('Javascript').map(function(l){
           return l.toJSON()
         })
       }]
@@ -51,7 +52,7 @@ Verlag.View.DesignIndex = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-templates-index');
+    var template = HoganTemplates['templates/index'];
     
     $(this.el).html(template.render(this.data())); 
     $('a.tab').removeClass('active');
@@ -76,17 +77,6 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     e.preventDefault();
     var path = $(e.target).attr('href');
     Verlag.router.navigate(path, { trigger: true });
-  },
-  
-  remove: function(e){
-    e.preventDefault();
-    var template = Verlag.templates.get($(e.target).data('id'));
-    
-    Verlag.modal = new Verlag.View.Remove({ 
-      model: template, 
-      collection: 'templates' 
-    });
   }
   
-
 });

@@ -136,7 +136,7 @@ class Page
       :children?    => self.children?, 
       :open?        => self.children.empty? ? false : true, 
       :child_count  => self.children.count, 
-      :contents     => self.parts.as_json
+      :parts        => self.parts.as_json
     }
 
     # super(:only => [

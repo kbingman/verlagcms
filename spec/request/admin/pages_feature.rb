@@ -17,27 +17,27 @@ feature "Pages", %q{
   end
   
   after(:each) do 
-    # screen_shot_and_save_page('pages-index')
+    screen_shot_and_save_page('pages-index')
   end
 
   scenario "view the page index" do
-    visit '/admin/'
-    click_link 'Pages'
+    visit '/admin/pages'
+    click_link 'pages-tab'
     
     current_path.should == '/admin/pages'
-    
+    # 
     page.should have_content(@site.name)
-
+    
     page.should have_css('#editor')
-    page.should have_css('#sidebar')
-    page.should have_css('#sidebar ul')   
+    # page.should have_css('#sidebar')
+    # page.should have_css('#sidebar ul')   
     
     page.should have_content(@root.title)  
     page.should have_css("#edit-#{@root.id}")
     # page.should have_content(@child.title) 
     # 
-    page.should have_css("#add-child-#{@root.id}") 
-    page.should have_css("#remove-page-#{@root.id}")
+    # page.should have_css("#add-child-#{@root.id}") 
+    # page.should have_css("#remove-page-#{@root.id}")
     # page.should have_css('a#pages.active')
   end
   
@@ -55,19 +55,19 @@ feature "Pages", %q{
     # page.should have_css('a#pages.active')
   end
   
-  scenario "add a page" do 
-    visit '/admin/'
-    click_link 'Pages'
-  
-    click_link "add-child-#{@root.id}"   
-    page.should have_content('New Page')     
-    page.should have_css('#modal')
-    
-    fill_in 'page[title]', :with => 'New Page' 
-    click_button 'Save'  
-    
-    page.should have_content('New Page')
-  end
+  # scenario "add a page" do 
+  #   visit '/admin/'
+  #   click_link 'Pages'
+  # 
+  #   click_link "add-child-#{@root.id}"   
+  #   page.should have_content('New Page')     
+  #   page.should have_css('#modal')
+  #   
+  #   fill_in 'page[title]', :with => 'New Page' 
+  #   click_button 'Save'  
+  #   
+  #   page.should have_content('New Page')
+  # end
 
 end
 

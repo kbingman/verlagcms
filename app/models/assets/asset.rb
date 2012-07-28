@@ -1,6 +1,6 @@
 require 'mini_magick'
 
-class Asset
+class Asset < Item
   
   include MongoMapper::Document
   include Canable::Ables
@@ -11,25 +11,16 @@ class Asset
   attachment :file # declare an attachment named file
   
   plugin Hunt
-  searches :title, :tags  
+  searches :name, :tags  
   before_save :index_search_terms 
   
   
   # Attributes
   # ----------------------------------------
-  key :title, String, :required => { :message => :required }
+  key :name, String, :required => { :message => :required }
   key :description, String 
   key :tags, Array, :index => true      
   
-  key :site_id, ObjectId, :required => true
-  belongs_to :site, :foreign_key => :site_id 
-  scope :by_site, lambda { |site| where(:site_id => site.id) }
-  
-  key :folder_id, ObjectId
-  belongs_to :folder, :foreign_key => :folder_id
-  
-  key :artist_id, ObjectId
-  belongs_to :artist, :foreign_key => :artist_id  
   
   # key :page_id, ObjectId
   # belongs_to :page, :foreign_key => :artist_id  
@@ -51,9 +42,8 @@ class Asset
   
   # Scopes
   # ----------------------------------------
-  scope :by_artist_ids,  lambda { |artist_ids| artist_ids.empty? ? where({}) : where(:artist_id => {'$in' => artist_ids}) }
-  # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
-  scope :by_title, lambda { |title| where(:title => /#{title}/i) }
+   # scope :by_tag,  lambda { |tag| where(:tags => /#{tag}/i) }
+  scope :by_name, lambda { |name| where(:name => /#{name}/i) }
   # scope :by_all_tags,  lambda { |tags| where({:tags => {'$all' => tags}}) }
   # scope :by_title_desc_tag,  lambda { |query| where({ '$or' => [{:title=>/#{query}/i}, 
   #                                                               {:description=>/#{query}/i}, 
@@ -63,30 +53,9 @@ class Asset
   # Search
   # ----------------------------------------
   def self.search_all_with_title(term)
-    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :title => /#{term}/i }])
+    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :name => /#{term}/i }])
   end
   
-  def self.search_with_artist(query)
-    terms = query ? query.split(' ').collect{ |q| q.downcase } : []
-    artists = []
-    terms_without_artist = []
-    terms.each do |t|
-      a = Artist.search(t).all
-      artists += a
-      terms_without_artist << t if a.empty?
-    end
-    artist_ids = artists.uniq.collect{ |a| a._id }
-        
-    case
-    when terms_without_artist.empty? && artist_ids.empty?
-      self.search_all(query)
-    when terms_without_artist.empty?
-      self.by_artist_ids(artist_ids)
-    else
-      new_query = terms_without_artist.join(' ')
-      self.search_all(new_query).by_artist_ids(artist_ids)
-    end   
-  end
   
   # Pagination
   # ----------------------------------------
@@ -124,26 +93,8 @@ class Asset
     
     [counter, errors]
   end
-   
-  # Images
-  # ---------------------------------------- 
-  # def render_image(width=nil, height=nil, options={})
-  #   file = self.file.read
-  #   image = MiniMagick::Image.read(file)
-  # 
-  #   width = nil if width == 0
-  #   height = nil if height == 0
-  #   
-  #   begin
-  #     if height || width
-  #       image = resize(image, width, height, options)
-  #     end
-  #     image
-  #   rescue
-  #     image
-  #   end
-  # end
-  
+
+  # TODO move to a presenter  
   def image_path
     "/images/#{self.id}/#{self.file_name}" 
   end
@@ -164,22 +115,24 @@ class Asset
     self.file_type.match(/image/) && !self.file_type.match(/svg/) ? true : false
   end
   
-  def id_string
-    self.id.to_s
-  end
-  
   def admin_path
-    "/admin/folders/#{self.folder_id}/assets/#{self.id}"
+    "/admin/assets/#{self.id}"
   end
   
   # JSON API
   # ----------------------------------------
+  # def as_json(options)
+  #   super(
+  #     :only => [ :id, :created_at, :file_name,  :parent_id, :name, :file_type, :_type ], 
+  #     :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
+  #   )
+  # end
   def as_json(options)
-    super(
-      :only => [ :id, :created_at, :file_name,  :folder_id, :title, :file_type ], 
-      :methods => [ :tag_list, :admin_path, :image_path, :is_image, :ext ]
-    )
+    super(:methods => [
+      :admin_path, :image_path, :children, :is_image
+    ]) 
   end
+  
   
   # Tags
   # ----------------------------------------
@@ -203,7 +156,7 @@ class Asset
     
     before_validation :set_title
     def set_title
-      self.title ||= File.basename self.file_name, '.*'
+      self.name ||= File.basename self.file_name, '.*'
     end
     
     def fonts_extensions

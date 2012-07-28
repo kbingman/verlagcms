@@ -1,4 +1,4 @@
-Verlag.View.Settings = Backbone.View.extend({
+Verlag.View.SiteSettings = Backbone.View.extend({
 
   el: '#editor',
   tagName:  'div',
@@ -14,7 +14,7 @@ Verlag.View.Settings = Backbone.View.extend({
     var self = this;
     
     $.ajax({
-      url: '/admin/page_types.json',
+      url: '/api/v1/page_types.json',
       success: function(response){
         Verlag.page_types = new Verlag.Collection.PageTypes(response);
         Verlag.page_types.on('all', function(){
@@ -33,9 +33,8 @@ Verlag.View.Settings = Backbone.View.extend({
   },
 
   render: function() {
-    var template = Verlag.compile_template('admin-settings-index');
-    console.log(this.data())
-        
+    var template = HoganTemplates['settings/index'];
+
     $(this.el).html(template.render(this.data()));
     $('a.tab').removeClass('active');
     $('a#settings-tab').addClass('active');

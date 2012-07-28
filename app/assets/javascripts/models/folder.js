@@ -1,25 +1,21 @@
 Verlag.Model.Folder = Backbone.Model.extend({
   
-  urlRoot: '/admin/folders',
+  urlRoot: '/api/v1/folders',
   
-  initialize: function() {
-    
-  },
+  // fetchAssets: function(callback){
+  //   var self = this;
+  //   $.ajax({
+  //     url: '/admin/folders/' + self.id + '/children.json',
+  //     success: function(response){
+  //       var assets = new Verlag.Collection.Assets(response);
+  //       if(callback){
+  //         callback.call(this, assets, response);
+  //       }
+  //     }
+  //   });
+  // },
   
-  fetch_assets: function(callback){
-    var self = this;
-    $.ajax({
-      url: '/admin/folders/' + self.id + '/assets.json',
-      success: function(response){
-        var assets = new Verlag.Collection.Assets(response);
-        if(callback){
-          callback.call(this, assets, response);
-        }
-      }
-    });
-  },
-  
-  admin_path: function(){
+  adminPath: function(){
     return '/admin/folders/' + this.id 
   }
   

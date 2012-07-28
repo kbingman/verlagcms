@@ -14,7 +14,7 @@ class PartProxy
   
   def method_missing(name, *args, &block) 
     return super unless part(name)
-
+    
     part_view = Main::Views::Part.new part(name), @edit
     part(name)
   end

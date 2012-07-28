@@ -36,7 +36,10 @@ class Part
   
   
   def as_json(options)
-    super(:methods => [:path, :klass, :admin_path, :file_name])
+    super(
+      :only => [ :id, :created_at, :name ], 
+      :methods => [ :path, :klass, :admin_path, :file_name, :render ]
+    )
   end
     
 end

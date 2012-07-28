@@ -1,0 +1,28 @@
+@import 'variables';
+/* Flash messages for confirmation of actions and errors */
+
+.notice {
+  @include border-radius(4px);
+  @include box-shadow(0,0,3px, #444);
+  display: none;
+  position: absolute; 
+  top: 46px;
+  right: 24px;
+  height: 18px;
+  width: auto;
+  padding: 6px 12px;
+  color: white;
+  font-weight: bold;
+  background:{
+    color: hsla(0, 0, 0, 0.72);
+  }
+  z-index: 101;
+}
+
+  
+/* .message { background-color: green; }
+.warning { background-color: orange; }
+.error { background-color: red; } */
+
+
+

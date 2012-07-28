@@ -1,3 +1,5 @@
+//= require_self
+
 // Hogan
 //= require 'vendor/hogan'
 //= require_tree '../templates'

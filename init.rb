@@ -128,10 +128,9 @@ class Main < Sinatra::Base
   set :assets_prefix, 'assets'
   set :assets_path, File.join(root, 'public', assets_prefix)
   
-  Sprockets::Sass.options[:line_comments] = false
-  Sprockets::Sass.options[:sass_cache_path] = '/tmp/sass_cache'
-  Sprockets::Sass.options[:sass_cache_path] = 'compact'
-  Sprockets::Sass.options[:style] = 'compact'
+  Sprockets::Sass.options[:line_comments] = true
+  Sprockets::Sass.options[:cache_location] = '/tmp/sass_cache'
+  
   
   set :dump_errors, true
   set :logging, true

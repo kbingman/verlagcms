@@ -1,6 +1,7 @@
 <header>
-  <a class="js-new-folder" data-id="{{ id }}" href="/admin/folders/new">New Folder</a>
-  <a class="js-new-asset" data-id="{{ id }}" href="/admin/assets/new">New Asset</a>
+  <h1>{{# folder }}{{ name }}{{/ folder }}</h1>
+  <a class="btn js-new-folder" data-id="{{ id }}" href="/admin/folders/new">New Folder</a>
+  <a class="btn js-new-asset" data-id="{{ id }}" href="/admin/assets/new">New Asset</a>
   <form action="/admin/assets" id="uploader" enctype="multipart/form-data" class="js-create form-horizontal" method="post">
       
     <div class="control-group">

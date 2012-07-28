@@ -47,10 +47,13 @@ require 'canable'
 require 'rack/cache'
 require 'rack/request' 
 # require 'dalli'
-require 'sprockets'
+
 
 # Templating
+require 'sprockets'
 require 'sprockets/engines'
+require 'sprockets-sass'
+require 'sass'
 require 'mustache/sinatra'
 require 'hogan_assets'
 require 'haml' 
@@ -117,12 +120,18 @@ class Main < Sinatra::Base
   
   configure :development do
     register Sinatra::Reloader
-    set :sprockets, Sprockets::Environment.new(root_path('app/assets'))
-    set :precompile, [ /\w+\.(?!js|css).+/, /(application|ace).(css|js)$/ ]
-    # set :precompile, [ /.*/ ]
-    set :assets_prefix, 'assets'
-    set :assets_path, File.join(root, 'public', assets_prefix)
   end
+  
+  set :sprockets, Sprockets::Environment.new(root_path('app/assets'))
+  set :precompile, [ /\w+\.(?!js|css).+/, /(application|ace).(css|js)$/ ]
+  # set :precompile, [ /.*/ ]
+  set :assets_prefix, 'assets'
+  set :assets_path, File.join(root, 'public', assets_prefix)
+  
+  Sprockets::Sass.options[:line_comments] = false
+  Sprockets::Sass.options[:sass_cache_path] = '/tmp/sass_cache'
+  Sprockets::Sass.options[:sass_cache_path] = 'compact'
+  Sprockets::Sass.options[:style] = 'compact'
   
   set :dump_errors, true
   set :logging, true
@@ -157,6 +166,8 @@ class Main < Sinatra::Base
     sprockets.context_class.instance_eval do
       include AssetHelpers
     end
+    
+    
   end
   
   helpers do

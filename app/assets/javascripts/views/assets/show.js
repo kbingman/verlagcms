@@ -4,7 +4,7 @@ Verlag.View.Asset = Backbone.View.extend({
   tagName:  'div',
   
   events: {
-    'click input#save-asset'  : 'update'
+    'click button.js-update'  : 'update'
   },
 
   initialize: function(options, callback) {
@@ -31,7 +31,7 @@ Verlag.View.Asset = Backbone.View.extend({
           asset: function(){
             var attr = asset.toJSON();
             attr.is_image = asset.isImage();
-            attr.image_path = '/images/' + asset.id + '/' + asset.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';;
+            attr.asset_path = asset.imagePath() + '?w=240&amp;h=180&amp;c=t&amp;g=North';;
             attr.admin_path = asset.adminPath();
             return attr;
           }
@@ -39,7 +39,7 @@ Verlag.View.Asset = Backbone.View.extend({
     
     $(template.render(data)).appendTo(this.$el).modal().on('hidden', function() {
       $(this).remove();
-      var path = asset.get('parent_id') ? '/admin/folders/' + asset.get('parent_id') : '/admin/folders'
+      var path = '/admin/folders/' + asset.get('folder_id');
       Verlag.router.navigate(path, { 
         trigger: false 
       });
@@ -53,20 +53,23 @@ Verlag.View.Asset = Backbone.View.extend({
     e.preventDefault();
 
     var target = $(e.currentTarget),
-        form = target.parents('form'),
-        tag_list = form.find('#asset_tag_list').val(),
-        title = form.find('#asset_title').val(),
+        form = $('form#edit-asset'),
+        tagList = form.find('#asset_tag_list').val(),
+        name = form.find('#asset_title').val(),
         asset = this.asset;
     
     asset = asset.save({
-      title: title,
-      tag_list: tag_list
+      name: name,
+      tag_list: tagList
     }, {
-      success: function(response){
-        Verlag.notify('Asset saved')
+      success: function(model, response){
+        console.log(response);
+        Verlag.notify('Asset saved');
+        Verlag.editor.render();
       },
-      error: function(){
-        alert('error')
+      error: function(model, response){
+        console.log(response.responseText);
+        alert('error handling...')
       }
     });
   }

@@ -39,7 +39,7 @@ class Main
         # @pages = current_site.pages
         # @pages = current_site.active_pages(active_page_ids).sort_by{ |p| p.created_at }  
         @pages = current_site.pages.sort_by{ |p| p.created_at }
-        @folders =  Item.where(parent_id: nil).where(site_id: current_site._id).all
+        @folders =  Folder.where(parent_id: nil).where(site_id: current_site._id).all
         @sites = current_user.sites
         
         # @root = current_site.root 

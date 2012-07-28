@@ -129,7 +129,6 @@ Verlag.View.Iframe = Backbone.View.extend({
   
   hideToolbar: function(contents){
     contents.on('click', function(e){
-      console.log('hey');
       if(Verlag.toolbar){
         Verlag.toolbar.leave();
       }

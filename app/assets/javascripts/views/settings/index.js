@@ -28,6 +28,7 @@ Verlag.View.SiteSettings = Backbone.View.extend({
   data: function(){
     return {
       page_types: Verlag.page_types.toJSON(),
+      users: Verlag.users.toJSON(),
       sites: Verlag.sites.toJSON()
     };
   },

@@ -1,5 +1,6 @@
-<div id="sidebar">
-  <div class="submenu">
+<aside id="sidebar">
+  
+  <section>
     <h2>
       Page Types
       <span class="modify">
@@ -14,16 +15,24 @@
     </li>
     {{/ page_types }}
     </ul>
-    
+  </section>
   
-  
+  <section>
     <h2>Sites</h2>
     <ul class="unstyled">
     {{# sites }}
       <li>{{ domain }}</li>
     {{/ sites }}
     </ul>
+  </section>
+  
+  <section>
     <h2>Users</h2>
-    
-  </div>
-</div>
+    <ul class="unstyled">
+    {{# users }}
+      <li>{{ email }}</li>
+    {{/ users }}
+    </ul>
+  </section>
+
+</aside>

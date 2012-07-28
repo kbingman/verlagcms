@@ -1,11 +1,10 @@
 Verlag.View.Assets = Backbone.View.extend({
 
   el: '#editor',
-  tagName:  'div',
+  tagName: 'section',
 
   events: {
-    'click a.js-show-Asset': 'show',
-    'click a.js-show-Folder': 'showFolder',
+    'click a.js-show-asset': 'show',
     'click a.js-new-folder': 'newFolder',
     'click a.js-new-asset': 'newAsset',
     'change input.js-upload': 'create',
@@ -20,7 +19,7 @@ Verlag.View.Assets = Backbone.View.extend({
     this.folder = new Verlag.Model.Folder({ id: id });
     this.folder.fetch({
       success: function(folder, response){
-        Verlag.assets = new Verlag.Collection.Assets(response.children);
+        Verlag.assets = new Verlag.Collection.Assets(response.assets);
         Verlag.assets.on('add', function(){
           self.render();
         });
@@ -35,7 +34,7 @@ Verlag.View.Assets = Backbone.View.extend({
     var self = this,
         template = HoganTemplates['assets/index'],
         partials = { 
-          item: HoganTemplates['assets/item'],
+          node: HoganTemplates['assets/node'],
           toolbar: HoganTemplates['assets/toolbar']
         },
         data = { 
@@ -43,7 +42,7 @@ Verlag.View.Assets = Backbone.View.extend({
           assets: Verlag.assets.map(function(a){
             attr = a.toJSON();
             attr.is_image = a.isImage();
-            attr.image_path = '/images/' + a.id + '/' + a.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';
+            attr.image_path = a.imagePath() + '?w=240&amp;h=180&amp;c=t&amp;g=North';
             attr.admin_path = a.adminPath();
             
             return attr;
@@ -53,7 +52,9 @@ Verlag.View.Assets = Backbone.View.extend({
     $(self.el).html(template.render(data, partials));
     $(self.el).find('img').hide().on('load', function(){
       $(this).fadeIn('fast');
-    })
+    });
+    
+    Verlag.sidebar = new Verlag.View.Folders();
 
     $('a.tab').removeClass('active');
     $('a#assets-tab').addClass('active');
@@ -76,7 +77,7 @@ Verlag.View.Assets = Backbone.View.extend({
     
     Verlag.modal = new Verlag.View.Remove({ 
       model: asset, 
-      domId: '#Asset-' + asset.id,
+      domId: '#asset-' + asset.id,
       collection: 'assets'
     });
   },
@@ -90,17 +91,6 @@ Verlag.View.Assets = Backbone.View.extend({
     
     Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
   }, 
-  
-  showFolder: function(e){
-    e.preventDefault();
-    var path = $(e.currentTarget).attr('href'),
-      id = $(e.currentTarget).data('id');
-    
-      
-    Verlag.router.navigate(path, { trigger: false });
-    Verlag.editor = new Verlag.View.Assets({ id: id });
-    
-  },
   
   newAsset: function(e){
     e.preventDefault();
@@ -116,22 +106,19 @@ Verlag.View.Assets = Backbone.View.extend({
         form = document.getElementById('uploader'),
         fileInput = document.getElementById('file'),
         files = fileInput.files,
-        parent_id = this.folder ? this.folder.id : null;
+        folder_id = this.folder ? this.folder.id : null;
 
     Verlag.count = 0;
     Verlag.files = files.length;
         
     $.each(files, function(i, file){
-      var asset = new Verlag.Model.Asset({ parent_id: parent_id });
+      var asset = new Verlag.Model.Asset({ folder_id: folder_id });
       asset.upload(file, function(asset, response){
         Verlag.count++;
         Verlag.assets.add(asset);
         Verlag.notify('uploaded');
-      
-        if (Verlag.count == Verlag.files){
-          Verlag.closeModal();   
-        }
-        $('#progress').text(Verlag.count);
+
+        // $('#progress').text(Verlag.count);
         
       });
     });

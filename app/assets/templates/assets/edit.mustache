@@ -1,14 +1,16 @@
-<div class="modal hide">
+<div class="modal edit-asset hide">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">×</a>
-    <h3>Modal header</h3>
+    <h3>Edit Asset</h3>
   </div>
-  <div class="modal-body">   
+     
 {{#asset}}
-
+  <div class="modal-body">
+      <form method="post" action="/admin/assets/{{id}}" enctype="multipart/form-data" id="edit-asset" class="command-save">
+      
     {{# is_image }}
-    <div class="image-display" id="image-display-{{ id }}">
-      <img src="{{ image_path }}" alt="{{ title }}" />
+    <div class="image display" id="image-{{ id }}">
+      <img src="{{ asset_path }}" alt="{{ title }}" />
     </div>
     {{/ is_image }}
     {{^ is_image }}
@@ -16,12 +18,11 @@
       <h1>{{ ext }}</h1>
       <p>
         Download: 
-        <a href="{{ image_path }}">{{ file_name }}</a>
+        <a href="{{ asset_path }}">{{ file_name }}</a>
       </p>
     </div>
     {{/ is_image }}
     <div class="image-info" id="image-info-{{id}}">
-      <form method="post" action="/admin/assets/{{id}}" enctype="multipart/form-data" id="edit-asset" class="command-save">
         <div class="hidden">
           <input type="hidden" name="_method" value="put" />
         </div>
@@ -35,25 +36,18 @@
           <label for="asset_tags">Tags</label> 
           <input type="text" name="asset[tag_list]" id="asset_tag_list" value="{{tag_list}}" class="textfield" /> 
         </div>
-        <div class="actions">
-          <!--input type="submit" value="Save and Continue" class="button html-only" /-->
-          <a href="/admin/folders/{{folder_id}}" class="cancel">Cancel</a>
-          or
-          <input type="submit" value="Save" id="save-asset" class="button html-only" />
-        </div>
-      </form>  
-      <!--{{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
-      {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}-->
+        
+        <!--{{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}
+        {{#next}}<a class="next" href="/admin/assets/{{id}}/edit{{query_path}}">Next</a>{{/next}}-->
+      </div>
+
     </div>
-
+    <div class="modal-footer">
+      <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
+      <button type="submit" class="btn btn-primary js-update">Save</button>
+    </div>
+  </form>
 {{/asset}}
-
-  </div>
-  <div class="modal-footer">
-    <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
-    <button type="submit" class="btn btn-primary js-create">Save</button>
-  </div>
-
 </div>
 
 

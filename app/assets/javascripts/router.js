@@ -4,11 +4,11 @@ Verlag.Router = Backbone.Router.extend({
   routes: {
     '':                     'show_index', 
     'admin/':               'show_index',
-    'admin/pages':          'show_pages',
-    'admin/pages/:id':      'show_page',
-    'admin/folders':        'folders_index',
-    'admin/folders/:id':    'show_folder',
-    'admin/assets/:id':     'show_asset',
+    'admin/pages':          'pagesIndex',
+    'admin/pages/:id':      'showPage',
+    'admin/folders':        'foldersIndex',
+    'admin/folders/:id':    'showFolder',
+    'admin/assets/:id':     'showAsset',
     'admin/templates':      'templates_index',
     'admin/templates/:id':  'show_template',
     'admin/settings':       'show_settings'
@@ -20,7 +20,7 @@ Verlag.Router = Backbone.Router.extend({
   
   // Pages
   // ------------------------------------------------------------ //
-  show_pages: function(){
+  pagesIndex: function(){
     this.cleanup(Verlag.editor);
     
     var id = Verlag.pages.first().id;
@@ -28,7 +28,7 @@ Verlag.Router = Backbone.Router.extend({
     Verlag.editor = new Verlag.View.EditPage({ id: id });
   },
   
-  show_page: function(id){
+  showPage: function(id){
     // this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
         
@@ -39,12 +39,14 @@ Verlag.Router = Backbone.Router.extend({
   
   // Folders
   // ------------------------------------------------------------ //
-  folders_index: function(){
+  foldersIndex: function(){
     this.cleanup(Verlag.editor);
-    Verlag.editor = new Verlag.View.Folders();
+    
+    var id = Verlag.folders.first().id;
+    Verlag.sidebar = new Verlag.View.Assets({ id: id });
   },
   
-  show_folder: function(id){
+  showFolder: function(id){
     this.cleanup(Verlag.editor);
     
     Verlag.editor = new Verlag.View.Assets({ 
@@ -54,12 +56,12 @@ Verlag.Router = Backbone.Router.extend({
   
   // Assets
   // ------------------------------------------------------------ //
-  show_asset: function(id){
+  showAsset: function(id){
     this.cleanup(Verlag.editor);
     
     Verlag.modal = new Verlag.View.Asset({ id: id }, function(asset){
       Verlag.editor = new Verlag.View.Assets({ 
-        id: asset.get('parent_id')
+        id: asset.get('folder_id')
       });
     });
   },
@@ -94,7 +96,6 @@ Verlag.Router = Backbone.Router.extend({
     if(view){
       view.off();
       $(view.el).undelegate();
-      console.log('cleanup')
     }
   }
   

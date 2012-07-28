@@ -4,11 +4,12 @@ $(document).ready(function(){
     url: '/api/v1/sites/current',
     success: function(response){
       Verlag.pages = new Verlag.Collection.Pages(response.pages);
-      // Verlag.folders = new Verlag.Collection.Folders(response.folders);
+      Verlag.folders = new Verlag.Collection.Folders(response.folders);
       Verlag.templates = new Verlag.Collection.Templates(response.templates);
       Verlag.sites = new Verlag.Collection.Sites(response.sites);
+      Verlag.users = new Verlag.Collection.Sites(response.users);
       Verlag.current_user = new Verlag.Model.User(response.current_user);
-      
+
       Verlag.router = new Verlag.Router();
       Backbone.history.start({ pushState: true });
     }
@@ -36,8 +37,14 @@ $(document).ready(function(){
     }
   });
   
-  
+  // Global ajax indicator
+  Verlag.loader = new Verlag.View.Loader();
+  jQuery('body')
+    .ajaxStart(function() {
+      Verlag.loader.show();
+    }).ajaxSuccess(function() {
+      Verlag.loader.hide();
+    });
 
-  
   
 });

@@ -1,24 +1,36 @@
-class Folder < Item
+class Folder
   include MongoMapper::Document
+  
+  # Folder Tree
+  # ----------------------------------------
+  plugin MongoMapper::Plugins::ActsAsTree
+  key :parent_id, ObjectId
+  acts_as_tree :order => :slug
   
   # Attributes
   # ----------------------------------------
-  
+  key :name, String
   many :assets, :dependent => :destroy
   
-  def admin_path
-    "/admin/folders/#{self.id}"
-  end
+  # Scoped to Site
+  # ----------------------------------------
+  key :site_id, ObjectId, :required => true
+  belongs_to :site, :foreign_key => :site_id 
+  scope :by_site, lambda { |site| where(:site_id => site.id) }
   
-  def image_path
-    '/icons/folder.png'
-  end
+  # Validations
+  # ----------------------------------------
+  validates :name, 
+    :uniqueness => { :scope => [:site_id, :parent_id] },
+    :presence => true
   
-  # def as_json(options)
-  #   super(:methods => [
-  #     :admin_path, :image_path, :children, :is_image
-  #   ]) 
-  # end
+  timestamps!
+  
+  def as_json(options)
+    super(:methods => [
+      :children, :assets
+    ]) 
+  end
   
   
   protected

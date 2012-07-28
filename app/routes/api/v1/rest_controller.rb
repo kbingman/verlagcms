@@ -81,6 +81,8 @@ class Main
       if resource.update_attributes(attributes)
         resource.to_json
       else
+        status 400
+        content_type 'application/json'
         { errors: resource.errors }.to_json 
       end
     end     

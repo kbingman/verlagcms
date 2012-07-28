@@ -1,3 +1,10 @@
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  background-color: white; 
+}
+
 .settings {
   top: 20px;
   bottom: 20px;
@@ -9,9 +16,7 @@
   }
 }
 
-.modal-backdrop,
-.modal-backdrop.fade.in {
-  opacity: 0.8;
-  filter: alpha(opacity=80);
-  background-color: white; 
+.edit-asset {
+  width: 900px;
+  margin-left: -450px;
 }

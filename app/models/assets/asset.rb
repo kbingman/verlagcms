@@ -1,6 +1,6 @@
 require 'mini_magick'
 
-class Asset < Item
+class Asset
   
   include MongoMapper::Document
   include Canable::Ables
@@ -14,25 +14,32 @@ class Asset < Item
   searches :name, :tags  
   before_save :index_search_terms 
   
-  
   # Attributes
   # ----------------------------------------
   key :name, String, :required => { :message => :required }
   key :description, String 
-  key :tags, Array, :index => true      
+  key :tags, Array, :index => true  
+  key :uuid, String #, :required => { :message => :required }
   
+  # Scoped to Site
+  # ----------------------------------------
+  key :site_id, ObjectId, :required => true
+  belongs_to :site, :foreign_key => :site_id 
+  scope :by_site, lambda { |site| where(:site_id => site.id) }
   
-  # key :page_id, ObjectId
-  # belongs_to :page, :foreign_key => :artist_id  
+  key :folder_id, ObjectId, :required => true
+  belongs_to :folder, :foreign_key => :folder_id 
   
-  # has_one :image_part
+  # Validations
+  # ----------------------------------------
+  validates :name, 
+    :uniqueness => { :scope => [:site_id, :folder_id] },
+    :presence => true
   
   timestamps!   
   
   # Valiations
   # ----------------------------------------
-  # validates :title, :uniqueness => { :scope => :site_id }
-  # validates_presence_of :artist_id # :story_id
   # validate :ensure_proper_file_size 
   # def ensure_proper_file_size 
   #   if file_size? && file_size > 3.megabytes 
@@ -53,7 +60,9 @@ class Asset < Item
   # Search
   # ----------------------------------------
   def self.search_all_with_title(term)
-    where('$or' => [{ 'searches.default' => {'$all' => Hunt::Util.to_stemmed_words(term) }}, { :name => /#{term}/i }])
+    where('$or' => [{ 'searches.default' => { 
+      '$all' => Hunt::Util.to_stemmed_words(term) }
+    }, { :name => /#{term}/i }])
   end
   
   
@@ -93,30 +102,13 @@ class Asset < Item
     
     [counter, errors]
   end
-
-  # TODO move to a presenter  
-  def image_path
-    "/images/#{self.id}/#{self.file_name}" 
-  end
-  
-  def thumb_path
-    "/images/thumbnail/#{self.id}/#{self.file_name}" 
-  end
-  
-  def icon_path
-    "/images/icon/#{self.id}/#{self.file_name}" 
-  end   
-  
+   
   def ext
     self.file_name.split('.').last if self.file_name
   end
   
   def is_image
     self.file_type.match(/image/) && !self.file_type.match(/svg/) ? true : false
-  end
-  
-  def admin_path
-    "/admin/assets/#{self.id}"
   end
   
   # JSON API
@@ -128,9 +120,10 @@ class Asset < Item
   #   )
   # end
   def as_json(options)
-    super(:methods => [
-      :admin_path, :image_path, :children, :is_image
-    ]) 
+    super(
+      :except => [:searches, :tags], 
+      :methods => [:tag_list]
+    ) 
   end
   
   

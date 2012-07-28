@@ -23,10 +23,12 @@ class Main
       # Create Asset
       # -------------------------------------------
       post '' do
+        puts params
+        
         asset = Asset.new({ 
           file: params['file'][:tempfile] ,
           file_name: params['file'][:filename], 
-          parent_id:  params['parent_id'],
+          folder_id:  params['folder_id'],
           site: current_site
         })
 

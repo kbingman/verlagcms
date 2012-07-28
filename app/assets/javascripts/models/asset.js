@@ -1,14 +1,5 @@
 Verlag.Model.Asset = Backbone.Model.extend({
-    
-  // url: function() {
-  //   if (this.id){
-  //     path = '/api/v1/assets/' + this.id + '.json';
-  //   } else {
-  //     path = '/api/v1/assets.json'
-  //   }
-  //   return path
-  // },
-  
+      
   urlRoot: '/api/v1/assets',
   
   isImage: function(){
@@ -16,13 +7,11 @@ Verlag.Model.Asset = Backbone.Model.extend({
   },
   
   imagePath: function(){
-    '/images/' + this.id + '/' + this.get('file_name') + '?w=240&amp;h=180&amp;c=t&amp;g=North';
+    return '/images/' + this.id + '/' + this.get('file_name');
   },
   
   adminPath: function(){
-    var type = this.get('_type') ? this.get('_type').toLowerCase() + 's/'  : '';
-    var path = '/admin/' + type + this.id;
-    return path;
+    return '/admin/assets/' + this.id;
   },
   
   upload: function(file, callback){
@@ -55,18 +44,18 @@ Verlag.Model.Asset = Backbone.Model.extend({
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
         asset.set(response);
-        
+        console.log(response)
         callback(asset, response);
       }
     };
     
     asset.set('uuid', generateUuid());
     formData.append('file', file);
-    formData.append('parent_id', this.get('parent_id'));  
+    formData.append('folder_id', this.get('folder_id'));  
     
     xhr.upload.addEventListener('progress', onprogressHandler, false);
     xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-    xhr.open('POST', '/api/v1/assets.json', true);
+    xhr.open('POST', asset.urlRoot + '.json', true);
     xhr.send(formData);
   }
   

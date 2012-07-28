@@ -25,6 +25,8 @@ gem 'canable', '~> 0.2.0' # :path => 'vendor/canable'
 gem 'mini_magick'
 
 gem 'haml'  
+gem 'sprockets', '~>2.4.5'
+gem 'sprockets-sass'
 gem 'sass'
 gem 'rabl', '~> 0.3.0' 
 gem 'mustache', '~> 0.99.4'
@@ -45,7 +47,6 @@ group :production do
 end
 
 group :development do
-  gem 'sprockets', '~>2.0.2'
   gem 'rake'
   gem 'thor'  
   gem 'guard-sprockets2'

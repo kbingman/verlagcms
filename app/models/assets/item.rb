@@ -29,10 +29,6 @@ class Item
   
   timestamps!
   
-  def is_image
-    true
-  end
-  
   def admin_path
     "/admin/items/#{self.id}"
   end

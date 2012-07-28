@@ -50,7 +50,6 @@ require 'rack/request'
 require 'sprockets'
 
 # Templating
-require 'sprockets'
 require 'sprockets/engines'
 require 'mustache/sinatra'
 require 'hogan_assets'
@@ -71,6 +70,10 @@ def monk_settings(key)
   $monk_settings[key]
 end
 
+if RACK_ENV == 'development'
+  require 'sprockets'
+end
+
 
 module AssetHelpers
   def asset_path(source)
@@ -81,12 +84,6 @@ end
 
 class Main < Sinatra::Base
   set :root, File.expand_path('../', __FILE__)
-  set :sprockets, Sprockets::Environment.new(root_path('app/assets'))
-  set :precompile, [ /\w+\.(?!js|css).+/, /(application|ace).(css|js)$/ ]
-  # set :precompile, [ /.*/ ]
-  set :assets_prefix, 'assets'
-  set :assets_path, File.join(root, 'public', assets_prefix)
-  
 
   # Not sure if this is the correct syntax
   register Rabl
@@ -120,7 +117,11 @@ class Main < Sinatra::Base
   
   configure :development do
     register Sinatra::Reloader
-    
+    set :sprockets, Sprockets::Environment.new(root_path('app/assets'))
+    set :precompile, [ /\w+\.(?!js|css).+/, /(application|ace).(css|js)$/ ]
+    # set :precompile, [ /.*/ ]
+    set :assets_prefix, 'assets'
+    set :assets_path, File.join(root, 'public', assets_prefix)
   end
   
   set :dump_errors, true

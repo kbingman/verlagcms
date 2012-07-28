@@ -31,7 +31,7 @@ gem 'mustache', '~> 0.99.4'
 gem 'RedCloth' 
 gem 'hogan_assets'
 
-gem 'sprockets', '~>2.0.2'
+
 gem 'uglifier', '~>1.0.3'
 
 gem 'json'
@@ -45,6 +45,7 @@ group :production do
 end
 
 group :development do
+  gem 'sprockets', '~>2.0.2'
   gem 'rake'
   gem 'thor'  
   gem 'guard-sprockets2'

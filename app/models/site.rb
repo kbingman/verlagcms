@@ -7,7 +7,6 @@ class Site
   key :domain, String, :required => true, :unique => true 
 
   many :pages
-  many :items
   many :assets
   many :folders 
   many :templates

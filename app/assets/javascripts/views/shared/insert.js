@@ -7,7 +7,7 @@ Verlag.View.Insert = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    $(this.el).undelegate();
+    // $(this.el).undelegate();
     this.model = options.model;
     this.render();
   },

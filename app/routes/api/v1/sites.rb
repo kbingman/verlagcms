@@ -17,7 +17,7 @@ class Main
         resource = Site.new(attributes) 
         
         # TODO move this to the view
-        group = Group.first
+        # group = Group.first
 
         resource.group = group
         if resource.save
@@ -25,6 +25,8 @@ class Main
           current_user.save
           resource.to_json
         else
+          status 400
+          content_type 'application/json'
           { :errors => resource.errors }.to_json 
         end
       end

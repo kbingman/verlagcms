@@ -7,7 +7,7 @@ Verlag.View.New = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    $(this.el).undelegate();
+    $(this.el).undelegate('button.js-create', 'click');
     
     this.model = options.model;
     this.parent = options.parent;
@@ -44,7 +44,9 @@ Verlag.View.New = Backbone.View.extend({
     this.model.save(attr, {
       success: function(model, response){
         Verlag.notify('created');
-        // Verlag[self.collection].add(model);
+        if(Verlag[self.collection]){
+          Verlag[self.collection].add(model);
+        }
         Verlag.router.navigate(model.adminPath(), { trigger: true });
         $('.modal').modal('hide');  
       }

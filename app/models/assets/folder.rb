@@ -1,6 +1,8 @@
 class Folder
   include MongoMapper::Document
   
+  attr_accessible :name, :parent_id
+  
   # Folder Tree
   # ----------------------------------------
   plugin MongoMapper::Plugins::ActsAsTree
@@ -26,11 +28,11 @@ class Folder
   
   timestamps!
   
-  def as_json(options)
-    super(:methods => [
-      :children, :assets
-    ]) 
-  end
+  # def as_json(options)
+  #   super(:methods => [
+  #     :assets
+  #   ]) 
+  # end
   
   
   protected

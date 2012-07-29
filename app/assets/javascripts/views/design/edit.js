@@ -16,13 +16,11 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    // this.model = Verlag.templates.get(options.id) || new Verlag.Model.Template({ id: options.id });  
-   
-    
     _.bindAll(this, 'render', 'aceSettings', 'update', 'saveOnKeyUp');
     var self = this; 
     
-    this.model = Verlag.templates.get(options.id);  
+    this.model = Verlag.templates.get(options.id); 
+    this.model.on('change', this.render); 
     this.model.fetch({
       success: function(model, response){
         self.aceSettings();
@@ -36,21 +34,18 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     });
     $(self.el).undelegate();
   },
-  
-  data: function(){
-    return {
-      'layouts': Verlag.templates.findByKlass('Layout').map(function(l){
-        return l.toJSON()
-      }),
-      'layout': this.model.toJSON(),
-      'layout?': false
-    }
-  },
 
   render: function() {
-    var template = HoganTemplates['templates/edit'];
+    var template = HoganTemplates['templates/edit'],
+        data = {
+          'layouts': Verlag.templates.findByKlass('Layout').map(function(l){
+            return l.toJSON()
+          }),
+          'layout': this.model.toJSON(),
+          'layout?': false
+        };
     
-    $(this.el).html(template.render(this.data())); 
+    $(this.el).html(template.render(data)); 
     this.intitializeAce();
     $('a.tab').removeClass('active');
     $('a#templates-tab').addClass('active');

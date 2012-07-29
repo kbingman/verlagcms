@@ -7,7 +7,7 @@ Verlag.View.Settings = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    $(this.el).undelegate();
+    $(this.el).undelegate('form.js-update', 'submit');
     this.model = options.model;
     this.render();
   },
@@ -44,7 +44,7 @@ Verlag.View.Settings = Backbone.View.extend({
         if(!response.errors){
           Verlag.notify('Saved')
           // TODO make this automatic
-          Verlag.editor.render();
+          // Verlag.editor.render();
           $('.modal').modal('hide');  
         } else {
           alert('error')

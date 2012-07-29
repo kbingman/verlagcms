@@ -4,13 +4,15 @@ Verlag.View.Folders = Backbone.View.extend({
   tagName: 'aside',
   
   events: {
+    'click a.js-new-folder': 'new',
     'click a.js-show-folder': 'show'
   },
 
   initialize: function() {
-    Verlag.folders.on('all', this.render);
-    
+    _.bindAll(this, 'render');
     $(this.el).undelegate();
+    
+    Verlag.folders.on('all', this.render);
     this.render();
   },
 
@@ -37,6 +39,14 @@ Verlag.View.Folders = Backbone.View.extend({
     
     Verlag.router.navigate(path, { trigger: false });
     Verlag.editor = new Verlag.View.Assets({ id: id });
+  },
+  
+  new: function(e){
+    e.preventDefault();
+    var path = $(e.target).attr('href');
+    var model = new Verlag.Model.Folder();
+    
+    Verlag.modal = new Verlag.View.New({ model: model, collection: 'folders' });
   }
 
 });

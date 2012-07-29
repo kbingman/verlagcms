@@ -2,7 +2,7 @@
   <div class="image">
     <a href="{{ admin_path }}" data-id="{{ id }}" class="js-show-asset">
     {{# is_image }}
-      <img src="{{ image_path }}" alt="{{title}}" />
+      <img src="{{ image_path }}?w=240&amp;h=180&amp;c=t&amp;g=North" alt="{{title}}" />
     {{/ is_image }}
     {{^ is_image }}
       <img src="/icons/file.png" alt="{{title}}" />

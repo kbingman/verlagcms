@@ -11,7 +11,7 @@ Verlag.Model.Asset = Backbone.Model.extend({
   },
   
   adminPath: function(){
-    return '/admin/assets/' + this.id;
+    return '/admin/folders/'+ this.get('folder_id') + '/assets/' + this.id;
   },
   
   upload: function(file, callback){
@@ -30,9 +30,8 @@ Verlag.Model.Asset = Backbone.Model.extend({
     };
   
     var onprogressHandler = function(evt){
-      var percent = evt.loaded / evt.total * 100;
-      $('#percent').text(percent + '%'); 
-      console.log(asset.get('uuid'))
+      // var percent = evt.loaded / evt.total * 100;
+      // $('#percent').text(percent + '%'); 
     };
   
     var onreadystatechangeHandler = function(evt){
@@ -44,7 +43,6 @@ Verlag.Model.Asset = Backbone.Model.extend({
       if (status == '200' && evt.target.readyState == 4 && evt.target.responseText) {
         var response = JSON.parse(evt.target.responseText);
         asset.set(response);
-        console.log(response)
         callback(asset, response);
       }
     };

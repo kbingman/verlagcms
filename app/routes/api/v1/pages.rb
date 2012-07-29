@@ -27,6 +27,8 @@ class Main
         if page.save
           page.to_json
         else
+          status 400
+          content_type 'application/json'
           { errors: page.errors }.to_json
         end
       end
@@ -36,22 +38,7 @@ class Main
       get '/:id/children' do
         page = Page.by_site(current_site).find(params['id'])
         page.children.to_json
-      end
-      
-      # Update page
-      # -------------------------------------------
-      # put '/:id' do
-      #   page = Page.by_site(current_site).find(params['id']) 
-      #   attributes = JSON.parse(request.body.read.to_s)
-      # 
-      #   # enforce_update_permission(page) 
-      #                   
-      #   if page.update_attributes(attributes)
-      #     page.to_json 
-      #   else
-      #     { errors: page.errors }.to_json  
-      #   end
-      # end     
+      end   
       
     end  
   end

@@ -60,12 +60,7 @@ Verlag.View.Iframe = Backbone.View.extend({
       parts: parts 
     },{
       success: function(model, response){
-        if(!response.errors){
-          Verlag.notify('Page saved')
-        } else {
-          console.log(response);
-          alert('error');
-        }
+        Verlag.notify('Page saved')
       },
       error: function(reponse){
         console.log(response);

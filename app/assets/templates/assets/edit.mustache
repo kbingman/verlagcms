@@ -30,11 +30,11 @@
           Path: /images/{{id}}/{{file_name}}
         </div>
         <div class="field">
-          <input type="text" name="asset[title]" id="asset_title" value="{{title}}" class="textfield" />
+          <input type="text" name="name" id="asset-name" value="{{ name }}" class="textfield" />
         </div> 
         <div class="field">
           <label for="asset_tags">Tags</label> 
-          <input type="text" name="asset[tag_list]" id="asset_tag_list" value="{{tag_list}}" class="textfield" /> 
+          <input type="text" name="tag_list" id="asset-tag-list" value="{{ tag_list }}" class="textfield" /> 
         </div>
         
         <!--{{#previous}}<a class="previous" href="/admin/assets/{{id}}/edit{{query_path}}">Previous</a>{{/previous}}

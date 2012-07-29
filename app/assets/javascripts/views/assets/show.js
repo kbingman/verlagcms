@@ -7,21 +7,13 @@ Verlag.View.Asset = Backbone.View.extend({
     'click button.js-update'  : 'update'
   },
 
-  initialize: function(options, callback) {
-    var id = options.id,
-        self = this,
-        folder_id = options.folder_id;
- 
-    this.asset = new Verlag.Model.Asset({ id: id });
-    this.asset.fetch({
-      success: function(asset, response){
-        self.render();
-        if(callback){
-          callback(asset)
-        }
-      }
-    });
-    $(this.el).undelegate();
+  initialize: function(options) {
+    _.bindAll(this, 'render');
+    $(this.el).undelegate('button.js-update', 'click');
+    
+    this.folder = Verlag.folders.get(options.folder_id);
+    this.asset = Verlag.assets.get(options.id);
+    this.asset.fetch({ success: this.render });
   },
 
   render: function() {
@@ -54,14 +46,14 @@ Verlag.View.Asset = Backbone.View.extend({
 
     var target = $(e.currentTarget),
         form = $('form#edit-asset'),
-        tagList = form.find('#asset_tag_list').val(),
-        name = form.find('#asset_title').val(),
+        attr = {},
         asset = this.asset;
-    
-    asset = asset.save({
-      name: name,
-      tag_list: tagList
-    }, {
+        
+    form.serializeArray().forEach(function(a){
+      attr[a.name] = a.value;
+    });
+        
+    asset = asset.save(attr, {
       success: function(model, response){
         console.log(response);
         Verlag.notify('Asset saved');

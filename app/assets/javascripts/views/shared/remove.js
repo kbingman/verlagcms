@@ -7,10 +7,11 @@ Verlag.View.Remove = Backbone.View.extend({
   },
 
   initialize: function(options) {
+    $(this.el).undelegate('button.js-delete', 'click');
+    
     this.model = options.model;
     this.domId = options.domId;
     this.collection = options.collection;
-    $(this.el).undelegate();
     this.render();
   },
 

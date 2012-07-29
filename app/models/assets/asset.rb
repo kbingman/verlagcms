@@ -5,6 +5,8 @@ class Asset
   include MongoMapper::Document
   include Canable::Ables
   
+  attr_accessible :name, :folder_id, :uuid, :tag_list, :description
+  
   # Plugins
   # ----------------------------------------
   plugin Joint # add the plugin
@@ -147,8 +149,8 @@ class Asset
       end
     end
     
-    before_validation :set_title
-    def set_title
+    before_validation :set_name
+    def set_name
       self.name ||= File.basename self.file_name, '.*'
     end
     

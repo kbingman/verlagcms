@@ -2,16 +2,16 @@
 Verlag.Router = Backbone.Router.extend({
   
   routes: {
-    '':                     'show_index', 
-    'admin/':               'show_index',
-    'admin/pages':          'pagesIndex',
-    'admin/pages/:id':      'showPage',
-    'admin/folders':        'foldersIndex',
-    'admin/folders/:id':    'showFolder',
-    'admin/assets/:id':     'showAsset',
-    'admin/templates':      'templates_index',
-    'admin/templates/:id':  'show_template',
-    'admin/settings':       'show_settings'
+    '':                                     'show_index', 
+    'admin/':                               'show_index',
+    'admin/pages':                          'pagesIndex',
+    'admin/pages/:id':                      'showPage',
+    'admin/folders':                        'foldersIndex',
+    'admin/folders/:id':                    'showFolder',
+    'admin/folders/:folder_id/assets/:id':  'showAsset',
+    'admin/templates':                      'templates_index',
+    'admin/templates/:id':                  'show_template',
+    'admin/settings':                       'show_settings'
   },
   
   show_index: function(){
@@ -21,11 +21,10 @@ Verlag.Router = Backbone.Router.extend({
   // Pages
   // ------------------------------------------------------------ //
   pagesIndex: function(){
-    this.cleanup(Verlag.editor);
-    
-    var id = Verlag.pages.first().id;
-    // Verlag.sidebar = new Verlag.View.PageIndex();
-    Verlag.editor = new Verlag.View.EditPage({ id: id });
+    var id = Verlag.pages.first().id,
+        path = document.location.pathname + '/' + id;
+        
+    Verlag.router.navigate(path, { trigger: true });
   },
   
   showPage: function(id){
@@ -40,10 +39,10 @@ Verlag.Router = Backbone.Router.extend({
   // Folders
   // ------------------------------------------------------------ //
   foldersIndex: function(){
-    this.cleanup(Verlag.editor);
-    
-    var id = Verlag.folders.first().id;
-    Verlag.sidebar = new Verlag.View.Assets({ id: id });
+    var id = Verlag.folders.first().id,
+        path = document.location.pathname + '/' + id;
+        
+    Verlag.router.navigate(path, { trigger: true });
   },
   
   showFolder: function(id){
@@ -56,24 +55,28 @@ Verlag.Router = Backbone.Router.extend({
   
   // Assets
   // ------------------------------------------------------------ //
-  showAsset: function(id){
+  showAsset: function(folder_id, id){
     this.cleanup(Verlag.editor);
     
-    Verlag.modal = new Verlag.View.Asset({ id: id }, function(asset){
-      Verlag.editor = new Verlag.View.Assets({ 
-        id: asset.get('folder_id')
-      });
+    Verlag.editor = new Verlag.View.Assets({ 
+      id: folder_id,
+      success: function(){
+        Verlag.modal = new Verlag.View.Asset({ 
+          id: id,
+          folder_id: folder_id
+        });
+      }
     });
+
   },
   
   // Design / Templates
   // ------------------------------------------------------------ //
   templates_index: function(){
-    this.cleanup(Verlag.sidebar);
-    this.cleanup(Verlag.editor);
-    
-    var id = Verlag.templates.findByKlass('Layout')[0].id;
-    Verlag.editor = new Verlag.View.DesignEdit({ id: id });
+    var id = Verlag.templates.findByKlass('Layout')[0].id,
+        path = document.location.pathname + '/' + id;
+        
+    Verlag.router.navigate(path, { trigger: true });
   },
   
   show_template: function(id){

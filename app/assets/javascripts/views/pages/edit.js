@@ -10,10 +10,12 @@ Verlag.View.EditPage = Backbone.View.extend({
   },
 
   initialize: function(options) {
+    _.bindAll(this, 'render');
     $(this.el).undelegate();
     var self = this;
     
-    this.page = Verlag.pages.get(options.id) || new Verlag.Model.Page({ id: options.id });    
+    this.page = Verlag.pages.get(options.id) || new Verlag.Model.Page({ id: options.id });
+    this.page.on('change', this.render);
     this.page.fetch({
       success: function(page, response){
         self.render();

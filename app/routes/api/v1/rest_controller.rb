@@ -45,6 +45,8 @@ class Main
       if resource.save
         resource.to_json
       else
+        status 400
+        content_type 'application/json'
         { :errors => resource.errors }.to_json 
       end
     end

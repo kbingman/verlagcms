@@ -113,6 +113,10 @@ class Asset
     self.file_type.match(/image/) && !self.file_type.match(/svg/) ? true : false
   end
   
+  def image_path
+    "/images/#{self.id}/#{self.file_name}"
+  end
+  
   # JSON API
   # ----------------------------------------
   # def as_json(options)

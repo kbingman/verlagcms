@@ -62,6 +62,7 @@ GEM
       wand (~> 0.4)
     json (1.5.3)
     json_pure (1.5.3)
+    libv8 (3.3.10.4)
     listen (0.4.5)
       rb-fchange (~> 0.0.5)
       rb-fsevent (~> 0.9.1)
@@ -139,6 +140,8 @@ GEM
       tilt (~> 1.1)
     subexec (0.1.0)
     test-unit (2.3.2)
+    therubyracer (0.10.1)
+      libv8 (~> 3.3.10)
     thin (1.2.11)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -198,6 +201,7 @@ DEPENDENCIES
   sprockets (~> 2.4.5)
   sprockets-sass
   test-unit
+  therubyracer
   thin
   thor
   tilt (~> 1.3)

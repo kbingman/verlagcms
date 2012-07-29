@@ -10,16 +10,13 @@ Verlag.View.EditPage = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render', 'settings');
     $(this.el).undelegate();
-    var self = this;
     
     this.page = Verlag.pages.get(options.id) || new Verlag.Model.Page({ id: options.id });
-    this.page.on('change', this.render);
+    // this.page.on('change', this.render);
     this.page.fetch({
-      success: function(page, response){
-        self.render();
-      }
+      success: this.render
     });
   },
 
@@ -50,9 +47,13 @@ Verlag.View.EditPage = Backbone.View.extend({
   
   settings: function(e){
     e.preventDefault();
+    var self = this; 
     Verlag.modal = new Verlag.View.Settings({ 
       model: this.page,
-      collection: 'pages'
+      collection: 'pages',
+      success: function(){
+        self.render();
+      }
     });
   },
 

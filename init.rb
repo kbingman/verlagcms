@@ -160,7 +160,6 @@ class Main < Sinatra::Base
     sprockets.append_path(File.join(root, 'app', 'assets', 'javascripts'))
     sprockets.append_path(File.join(root, 'app', 'assets', 'images'))
     sprockets.append_path(File.join(root, 'app', 'assets', 'templates'))
-    
 
     sprockets.context_class.instance_eval do
       include AssetHelpers

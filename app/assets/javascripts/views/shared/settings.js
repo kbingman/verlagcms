@@ -10,6 +10,7 @@ Verlag.View.Settings = Backbone.View.extend({
     $(this.el).undelegate('form.js-update', 'submit');
     this.model = options.model;
     this.render();
+    this.success = options.success;
   },
 
   render: function(id) {
@@ -32,7 +33,10 @@ Verlag.View.Settings = Backbone.View.extend({
   update: function(e){
     e.preventDefault();
     
+    console.log(this.model)
+    
     var form = $(e.target),
+        callback = this.success,
         attr = {};
     
     form.serializeArray().forEach(function(a){
@@ -41,15 +45,16 @@ Verlag.View.Settings = Backbone.View.extend({
     
     this.model.save(attr, {
       success: function(model, response){
-        if(!response.errors){
-          Verlag.notify('Saved')
-          // TODO make this automatic
-          // Verlag.editor.render();
-          $('.modal').modal('hide');  
-        } else {
-          alert('error')
-          console.log(response.errors);
-        }        
+        Verlag.notify('Saved');
+        if(callback){
+          callback(model, response);
+        }
+          
+        $('.modal').modal('hide');      
+      }, 
+      error: function(model, response){
+        alert('error')
+        console.log(response.responseText);
       }
     });
   }

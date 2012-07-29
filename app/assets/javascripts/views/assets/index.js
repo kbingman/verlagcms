@@ -9,8 +9,8 @@ Verlag.View.Assets = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render');
     var self = this;
+    _.bindAll(this, 'render');
     $(this.el).undelegate();
 
     this.folder = Verlag.folders.get(options.id);  

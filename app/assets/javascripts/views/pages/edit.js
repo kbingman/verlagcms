@@ -47,13 +47,10 @@ Verlag.View.EditPage = Backbone.View.extend({
   
   settings: function(e){
     e.preventDefault();
-    var self = this; 
     Verlag.modal = new Verlag.View.Settings({ 
       model: this.page,
       collection: 'pages',
-      success: function(){
-        self.render();
-      }
+      success: this.render
     });
   },
 

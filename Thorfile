@@ -40,6 +40,13 @@ class Monk < Thor
     exec "bundle exec env RACK_ENV=#{env} irb -r #{File.dirname(__FILE__) + '/init.rb'} "
   end
   
+  # Compiles assets
+  # monk compile
+  desc 'compile', 'Compiles the sprockets assets for production'
+  def compile(env = 'production')
+    exec "RACK_ENV=#{env} bundle exec rake assets:compile"
+  end
+  
   # Deploys (pushes) to Heroku
   # monk deploy
   desc "deploy ENV", "Push to the heroku server, but first builds the Jim files and compresses the js"

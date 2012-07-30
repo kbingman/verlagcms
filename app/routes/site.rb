@@ -78,6 +78,7 @@ class Main
   
   error 404 do   
     # TODO Build custom pages
+    status 404
     admin_haml :'errors/not_found'     
   end
   

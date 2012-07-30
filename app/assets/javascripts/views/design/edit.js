@@ -16,16 +16,13 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'aceSettings', 'update', 'saveOnKeyUp');
+    _.bindAll(this, 'render', 'update', 'saveOnKeyUp', 'aceSettings', 'showSettings');
     var self = this; 
     
     this.model = Verlag.templates.get(options.id); 
-    this.model.on('change', this.render); 
     this.model.fetch({
       success: function(model, response){
         self.aceSettings();
-    
-        
         if(Verlag.aceEditor){
           Verlag.aceEditor.destroy();
         }
@@ -60,29 +57,20 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   intitializeAce: function(){
     var layout = this.model,
         mode = layout.get('mode'),
-        editorMode = Verlag.ace_modes[mode];
+        editorMode = this.ace_modes[mode];
         
     Verlag.aceEditor = ace.edit('code-editor');
     Verlag.aceEditor.setTheme('ace/theme/textmate');
     Verlag.aceEditor.getSession().setMode(new editorMode);
     Verlag.aceEditor.session.setUseWrapMode(true);
-    // Because Mustache screws up my liquid templates, 
-    // I just set it manually, directly from the model
-    // This also eleminates the FUC
     Verlag.aceEditor.getSession().setValue(layout.get('content'));  
   },
   
   saveOnKeyUp: function(e){
-    // e.preventDefault();
-    var self = this;
-    
     if(this.timeOut){
       clearTimeout(this.timeOut);
     }
-    this.timeOut = setTimeout(function(){
-      self.update();
-    }, 720);
-    
+    this.timeOut = setTimeout(this.update, 720);
   },
   
   update: function(){
@@ -122,7 +110,8 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   showSettings: function(e){
     Verlag.modal = new Verlag.View.Settings({ 
       model: this.model,
-      collection: this.model.get('klass').toLowerCase() + 's'
+      collection: this.model.get('klass').toLowerCase() + 's',
+      success: this.render
     });
   },
   
@@ -147,6 +136,20 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     var self = this;
     var canon = require('pilot/canon');  
     
+    // ACE Editor modes depending on content type
+    this.ace_modes = {
+      'javascript' : require('ace/mode/javascript').Mode,
+      'html'       : require('ace/mode/html').Mode,
+      'css'        : require('ace/mode/css').Mode,
+      'scss'       : require('ace/mode/scss').Mode,
+      'sass'       : require('ace/mode/scss').Mode,
+      // 'less'       : require('ace/mode/less').Mode,
+      'textile'    : require('ace/mode/textile').Mode,
+      // 'partial'    : require('ace/mode/scss').Mode,
+      'none'       : require('ace/mode/scss').Mode
+    }
+    
+    
     canon.addCommand({
       name: 'save',
       bindKey: {
@@ -154,14 +157,8 @@ Verlag.View.DesignEdit = Backbone.View.extend({
         mac: 'Command-S',
         sender: 'editor'
       },
-      exec: function() {
-        self.update();
-      }
+      exec: this.update
     });
   }
-  
-  
-  
-  
 
 });

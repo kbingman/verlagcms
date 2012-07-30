@@ -9,9 +9,9 @@ Verlag.Router = Backbone.Router.extend({
     'admin/folders':                        'foldersIndex',
     'admin/folders/:id':                    'showFolder',
     'admin/folders/:folder_id/assets/:id':  'showAsset',
-    'admin/templates':                      'templates_index',
-    'admin/templates/:id':                  'show_template',
-    'admin/settings':                       'show_settings'
+    'admin/templates':                      'templatesIndex',
+    'admin/templates/:id':                  'showTemplate',
+    'admin/settings':                       'showSettings'
   },
   
   show_index: function(){
@@ -28,10 +28,10 @@ Verlag.Router = Backbone.Router.extend({
   },
   
   showPage: function(id){
-    // this.cleanup(Verlag.sidebar);
+    this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
         
-    // Verlag.sidebar = new Verlag.View.PageIndex();
+    Verlag.sidebar = new Verlag.View.PageIndex();
     // Verlag.editor = new Verlag.View.PagePreview({ id: id });
     Verlag.editor = new Verlag.View.EditPage({ id: id });
   }, 
@@ -48,6 +48,7 @@ Verlag.Router = Backbone.Router.extend({
   showFolder: function(id){
     this.cleanup(Verlag.editor);
     
+    Verlag.sidebar = new Verlag.View.Folders();
     Verlag.editor = new Verlag.View.Assets({ 
       id: id
     });
@@ -57,7 +58,10 @@ Verlag.Router = Backbone.Router.extend({
   // ------------------------------------------------------------ //
   showAsset: function(folder_id, id){
     this.cleanup(Verlag.editor);
+    this.cleanup(Verlag.sidebar);
+    this.cleanup(Verlag.modal);
     
+    Verlag.sidebar = new Verlag.View.Folders();
     Verlag.editor = new Verlag.View.Assets({ 
       id: folder_id,
       success: function(){
@@ -72,21 +76,22 @@ Verlag.Router = Backbone.Router.extend({
   
   // Design / Templates
   // ------------------------------------------------------------ //
-  templates_index: function(){
+  templatesIndex: function(){
     var id = Verlag.templates.findByKlass('Layout')[0].id,
         path = document.location.pathname + '/' + id;
         
     Verlag.router.navigate(path, { trigger: true });
   },
   
-  show_template: function(id){
+  showTemplate: function(id){
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     
+    Verlag.sidebar = new Verlag.View.DesignIndex();
     Verlag.editor = new Verlag.View.DesignEdit({ id: id });
   },
   
-  show_settings: function(){
+  showSettings: function(){
     this.cleanup(Verlag.sidebar);
     this.cleanup(Verlag.editor);
     

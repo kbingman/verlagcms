@@ -15,7 +15,6 @@ Verlag.View.DesignIndex = Backbone.View.extend({
     Verlag.templates.on('all', function(){
       self.render();
     });
-    this.currentLayout = options.layout || Verlag.templates.findByKlass('Layout')[0];
     $(this.el).undelegate();
     this.render();
   },

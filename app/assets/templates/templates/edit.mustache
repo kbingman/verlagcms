@@ -1,15 +1,9 @@
-<aside id="sidebar">
-  
-</aside>
-
 {{# layout }} 
-<section id="main">
-    <header class="header">
-      <h1 id="layout-title-{{ id }}">{{ name }}</h1>
-      <a class="btn js-settings">Settings</a>
-      <a class="btn js-insert">Insert</a>
-      <a class="btn js-remove">Remove</a>
-    </header>    
-    <pre id="code-editor" class="{{ klass }} {{ mode }} pane"></pre>  
-</section>
+<header class="header">
+  <h1 id="layout-title-{{ id }}">{{ name }}</h1>
+  <a class="btn js-settings">Settings</a>
+  <a class="btn js-insert">Insert</a>
+  <a class="btn js-remove">Remove</a>
+</header>    
+<pre id="code-editor" class="{{ klass }} {{ mode }} pane"></pre>  
 {{/ layout }}

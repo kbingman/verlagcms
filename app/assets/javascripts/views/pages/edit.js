@@ -29,9 +29,7 @@ Verlag.View.EditPage = Backbone.View.extend({
     Verlag.page = this.page;
 
     $(this.el).html(template.render(data, HoganTemplates));
-    
-    Verlag.sidebar = new Verlag.View.PageIndex();
-    
+
     Verlag.iframe = new Verlag.View.Iframe({
       page: page
     });

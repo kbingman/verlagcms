@@ -53,7 +53,6 @@ Verlag.View.Assets = Backbone.View.extend({
       $(this).fadeIn('fast');
     });
     
-    Verlag.sidebar = new Verlag.View.Folders();
     Verlag.header = new Verlag.View.ShowFolder({
       id: this.folder.id
     });

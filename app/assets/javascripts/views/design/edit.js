@@ -46,12 +46,6 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     this.intitializeAce();
     $('a.tab').removeClass('active');
     $('a#templates-tab').addClass('active');
-    
-    
-    Verlag.sidebar = new Verlag.View.DesignIndex({
-      layout: this.model.get('klass') == 'Layout' ? this.model.toJSON() : null
-    });
-    
   },
   
   intitializeAce: function(){

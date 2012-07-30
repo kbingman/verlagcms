@@ -1,38 +1,35 @@
-<aside id="sidebar">
-  
-  <section>
-    <h2>
-      Page Types
-      <span class="modify">
-        <a href="/admin/page_types/new" class="js-new">+</a>
-      </span>
-    </h2>
-    <ul class="unstyled">
-    {{# page_types }}
-    <li>
-      {{ name }}
-      <a href="/admin/page_types/{{ id }}/remove" data-id="{{ id }}" class="js-remove">x</a>
-    </li>
-    {{/ page_types }}
-    </ul>
-  </section>
-  
-  <section>
-    <h2>Sites</h2>
-    <ul class="unstyled">
-    {{# sites }}
-      <li>{{ domain }}</li>
-    {{/ sites }}
-    </ul>
-  </section>
-  
-  <section>
-    <h2>Users</h2>
-    <ul class="unstyled">
-    {{# users }}
-      <li>{{ email }}</li>
-    {{/ users }}
-    </ul>
-  </section>
+<section>
+  <h2>
+    Page Types
+    <span class="modify">
+      <a href="/admin/page_types/new" class="js-new">+</a>
+    </span>
+  </h2>
+  <ul class="unstyled">
+  {{# page_types }}
+  <li>
+    {{ name }}
+    <a href="/admin/page_types/{{ id }}/remove" data-id="{{ id }}" class="js-remove">x</a>
+  </li>
+  {{/ page_types }}
+  </ul>
+</section>
 
-</aside>
+<section>
+  <h2>Sites</h2>
+  <ul class="unstyled">
+  {{# sites }}
+    <li>{{ domain }}</li>
+  {{/ sites }}
+  </ul>
+</section>
+
+<section>
+  <h2>Users</h2>
+  <ul class="unstyled">
+  {{# users }}
+    <li>{{ email }}</li>
+  {{/ users }}
+  </ul>
+</section>
+

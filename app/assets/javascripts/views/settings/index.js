@@ -1,6 +1,6 @@
 Verlag.View.SiteSettings = Backbone.View.extend({
 
-  el: '#editor',
+  el: '#sidebar',
   tagName:  'div',
 
   // The DOM events specific to an item.

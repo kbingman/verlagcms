@@ -1,6 +1,6 @@
 require root_path('app/models/parts/part.rb')
 
-class MultiImagePart < Part
+class CollectionPart < Part
   include MongoMapper::EmbeddedDocument
   
   # TODO add custom validation

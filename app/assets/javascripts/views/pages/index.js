@@ -9,11 +9,13 @@ Verlag.View.PageIndex = Backbone.View.extend({
   },
 
   initialize: function() {
-    var self = this;
+    _.bindAll(this, 'render');
+    // $(this.el).undelegate();
+    // Verlag.pages = new Verlag.Collection.Pages();
     Verlag.pages.on('all', this.render);
-    
-    $(this.el).undelegate();
-    this.render();
+    Verlag.pages.fetch({ 
+      success: this.render
+    });
   },
 
   render: function() {

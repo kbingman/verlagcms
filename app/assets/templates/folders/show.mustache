@@ -1,9 +1,12 @@
 {{# folder }}
 <h1>{{ name }}</h1>
-<a class="btn js-settings">Settings</a>
-<a class="btn js-remove-folder" data-id="{{ id }}">Remove Folder</a>
+<div class="buttons">
+  <a class="btn js-settings">Settings</a>
+  <a class="btn js-remove-folder" data-id="{{ id }}">Remove Folder</a>
+  <input id="file" class="js-upload" name="file" type="file" multiple="multiple"><!--  -->
+</div>
 
-<input id="file" class="js-upload" name="file" type="file" multiple="multiple"><!--  -->
+
 <!-- form action="/admin/assets" id="uploader" enctype="multipart/form-data" class="js-create form-horizontal" method="post">
   
   <div class="control-group">

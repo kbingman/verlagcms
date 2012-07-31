@@ -37,6 +37,8 @@ Verlag.View.SiteSettings = Backbone.View.extend({
     var template = HoganTemplates['settings/index'];
 
     $(this.el).html(template.render(this.data()));
+    // TODO move to a view
+    $('#editor').html('');
     $('a.tab').removeClass('active');
     $('a#settings-tab').addClass('active');
     

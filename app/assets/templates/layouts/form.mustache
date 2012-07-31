@@ -9,11 +9,20 @@
   </div>
 </div>
 
-{{# part_types }}
-<div class="control-group">
-  <p class="control-label">{{ name }}</p> 
-  <p class="controls">
-    Description goes here
+<div>
+  <p>
+    Short description of what parts are and what they do.
   </p>
+  
+  {{# part_types }}
+  <div class="part">
+    <strong>{{ name }}</strong>: Description goes here
+    <a class="js-remove-part">x</a>
+  </div>
+  {{/ part_types }}
+  {{# types }}
+    <a class="js-add-part" data-id="{{ id }}">Add a {{ . }}</a>
+  {{/ types }}
 </div>
-{{/ part_types }}
+
+

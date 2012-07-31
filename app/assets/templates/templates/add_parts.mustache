@@ -1,0 +1,30 @@
+{{# layout }}
+<div class="modal hide">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>{{ name }} Parts</h3>
+  </div>
+  <form method="post" class="js-update form-horizontal">
+    <div class="modal-body">   
+      <p>
+        Short description of what parts are and what they do.
+      </p>
+      {{# part_types }}
+      <div class="part">
+        <strong>{{ name }}</strong>: Description goes here
+        <a class="js-remove-part">x</a>
+      </div>
+      {{/ part_types }}
+      {{# types }}
+        <a class="js-add-part" data-id="{{ id }}">Add a {{ . }}</a>
+      {{/ types }}
+    </div>
+    
+    <div class="modal-footer">
+      &nbsp;
+    </div>
+  </form>
+</div>
+{{/ layout }}
+
+

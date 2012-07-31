@@ -35,7 +35,7 @@ class Monk < Thor
   # Console command
   # monk console
   desc "console ENV", "Start the Monk console in the supplied environment"
-  def console(env = ENV["RACK_ENV"] || "development")
+  def console(env = ENV['RACK_ENV'] || 'development')
     verify_config(env)
     exec "bundle exec env RACK_ENV=#{env} irb -r #{File.dirname(__FILE__) + '/init.rb'} "
   end
@@ -43,9 +43,39 @@ class Monk < Thor
   # Compiles assets
   # monk compile
   desc 'compile', 'Compiles the sprockets assets for production'
-  def compile(env = 'production')
-    exec "RACK_ENV=#{env} bundle exec rake assets:compile"
+  def compile(env = ENV['RACK_ENV'] || 'production')
+    compile_js
+    compile_css
   end
+  
+  desc 'compile_js', 'Compiles the javascript assets'
+  def compile_js(env = ENV['RACK_ENV'] || 'production')
+    require './init.rb'
+    sprockets = Main.settings.sprockets
+    asset     = sprockets['application.js']
+    outpath   = File.join(Main.settings.assets_path)
+    outfile   = Pathname.new(outpath).join('application.js') 
+    FileUtils.mkdir_p outfile.dirname
+
+    asset.write_to(outfile)
+    asset.write_to("#{outfile}.gz")
+    puts 'successfully compiled js assets'
+  end
+
+  desc 'compile_js', 'Compiles the css assets'
+  def compile_css(env = ENV['RACK_ENV'] || 'production')
+    require './init.rb'
+    sprockets = Main.settings.sprockets
+    asset     = sprockets['application.css']
+    outpath   = File.join(Main.settings.assets_path)
+    outfile   = Pathname.new(outpath).join('application.css') 
+    FileUtils.mkdir_p outfile.dirname
+
+    asset.write_to(outfile)
+    asset.write_to("#{outfile}.gz")
+    puts 'successfully compiled css assets'
+  end
+  
   
   # Deploys (pushes) to Heroku
   # monk deploy

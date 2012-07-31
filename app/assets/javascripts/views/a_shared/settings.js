@@ -7,7 +7,10 @@ Verlag.View.Settings = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    $(this.el).undelegate('form.js-update', 'submit');
+    $(this.el)
+      .undelegate('form.js-update', 'submit')
+      .undelegate('a.js-add-part', 'click');
+      
     this.model = options.model;
     this.render();
     this.success = options.success;
@@ -21,7 +24,12 @@ Verlag.View.Settings = Backbone.View.extend({
           model: model.toJSON(),
           layouts: Verlag.templates.findByKlass('Layout').map(function(l){
             return l.toJSON();
-          })
+          }),
+          types: [
+            'image',
+            'text',
+            'collection'
+          ]
         };
 
 

@@ -1,10 +1,14 @@
 <div class="page">
   {{# page }}  
   <header class="header">
-    <h1 id="page-title-{{id}}">{{ title }}</h1>
-    <a class="btn js-settings">Settings</a>
-    <a class="btn js-new-child" data-id="{{ id }}">Add Child</a>
-    <a class="btn js-remove" data-id="{{ id }}">Remove</a>
+    <h1 id="page-title-{{id}}">
+      {{ title }}
+    </h1>
+    <div class="buttons">
+      <a class="btn js-settings">Settings</a>
+      <a class="btn js-new-child" data-id="{{ id }}">Add Child</a>
+      <a class="btn js-remove" data-id="{{ id }}">Remove</a>
+    </div>
   </header>
  
   <div id="preview-{{id}}" class="preview">

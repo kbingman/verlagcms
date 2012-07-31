@@ -1,9 +1,12 @@
 {{# layout }} 
 <header class="header">
   <h1 id="layout-title-{{ id }}">{{ name }}</h1>
-  <a class="btn js-settings">Settings</a>
-  <a class="btn js-insert">Insert</a>
-  <a class="btn js-remove">Remove</a>
+  <div class="buttons">
+    <a class="btn js-settings">Settings</a>
+    <!-- a class="btn js-parts">Parts</a -->
+    <a class="btn js-insert">Insert</a>
+    <a class="btn js-remove">Remove</a>
+  </div>
 </header>    
 <pre id="code-editor" class="{{ klass }} {{ mode }} pane"></pre>  
 {{/ layout }}

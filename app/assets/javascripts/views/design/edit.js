@@ -12,24 +12,18 @@ Verlag.View.DesignEdit = Backbone.View.extend({
     'keyup #code-editor': 'saveOnKeyUp', 
     'click a.js-settings': 'showSettings',
     'click a.js-insert': 'insert',
+    'click a.js-parts': 'parts',
     'click a.js-remove': 'remove'
   },
 
   initialize: function(options) {
     _.bindAll(this, 'render', 'update', 'saveOnKeyUp', 'aceSettings', 'showSettings');
-    var self = this; 
-    
+
     this.model = Verlag.templates.get(options.id); 
     this.model.fetch({
-      success: function(model, response){
-        self.aceSettings();
-        if(Verlag.aceEditor){
-          Verlag.aceEditor.destroy();
-        }
-        self.render();
-      }
+      success: this.render
     });
-    $(self.el).undelegate();
+    $(this.el).undelegate();
   },
 
   render: function() {
@@ -41,6 +35,11 @@ Verlag.View.DesignEdit = Backbone.View.extend({
           'layout': this.model.toJSON(),
           'layout?': false
         };
+        
+    this.aceSettings();
+    if(Verlag.aceEditor){
+      Verlag.aceEditor.destroy();
+    };
     
     $(this.el).html(template.render(data)); 
     this.intitializeAce();
@@ -102,7 +101,7 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   },
   
   showSettings: function(e){
-    Verlag.modal = new Verlag.View.Settings({ 
+    Verlag.modal = new Verlag.View.DesignSettings({ 
       model: this.model,
       collection: this.model.get('klass').toLowerCase() + 's',
       success: this.render
@@ -127,7 +126,6 @@ Verlag.View.DesignEdit = Backbone.View.extend({
   
   // ACE Editor keyboard shortcuts
   aceSettings: function(){
-    var self = this;
     var canon = require('pilot/canon');  
     
     // ACE Editor modes depending on content type
@@ -143,7 +141,6 @@ Verlag.View.DesignEdit = Backbone.View.extend({
       'none'       : require('ace/mode/scss').Mode
     }
     
-    
     canon.addCommand({
       name: 'save',
       bindKey: {
@@ -152,6 +149,13 @@ Verlag.View.DesignEdit = Backbone.View.extend({
         sender: 'editor'
       },
       exec: this.update
+    });
+  },
+  
+  parts: function(e){
+    e.preventDefault();
+    Verlag.modal = new Verlag.View.AddParts({
+      model: this.model
     });
   }
 

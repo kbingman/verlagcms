@@ -143,8 +143,8 @@ class Main < Sinatra::Base
   set :app_file, __FILE__    
   set :views, File.join(root, 'app', 'views') 
   set :haml, { 
-    format: :html5, 
-    ugly: RACK_ENV == 'development' ? false : true 
+    :format => :html5, 
+    :ugly => RACK_ENV == 'development' ? false : true 
   } 
   set :default_content_type, :html
 
@@ -168,7 +168,7 @@ class Main < Sinatra::Base
   
   configure :production do
     require 'uglifier'
-    sprockets.js_compressor  = Uglifier.new(mangle: true)
+    # sprockets.js_compressor  = Uglifier.new(:mangle => true)
     Sprockets::Sass.options[:style] = :compressed
   end
   
@@ -179,7 +179,6 @@ class Main < Sinatra::Base
   helpers do
     include AssetHelpers
   end
-  
 
   use Warden::Manager do |manager|
     manager.default_strategies :fibble
@@ -199,15 +198,6 @@ else
   MongoMapper.database = monk_settings(:mongo)[:database]
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil)# , :logger => logger
 end
-
-# Models
-
-# These need to be required first or Page blows up...
-# require root_path('app/models/templates/template.rb')
-
-
-require root_path('app/models/assets/asset.rb')
-# require root_path('app/models/parts/part.rb')
 
 # Load all models.
 Dir[root_path('app/models/**/*.rb')].each do |file|
@@ -247,11 +237,6 @@ end
 Dir[root_path('app/views/**/*.rb')].each do |file|
   require file
 end
-
-# Load all lib liquid files.
-# Dir[root_path('app/liquid/**/*.rb')].each do |file|
-#   require file
-# end  
 
 if defined? Encoding
   Encoding.default_external = Encoding::UTF_8

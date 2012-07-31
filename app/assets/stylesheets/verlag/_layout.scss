@@ -24,6 +24,10 @@ body {
   margin: 0 auto;
 }
 
+p { 
+  font-size: 1em;
+}
+
 #content {
   @include positionable;
   top: 42px;
@@ -50,6 +54,7 @@ body {
   overflow-x: hidden;
   width: 280px;
   padding: 10px;
+  background: #ddd;
 }
 
 
@@ -66,4 +71,9 @@ body {
 .login {
   width: 540px;
   margin: 100px auto;
+}
+
+.header {
+  h1 { float: left; margin: 2px 16px 0 8px; }
+  .buttons { padding: 8px; }
 }

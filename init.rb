@@ -200,8 +200,7 @@ else
   MongoMapper.connection = Mongo::Connection.new(monk_settings(:mongo)[:host], nil)# , :logger => logger
 end
 
-# Load all models.
-require 'app/models/assets/asset.rb'
+# Load all models
 Dir[root_path('app/models/**/*.rb')].each do |file|
   require file
 end   
@@ -211,7 +210,7 @@ Dir[root_path('app/helpers/*.rb')].each do |file|
   require file
 end
 
-# Load all admin routes, except the rest_controller.
+# Load all admin routes, except the rest_controller
 # This is loaded last
 Dir[root_path('app/routes/api/v1/*.rb')].each do |file|
   require file unless file.match('rest_controller')

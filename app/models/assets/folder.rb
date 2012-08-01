@@ -1,3 +1,5 @@
+require root_path('app/models/assets/asset.rb')
+
 class Folder
   include MongoMapper::Document
   

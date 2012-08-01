@@ -80,11 +80,12 @@ end
 
 module AssetHelpers
   def asset_path(source)
-    if RACK_ENV == 'production'
-      '/compiled/' + source
-    else
-      '/assets/' + settings.sprockets.find_asset(source).digest_path
-    end
+    '/compiled/' + source
+    # if RACK_ENV == 'production'
+    #   '/compiled/' + source
+    # else
+    #   '/assets/' + settings.sprockets.find_asset(source).digest_path
+    # end
   end
 end
 
@@ -143,8 +144,8 @@ class Main < Sinatra::Base
   set :app_file, __FILE__    
   set :views, File.join(root, 'app', 'views') 
   set :haml, { 
-    :format => :html5, 
-    :ugly => RACK_ENV == 'development' ? false : true 
+    format: :html5, 
+    ugly: RACK_ENV == 'development' ? false : true 
   } 
   set :default_content_type, :html
 
@@ -168,7 +169,7 @@ class Main < Sinatra::Base
   
   configure :production do
     require 'uglifier'
-    # sprockets.js_compressor  = Uglifier.new(:mangle => true)
+    sprockets.js_compressor  = Uglifier.new(:mangle => true)
     Sprockets::Sass.options[:style] = :compressed
   end
   

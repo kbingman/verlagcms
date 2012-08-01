@@ -14,7 +14,6 @@
 //= require_tree '../templates'
 
 // Libraries
-//= require 'vendor/sugar'
 //= require 'vendor/jquery-1.7.1.min'
 //= require 'vendor/modernizr.custom.00537'
 //= require 'vendor/bootstrap'

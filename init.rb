@@ -201,6 +201,7 @@ else
 end
 
 # Load all models.
+require 'app/models/assets/asset.rb'
 Dir[root_path('app/models/**/*.rb')].each do |file|
   require file
 end   

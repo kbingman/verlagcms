@@ -1,3 +1,4 @@
+//= require_self
 // Ace
 //= require 'ace/ace'
 //= require 'ace/theme-textmate'

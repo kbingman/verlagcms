@@ -4,15 +4,20 @@
     <a class="close" data-dismiss="modal">×</a>
     <h3>Settings</h3>
   </div>
-  <form method="post" class="js-update form-horizontal">
-    <div class="modal-body">   
+ 
+  <div class="modal-body">  
+    <form method="post" class="js-update form-horizontal"> 
       {{> form }}
-    </div>
+      <div class="well">
+        <button type="submit" class="btn btn-primary js-create">Save</button>
+        <a href="#" data-dismiss="modal" class="btn cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
     
-    <div class="modal-footer">
-      <a href="#" data-dismiss="modal" class="cancel">Cancel</a>
-      <button type="submit" class="btn btn-primary js-create">Save</button>
-    </div>
-  </form>
+  <div class="modal-footer">
+    &nbsp;
+  </div>
+  
 </div>
 {{/ model }}

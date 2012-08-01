@@ -13,16 +13,21 @@
   <p>
     Short description of what parts are and what they do.
   </p>
-  
-  {{# part_types }}
-  <div class="part">
-    <strong>{{ name }}</strong>: Description goes here
-    <a class="js-remove-part">x</a>
+  <div class="clearfix">
+    {{# part_types }}
+    <div class="part {{ name }}">
+      <strong>{{ name }}</strong>: Description goes here
+      <a class="js-remove-part">x</a>
+    </div>
+    {{/ part_types }}
   </div>
-  {{/ part_types }}
-  {{# types }}
-    <a class="js-add-part" data-id="{{ id }}">Add a {{ . }}</a>
-  {{/ types }}
+
+  <div>
+    {{# types }}
+      <a class="js-add-part" data-id="{{ id }}">Add a {{ . }}</a>
+    {{/ types }}
+  </div>
+
 </div>
 
 

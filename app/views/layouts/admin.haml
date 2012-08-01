@@ -1,11 +1,9 @@
 !!!5
-%html
+%html{ lang: 'en' }
   %head
+    %meta{ charset: 'UTF-8' }
     %title Verlag CMS &ndash; #{current_site.name}#{@title.nil? ? '' :  "&ndash; #{@title}"}
     %link{ :rel => 'stylesheet', :href => "#{asset_path('application.css')}", :type => 'text/css' }   
-     
-    // Ace
-    %script{ :src => '/javascripts/ace.js', :type => 'text/javascript', :charset => 'utf-8' } 
     %script{ :src => "#{asset_path('application.js')}", :type => 'text/javascript', :charset => 'utf-8' }
 
     = yield_content :head

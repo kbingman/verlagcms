@@ -141,15 +141,15 @@ Verlag.View.DesignEdit = Backbone.View.extend({
       'none'       : require('ace/mode/scss').Mode
     }
     
-    canon.addCommand({
-      name: 'save',
-      bindKey: {
-        win: 'Ctrl-S',
-        mac: 'Command-S',
-        sender: 'editor'
-      },
-      exec: this.update
-    });
+    // canon.addCommand({
+    //   name: 'save',
+    //   bindKey: {
+    //     win: 'Ctrl-S',
+    //     mac: 'Command-S',
+    //     sender: 'editor'
+    //   },
+    //   exec: this.update
+    // });
   },
   
   parts: function(e){

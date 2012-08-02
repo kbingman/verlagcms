@@ -1,5 +1,7 @@
 Verlag.Model.PartType = Backbone.Model.extend({
   
-  urlRoot: '/api/v1/page_types',
+  urlRoot: function(){
+    return '/api/v1/templates/' + this.get('template_id') + '/parts';
+  }
   
 });

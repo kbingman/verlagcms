@@ -13,13 +13,8 @@
   <p>
     Short description of what parts are and what they do.
   </p>
-  <div class="clearfix">
-    {{# part_types }}
-    <div class="part {{ name }}">
-      <strong>{{ name }}</strong>: Description goes here
-      <a class="js-remove-part">x</a>
-    </div>
-    {{/ part_types }}
+  <div class="parts-list clearfix">
+    {{> part_types }}
   </div>
 </div>
 

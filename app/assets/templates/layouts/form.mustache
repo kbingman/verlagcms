@@ -21,13 +21,19 @@
     </div>
     {{/ part_types }}
   </div>
-
-  <div>
-    {{# types }}
-      <a class="js-add-part" data-id="{{ id }}">Add a {{ . }}</a>
-    {{/ types }}
-  </div>
-
 </div>
+
+<div class="btn-toolbar add-parts">
+  <input type="text" id="new-part-type" value="" class="textfield " placeholder="Part Name"> 
+  <div class="btn-group">
+  {{# types }}
+    <button class="btn js-set-part" title="{{ name }}" data-klass="{{ klass }}">{{ name }}</button> 
+  {{/ types }}
+  </div> 
+  <button class="btn-primary btn js-add-part">Add</button>
+</div>
+
+
+
 
 

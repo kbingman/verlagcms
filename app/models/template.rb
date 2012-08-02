@@ -42,10 +42,8 @@ class Template
   end
   
   def as_json(options)
-    super(:methods => [:klass, :class_name, :mode, :part_types, :layout?, :admin_path, :path])
+    super(:methods => [:klass, :class_name, :mode, :part_types, :layout?, :path])
   end 
-  
-
   
   def render
     # template = Liquid::Template.parse(self.content)

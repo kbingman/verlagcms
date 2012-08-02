@@ -80,12 +80,11 @@ end
 
 module AssetHelpers
   def asset_path(source)
-    '/compiled/' + source
-    # if RACK_ENV == 'production'
-    #   '/compiled/' + source
-    # else
-    #   '/assets/' + settings.sprockets.find_asset(source).digest_path
-    # end
+    if RACK_ENV == 'production'
+      '/compiled/' + source
+    else
+      '/assets/' + settings.sprockets.find_asset(source).digest_path
+    end
   end
 end
 

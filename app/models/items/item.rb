@@ -1,4 +1,4 @@
-class PageItem
+class Item
   include MongoMapper::Document 
   
   # Plugins

@@ -5,18 +5,18 @@ class Part
   key :name, String, :required => true #, :unique => true 
   key :content, String
   
-  key :page_id, ObjectId
-  belongs_to :page
+  # key :page_id, ObjectId
+  # belongs_to :page
   
-  # embedded_in :page
+  embedded_in :page
   
   attr_accessor :edit
   
   # validates :name, :uniqueness => true
   
-  def admin_path
-   "/admin/pages/#{self.page.id}/parts/#{self.id}" 
-  end
+  # def admin_path
+  #  "/admin/pages/#{self.page.id}/parts/#{self.id}" 
+  # end
     
   def klass
     self.class.to_s.underscore.pluralize
@@ -37,8 +37,8 @@ class Part
   
   def as_json(options)
     super(
-      :only => [ :id, :created_at, :name ], 
-      :methods => [ :path, :klass, :admin_path, :file_name, :render ]
+      :only => [ :id, :created_at, :name, :content ], 
+      :methods => [ :path, :klass, :file_name, :render ]
     )
   end
     

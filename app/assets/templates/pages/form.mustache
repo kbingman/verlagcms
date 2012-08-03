@@ -35,17 +35,14 @@
   <div class="controls">
     <select id="page-layout" class="select" name="layout_id"> 
       {{# layouts }}
-      <option value="{{id}}" {{selected}}>{{name}}</option>
+      <option value="{{ id }}" {{ selected }}>{{ name }}</option>
       {{/ layouts }}
     </select>  
   </div>
 </div>
 
 {{# parts }}
-<div class="control-group">
-  <p class="control-label">{{ name }}</p> 
-  <p class="controls">
-    Description goes here
-  </p>
+<div class="part {{ name }}">
+  <strong>{{ name }}</strong>: {{{ render }}}
 </div>
 {{/ parts }}

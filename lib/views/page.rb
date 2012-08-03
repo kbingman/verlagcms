@@ -110,7 +110,7 @@ class Main
       end
       
       def parts
-        @global_page.parts
+        @global_page.parts.collect{ |p| p.edit = @global_page.edit; p }
       end
       
       # Conditionals

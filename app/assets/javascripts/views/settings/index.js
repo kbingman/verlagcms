@@ -11,23 +11,21 @@ Verlag.View.SiteSettings = Backbone.View.extend({
 
   initialize: function() {
     $(this.el).undelegate();
-    var self = this;
-    
-    $.ajax({
-      url: '/api/v1/page_types.json',
-      success: function(response){
-        Verlag.page_types = new Verlag.Collection.PageTypes(response);
-        Verlag.page_types.on('all', function(){
-          self.render();
-        });
-        self.render();
-      }
-    });
+    this.render();
+    // $.ajax({
+    //   url: '/api/v1/page_types.json',
+    //   success: function(response){
+    //     Verlag.page_types = new Verlag.Collection.PageTypes(response);
+    //     Verlag.page_types.on('all', function(){
+    //       self.render();
+    //     });
+    //     self.render();
+    //   }
+    // });
   },
   
   data: function(){
     return {
-      page_types: Verlag.page_types.toJSON(),
       users: Verlag.users.toJSON(),
       sites: Verlag.sites.toJSON()
     };
@@ -58,7 +56,6 @@ Verlag.View.SiteSettings = Backbone.View.extend({
   
   show: function(e){
     e.preventDefault();
-
   },
   
   remove: function(e){

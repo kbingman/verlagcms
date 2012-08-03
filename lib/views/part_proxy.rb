@@ -8,7 +8,7 @@ class PartProxy
 
   def part(name)
     part = @page.parts.detect { |p| p.name.match(/^#{name.to_s}$/i) } 
-    part.edit = true if part && @edit
+    part.edit = @page.edit if part
     part
   end
   

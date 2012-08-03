@@ -23,7 +23,9 @@ Verlag.View.Settings = Backbone.View.extend({
         data = { 
           model: model.toJSON(),
           layouts: Verlag.templates.findByKlass('Layout').map(function(l){
-            return l.toJSON();
+            var json = l.toJSON();
+            json.selected = l.id == model.get('layout_id') ? 'selected' : '';
+            return json;
           }),
           types: [
             'image',
@@ -32,7 +34,7 @@ Verlag.View.Settings = Backbone.View.extend({
           ]
         };
 
-
+    console.log(data);
     $(template.render(data, partials)).appendTo(this.$el).modal().on('hidden', function() {
       $(this).remove();
     });

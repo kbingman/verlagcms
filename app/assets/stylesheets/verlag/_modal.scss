@@ -35,8 +35,13 @@
 .add-parts {
   .textfield  {
     display: inline-block;
+    margin-top: 8px;
   }
   .btn-group {
     height: 18px;
   }
+}
+
+#template-name {
+  width: 520px;
 }

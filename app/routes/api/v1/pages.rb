@@ -27,6 +27,7 @@ class Main
         if page.save
           page.to_json
         else
+          puts page.errors.inspect
           status 400
           content_type 'application/json'
           { errors: page.errors }.to_json

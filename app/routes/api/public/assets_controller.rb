@@ -4,12 +4,20 @@ class Main
   # -------------------------------------------
   
   namespace '/api/public' do
+    
+    helpers do
+      before do
+        authenticate!
+        content_type 'application/json'
+      end
+    end
+    
       
     # Assets Index
     # -------------------------------------------
     get '/assets/?' do  
       @query = params[:query] ? params[:query].split('.')[0] : ''
-      options = { :order => 'created_at DESC',  :page => params[:page] }
+      options = { order: 'created_at DESC', page: params[:page] }
       options[:per_page] = params[:limit] ? params[:limit] : Asset.per_page
       
       plucky_query = if params[:query]

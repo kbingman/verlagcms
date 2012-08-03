@@ -44,7 +44,7 @@ class Page
   timestamps!
   userstamps!
   
-  attr_accessor :active
+  attr_accessor :active, :edit
   
   # Permissions
   # ----------------------------------------
@@ -286,7 +286,20 @@ class Page
         p.page_id = self.id
       end
     end
+
+    # before_save :remove_unused_parts 
+    # def remove_unused_parts   
+    #   # if self.parts.empty?
+    #     types = self.layout.part_types.collect{ |p| p.name }
+    #     self.parts.each do |part|    
+    #       unless types.include?(part.name)
+    #         self.parts.delete_if{ |p| p == part }  
+    #       end
+    #     end
+    #   # end
+    # end  
     
+  
     
     # After Save
     # ----------------------------------------

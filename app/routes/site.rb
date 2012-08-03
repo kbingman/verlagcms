@@ -46,6 +46,7 @@ class Main
     page = current_site.find_by_path(path) if path
     
     if page 
+      page.edit = true
       page.render({edit: true})
       # page.render(format, request)
     else   

@@ -25,7 +25,7 @@ Verlag.View.DesignSettings = Verlag.View.Settings.extend({
             { name: 'collection', klass: 'CollectionPart' }
           ]
         };
-
+        
     $(template.render(data, partials)).appendTo(this.$el).modal().on('hidden', function() {
       $(this).remove();
     });
@@ -33,19 +33,19 @@ Verlag.View.DesignSettings = Verlag.View.Settings.extend({
   
   addPart: function(e){
     e.preventDefault();
-    var activeButton = $('div.add-parts button.active');
-    var name = $('#new-part-type').val();
-    var model = this.model;
+    var activeButton = $('div.add-parts button.active'),
+        name = $('#new-part-type').val(),
+        model = this.model;
     
-
     if (activeButton.length && name) {
-      var klass = activeButton.data('klass');
-      var part = new Verlag.Model.PartType({
-        template_id: this.model.id
-      });
+      var klass = activeButton.data('klass'),
+          part = new Verlag.Model.PartType({
+            template_id: this.model.id
+          });
+      
       part.save({
         name: name, 
-        klass: klass
+        kind: klass 
       }, {
         success: function(model, response){
           model.set(response);
@@ -87,8 +87,7 @@ Verlag.View.DesignSettings = Verlag.View.Settings.extend({
         });
         $('.parts-list').html(html);
       }
-    })
-    alert(id)
+    });
   }
 
 });

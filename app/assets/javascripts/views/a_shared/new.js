@@ -49,7 +49,12 @@ Verlag.View.New = Backbone.View.extend({
         }
         Verlag.router.navigate(model.adminPath(), { trigger: true });
         $('.modal').modal('hide');  
+      },
+      error: function(model, response){
+        alert('error')
+        console.log(response.responseText);
       }
+      
     });
   }
   
